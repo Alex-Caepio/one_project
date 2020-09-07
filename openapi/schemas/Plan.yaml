@@ -1,0 +1,12 @@
+type: object
+properties:
+  id:
+    type: integer
+  name:
+    type: string
+  stripe_id:
+    type: integer
+  price:
+    type: string
+  service_types:
+    type: string

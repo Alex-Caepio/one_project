@@ -1,0 +1,456 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: ""
+  description: ""
+servers:
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/cleverketchup/tom/1.0.0
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  schemas:
+    AccessToken:
+      type: object
+      properties:
+        abilities:
+          type: array
+          items:
+            type: string
+          example:
+            - "*"
+        name:
+          type: string
+          example: access-token
+        token:
+          type: string
+          example: 4|hKv4yyJYSZlBDuuZmOcy5AO2ZzPbRJCp6gfbRGvvponscCQzetB51kh1p1Hsis1R2FnKJ5z0gHN4mJll
+    Article:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        user_id:
+          type: integer
+        is_published:
+          type: boolean
+        introduction:
+          type: string
+        url:
+          type: string
+    Discipline:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        url:
+          type: string
+        introduction:
+          type: string
+        description:
+          type: string
+    FocusArea:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        url:
+          type: string
+        introduction:
+          type: string
+        description:
+          type: string
+    Keyword:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+    Location:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+    Plan:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        stripe_id:
+          type: integer
+        price:
+          type: string
+        service_types:
+          type: string
+    PromotionCode:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        valid_from:
+          type: string
+          format: date-time
+          nullable: true
+        expiry_date:
+          type: string
+          format: date-time
+          nullable: true
+        spend_min:
+          type: number
+          format: double
+          nullable: true
+        spend_max:
+          type: number
+          format: double
+          nullable: true
+        discount_type:
+          type: string
+        discount_value:
+          type: number
+          format: double
+        service_type_id:
+          type: integer
+          nullable: true
+        discipline_id:
+          type: integer
+          nullable: true
+        focus_area_id:
+          type: integer
+          nullable: true
+        max_uses_per_code:
+          type: integer
+          nullable: true
+        code_uses_per_customer:
+          type: integer
+          nullable: true
+    Schedule:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        service_id:
+          type: integer
+        start_date:
+          type: string
+          format: date-time
+          nullable: true
+        end_date:
+          type: string
+          format: date-time
+          nullable: true
+        cost:
+          type: number
+          format: double
+    Service:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        type:
+          type: string
+          nullable: true
+        locations:
+          type: string
+          nullable: true
+        basic_location:
+          type: string
+          nullable: true
+        deposit_instalment_payments:
+          type: string
+          nullable: true
+        user_id:
+          type: integer
+        is_published:
+          type: boolean
+          nullable: true
+        introduction:
+          type: string
+          nullable: true
+        url:
+          type: string
+          nullable: true
+    ServiceType:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 6
+        name:
+          type: string
+          nullable: true
+        about_me:
+          type: string
+          nullable: true
+        about_my_business:
+          type: string
+          nullable: true
+        account_type:
+          type: string
+          nullable: true
+        business_address:
+          type: string
+          nullable: true
+        business_email:
+          type: string
+          nullable: true
+        business_introduction:
+          type: string
+          nullable: true
+        business_name:
+          type: string
+          nullable: true
+        business_phone_number:
+          type: string
+          nullable: true
+        date_of_birth:
+          type: string
+          nullable: true
+        email:
+          type: string
+          example: mmorissette@example.net
+        email_forward_clients:
+          type: string
+          nullable: true
+        email_forward_practitioners:
+          type: string
+          nullable: true
+        email_forward_support:
+          type: string
+          nullable: true
+        email_verified_at:
+          type: string
+          nullable: true
+        emails_holistify_update:
+          type: string
+          nullable: true
+        emails_practitioner_offers:
+          type: string
+          nullable: true
+        first_name:
+          type: string
+          example: John
+        last_name:
+          type: string
+          example: Doe
+        is_published:
+          type: string
+          nullable: true
+        mobile_number:
+          type: string
+          nullable: true
+        promotion_codes:
+          type: string
+          nullable: true
+        public_link:
+          type: string
+          nullable: true
+        stripe_id:
+          type: string
+          example: cus_HpyQPawZU9Nw16
+        access_token:
+          $ref: "#/components/schemas/AccessToken"
+paths:
+  /api/auth/register:
+    post:
+      tags:
+        - Auth
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+  /api/auth:
+    get:
+      tags:
+        - Auth
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+  /articles:
+    post:
+      tags:
+        - Article
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Article"
+    get:
+      tags:
+        - Article
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Article"
+  "/articles/{id}":
+    get:
+      tags:
+        - Article
+      parameters:
+        - name: id
+          in: path
+          description: Article ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Article"
+    put:
+      tags:
+        - Article
+      parameters:
+        - name: id
+          in: path
+          description: Article ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Article"
+    delete:
+      tags:
+        - Article
+      parameters:
+        - name: id
+          in: path
+          description: Article ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Article"
+  /services:
+    post:
+      tags:
+        - Service
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Service"
+    get:
+      tags:
+        - Service
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Service"
+  "/services/{id}":
+    get:
+      tags:
+        - Service
+      parameters:
+        - name: id
+          in: path
+          description: Service ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Service"
+    put:
+      tags:
+        - Service
+      parameters:
+        - name: id
+          in: path
+          description: Service ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Service"
+    delete:
+      tags:
+        - Service
+      parameters:
+        - name: id
+          in: path
+          description: Service ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Service"

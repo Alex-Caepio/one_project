@@ -1,0 +1,70 @@
+articles:
+  post:
+    tags:
+      - Article
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/Article.yaml'
+  get:
+    tags:
+      - Article
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../schemas/Article.yaml'
+
+articles/{id}:
+  get:
+    tags:
+      - Article
+    parameters:
+      - $ref: "#/parameters/id"
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/Article.yaml'
+  put:
+    tags:
+      - Article
+    parameters:
+      - $ref: "#/parameters/id"
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/Article.yaml'
+  delete:
+    tags:
+      - Article
+    parameters:
+      - $ref: "#/parameters/id"
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/Article.yaml'
+
+parameters:
+  id:
+    name: id
+    in: path
+    description: Article ID
+    required: true
+    schema:
+      type: integer

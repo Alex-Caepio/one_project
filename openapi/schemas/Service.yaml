@@ -1,0 +1,33 @@
+type: object
+properties:
+  id:
+    type: integer
+  title:
+    type: string
+    nullable: true
+  description:
+    type: string
+    nullable: true
+  type:
+    type: string
+    nullable: true
+  locations:
+    type: string
+    nullable: true
+  basic_location:
+    type: string
+    nullable: true
+  deposit_instalment_payments:
+    type: string
+    nullable: true
+  user_id:
+    type: integer
+  is_published:
+    type: boolean
+    nullable: true
+  introduction:
+    type: string
+    nullable: true
+  url:
+    type: string
+    nullable: true

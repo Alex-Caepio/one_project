@@ -1,0 +1,19 @@
+type: object
+properties:
+  id:
+    type: integer
+  title:
+    type: string
+  service_id:
+    type: integer
+  start_date:
+    type: string
+    format: date-time
+    nullable: true
+  end_date:
+    type: string
+    format: date-time
+    nullable: true
+  cost:
+    type: number
+    format: double
