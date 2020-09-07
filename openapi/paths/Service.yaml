@@ -1,0 +1,70 @@
+services:
+  post:
+    tags:
+      - Service
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/Service.yaml'
+  get:
+    tags:
+      - Service
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../schemas/Service.yaml'
+
+services/{id}:
+  get:
+    tags:
+      - Service
+    parameters:
+      - $ref: "#/parameters/id"
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/Service.yaml'
+  put:
+    tags:
+      - Service
+    parameters:
+      - $ref: "#/parameters/id"
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/Service.yaml'
+  delete:
+    tags:
+      - Service
+    parameters:
+      - $ref: "#/parameters/id"
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/Service.yaml'
+
+parameters:
+  id:
+    name: id
+    in: path
+    description: Service ID
+    required: true
+    schema:
+      type: integer

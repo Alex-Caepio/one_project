@@ -1,0 +1,79 @@
+type: object
+properties:
+  id:
+    type: integer
+    example: 6
+  name:
+    type: string
+    nullable: true
+  about_me:
+    type: string
+    nullable: true
+  about_my_business:
+    type: string
+    nullable: true
+  account_type:
+    type: string
+    nullable: true
+  business_address:
+    type: string
+    nullable: true
+  business_email:
+    type: string
+    nullable: true
+  business_introduction:
+    type: string
+    nullable: true
+  business_name:
+    type: string
+    nullable: true
+  business_phone_number:
+    type: string
+    nullable: true
+  date_of_birth:
+    type: string
+    nullable: true
+  email:
+    type: string
+    example: mmorissette@example.net
+  email_forward_clients:
+    type: string
+    nullable: true
+  email_forward_practitioners:
+    type: string
+    nullable: true
+  email_forward_support:
+    type: string
+    nullable: true
+  email_verified_at:
+    type: string
+    nullable: true
+  emails_holistify_update:
+    type: string
+    nullable: true
+  emails_practitioner_offers:
+    type: string
+    nullable: true
+  first_name:
+    type: string
+    example: 'John'
+  last_name:
+    type: string
+    example: 'Doe'
+  is_published:
+    type: string
+    nullable: true
+  mobile_number:
+    type: string
+    nullable: true
+  promotion_codes:
+    type: string
+    nullable: true
+  public_link:
+    type: string
+    nullable: true
+  stripe_id:
+    type: string
+    example: 'cus_HpyQPawZU9Nw16'
+  access_token:
+    $ref: './AccessToken.yaml'

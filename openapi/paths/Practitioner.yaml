@@ -1,0 +1,70 @@
+practitioners:
+  post:
+    tags:
+      - User
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/User.yaml'
+  get:
+    tags:
+      - User
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../schemas/User.yaml'
+
+practitioners/{id}:
+  get:
+    tags:
+      - User
+    parameters:
+      - $ref: "#/parameters/id"
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/User.yaml'
+  put:
+    tags:
+      - User
+    parameters:
+      - $ref: "#/parameters/id"
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/User.yaml'
+  delete:
+    tags:
+      - User
+    parameters:
+      - $ref: "#/parameters/id"
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/User.yaml'
+
+parameters:
+  id:
+    name: id
+    in: path
+    description: User ID
+    required: true
+    schema:
+      type: integer

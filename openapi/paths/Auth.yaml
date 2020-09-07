@@ -1,0 +1,24 @@
+
+auth/register:
+  post:
+    tags:
+      - Auth
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/User.yaml'
+
+auth:
+  get:
+    tags:
+      - Auth
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/User.yaml'

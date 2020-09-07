@@ -1,0 +1,22 @@
+type: object
+properties:
+  id:
+    type: integer
+
+  title:
+    type: string
+
+  description:
+    type: string
+
+  user_id:
+    type: integer
+
+  is_published:
+    type: boolean
+
+  introduction:
+    type: string
+
+  url:
+    type: string

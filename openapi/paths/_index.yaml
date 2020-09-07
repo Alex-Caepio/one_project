@@ -1,0 +1,29 @@
+#auth
+/api/auth/register:
+  $ref: "./Auth.yaml#/auth~1register"
+/api/auth:
+  $ref: "./Auth.yaml#/auth"
+
+#articels
+/articles:
+  $ref: "./Article.yaml#/articles"
+/articles/{id}:
+  $ref: "./Article.yaml#/articles~1{id}"
+
+#services
+/services:
+  $ref: "./Service.yaml#/services"
+/services/{id}:
+  $ref: "./Service.yaml#/services~1{id}"
+
+#practitioners
+/practitoners:
+  $ref: "./Practitioner.yaml#/practitoners"
+/practitoners/{id}:
+  $ref: "./Practitioner.yaml#/practitoners~1{id}"
+
+#plans
+/plans:
+  $ref: "./Plan.yaml#/plans"
+/plans/{id}/purchase:
+  $ref: "./Plan.yaml#/plans~1{id}~1purchase"
