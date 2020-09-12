@@ -18,8 +18,9 @@ pipeline{
             }
             steps{
                 withSonarQubeEnv('SonarQube_6.0'){
-                    sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=${projectKey} \
-                    -Dsonar.projecName=${projectName} \
+                    sh "${scannerHome}/bin/sonar-scanner \
+                    -Dsonar.projectKey=${projectKey} \
+                    -Dsonar.projectName=${projectName} \
                     -Dsonar.projectVersion=1.0 \
                     -Dsonar.sources=./"
                     sh "/var/lib/jenkins/workspace/waitForSonarQube.sh"
