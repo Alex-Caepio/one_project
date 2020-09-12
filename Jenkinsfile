@@ -41,6 +41,11 @@ pipeline{
                 }
             }
         }
+        stage("Clean from docker images"){
+            steps{
+                sh '''docker rmi -f $(docker images --filter=reference=${projectName} -q) >/dev/null 2>&1'''
+            }
+        }
     }
     post{
         success{
