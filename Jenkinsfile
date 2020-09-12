@@ -13,9 +13,6 @@ pipeline{
     }
     stages{
         stage("Sonarqube"){
-            when{
-                expression{ return(env.BRANCH_NAME == 'dev') }
-            }
             environment{
                 scannerHome = tool 'SonarQube'
             }
