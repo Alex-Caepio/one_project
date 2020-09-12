@@ -32,7 +32,7 @@ pipeline{
     }
     post{
         success{
-            cleanWS()
+            cleanWs()
         }
         failure{
             echo "========pipeline execution failed========"
