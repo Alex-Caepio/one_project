@@ -27,6 +27,20 @@ pipeline{
                 }
             }
         }
+        stage("Build docker image"){
+            steps{
+                script{
+                    dockerImage = docker.build('$projectName:$workingEnv', "-f ./Dockerfile ./")
+                }
+            }
+        }
+        stage("Deploy docker image to Nexus"){
+            steps{
+                docker.withRegistry(registryHost,registryCredentials){
+                    dockerImage.push()
+                }
+            }
+        }
     }
     post{
         success{
