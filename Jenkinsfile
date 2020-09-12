@@ -29,8 +29,10 @@ pipeline{
         }
         stage("Build docker image"){
             steps{
-                script{
-                    dockerImage = docker.build('$projectName:$workingEnv', "-f ./Dockerfile ./")
+                contentFileProvider([configFile(fileId: 'oneness_envconfig_dev', targetLocation: '.env')]){
+                    script{
+                        dockerImage = docker.build('$projectName:$workingEnv', "-f ./Dockerfile ./")
+                    }
                 }
             }
         }

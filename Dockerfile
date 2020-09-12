@@ -5,4 +5,4 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 
 WORKDIR /var/www/html
 COPY . /var/www/html
-RUN composer install
+RUN chmod 644 /var/www/.env && composer install
