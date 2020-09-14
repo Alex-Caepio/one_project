@@ -7,7 +7,8 @@ services:
     ports:
       - 80:80
     environment:
-      - APACHE_DOCUMENT_ROOT=/var/www/html
+      - APACHE_DOCUMENT_ROOT=/var/www/html/public
     restart: always
     volumes: 
       - /opt/oneness/logs:/var/www/html/storage/logs
+      - /opt/oneness/public:/var/www/html/storage/app/public
