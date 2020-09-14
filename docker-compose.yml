@@ -9,3 +9,5 @@ services:
     environment:
       - APACHE_DOCUMENT_ROOT=/var/www/html
     restart: always
+    volumes: 
+      - /opt/oneness/logs:/var/www/html/storage/logs
