@@ -6,7 +6,7 @@ pipeline{
         registryHost = "https://nexus-docker.andersenlab.dev"
         registryName = "nexus-docker.andersenlab.dev"
         registryCredentials = "nexus_andersen"
-        dockerCredentials = "oneness_docker_credentials"
+        dockerCredentials = "dev-oneness_docker_credentials"
     }
     agent{
         label "master"
@@ -48,6 +48,22 @@ pipeline{
         stage("Clean from docker images"){
             steps{
                 sh '''docker rmi -f $(docker images --filter=reference=${projectName} -q) >/dev/null 2>&1'''
+            }
+        }
+        stage("Deploy docker image to host"){
+            steps{
+                script{
+                    docker.withServer('tcp://10.10.15.93:2376',dockerCredentials){
+                        docker.withRegistry(registryHost,registryCredentials){
+                            sh '''
+                            docker stop ${projectName} || true
+                            docker rm ${projectName} || true
+                            docker rmi -f $registryName/${projectName}:${workingEnv} || true
+                            docker-compose -f docker-compose.yml up --force-recreate --remove-orphans -d
+                            '''
+                        }
+                    }
+                }
             }
         }
     }
