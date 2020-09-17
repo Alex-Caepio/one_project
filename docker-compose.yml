@@ -12,3 +12,8 @@ services:
     volumes: 
       - /opt/oneness/logs:/var/www/html/storage/logs
       - /opt/oneness/public:/var/www/html/storage/app/public
+    networks:
+      - oneness
+
+networks:
+  oneness:
