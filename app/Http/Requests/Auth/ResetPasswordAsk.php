@@ -2,10 +2,21 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Hash;
 
 class ResetPasswordAsk extends FormRequest
 {
+    public function withValidator($validator)
+    {
+        $result = User::where('email', $this->get('email'))->first();
+        $validator->after(function ($validator) use ($result) {
+            if (!$result) {
+                $validator->errors()->add('email', 'The Email is not valid');
+            }
+        });
+    }
     /**
      * Authorization rules
      *

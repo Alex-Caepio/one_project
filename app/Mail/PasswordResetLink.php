@@ -32,6 +32,6 @@ class PasswordResetLink extends Mailable
 
         return $this
             ->subject('Reset password')
-            ->view('mails.password_reset', ['link' => $this->link]);
+            ->view('mails.password_reset_ask', ['link' => $this->link]);
     }
 }

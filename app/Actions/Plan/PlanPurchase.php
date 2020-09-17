@@ -32,5 +32,6 @@ class PlanPurchase
         $unixTimestamp = Carbon::createFromTimestamp($subscription->current_period_end);
         $plan_id->plan_until = $unixTimestamp;
         $plan_id->save();
+        return $plan_id;
     }
 }

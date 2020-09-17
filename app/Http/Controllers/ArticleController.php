@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ArticlePublished;
+use App\Events\ArticleUnpublished;
 use App\Http\Requests\Articles\ArticleRequest;
 use App\Http\Requests\Request;
 use App\Models\Article;
@@ -28,16 +30,20 @@ class ArticleController extends Controller
 
     public function store(ArticleRequest $request)
     {
-        $service = Article::create($request->all());
-
-        return fractal($service, new ArticleTransformer())->respond();
+        $article = Article::create($request->all());
+        $user = Auth::user();
+        if(!$article){
+            event(new ArticleUnpublished($article, $user));
+        }
+        event(new ArticlePublished($article, $user));
+        return fractal($article, new ArticleTransformer())->respond();
     }
 
-    public function edit(ArticleRequest $request, Article $service)
+    public function edit(ArticleRequest $request, Article $article)
     {
-        $service->update($request->all());
+        $article->update($request->all());
 
-        return fractal($service, new ArticleTransformer())->respond();
+        return fractal($article, new ArticleTransformer())->respond();
     }
 
     public function destroy(Article $article)
@@ -46,6 +52,7 @@ class ArticleController extends Controller
 
         return fractal($article, new ArticleTransformer())->respond();
     }
+
     public function storeFavorite(Article $article)
     {
         if ($article->articlefavorite()) {

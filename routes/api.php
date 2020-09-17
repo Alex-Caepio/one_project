@@ -18,9 +18,12 @@ Route::post('auth/login', 'Auth\AuthController@login');
 Route::get('auth/verify-email', 'Auth\AuthController@verifyEmail')->name('verify-email');
 
 Route::post('auth/forgot-password-ask', 'Auth\ResetPasswordController@askForReset');
+Route::get('auth/forgot-password-ask')->name('forgot-password-ask')->middleware('signed');
+Route::get('auth/verify-forgot-password-token','Auth\ResetPasswordController@verifyToken');
 Route::post('auth/forgot-password-claim', 'Auth\ResetPasswordController@claimReset');
 
-Route::middleware(['auth:sanctum'])->group(function () {
+
+Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::get('auth/profile', 'Auth\AuthController@profile');
     Route::put('auth/profile', 'Auth\AuthController@update');
     Route::post('auth/resend-verification', 'Auth\AuthController@resendVerification');
@@ -71,23 +74,24 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/services/{service}/schedule', 'ScheduleController@index');
     Route::post('/schedules/{schedule}/purchase', 'ScheduleController@purchase');
     Route::get('/schedule/{schedule}/attendants', 'ScheduleController@allUser');
-    Route::post('/schedules/{schedule}/freeze','ScheduleController@freeze');
-    Route::get('/schedules/{schedule}/availabilities','ScheduleController@availabilities');
+    Route::post('/schedules/{schedule}/freeze', 'ScheduleController@freeze');
+    Route::get('/schedules/{schedule}/availabilities', 'ScheduleController@availabilities');
 
     Route::post('/schedule/{schedule}/reschedule', 'RescheduleRequestController@store');
     Route::get('/reschedule-requests', 'RescheduleRequestController@index');
     Route::post('reschedule-requests/{rescheduleRequest}/accept', 'RescheduleRequestController@accept');
     Route::delete('reschedule-requests/{rescheduleRequest}/decline', 'RescheduleRequestController@decline');
 
-    Route::post('/schedule/{schedule}/promoсode','ScheduleController@promoCode');
+    Route::post('/schedule/{schedule}/promoсode', 'ScheduleController@promoCode');
 
-    Route::post('message/users/{user}','UserController@sendMail');
+    Route::post('message/users/{user}', 'UserController@sendMail');
 
-    Route::get('/disciplines/{discipline}/images','DisciplineController@indexImage');
-    Route::get('/disciplines/{discipline}/videos','DisciplineController@indexVideo');
+    Route::get('/disciplines/{discipline}/images', 'DisciplineController@indexImage');
+    Route::get('/disciplines/{discipline}/videos', 'DisciplineController@indexVideo');
 
-    Route::get('/focus-area/{focusArea}/images','FocusAreaController@indexImage');
-    Route::get('/focus-area/{focusArea}/videos','FocusAreaController@indexVideo');
+    Route::get('/focus-area/{focusArea}/images', 'FocusAreaController@indexImage');
+    Route::get('/focus-area/{focusArea}/videos', 'FocusAreaController@indexVideo');
+
 });
 
 

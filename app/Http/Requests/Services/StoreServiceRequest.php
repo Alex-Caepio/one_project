@@ -15,10 +15,11 @@ class StoreServiceRequest extends FormRequest
      */
     public function authorize()
     {
-        $serviceId = $this->route('services');
-
-        return Service::where('id', $serviceId)
-            ->where('user_id', Auth::id())->exists();
+        return true;
+//        $serviceId = $this->route('services');
+//
+//        return Service::where('id', $serviceId)
+//            ->where('user_id', Auth::id())->exists();
     }
 
     /**

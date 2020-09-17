@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\Auth;
 
 class Article extends Model
 {
+    protected $fillable=[
+        'title','introduction','url'
+    ];
     public function disciplines()
     {
         return $this->belongsToMany(Discipline::class,'discipline_practitioner','discipline_id','practitioner_id')->withTimeStamps();

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ServiceListingLive;
+use App\Events\ServiceUnpublished;
 use App\Filters\ServiceFiltrator;
 use App\Http\Requests\Request;
 use App\Http\Requests\Services\StoreServiceRequest;
@@ -46,7 +48,10 @@ class ServiceController extends Controller
         $user = $request->user();
         $data = $request->all();
         $service = $user->services()->create($data);
-
+        if(!$service){
+            event(new ServiceUnpublished($service, $user));
+        }
+        event(new ServiceListingLive($service, $user));
         return fractal($service, new ServiceTransformer())->respond();
     }
 

@@ -10,16 +10,17 @@ class VerifyEmail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    protected $emailVerification;
+    protected $emailVerification,$link;
 
     /**
      * Create a new message instance.
      *
      * @param $emailVerification
+     * @param string $link
      */
-    public function __construct($emailVerification)
+    public function __construct($emailVerification,string $link)
     {
-        //$this->link = $link;
+        $this->link = $link;
         $this->emailVerification = $emailVerification;
     }
 
@@ -32,7 +33,7 @@ class VerifyEmail extends Mailable
     {
 
         return $this
-            ->subject('Reset password')
-            ->view('mails.verify_email', ['emailVerification' => $this->emailVerification]);
+            ->subject('Email Verification')
+            ->view('mails.verify_email', ['emailVerification' => $this->emailVerification,'link' => $this->link]);
     }
 }

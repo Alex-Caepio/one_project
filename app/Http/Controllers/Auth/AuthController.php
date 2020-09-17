@@ -38,14 +38,6 @@ class AuthController extends Controller
     public function login(LoginRequest $request)
     {
         $user = User::where('email', $request->get('email'))->first();
-        if (!$user) {
-            $this->invalidate(); //user not exists
-        }
-
-        if (!Hash::check($request->get('password'), $user->password)) {
-            $this->invalidate(); //invalid password
-        }
-
         $user->withAccessToken($user->createToken('access-token'));
 
         return fractal($user, new UserTransformer())

@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http;
-
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
 
@@ -56,6 +55,7 @@ class Kernel extends HttpKernel
      */
     protected $routeMiddleware = [
         'admin'=>\App\Http\Middleware\CheckAdmin::class,
+        'unsuspended'=>\App\Http\Middleware\UnsuspendedMiddleware::class,
         'auth' => \App\Http\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,

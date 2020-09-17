@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\ResetPasswordAsk;
 use App\Http\Requests\Auth\ResetPasswordClaim;
+use App\Http\Requests\Password\ResetRequest;
 use App\Mail\PasswordHasBeenChanged;
 use App\Mail\PasswordResetLink;
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Password\ResetRequest;
-
 use App\Models\User;
 use Carbon\Carbon;
 use DB;
-use Mail;
 use Hash;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 
 class ResetPasswordController extends Controller
@@ -28,28 +28,24 @@ class ResetPasswordController extends Controller
     {
         $email = strtolower($request->email);
 
-        $user = User::where('email', $email)->first();
-        if ($user) {
-            $token = hash('md5', Str::random(60));
+        $token = hash('md5', Str::random(60));
+        $passwordResetLink = URL::temporarySignedRoute(
+            'forgot-password-ask', now()->addHours(48), '?token=' . $token);
 
-            DB::table('password_resets')
-                ->where('email', $email)
-                ->delete();
-            DB::table('password_resets')
-                ->insert(
+        DB::table('password_resets')
+            ->where('email', $email)
+            ->delete();
+        DB::table('password_resets')
+            ->insert(
                 [
-                    'email'       => $email,
-                    'token'       => $token,
-                    'created_at'  => Carbon::now(),
+                    'email' => $email,
+                    'token' => $token,
+                    'created_at' => Carbon::now(),
                 ]
             );
-
-            $passwordResetLink = config('app.frontend_password_reset_link') . '?token=' . $token;
-
-            Mail::to([
-                'email' => $email
-            ])->send(new PasswordResetLink($passwordResetLink));
-        }
+        Mail::to([
+            'email' => $email
+        ])->send(new PasswordResetLink($passwordResetLink));
 
         return response(null, 200);
     }
@@ -77,5 +73,16 @@ class ResetPasswordController extends Controller
         ])->send(new PasswordHasBeenChanged());
 
         return response(null, 204);
+    }
+
+    public function verifyToken(Request $request)
+    {
+        $token = $request->token;
+        $validToken = DB::table('password_resets')->where('token', $token)->first();
+        $createdToken = Carbon::parse($validToken->created_at)->addHours(48);
+        if ($createdToken > Carbon::now()) {
+            return response(null, 200);
+        } else
+            return response(null, 500);
     }
 }

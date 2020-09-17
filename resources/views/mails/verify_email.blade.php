@@ -18,12 +18,14 @@
                                     style="color: #505050; font-family: Helvetica;font-size: 14px;line-height: 150%;padding: 20px; text-align: justify;word-wrap: break-word;"
                                     class="bodyContent">
 
-
                                     <h1 style="padding-top:12px; color: #3BA9D9; font-size: 20px; font-weight: bold; line-height: 24px; margin-bottom: 18px; margin-top: 0;">
-                                        Email name
-                                        {{$emailVerification->text}}</h1>
+                                        Subject<br/></h1>
+                                    <p>{{$emailVerification->subject}}</p>
+                                    <h1 style="padding-top:12px; color: #3BA9D9; font-size: 20px; font-weight: bold; line-height: 24px; margin-bottom: 18px; margin-top: 0;">
+                                        Body<br/></h1>
+                                    <p>{{$emailVerification->text}}</p>
                                     <!-- insert reset-password link there: column 95 -->
-                                    <p style="color: #595959; font-size: 1em; line-height: 1.4em; padding-bottom: 18px;">Please, verify your email{{$emailVerification->name}}</p>
+                                    <a href="{{$link}}">Please, verify your email</a></p>
                                 </td>
                             </tr>
                             </tbody>

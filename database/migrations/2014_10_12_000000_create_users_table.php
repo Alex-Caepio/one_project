@@ -22,6 +22,7 @@ class CreateUsersTable extends Migration
             $table->string('first_name');
             $table->string('last_name');
             $table->string('stripe_id')->nullable();
+            $table->tinyInteger('is_suspended')->nullable();
             $table->text('about_me')->nullable();
             $table->boolean('emails_holistify_update')->nullable();
             $table->boolean('emails_practitioner_offers')->nullable();

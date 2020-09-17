@@ -20,5 +20,6 @@ public function execute(Request $request, Service $service){
         'cost' => $request->get('cost'),
     ]);
     $schedule->save();
+    return $schedule;
 }
 }

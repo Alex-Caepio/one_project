@@ -10,7 +10,8 @@ class Schedule extends Model
 {
     protected $fillable = [
         'title',
-        'location_id'
+        'location_id',
+        'cost'
     ];
 
     public function location()

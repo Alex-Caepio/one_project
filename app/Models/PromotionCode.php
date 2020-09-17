@@ -14,4 +14,5 @@ class PromotionCode extends Model
     {
         return $this->belongsTo(Promotion::class);
     }
+
 }
