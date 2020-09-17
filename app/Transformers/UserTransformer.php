@@ -15,7 +15,6 @@ class UserTransformer extends Transformer
             'first_name' => $user->first_name,
             'last_name' => $user->last_name,
             'stripe_id' => $user->stripe_id,
-            'promotion_codes' => $user->promotion_codes,
             'is_published' => $user->is_published,
             'about_me' => $user->about_me,
             'emails_holistify_update' => $user->emails_holistify_update,
