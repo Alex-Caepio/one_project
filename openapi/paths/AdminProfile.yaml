@@ -1,7 +1,21 @@
-auth/register:
-  post:
+profile:
+  get:
+    operationId: get-profile
+    summary: get profile for currently logged in admin
     tags:
-      - Auth
+      - Profile
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/User.yaml'
+  put:
+    operationId: update-profile
+    summary: Update profile for currently logged in admin
+    tags:
+      - Profile
     responses:
       '200':
         description: OK
@@ -10,14 +24,3 @@ auth/register:
             schema:
               $ref: '../schemas/User.yaml'
 
-auth:
-  get:
-    tags:
-      - Auth
-    responses:
-      '200':
-        description: OK
-        content:
-          application/json:
-            schema:
-              $ref: '../schemas/User.yaml'

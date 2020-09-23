@@ -1,7 +1,8 @@
 plans:
   get:
+    operationId: get-plans
     tags:
-      - Article
+      - Plan
     responses:
       '200':
         description: OK
@@ -10,10 +11,11 @@ plans:
             schema:
               type: array
               items:
-                $ref: '../schemas/Article.yaml'
+                $ref: '../schemas/Plan.yaml'
 
 plans/{plan}/purchase:
   post:
+    operationId: purchase-plan
     tags:
       - Plan
     parameters:

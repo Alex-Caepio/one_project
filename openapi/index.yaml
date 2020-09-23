@@ -349,12 +349,7 @@ paths:
       tags:
         - Article
       parameters:
-        - name: id
-          in: path
-          description: Article ID
-          required: true
-          schema:
-            type: integer
+        - $ref: "#/paths/~1articles~1%7Bid%7D/get/parameters/0"
       responses:
         "200":
           description: OK
@@ -366,12 +361,7 @@ paths:
       tags:
         - Article
       parameters:
-        - name: id
-          in: path
-          description: Article ID
-          required: true
-          schema:
-            type: integer
+        - $ref: "#/paths/~1articles~1%7Bid%7D/get/parameters/0"
       responses:
         "200":
           description: OK
@@ -424,12 +414,7 @@ paths:
       tags:
         - Service
       parameters:
-        - name: id
-          in: path
-          description: Service ID
-          required: true
-          schema:
-            type: integer
+        - $ref: "#/paths/~1services~1%7Bid%7D/get/parameters/0"
       responses:
         "200":
           description: OK
@@ -441,9 +426,38 @@ paths:
       tags:
         - Service
       parameters:
+        - $ref: "#/paths/~1services~1%7Bid%7D/get/parameters/0"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Service"
+  /practitoners: {}
+  /plans:
+    get:
+      operationId: get-plans
+      tags:
+        - Plan
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Plan"
+  "/plans/{id}/purchase":
+    post:
+      operationId: purchase-plan
+      tags:
+        - Plan
+      parameters:
         - name: id
           in: path
-          description: Service ID
+          description: Plan ID
           required: true
           schema:
             type: integer
@@ -452,5 +466,29 @@ paths:
           description: OK
           content:
             application/json:
+              ? schema
+  /admin/profile:
+    get:
+      operationId: get-profile
+      summary: get profile for currently logged in admin
+      tags:
+        - Profile
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
               schema:
-                $ref: "#/components/schemas/Service"
+                $ref: "#/components/schemas/User"
+    put:
+      operationId: update-profile
+      summary: Update profile for currently logged in admin
+      tags:
+        - Profile
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"

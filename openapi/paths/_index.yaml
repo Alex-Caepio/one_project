@@ -19,11 +19,15 @@
 #practitioners
 /practitoners:
   $ref: "./Practitioner.yaml#/practitoners"
-/practitoners/{id}:
-  $ref: "./Practitioner.yaml#/practitoners~1{id}"
+#/practitoners/{id}:
+#  $ref: "./Practitioner.yaml#/practitoners~1{id}"
 
 #plans
 /plans:
   $ref: "./Plan.yaml#/plans"
 /plans/{id}/purchase:
-  $ref: "./Plan.yaml#/plans~1{id}~1purchase"
+  $ref: "./Plan.yaml#/plans~1{plan}~1purchase"
+
+## ADMIN ENDPOINTS
+/admin/profile:
+  $ref: "./AdminProfile.yaml#/profile"
