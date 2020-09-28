@@ -20,29 +20,36 @@ class PractitionerTest extends TestCase
 
     public function test_can_see_user_practitioner(): void
     {
-        factory(User::class, 2)->create()->where('account_type', 'practitioner');
+        User::factory()->count(2)->create();
         $response = $this->json('get', "/api/practitioners");
         $response->assertOk();
     }
 
     public function test_can_get_all_user_practitioner_list(): void
     {
-        $userPractitioner = factory(User::class, 2)->create()->where('account_type', 'practitioner');;
+        $userPractitioner = User::factory()->count(2)->create();
         $response = $this->json('get', "/api/service_types/list");
-        $response->assertOk($userPractitioner);
+        $response->assertOk();
     }
 
     public function test_store_favorite(): void
     {
-        $authUser = factory(User::class)->create();
-        $userId = factory(User::class)->create();
-        $response = $this->json('post', "practitioners/{$userId->id}/favourite");
+        $authUser = User::factory()->create();
+        $userId = User::factory()->create();
+        $response = $this->json('post', "api/practitioners/{$userId->id}/favourite");
         $authUser->favourite_practitioners()->attach($userId);
 
         $this->assertDatabaseHas('practitioner_favorites', [
             'user_id' => $authUser->id,
             'practitioner_id' => $userId->id
         ]);
+    }
+    public function test_delete_practitioner_favorite(): void
+    {
+        $practitioner = User::factory()->create();
+        $response = $this->json('delete', "api/practitioners/{$practitioner->id}/favourite");
+
+        $response->assertStatus(204);
     }
 
 }

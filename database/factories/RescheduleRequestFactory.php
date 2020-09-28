@@ -1,14 +1,22 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
+
 
 use App\Models\RescheduleRequest;
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(RescheduleRequest::class, function (Faker $faker) {
-    return [
-        'schedule_id' => $faker->randomNumber(5),
-        'user_id' => $faker->randomNumber(5),
-        'new_schedule_id' => $faker->randomNumber(5)
-    ];
-});
+class RescheduleRequestFactory extends Factory
+{
+
+    protected $model = RescheduleRequest::class;
+
+    public function definition()
+    {
+        return [
+            'schedule_id' => $this->faker->randomNumber(5),
+            'user_id' => $this->faker->randomNumber(5),
+            'new_schedule_id' => $this->faker->randomNumber(5)
+        ];
+    }
+}

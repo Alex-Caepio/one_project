@@ -3,9 +3,6 @@ properties:
   id:
     type: integer
     example: 6
-  name:
-    type: string
-    nullable: true
   about_me:
     type: string
     nullable: true
@@ -14,7 +11,7 @@ properties:
     nullable: true
   account_type:
     type: string
-    nullable: true
+    example: practitioner
   business_address:
     type: string
     nullable: true
@@ -37,23 +34,24 @@ properties:
     type: string
     example: mmorissette@example.net
   email_forward_clients:
-    type: string
-    nullable: true
+    type: boolean
+    example: true
   email_forward_practitioners:
-    type: string
-    nullable: true
+    type: boolean
+    example: true
   email_forward_support:
-    type: string
-    nullable: true
+    type: boolean
+    example: true
   email_verified_at:
     type: string
+    format: date-time
     nullable: true
   emails_holistify_update:
-    type: string
-    nullable: true
+    type: boolean
+    example: true
   emails_practitioner_offers:
-    type: string
-    nullable: true
+    type: boolean
+    example: true
   first_name:
     type: string
     example: 'John'
@@ -61,19 +59,18 @@ properties:
     type: string
     example: 'Doe'
   is_published:
-    type: string
-    nullable: true
+    type: boolean
+    example: true
   mobile_number:
-    type: string
-    nullable: true
-  promotion_codes:
     type: string
     nullable: true
   public_link:
     type: string
     nullable: true
+    example: 'example.com/users/johndoe'
   stripe_id:
     type: string
     example: 'cus_HpyQPawZU9Nw16'
-  access_token:
-    $ref: './AccessToken.yaml'
+  timezone_id:
+    type: integer
+    example: 98

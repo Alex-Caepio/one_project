@@ -16,7 +16,6 @@ class LocationFilter
             $title = $request->get('title');
             $location->where('title', 'like', "%$title%");
         }
-        $location = $location->get();
-        return $location;
+        return $location->get();
     }
 }

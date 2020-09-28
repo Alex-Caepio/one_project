@@ -38,17 +38,4 @@ class UserController extends Controller
             ->toArray();
     }
 
-    public function sendMail(Request $request, User $user)
-    {//SendMAilUserRequest
-        $UserMessage = $request->get('feedback');
-        $userEmail = $user->email;
-        Mail::to($userEmail)->send(new SendUserMail($UserMessage));
-        $EmailUser = new EmailMessage();
-        $EmailUser->forceFill([
-            'sender_id' => Auth::id(),
-            'receiver_id' => $user->id,
-            'text' => $UserMessage,
-        ]);
-        $EmailUser->save();
-    }
 }

@@ -23,5 +23,6 @@ class CreateAdminFromRequest
         $attributes = array_merge($attributes, $overrides);
 
         return run_action(CreateUser::class, $attributes);
+
     }
 }

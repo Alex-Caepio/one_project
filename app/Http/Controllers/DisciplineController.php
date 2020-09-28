@@ -12,15 +12,19 @@ class DisciplineController extends Controller
 {
     public function index(Request $request)
     {
-        $discipline = Discipline::all();
+        $discipline = Discipline::where('is_published', true)->get();
         return fractal($discipline, new DisciplineTransformer())
             ->parseIncludes($request->getIncludes())
             ->toArray();
     }
-
+    public function show(Discipline $discipline,Request $request)
+    {
+        return fractal($discipline, new DisciplineTransformer())->parseIncludes($request->getIncludes())
+            ->toArray();
+    }
     public function list()
     {
-        $discipline = Discipline::query();
+        $discipline = Discipline::query()->where('is_published', true);
         return $discipline->pluck('name', 'id');
     }
 

@@ -1,21 +1,29 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
+
 
 use App\Models\Schedule;
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(Schedule::class, function (Faker $faker) {
-    return [
-        'title'              => $faker->sentence(),
-        'service_id'         => $faker->randomNumber(3),
-        'location_id'        => $faker->randomNumber(3),
-        'start_date'         => $faker->date(),
-        'end_date'           => $faker->date(),
-        'attendees'          => $faker->randomNumber(2),
-        'comments'           => $faker->realText(),
-        'venue'              => $faker->city,
-        'city'               => $faker->city,
-        'country'            => $faker->country,
-    ];
-});
+class ScheduleFactory extends Factory
+{
+
+    protected $model = Schedule::class;
+
+    public function definition()
+    {
+        return [
+            'title'              => $this->faker->sentence(),
+            'service_id'         => $this->faker->randomNumber(3),
+            'location_id'        => $this->faker->randomNumber(3),
+            'start_date'         => $this->faker->date(),
+            'end_date'           => $this->faker->date(),
+            'attendees'          => $this->faker->randomNumber(2),
+            'comments'           => $this->faker->realText(),
+            'venue'              => $this->faker->city,
+            'city'               => $this->faker->city,
+            'country'            => $this->faker->country,
+        ];
+    }
+}

@@ -3,6 +3,8 @@
 namespace App\Events;
 
 use App\Models\Schedule;
+use App\Models\Service;
+use App\Models\User;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
@@ -11,10 +13,12 @@ class BookingRescheduleAcceptedByClient
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $schedule;
+    public $service;
+    public $user;
 
-    public function __construct(Schedule $schedule)
+    public function __construct(Service $service,User $user)
     {
-        $this->schedule = $schedule;
+        $this->service = $service;
+        $this->user = $user;
     }
 }

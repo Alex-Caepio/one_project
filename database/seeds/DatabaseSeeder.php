@@ -13,6 +13,7 @@ class DatabaseSeeder extends Seeder
     {
         // $this->call(UserSeeder::class);
         $this->call(CustomEmailSeeder::class);
+        $this->call(TimezoneSeeder::class);
         //factory(\App\Models\CustomEmail::class,50)->create();
     }
 }

@@ -54,7 +54,8 @@ return [
     */
 
     'url' => env('APP_URL', 'http://localhost'),
-
+    'frontend_url' => env('FRONTEND_URL', 'http://localhost'),
+    'frontend_reset_password_form_url' => env('FRONTEND_URL_RESET_PASSWORD_FORM', 'http://localhost'),
     'asset_url' => env('ASSET_URL', null),
 
     /*

@@ -11,19 +11,29 @@ use App\Models\FocusArea;
 
 class DisciplineTransformer extends Transformer
 {
-    protected $availableIncludes = ['services', 'articles', 'focus_areas', 'practitioners', 'discipline_videos', 'discipline_images'];
+    protected $availableIncludes = ['services', 'articles',
+        'focus_areas', 'practitioners', 'discipline_videos',
+        'discipline_images','featured_practitioners','featured_services'];
 
     public function transform(Discipline $discipline)
     {
         return [
             'id' => $discipline->id,
             'name' => $discipline->name,
+            'is_published' => (bool) $discipline->is_published,
             'url' => $discipline->url,
             'created_at' => $discipline->created_at,
             'updated_at' => $discipline->updated_at,
         ];
     }
-
+    public function includeFeaturedPractitioners(Discipline $discipline)
+    {
+        return $this->collectionOrNull($discipline->featured_practitioners, new UserTransformer());
+    }
+    public function includeFeaturedServices(Discipline $discipline)
+    {
+        return $this->collectionOrNull($discipline->featured_services, new ServiceTransformer());
+    }
     public function includeServices(Discipline $discipline)
     {
         return $this->collectionOrNull($discipline->services, new ServiceTransformer());

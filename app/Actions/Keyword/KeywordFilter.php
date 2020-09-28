@@ -16,7 +16,6 @@ class KeywordFilter
             $title = $request->get('title');
             $keyword->where('title', 'like', "%$title%");
         }
-        $keyword = $keyword->get();
-        return $keyword;
+        return $keyword->get();
     }
 }

@@ -20,7 +20,7 @@ class DisciplineTest extends TestCase
 
     public function test_can_get_all_discipline(): void
     {
-        factory(Discipline::class, 2)->create();
+        Discipline::factory()->count(2)->create();
         $response = $this->json('get', "/api/disciplines");
 
         $response
@@ -31,15 +31,15 @@ class DisciplineTest extends TestCase
 
     public function test_can_get_all_discipline_list(): void
     {
-        $description = factory(Discipline::class, 2)->create();
+        $description = Discipline::factory()->count(2)->create();
         $response = $this->json('get', "/api/disciplines/list");
         $response->assertOk($description);
     }
 
     public function test_can_get_all_discipline_filter(): void
     {
-        $filterOne = factory(Discipline::class)->create();
-        $filterTwo = factory(Discipline::class)->create();
+        $filterOne = Discipline::factory()->create();
+        $filterTwo = Discipline::factory()->create();
         $response = $this->json('get', "/api/disciplines/filter", [
             'title' => $filterTwo->title,
         ]);
@@ -50,7 +50,7 @@ class DisciplineTest extends TestCase
     }
     public function test_all_image_discipline(): void
     {
-        $discipline = factory(Discipline::class)->create();
+        $discipline = Discipline::factory()->create();
         $response = $this->json('get', "/api/disciplines/{$discipline->id}/images");
         $discipline->discipline_images;
         $response->assertOk();
@@ -58,7 +58,7 @@ class DisciplineTest extends TestCase
 
     public function test_all_video_discipline(): void
     {
-        $discipline = factory(Discipline::class)->create();
+        $discipline = Discipline::factory()->create();
         $response = $this->json('get', "/api/disciplines/{$discipline->id}/videos");
         $discipline->discipline_videos;
         $response->assertOk();

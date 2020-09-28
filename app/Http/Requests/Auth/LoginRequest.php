@@ -35,7 +35,7 @@ class LoginRequest extends FormRequest
     {
         $result = User::where('email', $this->get('email'))->first();
         $validator->after(function ($validator) use ($result) {
-            if (!$result or !Hash::check($this->get('password'), $result->password)) {
+            if (!$result || !Hash::check($this->get('password'), $result->password)) {
                 $validator->errors()->add('email', 'The Email and Password were not valid');
             }
         });

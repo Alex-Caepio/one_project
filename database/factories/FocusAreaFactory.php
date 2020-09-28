@@ -1,13 +1,21 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
+
 
 use App\Models\FocusArea;
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(FocusArea::class, function (Faker $faker) {
-    return [
-        'name'              => $faker->sentence(),
-        'url'                         => $faker->url,
-    ];
-});
+class FocusAreaFactory extends Factory
+{
+
+    protected $model = FocusArea::class;
+
+    public function definition()
+    {
+        return [
+            'name' => $this->faker->sentence(),
+            'url' => $this->faker->url,
+        ];
+    }
+}

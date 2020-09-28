@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Actions\Admin\CreateAdminFromRequest;
+use App\Actions\Admin\UpdateAdminFromRequest;
 use App\Actions\Stripe\CreateStripeUserByEmail;
 use App\Actions\User\CreateUserFromRequest;
 use App\Events\UserRegistered;
@@ -60,25 +61,9 @@ class AdminController extends Controller
             ->toArray();
     }
 
-    public function update(AdminUpdateRequest $request, User $client)
+    public function update(AdminUpdateRequest $request)
     {
-        $client->update($request->all());
-        return fractal($client, new UserTransformer())->respond();
-    }
-
-    public function updateProfile(AdminUpdateRequest $request, StripeClient $stripe)
-    {
-        $profile = Auth::user();
-        $customer = $stripe->customers->update(
-            $profile->stripe_id,
-            ['email' => $request->get('email'),]);
-        $profile->forceFill([
-            'first_name' => $request->get('first_name'),
-            'last_name' => $request->get('last_name'),
-            'email' => $request->get('email'),
-            'password' => Hash::make($request->get('password')),
-        ]);
-        $profile->update();
+       run_action(UpdateAdminFromRequest::class,$request);
     }
 
     public function destroy(User $client, AdminDestroyRequest $request)

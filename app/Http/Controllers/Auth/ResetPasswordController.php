@@ -2,20 +2,20 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Auth\ResetPasswordAsk;
-use App\Http\Requests\Auth\ResetPasswordClaim;
-use App\Http\Requests\Password\ResetRequest;
-use App\Mail\PasswordHasBeenChanged;
-use App\Mail\PasswordResetLink;
 use App\Models\User;
-use Carbon\Carbon;
+use App\Mail\PasswordResetLink;
+use App\Http\Controllers\Controller;
+use App\Mail\PasswordHasBeenChanged;
+use App\Http\Requests\Auth\ResetPasswordAsk;
+use App\Http\Requests\Password\ResetRequest;
+use App\Http\Requests\Auth\ResetPasswordClaim;
+
 use DB;
 use Hash;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Mail;
 
 class ResetPasswordController extends Controller
 {
@@ -28,9 +28,9 @@ class ResetPasswordController extends Controller
     {
         $email = strtolower($request->email);
 
-        $token = hash('md5', Str::random(60));
-        $passwordResetLink = URL::temporarySignedRoute(
-            'forgot-password-ask', now()->addHours(48), '?token=' . $token);
+        $token             = hash('md5', Str::random(60));
+        $frontendUrl       = config('app.frontend_reset_password_form_url');
+        $passwordResetLink = "{$frontendUrl}?token={$token}";
 
         DB::table('password_resets')
             ->where('email', $email)
@@ -38,8 +38,8 @@ class ResetPasswordController extends Controller
         DB::table('password_resets')
             ->insert(
                 [
-                    'email' => $email,
-                    'token' => $token,
+                    'email'      => $email,
+                    'token'      => $token,
                     'created_at' => Carbon::now(),
                 ]
             );
@@ -53,7 +53,8 @@ class ResetPasswordController extends Controller
     /**
      * Save new password.
      *
-     * @param Request $request
+     * @param ResetPasswordClaim $request
+     * @return \Illuminate\Http\Response
      */
     public function claimReset(ResetPasswordClaim $request)
     {
@@ -77,12 +78,13 @@ class ResetPasswordController extends Controller
 
     public function verifyToken(Request $request)
     {
-        $token = $request->token;
-        $validToken = DB::table('password_resets')->where('token', $token)->first();
+        $token        = $request->token;
+        $validToken   = DB::table('password_resets')->where('token', $token)->first();
         $createdToken = Carbon::parse($validToken->created_at)->addHours(48);
         if ($createdToken > Carbon::now()) {
             return response(null, 200);
-        } else
-            return response(null, 500);
+        }
+
+        return response(null, 422);
     }
 }

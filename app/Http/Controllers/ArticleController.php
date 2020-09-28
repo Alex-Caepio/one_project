@@ -24,8 +24,8 @@ class ArticleController extends Controller
     public function show(Article $article, Request $request)
     {
         return fractal($article, new ArticleTransformer())
-            ->parseIncludes($request->getIncludes())
-            ->respond();
+        ->parseIncludes($request->getIncludes())
+        ->respond();
     }
 
     public function store(ArticleRequest $request)
@@ -48,8 +48,8 @@ class ArticleController extends Controller
 
     public function destroy(Article $article)
     {
-        $article->delete();
 
+        $article->delete();
         return fractal($article, new ArticleTransformer())->respond();
     }
 

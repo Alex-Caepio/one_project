@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Actions\Admin\CreateAdminFromRequest;
 use App\Actions\Stripe\CreateStripeUserByEmail;
-use App\Events\ClientAccount;
+use App\Events\AccountDeleted;
+use App\Events\AccountTerminatedByAdmin;
+use App\Events\AccountUpgradedToPractitioner;
+use App\Events\BookingCancelledByClient;
 use App\Events\UserRegistered;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ClientDestroyRequest;
@@ -13,7 +16,6 @@ use App\Http\Requests\Admin\ClientUpdateRequest;
 use App\Http\Requests\AdminUpdateRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Request;
-use App\Listeners\AccountDeleted;
 use App\Mail\VerifyEmail;
 use App\Models\User;
 use App\Transformers\UserTransformer;
@@ -63,8 +65,10 @@ class ClientController extends Controller
     public function destroy(User $client, ClientDestroyRequest $request)
     {
         $client->delete();
-        //Event::fire(new AccountDeleted());
-        event(new ClientAccount($client));
+        event(new BookingCancelledByClient($client));
+       // event(new AccountUpgradedToPractitioner($client));
+       // event(new AccountTerminatedByAdmin($client));
+        //event(new AccountDeleted($client));
         return response(null, 204);
     }
 

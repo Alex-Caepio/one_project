@@ -1,13 +1,21 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
+
 
 use App\Models\Price;
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(Price::class, function (Faker $faker) {
-    return [
-        'amount' => $faker->randomDigitNotNull,
-        'schedule_id' => $faker->randomNumber(3),
-    ];
-});
+class PriceFactory extends Factory
+{
+
+    protected $model = Price::class;
+
+    public function definition()
+    {
+        return [
+            'amount' => $this->faker->randomDigitNotNull,
+            'schedule_id' => $this->faker->randomNumber(3),
+        ];
+    }
+}

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Actions\Promo\CalculatePromoPrice;
 use App\Actions\Schedule\ScheduleStore;
+use App\Events\BookingRescheduleAcceptedByClient;
 use App\Events\ServiceScheduleWentLive;
 use App\Http\Requests\PromotionCode\PurchaseRequest;
 use App\Http\Requests\Request;
@@ -69,13 +70,15 @@ class ScheduleController extends Controller
         return fractal($reschedule, new UserTransformer())->respond();
     }
 
-    public function purchase(Schedule $schedule, StripeClient $stripe, PurchaseRequest $request)
+    public function purchase(Schedule $schedule, StripeClient $stripe, Request $request)
     {
         $name = $request->get('promo_code');
         $scheduleCost = $schedule->cost;
+        $service = $schedule->service;
         $user = Auth::user();
         $promo = PromotionCode::where('name', $name)->first();
       $newSchedule = run_action(CalculatePromoPrice::class, $promo, $scheduleCost);
+      $user->getCommission();
 //                $userPromoCode = new UsedPromotionCode();
 //                $userPromoCode->forceFill(
 //                    [
@@ -85,7 +88,7 @@ class ScheduleController extends Controller
 //                    ]
 //                );
 //                $userPromoCode->save();
-//        if ($schedule->soldOut()){
+//        if ($schedule->isSoldOut()){
 //            $stripe->charges->create([
 //                'amount' => $newSchedule,
 //                'currency' => 'usd',

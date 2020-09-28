@@ -17,7 +17,7 @@ class ArticleTransformer extends Transformer
             'title'        => $article->title,
             'description'  => $article->description,
             'user_id'      => $article->user_id,
-            'is_published' => $article->is_published,
+            'is_published' => (bool) $article->is_published,
             'introduction' => $article->introduction,
             'url'          => $article->url,
             'created_at'   => $article->created_at,
@@ -33,7 +33,7 @@ class ArticleTransformer extends Transformer
     {
         return $this->collectionOrNull($article->disciplines, new DisciplineTransformer());
     }
-    public function includeFavoriteArticles(Article $article)
+    public function includeFavouriteArticles(Article $article)
     {
         return $this->collectionOrNull($article->favourite_articles, new ArticleTransformer());
     }

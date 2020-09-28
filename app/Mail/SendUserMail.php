@@ -3,7 +3,6 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
@@ -11,15 +10,16 @@ class SendUserMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $feedback;
+    public $message;
+
     /**
      * Create a new message instance.
      *
-     * @return void
+     * @param string $message
      */
-    public function __construct($feedback)
+    public function __construct(string $message)
     {
-        $this->feedback = $feedback;
+        $this->message = $message;
     }
 
     /**
@@ -27,7 +27,7 @@ class SendUserMail extends Mailable
      *
      * @return $this
      */
-    public function build()
+    public function build(): self
     {
         return $this->view('mails.send_user');
     }

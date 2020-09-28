@@ -20,11 +20,19 @@ class ScheduleTest extends TestCase
         $this->user = $this->createUser();
         $this->login($this->user);
     }
+    public function test_all_schedule(): void
+    {
+        Schedule::factory()->count(2)->create();
+        $service = Service::factory()->create();
+        $response = $this->json('get', "/api/services/{$service->id}/schedule");
 
+        $response
+            ->assertOk();
+    }
     public function test_store_schedule(): void
     {
-        $service = factory(Service::class)->create();
-        $schedule = factory(Schedule::class)->create();
+        $service = Service::factory()->create();
+        $schedule = Schedule::factory()->create();
         $response = $this->json('post', "api/services/{$service->id}/schedule", [
             'title' => $schedule->title,
             'service_id' => $service->id,
@@ -37,9 +45,9 @@ class ScheduleTest extends TestCase
 
     public function test_all_user()
     {
-        $schedule = factory(Schedule::class)->create();
-        $user = factory(User::class)->create();
-        $promotion_code = factory(PromotionCode::class)->create();
+        $schedule = Schedule::factory()->create();
+        $user = User::factory()->create();
+        $promotion_code = PromotionCode::factory()->create();
         $response = $this->json('get', "api/schedule/{$schedule->id}/attendants", [
             'user_id' => $user->id,
             'schedule_id' => $schedule->id,
@@ -51,9 +59,15 @@ class ScheduleTest extends TestCase
 
     public function test_purchase()
     {
-        $schedule = factory(Schedule::class)->create();
-        $user = factory(User::class)->create();
+        $schedule = Schedule::factory()->create();
+        $user = User::factory()->create();
         $response = $this->json('post', "api/schedules/{$schedule->id}/purchase");
         $schedule->users()->attach($user->id);
+    }
+    public function test_promo_code()
+    {
+        $schedule = Schedule::factory()->create();
+        $response = $this->json('post', "api/schedule/{$schedule->id}/promoсode");
+        $response->assertOk();
     }
 }

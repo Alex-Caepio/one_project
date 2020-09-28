@@ -27,24 +27,33 @@ class DisciplineTest extends TestCase
 
     public function test_all_discipline(): void
     {
-        factory(Discipline::class, 2)->create();
+        Discipline::factory()->count(2)->create();
         $response = $this->json('get', "/admin/discipline");
 
         $response
             ->assertOk()->assertJsonStructure([
-                ['id', 'title'],
+                ['id', 'name','url'],
             ]);
+    }
+    public function test_show_discipline(): void
+    {
+        $discipline=Discipline::factory()->create();
+        $response = $this->json('get', "/admin/discipline/{$discipline->id}");
+
+        $response
+            ->assertOk();
     }
 
     public function test_store_discipline(): void
     {
-        $discipline = factory(Discipline::class)->create();
-        $user = factory(User::class)->create();
-        $service = factory(Service::class)->create();
-        $article = factory(Article::class)->create();
-        $focus_area = factory(FocusArea::class)->create();
+        $discipline = Discipline::factory()->create();
+        $user = User::factory()->create();
+        $service = Service::factory()->create();
+        $article = Article::factory()->create();
+        $focus_area = FocusArea::factory()->create();
         $response = $this->json('post', '/admin/discipline', [
-            'title' => $discipline->title,
+            'name' => $discipline->name,
+            'url' => $discipline->url,
         ]);
         $discipline->practitioners()->attach($user);
         $discipline->services()->attach($service);
@@ -55,23 +64,21 @@ class DisciplineTest extends TestCase
 
     public function test_update_discipline(): void
     {
-        $discipline = factory(Discipline::class)->create();
-        $newDiscipline = factory(Discipline::class)->make();
+        $discipline = Discipline::factory()->create();
+        $newDiscipline = Discipline::factory()->make();
 
         $response = $this->json('put', "admin/discipline/{$discipline->id}",
             [
-                'title' => $newDiscipline->title,
+                'name' => $newDiscipline->name,
+                'url' => $newDiscipline->url,
             ]);
 
-        $response->assertOk()
-            ->assertJson([
-                'title' => $newDiscipline->title,
-            ]);
+        $response->assertOk();
     }
 
     public function test_delete_discipline(): void
     {
-        $discipline = factory(Discipline::class)->create();
+        $discipline = Discipline::factory()->create();
         $response = $this->json('delete', "/admin/discipline/{$discipline->id}");
 
         $response->assertStatus(204);
@@ -79,8 +86,8 @@ class DisciplineTest extends TestCase
 
     public function test_store_video_discipline(): void
     {
-        $discipline = factory(Discipline::class)->create();
-        $disciplineVideo = factory(DisciplineVideo::class)->create();
+        $discipline = Discipline::factory()->create();
+        $disciplineVideo = DisciplineVideo::factory()->create();
         $response = $this->json('post', "/admin/discipline/{$discipline->id}/videos", [
             'discipline_id' => $discipline->id,
             'link' => $disciplineVideo->link,
@@ -88,9 +95,10 @@ class DisciplineTest extends TestCase
 
         $response->assertOk();
     }
+
     public function test_store_image_discipline(): void
     {
-        $discipline = factory(Discipline::class)->create();
+        $discipline = Discipline::factory()->create();
         Storage::fake('public');
         $response = $this->json('post', "/admin/discipline/{$discipline->id}/images", [
             'image' => $file = UploadedFile::fake()->image('image.jpg'),

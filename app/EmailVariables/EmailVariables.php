@@ -23,10 +23,10 @@ class EmailVariables
 
     }
 
-    function replace($body)
+    public function replace($body)
     {
         $openBracket = strpos($body, '{{');
-       // $openBracketSubject = strpos($subject, '{{');
+        // $openBracketSubject = strpos($subject, '{{');
         if (!$openBracket) {
             return $body;
         }
@@ -72,21 +72,24 @@ class EmailVariables
             'user' => $this->event->user->id,
             'email' => $this->event->user->email
         ]);
-        $linkFrontend = config('app.frontend_password_reset_link') . '?' . explode('?', $linkApi)[1];
-        return $linkFrontend;
+        return config('app.frontend_password_reset_link') . '?' . explode('?', $linkApi)[1];
     }
+
     public function getArticle_url()
     {
         return $this->event->article->url;
     }
+
     public function getArticle_name()
     {
         return $this->event->article->title;
     }
+
     public function getSubscription_tier_name()
     {
         return 'dsfsd';
     }
+
     public function getPlatform_email()
     {
         return 'asfsdfs';
@@ -111,29 +114,35 @@ class EmailVariables
     {
         return $this->event->schedule->title;
     }
+
     public function getSchedule_start_date()
     {
         return Carbon::parse($this->event->schedule->start_date)->toDateString();
     }
+
     public function getSchedule_start_time()
     {
         return Carbon::parse($this->event->schedule->start_date)->toTimeString();
     }
+
     public function getSchedule_end_date()
     {
         return Carbon::parse($this->event->schedule->end_date)->toDateString();
     }
+
     public function getSchedule_end_time()
     {
         return Carbon::parse($this->event->schedule->end_date)->toTimeString();
     }
+
     public function getSchedule_hosting_url()
     {
         return "dsfsdafa";
     }
-    public function getSchedule_country()
+
+    public function getAdmin_termination_message()
     {
-        return $this->event->user->email;
+        return 'Administrator attribution notification';
     }
 
     public function getSchedule_city()

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\AccountDeleted;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\PractitionerDestroyRequest;
 use App\Http\Requests\Admin\PractitionerShowRequest;
@@ -134,7 +135,7 @@ class PractitionerController extends Controller
     public function destroy(User $practitioner, PractitionerDestroyRequest $request)
     {
         $practitioner->delete();
-
+        event(new AccountDeleted($practitioner));
         return response(null, 204);
     }
 }

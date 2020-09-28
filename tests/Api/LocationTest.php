@@ -20,7 +20,7 @@ class LocationTest extends TestCase
 
     public function test_can_get_all_location(): void
     {
-        factory(Location::class, 2)->create();
+        Location::factory()->count(2)->create();
         $response = $this->json('get', "/api/locations");
 
         $response
@@ -30,15 +30,15 @@ class LocationTest extends TestCase
     }
     public function test_can_get_all_location_list(): void
     {
-        $location= factory(Location::class, 2)->create();
+        $location= Location::factory()->count(2)->create();
         $response = $this->json('get', "/api/locations/list");
         $response->assertOk($location);
     }
 
     public function test_can_get_all_location_filter(): void
     {
-        $filterOne = factory(Location::class)->create();
-        $filterTwo = factory(Location::class)->create();
+        $filterOne = Location::factory()->create();
+        $filterTwo = Location::factory()->create();
         $response = $this->json('get', "/api/locations/filter", [
             'title' => $filterTwo->title,
         ]);

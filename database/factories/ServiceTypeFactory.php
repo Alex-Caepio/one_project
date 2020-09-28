@@ -1,12 +1,20 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
+
 
 use App\Models\ServiceType;
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(ServiceType::class, function (Faker $faker) {
-    return [
-        'name'                       => $faker->sentence(),
-    ];
-});
+class ServiceTypeFactory extends Factory
+{
+
+    protected $model = ServiceType::class;
+
+    public function definition()
+    {
+        return [
+            'name' => $this->faker->sentence(),
+        ];
+    }
+}

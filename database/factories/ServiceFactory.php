@@ -1,29 +1,26 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
-
-use Faker\Generator as Faker;
-
-/*
-|--------------------------------------------------------------------------
-| Model Factories
-|--------------------------------------------------------------------------
-|
-| This directory should contain each of the model factory definitions for
-| your application. Factories provide a convenient way to generate new
-| model instances for testing / seeding your application's database.
-|
-*/
+namespace Database\Factories;
 
 
-$factory->define(\App\Models\Service::class, function (Faker $faker) {
-    return [
-        'title'                       => $faker->sentence(),
-        'keyword_id'                     => $faker->randomDigit,
-        'user_id'                     => $faker->randomDigit,
-        'description'                 => $faker->text(255),
-        'is_published'                => $faker->boolean,
-        'introduction'                => $faker->text,
-        'url'                         => $faker->url,
-    ];
-});
+use App\Models\Service;
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+class ServiceFactory extends Factory
+{
+
+    protected $model = Service::class;
+
+    public function definition()
+    {
+        return [
+            'title'                       => $this->faker->sentence(),
+            'keyword_id'                     => $this->faker->randomDigit,
+            'user_id'                     => $this->faker->randomDigit,
+            'description'                 => $this->faker->text(255),
+            'is_published'                => $this->faker->boolean,
+            'introduction'                => $this->faker->text,
+            'url'                         => $this->faker->url,
+        ];
+    }
+}

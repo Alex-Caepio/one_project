@@ -35,13 +35,13 @@ class TestDataSeeder extends Seeder
     private function createUser(): User
     {
 //        Bearer 1|PaRXix95obA9fYRs2ir5RDTmfqFdW9lCsQ7ASqkcaZIByyqdXdSJSrFJaiTBWYEu4ORZKHeKK03UQkln
-        $user = factory(User::class)->create(['email' => 'testmail@mail.com']);
+        $user = User::factory()->create(['email' => 'testmail@mail.com']);
         DB::table('personal_access_tokens')->insert([
             'tokenable_type' => User::class,
-            'tokenable_id'   => $user->id,
-            'name'           => 'access-token',
-            'token'          => '39ca2fe1f605a9f258cf9088c86a61e2f5078532b7ce900f2d703a7e2981c9ff',
-            'abilities'      => '["*"]',
+            'tokenable_id' => $user->id,
+            'name' => 'access-token',
+            'token' => '39ca2fe1f605a9f258cf9088c86a61e2f5078532b7ce900f2d703a7e2981c9ff',
+            'abilities' => '["*"]',
         ]);
 
         return $user;
@@ -49,24 +49,24 @@ class TestDataSeeder extends Seeder
 
     private function createServices(User $user, int $amount): Collection
     {
-        return factory(Service::class, $amount)->create(['user_id' => $user->id]);
+        return Service::factory($amount)->create(['user_id' => $user->id]);
     }
 
     private function createArticles(User $user, int $amount): Collection
     {
-        return factory(Article::class, $amount)->create([
+        return Article::factory($amount)->create([
             'user_id' => $user->id,
         ]);
     }
 
     private function createLocations(int $amount): Collection
     {
-        return factory(Location::class, $amount)->create();
+        return Location::factory($amount)->create();
     }
 
     private function createKeywords(): Collection
     {
-        return factory(Keyword::class, 4)->create();
+        return Keyword::factory(4)->create();
     }
 
     private function createDisciplines(): Collection
@@ -87,7 +87,7 @@ class TestDataSeeder extends Seeder
         ];
 
         foreach ($disciplines as $discipline) {
-            factory(Discipline::class)->create(['title' => $discipline]);
+            Discipline::factory()->create(['title' => $discipline]);
         }
 
         return Discipline::all();
@@ -108,8 +108,8 @@ class TestDataSeeder extends Seeder
     private function createSchedules(Collection $services, Collection $locations): Collection
     {
         foreach ($services as $key => $service) {
-            factory(Schedule::class)->create([
-                'service_id'  => $service->id,
+            Schedule::factory()->create([
+                'service_id' => $service->id,
                 'location_id' => $locations->random(),
             ]);
         }
@@ -120,7 +120,7 @@ class TestDataSeeder extends Seeder
     private function createPrices($schedules): Collection
     {
         foreach ($schedules as $schedule) {
-            factory(Price::class)->create([
+            Price::factory()->create([
                 'schedule_id' => $schedule->id,
             ]);
         }

@@ -3,6 +3,16 @@
   $ref: "./Auth.yaml#/auth~1register"
 /api/auth:
   $ref: "./Auth.yaml#/auth"
+/api/auth/login:
+  $ref: "./Auth.yaml#/auth~1login"
+/api/auth/profile/publish:
+  $ref: "./Auth.yaml#/auth~1profile~1publish"
+/api/auth/forgot-password-ask:
+  $ref: "./Auth.yaml#/auth~1forgot-password-ask"
+/api/auth/forgot-password-claim:
+  $ref: "./Auth.yaml#/auth~1forgot-password-claim"
+/api/auth/verify-forgot-password-token:
+  $ref: "./Auth.yaml#/auth~1verify-forgot-password-token"
 
 #articels
 /articles:

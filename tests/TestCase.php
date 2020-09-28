@@ -20,7 +20,7 @@ abstract class TestCase extends BaseTestCase
             $attributes
         );
 
-        return factory(User::class)->create($attributes);
+        return  User::factory()->create($attributes);
     }
 
     public function createAdmin(array $attributes = [])
@@ -33,7 +33,7 @@ abstract class TestCase extends BaseTestCase
             $attributes
         );
 
-        return factory(User::class)->create($attributes);
+        return User::factory()->create($attributes);
     }
 
     public function login($user)

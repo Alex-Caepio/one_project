@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Service;
 use Illuminate\Database\Seeder;
 
 class ServicesTableSeeder extends Seeder
@@ -11,6 +12,8 @@ class ServicesTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(\App\Models\Service::class,50)->create();
+        Service::factory()
+            ->times(50)
+            ->create();
     }
 }

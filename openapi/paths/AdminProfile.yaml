@@ -16,6 +16,12 @@ profile:
     summary: Update profile for currently logged in admin
     tags:
       - Profile
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/forms/AdminUpdate.yaml'
     responses:
       '200':
         description: OK

@@ -4,16 +4,18 @@ namespace App\Http\Controllers\Auth;
 
 use App\Actions\Stripe\CreateStripeUserByEmail;
 use App\Actions\User\CreateUserFromRequest;
+use App\Events\PasswordChanged;
 use App\Events\UserRegistered;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\Auth\PublishRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\User;
 use App\Transformers\UserTransformer;
 use DB;
-use Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
 
@@ -45,11 +47,11 @@ class AuthController extends Controller
             ->respond();
     }
 
-    protected function invalidate()
+    public function publish(PublishRequest $request)
     {
-        throw ValidationException::withMessages([
-            'email' => ['The provided credentials are incorrect']
-        ]);
+        $user = $request->user();
+        $user->is_published = true;
+        $user->save();
     }
 
     public function profile(Request $request)
@@ -62,6 +64,9 @@ class AuthController extends Controller
     {
         Auth::user()->update($request->all());
         $user = Auth::user();
+        if (Hash::make($request->get('password'))) {
+            event(new PasswordChanged($user));
+        }
         return fractal($user, new UserTransformer())->respond();
     }
 
@@ -98,6 +103,13 @@ class AuthController extends Controller
     {
         $this->sendVerificationEmail($request->user());
         response(null, 200);
+    }
+
+    protected function invalidate()
+    {
+        throw ValidationException::withMessages([
+            'email' => ['The provided credentials are incorrect']
+        ]);
     }
 
 }

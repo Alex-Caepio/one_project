@@ -21,7 +21,7 @@ class ServiceTest extends TestCase
 
     public function test_user_can_see_services_list(): void
     {
-        factory(Service::class, 2)->create();
+        Service::factory()->count(2)->create();
         $response = $this->json('get', "/api/services");
         $response
             ->assertOk()
@@ -32,7 +32,7 @@ class ServiceTest extends TestCase
 
     public function test_practitioner_can_create_service(): void
     {
-        $service = factory(Service::class)->make();
+        $service = Service::factory()->make();
 
         $response = $this->json('post', '/api/services', [
             'description'  => $service->description,
@@ -44,18 +44,36 @@ class ServiceTest extends TestCase
         ]);
         $response->assertOk();
     }
+    public function test_user_update_service(): void
+    {
+        $service = Service::factory()->create();
+        $newService = Service::factory()->make();
+        $payload = [
+            'title' => $newService->title,
+            'keyword_id' => $newService->keyword_id,
+            'user_id' => $newService->user_id,
+            'description' => $newService->description,
+            'is_published' => $newService->is_published,
+            'introduction' => $newService->introduction,
+            'url' => $newService->url,
+        ];
+        $response = $this->json('put', "/api/services/{$service->id}",$payload);
+
+        $response->assertOk()
+            ->assertJson($payload);
+    }
 
     public function test_practitioner_can_delete_service(): void
     {
-        $service = factory(Service::class)->create();
+        $service = Service::factory()->create();
         $response = $this->json('delete', "/api/services/{$service->id}");
 
         $response->assertStatus(204);
     }
     public function test_store_service_favorite(): void
     {
-        $authUser = factory(User::class)->create();
-        $serviceId = factory(Service::class)->create();
+        $authUser = User::factory()->create();
+        $serviceId = Service::factory()->create();
         $response = $this->json('post', "services/{$serviceId->id}/favourite");
         $authUser->favourite_services()->attach($serviceId);
 
@@ -67,8 +85,8 @@ class ServiceTest extends TestCase
 
     public function test_practitioner_can_update_service(): void
     {
-        $service = factory(Service::class)->create();
-        $newService = factory(Service::class)->make();
+        $service = Service::factory()->create();
+        $newService = Service::factory()->make();
 
         $response = $this->json('put', "/api/services/{$service->id}",
             [

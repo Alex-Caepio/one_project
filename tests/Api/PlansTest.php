@@ -54,7 +54,7 @@ class PlansTest extends TestCase
     {
         $this->mockStripeStore();
         $plan = Plan::forceCreate(['price' => 1]);
-        $planDB = factory(Plan::class)->create();
+        $planDB = Plan::factory()->create();
         $response = $this->json('post', "/api/plans",[
             'name'  => $planDB->name,
         ]);

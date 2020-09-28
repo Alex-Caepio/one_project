@@ -32,6 +32,7 @@ class CreateDisciplinesTable extends Migration
             $table->id();
             $table->enum('name', $disciplines);
             $table->string('url')->nullable();
+            $table->boolean('is_published')->nullable();
             $table->timestamps();
         });
 //        DB::statement('CREATE FULLTEXT INDEX disciplines_title_index

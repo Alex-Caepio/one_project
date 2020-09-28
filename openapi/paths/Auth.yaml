@@ -1,8 +1,71 @@
 auth/register:
   post:
+    operationId: register
+    tags:
+      - Auth
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/forms/UserLogin.yaml'
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/UserLogin.yaml'
+      '422':
+        description: Validation errors
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/422/UserRegister.yaml'
+auth:
+  get:
+    operationId: get-current-user-info
     tags:
       - Auth
     responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/UserLogin.yaml'
+
+auth/login:
+  post:
+    operationId: login
+    tags:
+      - Auth
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/forms/UserLogin.yaml'
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/UserLogin.yaml'
+
+auth/profile/publish:
+  post:
+    operationId: client-publish-profile
+    tags:
+      - Auth
+    responses:
+      '422':
+        description: Validation errors
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/422/AuthProfilePublish.yaml'
       '200':
         description: OK
         content:
@@ -10,14 +73,49 @@ auth/register:
             schema:
               $ref: '../schemas/User.yaml'
 
-auth:
-  get:
+auth/forgot-password-ask:
+  post:
+    operationId: ask-for-password-reset
     tags:
       - Auth
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/forms/ForgotPasswordAsk.yaml'
     responses:
       '200':
         description: OK
-        content:
-          application/json:
-            schema:
-              $ref: '../schemas/User.yaml'
+
+auth/forgot-password-claim:
+  post:
+    operationId: clain-password-reset
+    tags:
+      - Auth
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/forms/ForgotPasswordClaim.yaml'
+    responses:
+      '200':
+        description: OK
+
+auth/verify-forgot-password-token:
+  post:
+    operationId: verify-forgot-password-token
+    tags:
+      - Auth
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/forms/VerifyForgotPasswordToken.yaml'
+    responses:
+      '200':
+        description: OK
+      '422':
+        description: Token has expired

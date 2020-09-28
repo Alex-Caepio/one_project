@@ -20,7 +20,7 @@ class ServiceTypeTest extends TestCase
 
     public function test_can_see_service_type(): void
     {
-        factory(ServiceType::class, 2)->create();
+        ServiceType::factory()->count(2)->create();
         $response = $this->json('get', "/api/service_types");
         $response
             ->assertOk()
@@ -31,7 +31,7 @@ class ServiceTypeTest extends TestCase
 
     public function test_can_create_service_type(): void
     {
-        $serviceType = factory(ServiceType::class)->make();
+        $serviceType = ServiceType::factory()->make();
 
         $response = $this->json('post', '/api/service_types', [
             'name'  => $serviceType->name,
@@ -41,7 +41,7 @@ class ServiceTypeTest extends TestCase
     }
     public function test_can_get_all_service_type_list(): void
     {
-        $serviceType= factory(ServiceType::class, 2)->create();
+        $serviceType= ServiceType::factory()->count(2)->create();
         $response = $this->json('get', "/api/service_types/list");
         $response->assertOk($serviceType);
     }

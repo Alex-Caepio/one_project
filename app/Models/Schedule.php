@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\Auth;
 
 class Schedule extends Model
 {
+    use HasFactory;
     protected $fillable = [
         'title',
         'location_id',
@@ -34,7 +36,7 @@ class Schedule extends Model
         return $this->belongsToMany(User::class);
     }
 
-    public function soldOut()
+    public function isSoldOut()
     {
         $time = Carbon::now()->subMinutes(15);
         $purchased = ScheduleUser::where('schedule_id', $this->id)->count();

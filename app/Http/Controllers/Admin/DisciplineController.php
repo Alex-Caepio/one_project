@@ -2,15 +2,18 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Actions\Discipline\DisciplineStore;
+use App\Actions\Discipline\DisciplineUpdate;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\DisciplinePublishRequest;
+use App\Http\Requests\Request;
 use App\Models\Discipline;
 use App\Models\DisciplineImage;
 use App\Models\DisciplineVideo;
-use App\Models\User;
 use App\Transformers\DisciplineTransformer;
-use App\Http\Requests\Request;
 
-class DisciplineController extends Controller
+class
+DisciplineController extends Controller
 {
 
     public function index(Request $request)
@@ -22,14 +25,7 @@ class DisciplineController extends Controller
 
     public function store(Request $request)
     {
-        //$user = User::where('account_type', 'practitioner')->get();
-        $data = $request->all();
-        $discipline = Discipline::create($data);
-        $discipline->practitioners()->attach($request->get('users'));
-        $discipline->services()->attach($request->get('services'));
-        $discipline->articles()->attach($request->get('articles'));
-        $discipline->focus_areas()->attach($request->get('focus_areas'));
-        return fractal($discipline, new DisciplineTransformer())->respond();
+        run_action(DisciplineStore::class, $request);
     }
 
     public function storeImage(Request $request, Discipline $discipline)
@@ -44,6 +40,7 @@ class DisciplineController extends Controller
         ]);
         $imageDiscipline->save();
     }
+
     public function storeVideo(Request $request, Discipline $discipline)
     {
         $videoDiscipline = new DisciplineVideo();
@@ -54,7 +51,7 @@ class DisciplineController extends Controller
         $videoDiscipline->save();
     }
 
-    public function show(Discipline $discipline,Request $request)
+    public function show(Discipline $discipline, Request $request)
     {
         return fractal($discipline, new DisciplineTransformer())->parseIncludes($request->getIncludes())
             ->toArray();
@@ -62,9 +59,7 @@ class DisciplineController extends Controller
 
     public function update(Request $request, Discipline $discipline)
     {
-        $discipline->update($request->all());
-
-        return fractal($discipline, new DisciplineTransformer())->respond();
+        run_action(DisciplineUpdate::class, $request, $discipline);
     }
 
     public function destroy(Discipline $discipline)
@@ -72,6 +67,21 @@ class DisciplineController extends Controller
         $discipline->delete();
 
         return response(null, 204);
+    }
+
+    public function unpublished(Discipline $discipline)
+    {
+        $discipline->forceFill([
+            'is_published' => false,
+        ]);
+        $discipline->update();
+    }
+    public function publish(Discipline $discipline,DisciplinePublishRequest $request)
+    {
+        $discipline->forceFill([
+            'is_published' => true,
+        ]);
+        $discipline->update();
     }
 
 }

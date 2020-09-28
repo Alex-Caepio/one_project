@@ -207,9 +207,6 @@ components:
         id:
           type: integer
           example: 6
-        name:
-          type: string
-          nullable: true
         about_me:
           type: string
           nullable: true
@@ -218,7 +215,7 @@ components:
           nullable: true
         account_type:
           type: string
-          nullable: true
+          example: practitioner
         business_address:
           type: string
           nullable: true
@@ -241,23 +238,24 @@ components:
           type: string
           example: mmorissette@example.net
         email_forward_clients:
-          type: string
-          nullable: true
+          type: boolean
+          example: true
         email_forward_practitioners:
-          type: string
-          nullable: true
+          type: boolean
+          example: true
         email_forward_support:
-          type: string
-          nullable: true
+          type: boolean
+          example: true
         email_verified_at:
           type: string
+          format: date-time
           nullable: true
         emails_holistify_update:
-          type: string
-          nullable: true
+          type: boolean
+          example: true
         emails_practitioner_offers:
-          type: string
-          nullable: true
+          type: boolean
+          example: true
         first_name:
           type: string
           example: John
@@ -265,36 +263,182 @@ components:
           type: string
           example: Doe
         is_published:
-          type: string
-          nullable: true
+          type: boolean
+          example: true
         mobile_number:
-          type: string
-          nullable: true
-        promotion_codes:
           type: string
           nullable: true
         public_link:
           type: string
           nullable: true
+          example: example.com/users/johndoe
         stripe_id:
           type: string
           example: cus_HpyQPawZU9Nw16
-        access_token:
-          $ref: "#/components/schemas/AccessToken"
+        timezone_id:
+          type: integer
+          example: 98
 paths:
   /api/auth/register:
     post:
+      operationId: register
       tags:
         - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  example: mmorissette@example.net
+                password:
+                  type: string
+                  example: qwerty
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/User"
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 6
+                  about_me:
+                    type: string
+                    nullable: true
+                  about_my_business:
+                    type: string
+                    nullable: true
+                  account_type:
+                    type: string
+                    example: practitioner
+                  business_address:
+                    type: string
+                    nullable: true
+                  business_email:
+                    type: string
+                    nullable: true
+                  business_introduction:
+                    type: string
+                    nullable: true
+                  business_name:
+                    type: string
+                    nullable: true
+                  business_phone_number:
+                    type: string
+                    nullable: true
+                  date_of_birth:
+                    type: string
+                    nullable: true
+                  email:
+                    type: string
+                    example: mmorissette@example.net
+                  email_forward_clients:
+                    type: boolean
+                    example: true
+                  email_forward_practitioners:
+                    type: boolean
+                    example: true
+                  email_forward_support:
+                    type: boolean
+                    example: true
+                  email_verified_at:
+                    type: string
+                    format: date-time
+                    nullable: true
+                  emails_holistify_update:
+                    type: boolean
+                    example: true
+                  emails_practitioner_offers:
+                    type: boolean
+                    example: true
+                  first_name:
+                    type: string
+                    example: John
+                  last_name:
+                    type: string
+                    example: Doe
+                  is_published:
+                    type: boolean
+                    example: true
+                  mobile_number:
+                    type: string
+                    nullable: true
+                  public_link:
+                    type: string
+                    nullable: true
+                    example: example.com/users/johndoe
+                  stripe_id:
+                    type: string
+                    example: cus_HpyQPawZU9Nw16
+                  timezone_id:
+                    type: integer
+                    example: 98
+                  access_token:
+                    $ref: "#/components/schemas/AccessToken"
+        "422":
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: The given data was invalid.
+                  errors:
+                    type: object
+                    example:
+                      password:
+                        - The password format is invalid.
+                      first_name:
+                        - The first name may not be greater than 30 characters.
+                      last_name:
+                        - The last name may not be greater than 30 characters.
   /api/auth:
     get:
+      operationId: get-current-user-info
+      tags:
+        - Auth
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1api~1auth~1register/post/responses/200/content/application~1js\
+                  on/schema"
+  /api/auth/login:
+    post:
+      operationId: login
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/paths/~1api~1auth~1register/post/requestBody/content/application~1json\
+                /schema"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1api~1auth~1register/post/responses/200/content/application~1js\
+                  on/schema"
+  /api/auth/profile/publish:
+    post:
+      operationId: client-publish-profile
       tags:
         - Auth
       responses:
@@ -304,6 +448,98 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/User"
+        "422":
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: The given data was invalid.
+                  errors:
+                    type: object
+                    example:
+                      business_name:
+                        - You have not filled in the field "Business name"
+                      business_address:
+                        - You have not filled in the field "Business address"
+                      business_email:
+                        - You have not filled in the field "Business email"
+                      business_introduction:
+                        - You have not filled in the field "Business
+                          introduction"
+  /api/auth/forgot-password-ask:
+    post:
+      operationId: ask-for-password-reset
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  example: mmorissette@example.net
+      responses:
+        "200":
+          description: OK
+  /api/auth/forgot-password-claim:
+    post:
+      operationId: clain-password-reset
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - token
+                - password
+              properties:
+                email:
+                  type: string
+                  example: mmorissette@example.net
+                token:
+                  type: string
+                  example: qd723bxqwp0qam2ey37cvbwasu
+                password:
+                  type: string
+                  example: Qwer1234!
+      responses:
+        "200":
+          description: OK
+  /api/auth/verify-forgot-password-token:
+    post:
+      operationId: verify-forgot-password-token
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - token
+              properties:
+                token:
+                  type: string
+                  example: qd723bxqwp0qam2ey37cvbwasu
+      responses:
+        "200":
+          description: OK
+        "422":
+          description: Token has expired
   /articles:
     post:
       tags:
@@ -466,7 +702,8 @@ paths:
           description: OK
           content:
             application/json:
-              ? schema
+              schema:
+                $ref: "#/components/schemas/Plan"
   /admin/profile:
     get:
       operationId: get-profile
@@ -485,6 +722,28 @@ paths:
       summary: Update profile for currently logged in admin
       tags:
         - Profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: mmorissette@example.net
+                first_name:
+                  type: string
+                  example: John
+                last_name:
+                  type: string
+                  example: Doe
+                current_password:
+                  type: string
+                  example: qwerty
+                password:
+                  type: string
+                  example: qwerty1
       responses:
         "200":
           description: OK

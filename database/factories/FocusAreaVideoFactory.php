@@ -1,13 +1,21 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
+
 
 use App\Models\FocusAreaVideo;
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(FocusAreaVideo::class, function (Faker $faker) {
-    return [
-        'focus_area_id'         => $faker->randomNumber(3),
-        'link'                         => $faker->url,
-    ];
-});
+class FocusAreaVideoFactory extends Factory
+{
+
+    protected $model = FocusAreaVideo::class;
+
+    public function definition()
+    {
+        return [
+            'focus_area_id' => $this->faker->randomNumber(3),
+            'link' => $this->faker->url,
+        ];
+    }
+}

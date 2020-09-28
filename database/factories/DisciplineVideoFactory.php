@@ -1,13 +1,22 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+
+namespace Database\Factories;
+
 
 use App\Models\DisciplineVideo;
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(DisciplineVideo::class, function (Faker $faker) {
-    return [
-    'discipline_id'         => $faker->randomNumber(3),
-     'link'                         => $faker->url,
-    ];
-});
+class DisciplineVideoFactory extends Factory
+{
+
+    protected $model = DisciplineVideo::class;
+
+    public function definition()
+    {
+        return [
+            'discipline_id' => $this->faker->randomNumber(3),
+            'link' => $this->faker->url,
+        ];
+    }
+}

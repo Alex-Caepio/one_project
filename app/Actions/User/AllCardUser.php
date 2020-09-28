@@ -13,10 +13,9 @@ class AllCardUser
     {
         $stripe_id = Auth::user()->stripe_id;
         $stripe = app(StripeClient::class);
-        $allCards = $stripe->customers->allSources(
+        return $stripe->customers->allSources(
             $stripe_id,
             ['object' => 'card', 'limit' => 99]
         );
-        return $allCards;
     }
 }

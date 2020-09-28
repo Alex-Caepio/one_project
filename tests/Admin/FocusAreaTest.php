@@ -26,7 +26,7 @@ class FocusAreaTest extends TestCase
 
     public function test_can_get_all_focus_area(): void
     {
-        factory(FocusArea::class, 2)->create();
+        FocusArea::factory()->count(2)->create();
         $response = $this->json('get', "/admin/focus-area");
 
         $response
@@ -37,10 +37,10 @@ class FocusAreaTest extends TestCase
 
     public function test_store_focus_area(): void
     {
-        $user = factory(User::class)->create();
-        $service = factory(Service::class)->create();
-        $article = factory(Article::class)->create();
-        $focusArea = factory(FocusArea::class)->create();
+        $user =User::factory()->create();
+        $service = Service::factory()->create();
+        $article = Article::factory()->create();
+        $focusArea = FocusArea::factory()->create();
         $response = $this->json('post', '/admin/focus-area', [
             'name' => $focusArea->name,
             'url' => $focusArea->url,
@@ -53,15 +53,15 @@ class FocusAreaTest extends TestCase
 
     public function test_delete_focus_area(): void
     {
-        $focusArea = factory(FocusArea::class)->create();
+        $focusArea = FocusArea::factory()->create();
         $response = $this->json('delete', "admin/focus-area/$focusArea->id/destroy");
         $response->assertStatus(204);
     }
 
     public function test_update_focus_area(): void
     {
-        $focusArea = factory(FocusArea::class)->create();
-        $newFocusArea = factory(FocusArea::class)->make();
+        $focusArea = FocusArea::factory()->create();
+        $newFocusArea = FocusArea::factory()->make();
 
         $response = $this->json('put', "admin/focus-area/{$focusArea->id}/update",
             [
@@ -77,10 +77,10 @@ class FocusAreaTest extends TestCase
     }
     public function test_store_video_focus_area(): void
     {
-        $focus = factory(FocusArea::class)->create();
-        $focusVideo = factory(FocusAreaVideo::class)->create();
+        $focus = FocusArea::factory()->create();
+        $focusVideo = FocusAreaVideo::factory()->create();
         $response = $this->json('post', "/admin/focus-area/{$focus->id}/videos", [
-            'discipline_id' => $focus->id,
+            'focus_area_id' => $focus->id,
             'link' => $focusVideo->link,
         ]);
 
@@ -88,7 +88,7 @@ class FocusAreaTest extends TestCase
     }
     public function test_store_image_focus_area(): void
     {
-        $focus = factory(FocusArea::class)->create();
+        $focus = FocusArea::factory()->create();
         Storage::fake('image');
         $response = $this->json('post', "/admin/focus-area/{$focus->id}/images", [
             'images' => $file = UploadedFile::fake()->image('images.jpg'),

@@ -89,7 +89,7 @@ If you did not initiate this change, please contact us immediately at {{platform
 Thank you for upgrading to a Practitioner Account on {{platform_name}}. We are extremely excited to empower you in your Business.
 You will be able to advertise your business and sell your services and still book services of other practitioners. Here is a guide to help you get started.
 Your Subscription is {{subscription_tier_name}}. You can change your subscription plan at any time from your Account section.
-{{go_to_my_account}} Thank you The {{platform_name}} Team',
+Go to My Account Thank you The {{platform_name}} Team',
                 'delay' => rand(5, 20)
             ],
             //7
@@ -191,7 +191,7 @@ The unique website address for this service is: {[Service_URL}} Make sure to pro
                 'logo' => Str::random(5),
                 'text' => 'Hi {{first_name}} As requested, your {{platform_name}} Business Profile page for {{practitioner_business_name}} is now unpublished.
 Your Service Listings are also unpublished and you can no longer receive new Client Bookings. If you have existing Client Bookings, you will need to honour them, unless you choose to cancel them.
-You can republish Business Profile at any time by going to your Profile Page and clicking the PUBLISH button. {{go_to_my_profile}} Thank you The {{platform_name}} Team',
+You can republish Business Profile at any time by going to your Profile Page and clicking the PUBLISH button. Go to My Profile Thank you The {{platform_name}} Team',
                 'delay' => rand(5, 20)
             ],
             //14

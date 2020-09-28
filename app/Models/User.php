@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -21,7 +22,7 @@ use Laravel\Sanctum\HasApiTokens;
  */
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use Notifiable, HasApiTokens;
+    use Notifiable, HasApiTokens,HasFactory;
 
     /**
      * The attributes that are mass assignable.
@@ -46,6 +47,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'mobile_number',
         'mobile_number',
         'busines_phone_number',
+        'timezone_id',
     ];
 
     /**
@@ -70,23 +72,31 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(Service::class);
     }
+    public function timezone()
+    {
+        return $this->belongsTo(Timezone::class);
+    }
 
     public function articles()
     {
         return $this->hasMany(Article::class);
     }
+
     public function schedules()
     {
         return $this->belongsToMany(Schedule::class);
     }
+
     public function disciplines()
     {
-        return $this->belongsToMany(Discipline::class,'discipline_practitioner','discipline_id','practitioner_id')->withTimeStamps();
+        return $this->belongsToMany(Discipline::class, 'discipline_practitioner', 'discipline_id', 'practitioner_id')->withTimeStamps();
     }
+
     public function promotion_codes()
     {
-        return $this->belongsToMany(PromotionCode::class,'user_promotion_code','user_id','promotion_code_id')->withTimeStamps();
+        return $this->belongsToMany(PromotionCode::class, 'user_promotion_code', 'user_id', 'promotion_code_id')->withTimeStamps();
     }
+
     public function favourite_services()
     {
         return $this->belongsToMany(Service::class, 'favorites', 'user_id', 'service_id')->withTimeStamps();
@@ -102,5 +112,27 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsToMany(User::class, 'practitioner_favorites', 'user_id', 'practitioner_id')->withTimeStamps();
     }
 
+    public function plan()
+    {
+        return $this->belongsTo(Plan::class);
+    }
 
+    public function getCommission()
+    {
+        $customRate = $this->custom_rate()->where('date_from', '<', now()->toDateTimeString())
+            ->where('date_to', '>', now()->toDateTimeString())
+            ->orWhere('indefinite_period', '=', true)
+            ->first();
+        if ($customRate) {
+            return $customRate->rate;
+        } else
+            return $this->plan->commission_on_sale;
+
+
+    }
+
+    public function custom_rate()
+    {
+        return $this->hasMany(CustomRate::class);
+    }
 }

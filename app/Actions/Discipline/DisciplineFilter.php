@@ -11,12 +11,11 @@ class DisciplineFilter
 {
     public function execute(Request $request)
     {
-        $discipline = Discipline::query();
+        $discipline = Discipline::query()->where('is_published', true);
         if ($request->filled('name')) {
             $name = $request->get('name');
             $discipline->where('name', 'like', "%$name%");
         }
-        $discipline = $discipline->get();
-        return $discipline;
+        return $discipline->get();
     }
 }

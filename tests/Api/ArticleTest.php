@@ -19,14 +19,14 @@ use DatabaseTransactions;
     }
     public function test_user_can_see_article_list(): void
     {
-        factory(Article::class, 2)->create();
+        Article::factory()->count(2)->create();
         $response = $this->json('get', "/api/articles");
         $response
             ->assertOk();
     }
     public function test_can_create_article(): void
     {
-        $service = factory(Article::class)->make();
+        $service = Article::factory()->make();
 
         $response = $this->json('post', '/api/articles', [
             'description'  => $service->description,
@@ -40,15 +40,15 @@ use DatabaseTransactions;
     }
     public function test_practitioner_can_delete_article(): void
     {
-        $article = factory(Article::class)->create();
+        $article = Article::factory()->create();
         $response = $this->json('delete', "/api/articles/{$article->id}");
 
         $response->assertStatus(204);
     }
     public function test_practitioner_can_update_article(): void
     {
-        $article = factory(Article::class)->create();
-        $newArticle = factory(Article::class)->make();
+        $article = Article::factory()->create();
+        $newArticle = Article::factory()->make();
 
         $response = $this->json('put', "/api/articles/{$article->id}",
             [
@@ -62,8 +62,8 @@ use DatabaseTransactions;
     }
     public function test_store_article_favorite(): void
     {
-        $authUser = factory(User::class)->create();
-        $articleId = factory(Article::class)->create();
+        $authUser = User::factory()->create();
+        $articleId = Article::factory()->create();
         $response = $this->json('post', "article/{$articleId->id}/favourite");
         $authUser->favourite_articles()->attach($articleId);
 

@@ -27,7 +27,7 @@ class AuthTest extends TestCase
 
     public function test_user_can_register_a_new_account(): void
     {
-        $user    = factory(User::class)->make();
+        $user    = User::factory()->make();
         $payload = [
             'first_name' => $user->first_name,
             'last_name'  => $user->last_name,
@@ -46,7 +46,7 @@ class AuthTest extends TestCase
     }
     public function test_user_can_update_his_profile(): void
     {
-        $newUser = factory(User::class)->make();
+        $newUser = User::factory()->make();
         $response = $this->json('put', "/api/auth/profile",
             [
                 'first_name' => $newUser->first_name,
@@ -58,28 +58,26 @@ class AuthTest extends TestCase
                 'last_name' => $newUser->last_name,
             ]);
     }
-    public function test_can_avatar(){
+    public function test_can_upload_avatar(){
         Storage::fake('avatars');
         $file = UploadedFile::fake()->image('avatar.jpg');
-        $response = $this->json('POST', '/api/auth/profile/avatar', [
+        $this->json('POST', '/api/auth/profile/avatar', [
             'avatar' => $file,
         ]);
         Storage::disk('avatars')->assertExists($file->hashName());
-        //Storage::disk('avatars')->assertMissing('missing.jpg');
     }
-    public function test_can_background(){
+    public function test_can_upload_background(){
         Storage::fake('avatars');
         $file = UploadedFile::fake()->image('avatar.jpg');
-        $response = $this->json('POST', '/api/auth/profile/avatar', [
+        $this->json('POST', '/api/auth/profile/avatar', [
             'avatar' => $file,
         ]);
         Storage::disk('avatars')->assertExists($file->hashName());
-        //Storage::disk('avatars')->assertMissing('missing.jpg');
     }
 
     public function test_user_can_log_in(): void
     {
-        $user    = factory(User::class)->create(['password' => Hash::make('12345678')]);
+        $user    = User::factory()->create(['password' => Hash::make('12345678')]);
         $payload = ['email' => $user->email, 'password' => '12345678'];
 
         $response = $this->json('post', '/api/auth/login', $payload);

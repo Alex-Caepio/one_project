@@ -1,9 +1,10 @@
 <?php
 
 use Illuminate\Database\Seeder;
-
+use App\Models\Location;
 class LocationsTableSeeder extends Seeder
 {
+
     /**
      * Run the database seeds.
      *
@@ -11,6 +12,8 @@ class LocationsTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(\App\Models\Location::class,10)->create();
+        Location::factory()
+            ->times(50)
+            ->create();
     }
 }

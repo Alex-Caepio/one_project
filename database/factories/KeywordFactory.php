@@ -1,12 +1,20 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
+
 
 use App\Models\Keyword;
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(Keyword::class, function (Faker $faker) {
-    return [
-        'title' => $faker->word(),
-    ];
-});
+class KeywordFactory extends Factory
+{
+
+    protected $model = Keyword::class;
+
+    public function definition()
+    {
+        return [
+            'title' => $this->faker->word(),
+        ];
+    }
+}
