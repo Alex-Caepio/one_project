@@ -1,0 +1,21 @@
+type: object
+required:
+  - email
+  - password
+properties:
+  email:
+    type: string
+    example: mmorissette@example.net
+  password:
+    type: string
+    example: qwerty
+  first_name:
+    type: string
+    example: qwerty
+  last_name:
+    type: string
+    example: qwerty
+  account_type:
+    type: string
+    enum: [client, practitioner]
+

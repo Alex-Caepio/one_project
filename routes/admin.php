@@ -18,6 +18,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/practitioners/{practitioner}', [PractitionerController::class, 'show']);
         Route::put('/practitioners/{practitioner}', [PractitionerController::class, 'update']);
         Route::delete('/practitioners/{practitioner}', [PractitionerController::class, 'destroy']);
+        Route::post('/practitioners/{practitioner}/unpublish', [PractitionerController::class, 'unpublish']);
+        Route::post('/practitioners/{practitioner}/publish', [PractitionerController::class, 'publish']);
 
         Route::get('/clients', [ClientController::class, 'index']);
         Route::post('/clients', [ClientController::class, 'store']);
@@ -45,29 +47,29 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
         Route::get('/profile',[AdminController::class, 'indexProfile']);
 
-        Route::get('/focus-area', [FocusAreaController::class, 'index']);
-        Route::put('/focus-area/{focusArea}/update', [FocusAreaController::class, 'update']);
-        Route::post('/focus-area', [FocusAreaController::class, 'store']);
-        Route::delete('/focus-area/{focusArea}/destroy', [FocusAreaController::class, 'destroy']);
-        Route::post('/focus-area/{focusArea}/image', [FocusAreaController::class, 'image']);
-        Route::post('/focus-area/{focusArea}/images', [FocusAreaController::class, 'storeImages']);
-        Route::post('/focus-area/{focusArea}/videos',[FocusAreaController::class, 'storeVideo']);
-        Route::post('/focus-area/{focusArea}/icon', [FocusAreaController::class, 'icon']);
+        Route::get('/focus-areas', [FocusAreaController::class, 'index']);
+        Route::put('/focus-areas/{focusArea}/update', [FocusAreaController::class, 'update']);
+        Route::post('/focus-areas', [FocusAreaController::class, 'store']);
+        Route::delete('/focus-areas/{focusArea}/destroy', [FocusAreaController::class, 'destroy']);
+        Route::post('/focus-areas/{focusArea}/image', [FocusAreaController::class, 'image']);
+        Route::post('/focus-areas/{focusArea}/images', [FocusAreaController::class, 'storeImages']);
+        Route::post('/focus-areas/{focusArea}/videos',[FocusAreaController::class, 'storeVideos']);
+        Route::post('/focus-areas/{focusArea}/icon', [FocusAreaController::class, 'icon']);
 
-        Route::get('/promotion-code', [PromotionCodeController::class, 'index']);
-        Route::put('/promotion-code/{promotionCode}/update', [PromotionCodeController::class, 'update']);
-        Route::post('/promotion-code', [PromotionCodeController::class, 'store']);
-        Route::delete('/promotion-code/{promotionCode}/destroy', [PromotionCodeController::class, 'destroy']);
+        Route::get('/promotion-codes', [PromotionCodeController::class, 'index']);
+        Route::put('/promotion-codes/{promotionCode}/update', [PromotionCodeController::class, 'update']);
+        Route::post('/promotion-codes', [PromotionCodeController::class, 'store']);
+        Route::delete('/promotion-codes/{promotionCode}/destroy', [PromotionCodeController::class, 'destroy']);
 
-        Route::get('/discipline', [DisciplineController::class, 'index']);
-        Route::post('/discipline', [DisciplineController::class, 'store']);
-        Route::post('/discipline/{discipline}/images',[DisciplineController::class, 'storeImage']);
-        Route::post('/discipline/{discipline}/videos',[DisciplineController::class, 'storeVideo']);
-        Route::get('/discipline/{discipline}', [DisciplineController::class, 'show']);
-        Route::put('/discipline/{discipline}', [DisciplineController::class, 'update']);
-        Route::delete('/discipline/{discipline}', [DisciplineController::class, 'destroy']);
-        Route::post('/discipline/{discipline}/unpublished', [DisciplineController::class, 'unpublished']);
-        Route::post('/discipline/{discipline}/publish', [DisciplineController::class, 'publish']);
+        Route::get('/disciplines', [DisciplineController::class, 'index']);
+        Route::post('/disciplines', [DisciplineController::class, 'store']);
+        Route::post('/disciplines/{discipline}/images',[DisciplineController::class, 'storeImage']);
+        Route::post('/disciplines/{discipline}/videos',[DisciplineController::class, 'storeVideo']);
+        Route::get('/disciplines/{discipline}', [DisciplineController::class, 'show']);
+        Route::put('/disciplines/{discipline}', [DisciplineController::class, 'update']);
+        Route::delete('/disciplines/{discipline}', [DisciplineController::class, 'destroy']);
+        Route::post('/disciplines/{discipline}/unpublish', [DisciplineController::class, 'unpublish']);
+        Route::post('/disciplines/{discipline}/publish', [DisciplineController::class, 'publish']);
 
         Route::get('/transactional-emails', [CustomEmailController::class, 'index']);
         Route::post('/transactional-emails', [CustomEmailController::class, 'store']);

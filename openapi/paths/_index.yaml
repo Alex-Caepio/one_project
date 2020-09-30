@@ -20,6 +20,18 @@
 /articles/{id}:
   $ref: "./Article.yaml#/articles~1{id}"
 
+#disciplines
+/focus-areas:
+  $ref: "./FocusArea.yaml#/focus-areas"
+/focus-areas/{id}:
+  $ref: "./FocusArea.yaml#/focus-areas~1{id}"
+
+#disciplines
+/disciplines:
+  $ref: "./Discipline.yaml#/disciplines"
+/diciplines/{id}:
+  $ref: "./Discipline.yaml#/disciplines~1{id}"
+
 #services
 /services:
   $ref: "./Service.yaml#/services"

@@ -300,6 +300,17 @@ paths:
                 password:
                   type: string
                   example: qwerty
+                first_name:
+                  type: string
+                  example: qwerty
+                last_name:
+                  type: string
+                  example: qwerty
+                account_type:
+                  type: string
+                  enum:
+                    - client
+                    - practitioner
       responses:
         "200":
           description: OK
@@ -426,8 +437,17 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/paths/~1api~1auth~1register/post/requestBody/content/application~1json\
-                /schema"
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  example: mmorissette@example.net
+                password:
+                  type: string
+                  example: qwerty
       responses:
         "200":
           description: OK
@@ -506,9 +526,6 @@ paths:
                 - token
                 - password
               properties:
-                email:
-                  type: string
-                  example: mmorissette@example.net
                 token:
                   type: string
                   example: qd723bxqwp0qam2ey37cvbwasu
@@ -605,6 +622,68 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Article"
+  /focus-areas:
+    get:
+      tags:
+        - Focus Area
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/FocusArea"
+  "/focus-areas/{id}":
+    get:
+      tags:
+        - Focus Area
+      parameters:
+        - name: id
+          in: path
+          description: Focus Area ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FocusArea"
+  /disciplines:
+    get:
+      tags:
+        - Discipline
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Discipline"
+  "/diciplines/{id}":
+    get:
+      tags:
+        - Discipline
+      parameters:
+        - name: id
+          in: path
+          description: Discipline ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Discipline"
   /services:
     post:
       tags:
@@ -709,7 +788,7 @@ paths:
       operationId: get-profile
       summary: get profile for currently logged in admin
       tags:
-        - Profile
+        - Admin Profile
       responses:
         "200":
           description: OK
@@ -721,7 +800,7 @@ paths:
       operationId: update-profile
       summary: Update profile for currently logged in admin
       tags:
-        - Profile
+        - Admin Profile
       requestBody:
         required: true
         content:

@@ -26,7 +26,7 @@ class ArticleRequest extends FormRequest
         return [
             'title'=>'min:5',
             'description'=>'min:5',
-            'user_id'=>'exists:user,id',
+            'user_id'=>'exists:App\Models\User,id',
             'is_published'=>'boolean',
             'introduction'=>'min:5',
             'url'=> 'url'

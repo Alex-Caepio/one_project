@@ -35,17 +35,5 @@ class LocationTest extends TestCase
         $response->assertOk($location);
     }
 
-    public function test_can_get_all_location_filter(): void
-    {
-        $filterOne = Location::factory()->create();
-        $filterTwo = Location::factory()->create();
-        $response = $this->json('get', "/api/locations/filter", [
-            'title' => $filterTwo->title,
-        ]);
-
-        $response->assertOk()->assertJson([[
-            'title' => $filterTwo->title,
-        ]]);
-    }
 
 }

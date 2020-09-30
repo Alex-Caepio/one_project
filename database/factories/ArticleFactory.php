@@ -16,7 +16,6 @@ class ArticleFactory extends Factory
         return [
             'title' => $this->faker->sentence(5),
             'description' => $this->faker->text(255),
-            'user_id' => 1,
             'is_published' => $this->faker->boolean,
             'introduction' => $this->faker->text,
             'url' => $this->faker->url,

@@ -1,0 +1,36 @@
+focus-areas:
+  get:
+    tags:
+      - Focus Area
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../schemas/FocusArea.yaml'
+
+focus-areas/{id}:
+  get:
+    tags:
+      - Focus Area
+    parameters:
+      - $ref: "#/parameters/id"
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/FocusArea.yaml'
+
+parameters:
+  id:
+    name: id
+    in: path
+    description: Focus Area ID
+    required: true
+    schema:
+      type: integer

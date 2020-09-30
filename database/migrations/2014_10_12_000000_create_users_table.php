@@ -19,7 +19,7 @@ class CreateUsersTable extends Migration
             $table->string('plan_id')->nullable();
             $table->dateTime('plan_until')->nullable();
             $table->unsignedInteger('timezone_id')->nullable();
-            $table->enum('account_type',['user','practitioner']);
+            $table->enum('account_type',['client','practitioner']);
             $table->string('first_name');
             $table->string('last_name');
             $table->string('stripe_id')->nullable();

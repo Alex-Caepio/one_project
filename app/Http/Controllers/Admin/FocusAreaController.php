@@ -56,13 +56,11 @@ class FocusAreaController extends Controller
         ]);
         $imageFocus->save();
     }
-    public function storeVideo(Request $request, FocusArea $focusArea)
+    public function storeVideos(Request $request, FocusArea $focusArea)
     {
         $videoFocus = new FocusAreaVideo();
         $videoFocus->forceFill([
             'focus_area_id' => $focusArea->id,
-            'description' =>$request->get('description'),
-            'introduction' =>$request->get('introduction'),
             'link' => $request->get('link'),
         ]);
         $videoFocus->save();

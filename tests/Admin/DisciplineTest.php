@@ -106,5 +106,20 @@ class DisciplineTest extends TestCase
             'link' => $file->hashName()
         ])->assertStatus(200);
     }
-
+    public function test_discipline_publish(): void
+    {
+        $discipline = Discipline::factory()->create();
+        $response = $this->json('post', "admin/discipline/{$discipline->id}/publish", [
+            'is_published' => true
+        ]);
+        $response->assertOk();
+    }
+    public function test_discipline_unpublished(): void
+    {
+        $discipline = Discipline::factory()->create();
+        $response = $this->json('post', "admin/discipline/{$discipline->id}/publish", [
+            'is_published' => false
+        ]);
+        $response->assertOk();
+    }
 }

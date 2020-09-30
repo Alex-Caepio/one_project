@@ -86,7 +86,7 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::get('practitioners', [PractitionerController::class, 'index']);
     Route::get('practitioners/list', [PractitionerController::class, 'list']);
 
-    Route::post('/credit-card', [CardStripeController::class, 'store']);
+    Route::post('/credit-cards', [CardStripeController::class, 'store']);
     Route::get('/credit-cards', [CardStripeController::class, 'index']);
 
 
@@ -97,25 +97,25 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::get('/service_types', [ServiceTypeController::class, 'index']);
     Route::get('/service_types/list', [ServiceTypeController::class, 'list']);
 
-    Route::post('/services/{service}/schedule', [ScheduleController::class, 'store']);
-    Route::get('/services/{service}/schedule', [ScheduleController::class, 'index']);
+    Route::post('/services/{service}/schedules', [ScheduleController::class, 'store']);
+    Route::get('/services/{service}/schedules', [ScheduleController::class, 'index']);
     Route::post('/schedules/{schedule}/purchase', [ScheduleController::class, 'purchase']);
     Route::get('/schedule/{schedule}/attendants', [ScheduleController::class, 'allUser']);
     Route::post('/schedules/{schedule}/freeze', [ScheduleController::class, 'freeze']);
     Route::get('/schedules/{schedule}/availabilities', [ScheduleController::class, 'availabilities']);
 
-    Route::post('/schedule/{schedule}/reschedule', [RescheduleRequestController::class, 'store']);
+    Route::post('/schedules/{schedule}/reschedule', [RescheduleRequestController::class, 'store']);
     Route::get('/reschedule-requests', [RescheduleRequestController::class, 'index']);
     Route::post('reschedule-requests/{rescheduleRequest}/accept', [RescheduleRequestController::class, 'accept']);
     Route::delete('reschedule-requests/{rescheduleRequest}/decline', [RescheduleRequestController::class, 'decline']);
 
-    Route::post('/schedule/{schedule}/promoсode', [ScheduleController::class, 'promoCode']);
+    Route::post('/schedules/{schedule}/promoсodes', [ScheduleController::class, 'promoCode']);
 
     Route::get('/disciplines/{discipline}/images', [DisciplineController::class, 'indexImage']);
     Route::get('/disciplines/{discipline}/videos', [DisciplineController::class, 'indexVideo']);
 
-    Route::get('/focus-area/{focusArea}/images', [FocusAreaController::class, 'indexImage']);
-    Route::get('/focus-area/{focusArea}/videos', [FocusAreaController::class, 'indexVideo']);
+    Route::get('/focus-areas/{focusArea}/images', [FocusAreaController::class, 'indexImage']);
+    Route::get('/focus-areas/{focusArea}/videos', [FocusAreaController::class, 'indexVideo']);
 
     Route::post('messages/users/{user}', [MessageController::class, 'store']);
     Route::get('messages', [MessageController::class, 'index']);

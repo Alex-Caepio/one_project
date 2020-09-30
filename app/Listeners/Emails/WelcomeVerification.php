@@ -9,14 +9,10 @@ use Illuminate\Support\Facades\Mail;
 
 class WelcomeVerification
 {
-    public function __construct()
-    {
-    }
-
     public function handle(UserRegistered $event): void
     {
         $user = $event->user;
-        $emailVerification = CustomEmail::where('name', 'Welcome Verification')->first();
+        $emailVerification = CustomEmail::where('name', 'Welcome Verification')->where('user_type',$user->account_type)->first();
         $body = $emailVerification->text;
        // $subject = $emailVerification->subject;
         $emailVariables = new EmailVariables($event);

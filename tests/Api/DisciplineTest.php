@@ -20,13 +20,11 @@ class DisciplineTest extends TestCase
 
     public function test_can_get_all_discipline(): void
     {
-        Discipline::factory()->count(2)->create();
+        Discipline::factory()->create();
         $response = $this->json('get', "/api/disciplines");
 
         $response
-            ->assertOk()->assertJsonStructure([
-                ['id', 'title'],
-            ]);
+            ->assertOk();
     }
 
     public function test_can_get_all_discipline_list(): void

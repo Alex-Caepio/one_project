@@ -1,9 +1,10 @@
 <?php
 
-namespace Tests\Api;
+namespace Tests\Admin;
 
 use App\Models\Article;
 use App\Models\FocusArea;
+use App\Models\FocusAreaImage;
 use App\Models\FocusAreaVideo;
 use App\Models\Service;
 use App\Models\User;
@@ -75,7 +76,7 @@ class FocusAreaTest extends TestCase
                 'url' => $newFocusArea->url,
             ]);
     }
-    public function test_store_video_focus_area(): void
+    public function test_store_videos_focus_area(): void
     {
         $focus = FocusArea::factory()->create();
         $focusVideo = FocusAreaVideo::factory()->create();
@@ -86,15 +87,42 @@ class FocusAreaTest extends TestCase
 
         $response->assertOk();
     }
-    public function test_store_image_focus_area(): void
+    public function test_store_images_focus_area(): void
     {
-        $focus = FocusArea::factory()->create();
-        Storage::fake('image');
+        $focus = FocusArea::factory()->make();
+        $path = public_path('\img\focus-areas\images\\' . $focus->id . '\\');
+        $file = UploadedFile::fake()->image('image.jpg');
+        $fileName = $file->getClientOriginalName();
+        Storage::files($path, $fileName);
+        $focusImage = FocusAreaImage::factory()->make();
         $response = $this->json('post', "/admin/focus-area/{$focus->id}/images", [
-            'images' => $file = UploadedFile::fake()->image('images.jpg'),
             'focus_area_id' => $focus->id,
-            'link' => $file->hashName()
-        ])->assertStatus(200);
+            'path' => $path,
+        ]);
+        $response->assertOk();
+
+    }
+    public function test_image_focus_area(): void
+    {
+        $focus = FocusArea::factory()->make();
+        $path = public_path('\img\focus-areas\\' . $focus->id . '\\');
+        $file = UploadedFile::fake()->image('image.jpg');
+        $fileName = $file->getClientOriginalName();
+        $this->json('post', 'admin/focus-area/{focusArea}/image', [
+            'image' => $file,
+        ]);
+        Storage::files($path, $fileName);
+    }
+    public function test_icon_focus_area(): void
+    {
+        $focus = FocusArea::factory()->make();
+        $path = public_path('\icon\focus-areas\\' . $focus->id . '\\');
+        $file = UploadedFile::fake()->image('icon.jpg');
+        $fileName = $file->getClientOriginalName();
+        $this->json('post', 'admin/focus-area/{focusArea}/icon', [
+            'icon' => $file,
+        ]);
+        Storage::files($path, $fileName);
     }
 
 }

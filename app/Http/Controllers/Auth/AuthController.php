@@ -52,6 +52,8 @@ class AuthController extends Controller
         $user = $request->user();
         $user->is_published = true;
         $user->save();
+        return fractal($request->user(), new UserTransformer())
+            ->respond();
     }
 
     public function profile(Request $request)

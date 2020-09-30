@@ -15,11 +15,11 @@ class PasswordHasBeenChanged extends Mailable
     /**
      * Create a new message instance.
      *
-     * @param string $link
+     *
      */
-    public function __construct(string $link)
+    public function __construct()
     {
-        $this->link = $link;
+        //
     }
 
     /**

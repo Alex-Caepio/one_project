@@ -16,8 +16,6 @@ class UpdateAdminFromRequest
     {
         $profile = Auth::user();
         if (Hash::make($request->get('password'))) {
-            event(new PasswordChanged($profile));
-
             $stripe = app(StripeClient::class);
             if ($profile->stripe_id == $stripe) {
                  $stripe->customers->update(

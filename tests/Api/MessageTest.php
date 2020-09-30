@@ -21,7 +21,7 @@ class MessageTest extends TestCase
     }
     public function test_all_massage(): void
     {
-        EmailMessage::factory()->count(2)->create();
+      $g =  EmailMessage::factory()->count(2)->create();
         $response = $this->json('get', "/api/messages");
 
         $response

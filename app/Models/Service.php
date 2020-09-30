@@ -11,7 +11,6 @@ class Service extends Model
 {
     use SoftDeletes,HasFactory;
     protected $fillable = [
-        'name',
         'title',
         'description',
         'introduction',

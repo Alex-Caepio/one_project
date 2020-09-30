@@ -47,18 +47,15 @@ class AdminController extends Controller
         $token = $user->createToken('access-token');
         $user->withAccessToken($token);
 
-        event(new UserRegistered($user));
-
         return fractal($user, new UserTransformer())
             ->parseIncludes('access_token')
             ->respond();
     }
 
-    public function show(User $client, AdminShowRequest $request)
+    public function show(User $admin, AdminShowRequest $request)
     {
 
-        return fractal($client, new UserTransformer())->parseIncludes($request->getIncludes())
-            ->toArray();
+        return response(fractal($admin, new UserTransformer())->parseIncludes($request->getIncludes()));
     }
 
     public function update(AdminUpdateRequest $request)
@@ -66,9 +63,9 @@ class AdminController extends Controller
        run_action(UpdateAdminFromRequest::class,$request);
     }
 
-    public function destroy(User $client, AdminDestroyRequest $request)
+    public function destroy(User $admin, AdminDestroyRequest $request)
     {
-        $client->delete();
+        $admin->delete();
         return response(null, 204);
     }
 }

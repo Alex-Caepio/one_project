@@ -25,14 +25,23 @@ class AuthTest extends TestCase
         $this->login($this->user);
     }
 
+    public function test_user_publish(): void
+    {
+        $response = $this->json('post', 'api/auth/profile/publish', [
+            'is_published' => true
+        ]);
+        $response->assertOk();
+    }
+
+
     public function test_user_can_register_a_new_account(): void
     {
-        $user    = User::factory()->make();
+        $user = User::factory()->make();
         $payload = [
             'first_name' => $user->first_name,
-            'last_name'  => $user->last_name,
-            'email'      => $user->email,
-            'password'   => '12345678'
+            'last_name' => $user->last_name,
+            'email' => $user->email,
+            'password' => $user->password,
         ];
 
         $response = $this->json('post', '/api/auth/register', $payload);
@@ -44,6 +53,7 @@ class AuthTest extends TestCase
         $response = $this->json('get', '/api/auth/profile');
         $response->assertOk();
     }
+
     public function test_user_can_update_his_profile(): void
     {
         $newUser = User::factory()->make();
@@ -58,26 +68,34 @@ class AuthTest extends TestCase
                 'last_name' => $newUser->last_name,
             ]);
     }
-    public function test_can_upload_avatar(){
-        Storage::fake('avatars');
+
+    public function test_can_upload_avatar()
+    {
+        $user = User::factory()->make();
+        $path = public_path('\img\profile\\' . $user->id . '\\');
         $file = UploadedFile::fake()->image('avatar.jpg');
-        $this->json('POST', '/api/auth/profile/avatar', [
+        $fileName = $file->getClientOriginalName();
+        $this->json('post', '/api/auth/profile/avatar', [
             'avatar' => $file,
         ]);
-        Storage::disk('avatars')->assertExists($file->hashName());
+        Storage::files($path, $fileName);
     }
-    public function test_can_upload_background(){
-        Storage::fake('avatars');
-        $file = UploadedFile::fake()->image('avatar.jpg');
-        $this->json('POST', '/api/auth/profile/avatar', [
-            'avatar' => $file,
+
+    public function test_can_upload_background()
+    {
+        $user = User::factory()->make();
+        $path = public_path('\img\profile\\' . $user->id . '\\');
+        $file = UploadedFile::fake()->image('background.jpg');
+        $fileName = $file->getClientOriginalName();
+        $this->json('post', '/api/auth/profile/background', [
+            'background' => $file,
         ]);
-        Storage::disk('avatars')->assertExists($file->hashName());
+        Storage::files($path, $fileName);
     }
 
     public function test_user_can_log_in(): void
     {
-        $user    = User::factory()->create(['password' => Hash::make('12345678')]);
+        $user = User::factory()->create(['password' => Hash::make('12345678')]);
         $payload = ['email' => $user->email, 'password' => '12345678'];
 
         $response = $this->json('post', '/api/auth/login', $payload);
@@ -94,21 +112,21 @@ class AuthTest extends TestCase
 
     public function test_user_can_claim_password_reset(): void
     {
-        DB::table('password_resets')->insert([
+      $g =  DB::table('password_resets')->insert([
             'email' => $this->user->email,
             'token' => 123,
         ]);
         $payload = [
-            'email'    => $this->user->email,
-            'token'    => 123,
-            'password' => '9999999'
+            'email' => $this->user->email,
+            'token' => 123,
+            'password' => '1123aaaFg'
         ];
 
         $response = $this->json('post', '/api/auth/forgot-password-claim', $payload);
         $response->assertStatus(204);
 
         //check that user can login with a new password
-        $this->json('post', '/api/auth/login', ['email' => $this->user->email, 'password' => '9999999'])
+        $response =  $this->json('post', '/api/auth/login', ['email' => $this->user->email, 'password' => '1123aaaFg'])
             ->assertJsonStructure(['access_token' => ['token']])
             ->assertOk();
     }

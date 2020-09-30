@@ -27,13 +27,13 @@ use DatabaseTransactions;
     public function test_can_create_article(): void
     {
         $service = Article::factory()->make();
-
+        $user = User::factory()->make();
         $response = $this->json('post', '/api/articles', [
             'description'  => $service->description,
             'introduction' => $service->introduction,
             'is_published' => $service->is_published,
             'title'        => $service->title,
-            'user_id'        => $service->user_id,
+            'user_id'        => $this->user->id,
             'url'          => $service->url,
         ]);
         $response->assertOk();

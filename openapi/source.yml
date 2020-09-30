@@ -6,8 +6,8 @@ info:
 
 # Added by API Auto Mocking Plugin
 servers:
-  - description: SwaggerHub API Auto Mocking
-    url: https://virtserver.swaggerhub.com/cleverketchup/tom/1.0.0
+  - description: The oneness movement API
+    url: https://dev-oneness.andersenlab.dev/api/
 
 components:
   securitySchemes:

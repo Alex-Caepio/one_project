@@ -28,15 +28,17 @@ class AdminUpdateRequest extends FormRequest
             'first_name' => 'required|string|min:2|max:30',
             'last_name'  => 'required|string|min:2|max:30',
             'email'      => 'required|email|max:255|unique:users',
-            'current_password'=>'required|regex:/(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,30}/',
-            'password'   => 'required|regex:/(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,30}/',
+            'current_password'=>'max:20|min:8|regex:/(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]/',
+            'password'   => 'required|max:20|min:8|regex:/(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]/',
         ];
 
     }
     public function messages()
     {
         return [
-            'email.unique'    => 'Email is not available',
+            'email.unique'     => 'Email is not available',
+            'current_password.regex' => 'The password must include both uppercase and lowercase letters and at least one number',
+            'password.regex'   => 'The password must include both uppercase and lowercase letters and at least one number'
         ];
 
     }

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class PromotionCode extends Model
 {
     use HasFactory;
+    protected $fillable = ['name'];
     public function users()
     {
         return $this->belongsToMany(User::class,'user_promotion_code','user_id','promotion_code_id')->withTimeStamps();

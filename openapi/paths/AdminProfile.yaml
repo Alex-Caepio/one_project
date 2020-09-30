@@ -3,7 +3,7 @@ profile:
     operationId: get-profile
     summary: get profile for currently logged in admin
     tags:
-      - Profile
+      - Admin Profile
     responses:
       '200':
         description: OK
@@ -15,7 +15,7 @@ profile:
     operationId: update-profile
     summary: Update profile for currently logged in admin
     tags:
-      - Profile
+      - Admin Profile
     requestBody:
       required: true
       content:

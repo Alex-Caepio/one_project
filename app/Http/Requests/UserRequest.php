@@ -50,4 +50,12 @@ class UserRequest extends FormRequest
             'password'=>'required|max:45',
         ];
     }
+    public function messages()
+    {
+        return [
+            'email.unique'     => 'Email is not available',
+            'email_verified_at.date_format'     => 'Invalid date format',
+        ];
+
+    }
 }

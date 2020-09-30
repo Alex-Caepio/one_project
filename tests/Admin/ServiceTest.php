@@ -19,15 +19,15 @@ class ServiceTest extends TestCase
     }
     public function test_all_service(): void
     {
-        Service::factory()->count(2)->create();
-        $response = $this->json('get', "/admin/service");
+        Service::factory()->count(2)->make();
+        $response = $this->json('get', "/admin/services");
 
         $response->assertOk();
     }
     public function test_store_service(): void
     {
         $service = Service::factory()->create();
-        $response = $this->json('post', '/admin/service', [
+        $response = $this->json('post', '/admin/services', [
             'title' => $service->title,
             'description' => $service->description,
             'keyword_id' => $service->keyword_id,
@@ -41,9 +41,9 @@ class ServiceTest extends TestCase
     public function test_update_service(): void
     {
         $service = Service::factory()->create();
-        $newService = Service::factory()->make();
+        $newService = Service::factory()->create();
 
-        $response = $this->json('put', "admin/service/{$service->id}",
+        $response = $this->json('put', "admin/services/{$service->id}",
             [
                 'title' => $newService->title,
             ]);
@@ -56,7 +56,7 @@ class ServiceTest extends TestCase
     public function test_delete_service(): void
     {
         $service = Service::factory()->create();
-        $response = $this->json('delete', "/admin/service/{$service->id}");
+        $response = $this->json('delete', "/admin/services/{$service->id}");
 
         $response->assertStatus(204);
     }

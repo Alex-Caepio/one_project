@@ -41,14 +41,10 @@ class PromotionCodeTest extends TestCase
         $newPromotion = PromotionCode::factory()->make();
 
         $response = $this->json('put', "admin/promotion-code/{$promotion->id}/update",
-            [
-                'name' => $newPromotion->name,
-            ]);
+            ['name' => $newPromotion->name,]);
 
         $response->assertOk()
-            ->assertJson([
-                'name' => $newPromotion->name,
-            ]);
+            ->assertJson(['name' => $newPromotion->name,]);
     }
     public function test_delete_promotion(): void
     {

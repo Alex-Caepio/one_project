@@ -10,7 +10,7 @@ class Article extends Model
 {
     use HasFactory;
     protected $fillable=[
-        'title','introduction','url'
+        'title','introduction','url','description'
     ];
     public function disciplines()
     {

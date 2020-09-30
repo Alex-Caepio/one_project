@@ -138,4 +138,18 @@ class PractitionerController extends Controller
         event(new AccountDeleted($practitioner));
         return response(null, 204);
     }
+    public function unpublished(User $practitioner)
+    {
+        $practitioner->forceFill([
+            'is_published' => false,
+        ]);
+        $practitioner->update();
+    }
+    public function publish(User $practitioner)
+    {
+        $practitioner->forceFill([
+            'is_published' => true,
+        ]);
+        $practitioner->update();
+    }
 }

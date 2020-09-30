@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class Discipline extends Model
 {
     use HasFactory;
-    protected $fillable = ['title'];
+    protected $fillable = ['name','url'];
 
     public function featured_practitioners()
     {

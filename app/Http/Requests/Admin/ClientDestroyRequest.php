@@ -13,7 +13,7 @@ class ClientDestroyRequest extends FormRequest
      */
     public function authorize()
     {
-        return $this->client->account_type == 'user';
+        return $this->client->account_type == 'client';
     }
 
     /**

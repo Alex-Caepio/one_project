@@ -8,7 +8,7 @@ auth/register:
       content:
         application/json:
           schema:
-            $ref: '../schemas/forms/UserLogin.yaml'
+            $ref: '../schemas/forms/UserRegister.yaml'
     responses:
       '200':
         description: OK
