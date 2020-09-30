@@ -11,8 +11,6 @@ services:
     restart: always
     volumes:
       - /opt/oneness/storage:/var/www/html/storage
-      - /opt/oneness/logs:/var/www/html/storage/logs
-      - /opt/oneness/public:/var/www/html/storage/app/public
     networks:
       - oneness
 
