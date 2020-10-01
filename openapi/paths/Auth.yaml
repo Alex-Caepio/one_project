@@ -22,7 +22,7 @@ auth/register:
           application/json:
             schema:
               $ref: '../schemas/422/UserRegister.yaml'
-auth:
+auth/profile:
   get:
     operationId: get-current-user-info
     tags:
@@ -34,6 +34,17 @@ auth:
           application/json:
             schema:
               $ref: '../schemas/UserLogin.yaml'
+  put:
+    operationId: update-current-user-info
+    tags:
+      - Auth
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/User.yaml'
 
 auth/login:
   post:

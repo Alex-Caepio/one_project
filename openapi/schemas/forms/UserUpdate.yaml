@@ -1,8 +1,5 @@
 type: object
 properties:
-  id:
-    type: integer
-    example: 6
   about_me:
     type: string
     nullable: true
@@ -78,3 +75,4 @@ properties:
   timezone_id:
     type: integer
     example: 98
+

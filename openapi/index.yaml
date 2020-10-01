@@ -4,8 +4,8 @@ info:
   title: ""
   description: ""
 servers:
-  - description: SwaggerHub API Auto Mocking
-    url: https://virtserver.swaggerhub.com/cleverketchup/tom/1.0.0
+  - description: The oneness movement API
+    url: https://dev-oneness.andersenlab.dev/api/
 components:
   securitySchemes:
     bearerAuth:
@@ -414,7 +414,7 @@ paths:
                         - The first name may not be greater than 30 characters.
                       last_name:
                         - The last name may not be greater than 30 characters.
-  /api/auth:
+  /api/auth/profile:
     get:
       operationId: get-current-user-info
       tags:
@@ -427,6 +427,17 @@ paths:
               schema:
                 $ref: "#/paths/~1api~1auth~1register/post/responses/200/content/application~1js\
                   on/schema"
+    put:
+      operationId: update-current-user-info
+      tags:
+        - Auth
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
   /api/auth/login:
     post:
       operationId: login

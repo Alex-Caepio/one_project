@@ -1,8 +1,8 @@
 #auth
 /api/auth/register:
   $ref: "./Auth.yaml#/auth~1register"
-/api/auth:
-  $ref: "./Auth.yaml#/auth"
+/api/auth/profile:
+  $ref: "./Auth.yaml#/auth~1profile"
 /api/auth/login:
   $ref: "./Auth.yaml#/auth~1login"
 /api/auth/profile/publish:
