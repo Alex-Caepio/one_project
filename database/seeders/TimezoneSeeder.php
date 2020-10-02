@@ -12,6 +12,7 @@ class TimezoneSeeder extends Seeder
      */
     public function run()
     {
+        DB::table('timezones')->delete();
         DB::unprepared(DB::raw("INSERT INTO `timezones` (`id`, `value`, `label`) VALUES
 (1, '-12:00',   '(GMT -12:00) Eniwetok, Kwajalein'),
 (2, '-11:00',   '(GMT -11:00) Midway Island, Samoa'),

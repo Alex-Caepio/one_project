@@ -66,7 +66,8 @@ class AuthController extends Controller
     {
         Auth::user()->update($request->all());
         $user = Auth::user();
-        if (Hash::make($request->get('password'))) {
+        if ($request->filled('password')) {
+            Hash::make($request->get('password'));
             event(new PasswordChanged($user));
         }
         return fractal($user, new UserTransformer())->respond();

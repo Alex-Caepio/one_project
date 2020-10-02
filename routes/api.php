@@ -17,6 +17,7 @@ use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\RescheduleRequestController;
 use App\Http\Controllers\FocusAreaController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\CountryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -122,4 +123,6 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::post('messages/users/{user}', [MessageController::class, 'store']);
     Route::get('/messages', [MessageController::class, 'index']);
     Route::get('/messages/receiver/{user}', [MessageController::class, 'showByReceiver']);
+
+    Route::get('/countries', [CountryController::class, 'filter']);
 });

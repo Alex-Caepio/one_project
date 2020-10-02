@@ -8,6 +8,6 @@
     <title>Document</title>
 </head>
 <body>
-<h1>{{ $message }}</h1>
+<h1>{{ $text }}</h1>
 </body>
 </html>

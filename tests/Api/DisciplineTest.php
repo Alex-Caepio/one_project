@@ -45,7 +45,7 @@ class DisciplineTest extends TestCase
 
     public function test_can_get_all_discipline_filter(): void
     {
-        $filterTwo = Discipline::factory()->create(['is_published' => true]);
+        $filterTwo = Discipline::factory()->make(['is_published' => true]);
         $response = $this->json('get', "api/disciplines/filter", [
             'title' => $filterTwo->title,
         ]);
