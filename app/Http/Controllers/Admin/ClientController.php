@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Actions\Admin\CreateAdminFromRequest;
 use App\Actions\Stripe\CreateStripeUserByEmail;
+use App\Actions\User\CreateUserFromRequest;
 use App\Events\AccountDeleted;
 use App\Events\AccountTerminatedByAdmin;
 use App\Events\AccountUpgradedToPractitioner;
@@ -29,7 +30,7 @@ class ClientController extends Controller
 {
     public function index(Request $request)
     {
-        $paginator = User::where('account_type', 'user')->paginate($request->getLimit());
+        $paginator = User::where('account_type', 'client')->paginate($request->getLimit());
         $user = $paginator->getCollection();
         return response(fractal($user, new UserTransformer())->parseIncludes($request->getIncludes()))
             ->withPaginationHeaders($paginator);
@@ -38,7 +39,7 @@ class ClientController extends Controller
     public function store(RegisterRequest $request)
     {
         $customer = run_action(CreateStripeUserByEmail::class, $request->email);
-        $user = run_action(CreateAdminFromRequest::class, $request, ['stripe_id' => $customer->id, 'is_admin' => null, 'account_type' => 'user']);
+        $user = run_action(CreateUserFromRequest::class, $request, ['stripe_id' => $customer->id, 'is_admin' => null, 'account_type' => 'client']);
 
         $token = $user->createToken('access-token');
         $user->withAccessToken($token);
@@ -50,22 +51,22 @@ class ClientController extends Controller
             ->respond();
     }
 
-    public function show(User $admin, ClientShowRequest $request)
+    public function show(User $client, ClientShowRequest $request)
     {
-        return fractal($admin, new UserTransformer())->parseIncludes($request->getIncludes())
+        return fractal($client, new UserTransformer())->parseIncludes($request->getIncludes())
             ->toArray();
     }
 
-    public function update(ClientUpdateRequest $request, User $admin)
+    public function update(ClientUpdateRequest $request, User $client)
     {
-        $admin->update($request->all());
-        return fractal($admin, new UserTransformer())->respond();
+        $client->update($request->all());
+        return fractal($client, new UserTransformer())->respond();
     }
 
     public function destroy(User $client, ClientDestroyRequest $request)
     {
         $client->delete();
-        event(new BookingCancelledByClient($client));
+       // event(new BookingCancelledByClient($client));
        // event(new AccountUpgradedToPractitioner($client));
        // event(new AccountTerminatedByAdmin($client));
         //event(new AccountDeleted($client));

@@ -2,11 +2,12 @@
 
 namespace App\Http\Requests\PromotionCode;
 
+use App\Http\Requests\Request;
 use App\Models\PromotionCode;
 use App\Models\Service;
 use Illuminate\Foundation\Http\FormRequest;
 
-class PurchaseRequest extends FormRequest
+class PurchaseRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.

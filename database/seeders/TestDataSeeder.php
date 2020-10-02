@@ -1,5 +1,5 @@
 <?php
-
+namespace Database\Seeders;
 use App\Models\Article;
 use App\Models\Discipline;
 use App\Models\Keyword;

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class ServiceType extends Model
 {
     use HasFactory;
+    protected $fillable = ['name'];
     public function plans()
     {
         return $this->belongsToMany(Plan::class);

@@ -4,13 +4,12 @@ namespace Database\Factories;
 
 
 use App\Models\FocusArea;
-use App\Models\FocusAreaImage;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class FocusAreaFactory extends Factory
 {
 
-    protected $model = FocusAreaImage::class;
+    protected $model = FocusArea::class;
 
     public function definition()
     {

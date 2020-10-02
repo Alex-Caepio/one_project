@@ -24,7 +24,7 @@ class PlanController extends Controller
     public function purchase(Plan $plan, StripeClient $stripe)
     {
        $user = run_action(PlanPurchase::class, $plan, $stripe);
-        event(new SubscriptionConfirmationPaid($user));
+        //event(new SubscriptionConfirmationPaid($user));
     }
 
 }

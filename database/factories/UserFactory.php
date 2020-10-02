@@ -14,14 +14,14 @@ class UserFactory extends Factory
 
     public function definition()
     {
-        $type = ['user', 'practitioner'];
+        $type = ['client', 'practitioner'];
         return [
             'first_name' => Str::random(10),
             'last_name' => Str::random(10),
             'account_type' => $this->faker->randomElement($type),
             'email' => $this->faker->unique()->safeEmail,
             'email_verified_at' => now(),
-            'password' => '123aaagjHGF', // password
+            'password' => '12dsfsdDDD', // password
             'remember_token' => Str::random(10),
             'business_name' => $this->faker->sentence(),
             'business_address' => $this->faker->sentence(),

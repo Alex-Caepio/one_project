@@ -2,13 +2,11 @@
 
 namespace Tests\Admin;
 
-
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
-class AdminTest extends TestCase
+class ClientTest extends TestCase
 {
     use DatabaseTransactions;
 
@@ -20,10 +18,10 @@ class AdminTest extends TestCase
         $this->login($this->user);
     }
 
-    public function test_all_admin(): void
+    public function test_all_client(): void
     {
-        User::factory()->count(2)->create();
-        $response = $this->json('get', "/admin/admins");
+        User::factory()->count(2)->create(['account_type' => 'client']);
+        $response = $this->json('get', "/admin/clients");
 
         $response
             ->assertOk()->assertJsonStructure([
@@ -31,7 +29,7 @@ class AdminTest extends TestCase
             ]);
     }
 
-    public function test_store_admin(): void
+    public function test_store_client(): void
     {
         $user = User::factory()->make();
         $payload = ['first_name' => $user->first_name,
@@ -39,44 +37,40 @@ class AdminTest extends TestCase
             'is_admin' => true,
             'email' => $user->email,
             'password' => $user->password,
-            'account_type' => $user->account_type];
-        $response = $this->json('post', "/admin/admins", $payload);
+            'account_type' => 'client'];
+        $response = $this->json('post', "/admin/clients", $payload);
 
         $response->assertOk();
     }
 
-    public function test_show_admin(): void
+    public function test_show_client(): void
     {
-        $response = $this->json('get', "/admin/admins/{$this->user->id}");
+        $client = User::factory()->make(['account_type' => 'client']);
+        $response = $this->json('get', "/admin/clients/{$client->id}");
 
         $response->assertOk();
     }
 
     public function test_update_admin(): void
     {
-        $user = User::factory()->create();
-        $response = $this->json('put', "admin/profile",
+        $user = User::factory()->create(['account_type' => 'client']);
+        $response = $this->json('put', "admin/clients/{$user->id}",
             [
                 'first_name' => $user->first_name,
                 'last_name' => $user->last_name,
                 'email' => $user->email,
-                'current_password' => $user->password,
-                'password' => $this->user->password,
+                'password' => $user->password,
             ]);
 
         $response->assertOk();
     }
-    public function test_get_profile_admin(): void
-    {
-        $response = $this->json('get', "admin/profile",);
 
-        $response->assertOk();
-    }
-
-    public function test_delete_admin(): void
+    public function test_delete_client(): void
     {
-        $response = $this->json('delete', "/admin/admins/{$this->user->id}");
+        $client = User::factory()->create(['account_type' => 'client']);
+        $response = $this->json('delete', "/admin/clients/{$client->id}");
 
         $response->assertStatus(204);
     }
+
 }

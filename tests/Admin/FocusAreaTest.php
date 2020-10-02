@@ -28,7 +28,7 @@ class FocusAreaTest extends TestCase
     public function test_can_get_all_focus_area(): void
     {
         FocusArea::factory()->count(2)->create();
-        $response = $this->json('get', "/admin/focus-area");
+        $response = $this->json('get', "/admin/focus-areas");
 
         $response
             ->assertOk()->assertJsonStructure([
@@ -42,7 +42,7 @@ class FocusAreaTest extends TestCase
         $service = Service::factory()->create();
         $article = Article::factory()->create();
         $focusArea = FocusArea::factory()->create();
-        $response = $this->json('post', '/admin/focus-area', [
+        $response = $this->json('post', '/admin/focus-areas', [
             'name' => $focusArea->name,
             'url' => $focusArea->url,
         ]);
@@ -55,7 +55,7 @@ class FocusAreaTest extends TestCase
     public function test_delete_focus_area(): void
     {
         $focusArea = FocusArea::factory()->create();
-        $response = $this->json('delete', "admin/focus-area/$focusArea->id/destroy");
+        $response = $this->json('delete', "admin/focus-areas/$focusArea->id/destroy");
         $response->assertStatus(204);
     }
 
@@ -64,7 +64,7 @@ class FocusAreaTest extends TestCase
         $focusArea = FocusArea::factory()->create();
         $newFocusArea = FocusArea::factory()->make();
 
-        $response = $this->json('put', "admin/focus-area/{$focusArea->id}/update",
+        $response = $this->json('put', "admin/focus-areas/{$focusArea->id}/update",
             [
                 'name' => $newFocusArea->name,
                 'url' => $newFocusArea->url,
@@ -80,7 +80,7 @@ class FocusAreaTest extends TestCase
     {
         $focus = FocusArea::factory()->create();
         $focusVideo = FocusAreaVideo::factory()->create();
-        $response = $this->json('post', "/admin/focus-area/{$focus->id}/videos", [
+        $response = $this->json('post', "/admin/focus-areas/{$focus->id}/videos", [
             'focus_area_id' => $focus->id,
             'link' => $focusVideo->link,
         ]);
@@ -93,13 +93,12 @@ class FocusAreaTest extends TestCase
         $path = public_path('\img\focus-areas\images\\' . $focus->id . '\\');
         $file = UploadedFile::fake()->image('image.jpg');
         $fileName = $file->getClientOriginalName();
-        Storage::files($path, $fileName);
-        $focusImage = FocusAreaImage::factory()->make();
-        $response = $this->json('post', "/admin/focus-area/{$focus->id}/images", [
+        FocusAreaImage::factory()->make();
+        $response = $this->json('post', "admin/focus-areas/{$focus->id}/images", [
             'focus_area_id' => $focus->id,
             'path' => $path,
         ]);
-        $response->assertOk();
+        Storage::files($path, $fileName);
 
     }
     public function test_image_focus_area(): void
@@ -108,7 +107,7 @@ class FocusAreaTest extends TestCase
         $path = public_path('\img\focus-areas\\' . $focus->id . '\\');
         $file = UploadedFile::fake()->image('image.jpg');
         $fileName = $file->getClientOriginalName();
-        $this->json('post', 'admin/focus-area/{focusArea}/image', [
+        $this->json('post', "admin/focus-areas/{$focus->id}/image", [
             'image' => $file,
         ]);
         Storage::files($path, $fileName);
@@ -119,7 +118,7 @@ class FocusAreaTest extends TestCase
         $path = public_path('\icon\focus-areas\\' . $focus->id . '\\');
         $file = UploadedFile::fake()->image('icon.jpg');
         $fileName = $file->getClientOriginalName();
-        $this->json('post', 'admin/focus-area/{focusArea}/icon', [
+        $this->json('post', "admin/focus-areas/{$focus->id}/icon", [
             'icon' => $file,
         ]);
         Storage::files($path, $fileName);

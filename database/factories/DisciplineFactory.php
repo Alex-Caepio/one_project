@@ -32,6 +32,7 @@ class DisciplineFactory extends Factory
         return [
             'name' => $this->faker->randomElement($disciplines),
             'url' => $this->faker->url,
+            'is_published' => $this->faker->boolean,
         ];
     }
 }

@@ -37,12 +37,14 @@ class ResetPasswordClaim extends FormRequest
     }
     public function withValidator($validator): void
     {
-        $validToken   = DB::table('password_resets')->where('token', $this->get('token'))->first();
-        $createdToken = Carbon::parse($validToken->created_at)->addHours(48);
+        $validToken = DB::table('password_resets')->where('token', $this->get('token'))->first();
+        if ($validToken){
+            $createdToken = Carbon::parse($validToken->created_at)->addHours(48);
         $validator->after(function ($validator) use ($createdToken) {
             if ($createdToken < Carbon::now()) {
                 $validator->errors()->add('token', 'The token has been expired');
             }
         });
+    }
     }
 }

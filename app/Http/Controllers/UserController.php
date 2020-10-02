@@ -24,14 +24,14 @@ class UserController extends Controller
             ->toArray();
     }
 
-    public function ArticleFavorites(Request $request)
+    public function articleFavorites(Request $request)
     {
         $articleFavorites = Auth::user()->favourite_articles;
         return fractal($articleFavorites, new ArticleTransformer())->parseIncludes($request->getIncludes())
             ->toArray();
     }
 
-    public function PractitionerFavorites(Request $request)
+    public function practitionerFavorites(Request $request)
     {
         $practitionerFavorites = Auth::user()->favourite_practitioners;
         return fractal($practitionerFavorites, new UserTransformer())->parseIncludes($request->getIncludes())

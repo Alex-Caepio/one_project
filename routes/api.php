@@ -53,11 +53,11 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
 
     Route::post('articles/{article}/favourite', [ArticleController::class, 'storeFavorite']);
     Route::delete('articles/{article}/favourite', [ArticleController::class, 'deleteFavorite']);
-    Route::get('/articles/favourites', [UserController::class, 'serviceFavorites']);
+    Route::get('/articles/favourites', [UserController::class, 'articleFavorites']);
 
     Route::post('practitioners/{practitioner}/favourite', [PractitionerController::class, 'storeFavorite']);
     Route::delete('practitioners/{practitioner}/favourite', [PractitionerController::class, 'deleteFavorite']);
-    Route::get('/practitioners/favourites', [UserController::class, 'PractitionerFavorites']);
+    Route::get('/practitioners/favourites', [UserController::class, 'practitionerFavorites']);
 
     Route::get('/services', [ServiceController::class, 'index']);
     Route::post('/services', [ServiceController::class, 'store']);
@@ -72,9 +72,9 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::delete('/articles/{article}', [ArticleController::class, 'destroy']);
 
     Route::get('disciplines', [DisciplineController::class, 'index']);
-    Route::get('disciplines/{discipline}', [DisciplineController::class, 'show']);
     Route::get('disciplines/list', [DisciplineController::class, 'list']);
     Route::get('disciplines/filter', [DisciplineController::class, 'filter']);
+    Route::get('disciplines/{discipline}', [DisciplineController::class, 'show']);
 
     Route::get('keywords', [KeywordController::class, 'index']);
     Route::get('keywords/list', [KeywordController::class, 'list']);
@@ -116,8 +116,10 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
 
     Route::get('/focus-areas/{focusArea}/images', [FocusAreaController::class, 'indexImage']);
     Route::get('/focus-areas/{focusArea}/videos', [FocusAreaController::class, 'indexVideo']);
+    Route::get('/focus-areas', [FocusAreaController::class, 'index']);
+    Route::get('/focus-areas/{focusArea}', [FocusAreaController::class, 'show']);
 
     Route::post('messages/users/{user}', [MessageController::class, 'store']);
-    Route::get('messages', [MessageController::class, 'index']);
-    Route::get('messages/receiver/{user}', [MessageController::class, 'showByReceiver']);
+    Route::get('/messages', [MessageController::class, 'index']);
+    Route::get('/messages/receiver/{user}', [MessageController::class, 'showByReceiver']);
 });

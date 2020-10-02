@@ -20,14 +20,14 @@ class PromotionCodeTest extends TestCase
     public function test_all_promotion(): void
     {
         PromotionCode::factory()->count(2)->create();
-        $response = $this->json('get', "/admin/promotion-code");
+        $response = $this->json('get', "/admin/promotion-codes");
 
         $response->assertOk();
     }
     public function test_store_promotion(): void
     {
         $promotion = PromotionCode::factory()->create();
-        $response = $this->json('post', '/admin/promotion-code', [
+        $response = $this->json('post', '/admin/promotion-codes', [
             'name' => $promotion->name,
             'uses_per_client' => $promotion->uses_per_client,
             'uses_per_code' => $promotion->uses_per_code,
@@ -40,7 +40,7 @@ class PromotionCodeTest extends TestCase
         $promotion = PromotionCode::factory()->create();
         $newPromotion = PromotionCode::factory()->make();
 
-        $response = $this->json('put', "admin/promotion-code/{$promotion->id}/update",
+        $response = $this->json('put', "admin/promotion-codes/{$promotion->id}/update",
             ['name' => $newPromotion->name,]);
 
         $response->assertOk()
@@ -49,7 +49,7 @@ class PromotionCodeTest extends TestCase
     public function test_delete_promotion(): void
     {
         $promotion = PromotionCode::factory()->create();
-        $response = $this->json('delete', "/admin/promotion-code/{$promotion->id}/destroy");
+        $response = $this->json('delete', "/admin/promotion-codes/{$promotion->id}/destroy");
 
         $response->assertStatus(204);
     }

@@ -5,12 +5,13 @@ namespace Tests\Api;
 use App\Models\RescheduleRequest;
 use App\Models\Schedule;
 use App\Models\User;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class RescheduleRequestTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     public function setUp(): void
     {
@@ -32,7 +33,7 @@ class RescheduleRequestTest extends TestCase
     {
         $schedule = Schedule::factory()->create();
         $reschedule = RescheduleRequest::factory()->create();
-        $response = $this->json('post', "api/schedule/{$schedule->id}/reschedule", [
+        $response = $this->json('post', "api/schedules/{$schedule->id}/reschedule", [
             'user_id' => $reschedule->user_id,
             'schedule_id' => $schedule->id,
             'new_schedule_id' => $reschedule->new_schedule_id,

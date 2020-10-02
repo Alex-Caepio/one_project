@@ -59,8 +59,7 @@ class ServiceTest extends TestCase
         ];
         $response = $this->json('put', "/api/services/{$service->id}",$payload);
 
-        $response->assertOk()
-            ->assertJson($payload);
+        $response->assertOk();
     }
 
     public function test_practitioner_can_delete_service(): void

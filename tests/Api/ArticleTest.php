@@ -3,13 +3,14 @@
 namespace Tests\Api;
 
 use App\Models\Article;
-use Tests\TestCase;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
 class ArticleTest extends TestCase
 {
-use DatabaseTransactions;
+    use DatabaseTransactions;
+
     public function setUp(): void
     {
         parent::setUp();
@@ -17,6 +18,7 @@ use DatabaseTransactions;
         $this->user = $this->createUser();
         $this->login($this->user);
     }
+
     public function test_user_can_see_article_list(): void
     {
         Article::factory()->count(2)->create();
@@ -24,28 +26,31 @@ use DatabaseTransactions;
         $response
             ->assertOk();
     }
+
     public function test_can_create_article(): void
     {
         $service = Article::factory()->make();
         $user = User::factory()->make();
         $response = $this->json('post', '/api/articles', [
-            'description'  => $service->description,
+            'description' => $service->description,
             'introduction' => $service->introduction,
             'is_published' => $service->is_published,
-            'title'        => $service->title,
-            'user_id'        => $this->user->id,
-            'url'          => $service->url,
+            'title' => $service->title,
+            'user_id' => $this->user->id,
+            'url' => $service->url,
         ]);
         $response->assertOk();
     }
-    public function test_practitioner_can_delete_article(): void
+
+    public function test_delete_article(): void
     {
         $article = Article::factory()->create();
         $response = $this->json('delete', "/api/articles/{$article->id}");
 
         $response->assertStatus(204);
     }
-    public function test_practitioner_can_update_article(): void
+
+    public function test_update_article(): void
     {
         $article = Article::factory()->create();
         $newArticle = Article::factory()->make();
@@ -60,6 +65,16 @@ use DatabaseTransactions;
                 'title' => $newArticle->title,
             ]);
     }
+
+    public function test_show_article(): void
+    {
+        $article = Article::factory()->create();
+        $response = $this->json('get', "api/articles/{$article->id}");
+
+        $response
+            ->assertOk();
+    }
+
     public function test_store_article_favorite(): void
     {
         $authUser = User::factory()->create();
@@ -71,5 +86,13 @@ use DatabaseTransactions;
             'user_id' => $authUser->id,
             'article_id' => $articleId->id
         ]);
+    }
+    public function test_delete_article_favorite(): void
+    {
+        $article = Article::factory()->create();
+        $response = $this->json('delete', "/api/articles/{$article->id}/favourite");
+        $authUser = User::factory()->create();
+        $authUser->favourite_articles()->attach($article);
+        $response->assertStatus(204);
     }
 }

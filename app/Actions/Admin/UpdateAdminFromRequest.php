@@ -5,6 +5,7 @@ namespace App\Actions\Admin;
 
 
 use App\Events\PasswordChanged;
+use App\Http\Requests\Admin\AdminUpdateRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -12,7 +13,7 @@ use Stripe\StripeClient;
 
 class UpdateAdminFromRequest
 {
-    public function execute(Request $request)
+    public function execute(AdminUpdateRequest $request)
     {
         $profile = Auth::user();
         if (Hash::make($request->get('password'))) {

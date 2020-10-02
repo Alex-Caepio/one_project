@@ -104,16 +104,8 @@ class ScheduleController extends Controller
         $name = $request->get('promo_code');
         $scheduleCost = $schedule->cost;
         $promo = PromotionCode::where('name', $name)->first();
-        $promotion = $promo->promotion;
-        $percentage = $promotion->where('discount_type', 'percentage');
-        $promoValue = $promotion->discount_value;
-                            if ($percentage) {
-                                $newSchedule = $scheduleCost - ($scheduleCost * ($promoValue / 100));
-                                $schedule->cost = $newSchedule;
-                            } else {
-                                $newSchedule = $scheduleCost - $promoValue;
-                                $schedule->cost = $newSchedule;
-                            }
+        run_action(CalculatePromoPrice::class, $promo, $scheduleCost);
+
                             return fractal($schedule, new ScheduleTransformer())->parseIncludes($request->getIncludes())
                                 ->toArray();
     }

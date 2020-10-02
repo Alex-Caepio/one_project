@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Actions\ServiceType\ServiceTypeStore;
 use App\Models\ServiceType;
 use App\Transformers\ServiceTypeTransformer;
-use Illuminate\Http\Request;
+use App\Http\Requests\Request;
 
 class ServiceTypeController extends Controller
 {

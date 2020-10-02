@@ -69,7 +69,7 @@ DisciplineController extends Controller
         return response(null, 204);
     }
 
-    public function unpublished(Discipline $discipline)
+    public function unpublish(Discipline $discipline)
     {
         $discipline->forceFill([
             'is_published' => false,

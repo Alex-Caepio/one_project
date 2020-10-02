@@ -15,7 +15,7 @@ abstract class TestCase extends BaseTestCase
     {
         $attributes = array_merge(
             [
-                'password' => Hash::make('test')
+                'password' => Hash::make('test'),
             ],
             $attributes
         );
@@ -27,7 +27,7 @@ abstract class TestCase extends BaseTestCase
     {
         $attributes = array_merge(
             [
-                'password' => Hash::make('test'),
+                'password' => Hash::make('12dsfsdDDD'),
                 'is_admin' => 1
             ],
             $attributes

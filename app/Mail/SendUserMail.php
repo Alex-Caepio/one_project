@@ -10,16 +10,16 @@ class SendUserMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $message;
+    public $text;
 
     /**
      * Create a new message instance.
      *
-     * @param string $message
+     * @param string $text
      */
-    public function __construct(string $message)
+    public function __construct(string $text)
     {
-        $this->message = $message;
+        $this->text = $text;
     }
 
     /**
@@ -27,8 +27,8 @@ class SendUserMail extends Mailable
      *
      * @return $this
      */
-    public function build(): self
+    public function build()
     {
-        return $this->view('mails.send_user');
+        return $this->view('mails.send_user',['text' => $this->text]);
     }
 }

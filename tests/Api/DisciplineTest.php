@@ -27,18 +27,26 @@ class DisciplineTest extends TestCase
             ->assertOk();
     }
 
+    public function test_show_discipline(): void
+    {
+        $discipline = Discipline::factory()->make();
+        $response = $this->json('get', "api/disciplines/{$discipline->id}");
+
+        $response
+            ->assertOk();
+    }
+
     public function test_can_get_all_discipline_list(): void
     {
-        $description = Discipline::factory()->count(2)->create();
+        $discipline = Discipline::factory()->count(2)->create(['is_published' => true]);
         $response = $this->json('get', "/api/disciplines/list");
-        $response->assertOk($description);
+        $response->assertOk($discipline);
     }
 
     public function test_can_get_all_discipline_filter(): void
     {
-        $filterOne = Discipline::factory()->create();
-        $filterTwo = Discipline::factory()->create();
-        $response = $this->json('get', "/api/disciplines/filter", [
+        $filterTwo = Discipline::factory()->create(['is_published' => true]);
+        $response = $this->json('get', "api/disciplines/filter", [
             'title' => $filterTwo->title,
         ]);
 
@@ -46,6 +54,7 @@ class DisciplineTest extends TestCase
             'title' => $filterTwo->title,
         ]]);
     }
+
     public function test_all_image_discipline(): void
     {
         $discipline = Discipline::factory()->create();

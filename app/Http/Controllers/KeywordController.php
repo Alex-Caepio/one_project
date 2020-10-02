@@ -12,15 +12,15 @@ class KeywordController extends Controller
 
     public function index(Request $request)
     {
-        $discipline = Keyword::all();
-        return fractal($discipline, new KeywordTransformer())->parseIncludes($request->getIncludes())
+        $keyword = Keyword::all();
+        return fractal($keyword, new KeywordTransformer())->parseIncludes($request->getIncludes())
             ->toArray();
     }
 
     public function list()
     {
-        $discipline = Keyword::query();
-        return $discipline->pluck('title', 'id');
+        $keyword = Keyword::query();
+        return $keyword->pluck('title', 'id');
     }
 
     public function filter(Request $request)

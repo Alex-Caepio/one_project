@@ -15,9 +15,9 @@ class ScheduleFactory extends Factory
     {
         return [
             'title'              => $this->faker->sentence(),
-            'service_id'         => $this->faker->randomNumber(3),
-            'location_id'        => $this->faker->randomNumber(3),
-            'start_date'         => $this->faker->date(),
+            'service_id'         => $this->faker->randomNumber(2),
+            'location_id'        => $this->faker->randomNumber(2),
+            'start_date'         => '2020-9-5',
             'end_date'           => $this->faker->date(),
             'attendees'          => $this->faker->randomNumber(2),
             'comments'           => $this->faker->realText(),

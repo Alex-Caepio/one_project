@@ -42,6 +42,7 @@ class AuthTest extends TestCase
             'last_name' => $user->last_name,
             'email' => $user->email,
             'password' => $user->password,
+            'account_type' => 'client'
         ];
 
         $response = $this->json('post', '/api/auth/register', $payload);

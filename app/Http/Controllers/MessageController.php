@@ -15,10 +15,10 @@ class MessageController extends Controller
     public function index(Request $request)
     {
         $massage = EmailMessage::where('sender_id', Auth::id())->get();
+            return fractal($massage, new EmailMessageTransformer())
+                ->parseIncludes($request->getIncludes())
+                ->toArray();
 
-        return fractal($massage, new EmailMessageTransformer())
-            ->parseIncludes($request->getIncludes())
-            ->toArray();
     }
 
     public function store(Request $request, User $user)
@@ -28,9 +28,9 @@ class MessageController extends Controller
 
         $message = new EmailMessage();
         $message->forceFill([
-            'sender_id'   => Auth::id(),
+            'sender_id' => Auth::id(),
             'receiver_id' => $user->id,
-            'text'        => $text,
+            'text' => $text,
         ]);
         $message->save();
 

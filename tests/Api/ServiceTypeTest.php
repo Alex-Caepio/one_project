@@ -31,7 +31,7 @@ class ServiceTypeTest extends TestCase
 
     public function test_can_create_service_type(): void
     {
-        $serviceType = ServiceType::factory()->create();
+        $serviceType = ServiceType::factory()->make();
 
         $response = $this->json('post', '/api/service_types', [
             'name'  => $serviceType->name,
