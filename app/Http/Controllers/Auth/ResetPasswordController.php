@@ -9,6 +9,7 @@ use App\Http\Requests\Password\ResetRequest;
 use App\Mail\PasswordHasBeenChanged;
 use App\Mail\PasswordResetLink;
 use App\Models\User;
+use App\Transformers\UserTransformer;
 use Carbon\Carbon;
 use DB;
 use Hash;
@@ -73,7 +74,12 @@ class ResetPasswordController extends Controller
                 'email' => $resetData->email
             ])->send(new PasswordHasBeenChanged());
 
-            return response(null, 204);
+            $user = User::where('email', $resetData->email)->first();
+            $user->withAccessToken($user->createToken('access-token'));
+
+            return fractal($user, new UserTransformer())
+                ->parseIncludes('access_token')
+                ->respond();
         } else
             return response(null, 500);
     }
