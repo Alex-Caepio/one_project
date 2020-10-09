@@ -9,10 +9,9 @@ use Stripe\StripeClient;
 
 class AllCardUser
 {
-    public function execute($allCards)
+    public function execute(StripeClient $stripe)
     {
-        $stripe_id = Auth::user()->stripe_id;
-        $stripe = app(StripeClient::class);
+        $stripe_id = Auth::user()->stripe_customer_id;
         return $stripe->customers->allSources(
             $stripe_id,
             ['object' => 'card', 'limit' => 99]

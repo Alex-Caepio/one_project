@@ -13,7 +13,7 @@ class PlanPurchase
 {
     public function execute(Plan $plan, StripeClient $stripe)
     {
-        $stripe_id = Auth::user()->stripe_id;
+        $stripe_id = Auth::user()->stripe_customer_id;
         $plan_id = Auth::user()->plan_id;
         if (!empty($plan_id)) {
             $stripe->subscriptions->cancel(

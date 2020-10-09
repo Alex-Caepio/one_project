@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\StripeAccountController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ArticleController;
@@ -47,6 +48,9 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::post('auth/resend-verification', [AuthController::class, 'resendVerification']);
     Route::post('auth/profile/avatar', [AuthController::class, 'avatar']);
     Route::post('auth/profile/background', [AuthController::class, 'background']);
+
+    Route::get('stripe/link', [StripeAccountController::class, 'link']);
+    Route::get('stripe/account', [StripeAccountController::class, 'account']);
 
     Route::post('services/{service}/favourite', [ServiceController::class, 'storeFavorite']);
     Route::delete('services/{service}/favourite', [ServiceController::class, 'deleteFavorite']);

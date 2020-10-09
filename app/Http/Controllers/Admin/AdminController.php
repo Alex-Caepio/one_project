@@ -42,7 +42,7 @@ class AdminController extends Controller
     public function store(RegisterRequest $request)
     {
         $customer = run_action(CreateStripeUserByEmail::class, $request->email);
-        $user = run_action(CreateAdminFromRequest::class, $request, ['stripe_id' => $customer->id]);
+        $user = run_action(CreateAdminFromRequest::class, $request, ['stripe_customer_id' => $customer->id]);
 
         $token = $user->createToken('access-token');
         $user->withAccessToken($token);

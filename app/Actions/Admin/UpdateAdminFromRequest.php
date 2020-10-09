@@ -18,9 +18,9 @@ class UpdateAdminFromRequest
         $profile = Auth::user();
         if (Hash::make($request->get('password'))) {
             $stripe = app(StripeClient::class);
-            if ($profile->stripe_id == $stripe) {
+            if ($profile->stripe_customer_id == $stripe) {
                  $stripe->customers->update(
-                    $profile->stripe_id,
+                    $profile->stripe_customer_id,
                     ['email' => $request->get('email'),]);
             }
             $profile->forceFill([

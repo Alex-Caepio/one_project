@@ -17,14 +17,22 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use Stripe\StripeClient;
 
 
 class AuthController extends Controller
 {
-    public function register(RegisterRequest $request)
+    public function register(RegisterRequest $request, StripeClient $stripe)
     {
-        $customer = run_action(CreateStripeUserByEmail::class, $request->email);
-        $user = run_action(CreateUserFromRequest::class, $request, ['stripe_id' => $customer->id]);
+        $stripeCustomer = run_action(CreateStripeUserByEmail::class, $request->email);
+        $stripeAccount = $stripe->accounts->create([
+            'type' => 'standard',
+            'email' => $request->email,
+        ]);
+        $user = run_action(CreateUserFromRequest::class, $request, [
+            'stripe_customer_id' => $stripeCustomer->id,
+            'stripe_account_id' => $stripeAccount->id
+        ]);
 
         $token = $user->createToken('access-token');
         $user->withAccessToken($token);

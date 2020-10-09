@@ -20,7 +20,7 @@ abstract class TestCase extends BaseTestCase
             $attributes
         );
 
-        return  User::factory()->create($attributes);
+        return User::factory()->create($attributes);
     }
 
     public function createAdmin(array $attributes = [])

@@ -12,7 +12,6 @@ return [
     | any other location as required by the application or its packages.
     |
     */
-    'frontend_password_reset_link' => env('PASSWORD_RESET_FRONTEND_LINK'),
 
     'name' => env('APP_NAME', 'Laravel'),
 
@@ -55,6 +54,9 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
     'frontend_url' => env('FRONTEND_URL', 'http://localhost'),
+    'frontend_stripe_account_refresh' => env('FRONTEND_STRIPE_ACCOUNT_REFRESH', 'http://localhost'),
+    'frontend_stripe_account_redirect_back' => env('FRONTEND_STRIPE_ACCOUNT_REDIRECT_BACK', 'http://localhost'),
+    'frontend_password_reset_link' => env('PASSWORD_RESET_FRONTEND_LINK'),
     'frontend_reset_password_form_url' => env('FRONTEND_URL_RESET_PASSWORD_FORM', 'http://localhost'),
     'asset_url' => env('ASSET_URL', null),
 

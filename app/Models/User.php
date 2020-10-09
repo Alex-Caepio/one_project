@@ -16,6 +16,8 @@ use Laravel\Sanctum\HasApiTokens;
  * @property string email
  * @property string last_name
  * @property string first_name
+ * @property string stripe_customer_id
+ * @property string stripe_account_id
  * @property Carbon email_verified_at
  *
  * @package App\Models

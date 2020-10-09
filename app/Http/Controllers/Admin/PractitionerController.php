@@ -31,7 +31,7 @@ class PractitionerController extends Controller
     public function store(RegisterRequest $request)
     {
         $customer = run_action(CreateStripeUserByEmail::class, $request->email);
-        $user = run_action(CreatePractitionerFromRequest::class, $request, ['stripe_id' => $customer->id, 'is_admin' => null, 'account_type' => 'practitioner']);
+        $user = run_action(CreatePractitionerFromRequest::class, $request, ['stripe_customer_id' => $customer->id, 'is_admin' => null, 'account_type' => 'practitioner']);
 
         $token = $user->createToken('access-token');
         $user->withAccessToken($token);

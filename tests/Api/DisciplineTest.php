@@ -47,12 +47,11 @@ class DisciplineTest extends TestCase
     {
         $filterTwo = Discipline::factory()->make(['is_published' => true]);
         $response = $this->json('get', "api/disciplines/filter", [
-            'title' => $filterTwo->title,
+            'name' => $filterTwo->name,
+            'url' => $filterTwo->url,
         ]);
 
-        $response->assertOk()->assertJson([[
-            'title' => $filterTwo->title,
-        ]]);
+        $response->assertOk($filterTwo);
     }
 
     public function test_all_image_discipline(): void

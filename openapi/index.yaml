@@ -265,6 +265,10 @@ components:
         is_published:
           type: boolean
           example: true
+        is_admin:
+          type: boolean
+          nullable: true
+          example: false
         mobile_number:
           type: string
           nullable: true
@@ -546,6 +550,11 @@ paths:
       responses:
         "200":
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1api~1auth~1register/post/responses/200/content/application~1js\
+                  on/schema"
   /api/auth/verify-forgot-password-token:
     post:
       operationId: verify-forgot-password-token

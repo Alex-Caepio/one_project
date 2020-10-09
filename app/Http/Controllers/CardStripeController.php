@@ -16,9 +16,9 @@ class CardStripeController extends Controller
         return response($allCardsUser);
     }
 
-    public function store()
+    public function store(StripeClient $stripe)
     {
-        run_action(StoreCardUser::class);
+        run_action(StoreCardUser::class,$stripe);
     }
 
 }

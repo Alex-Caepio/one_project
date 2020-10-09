@@ -113,6 +113,10 @@ auth/forgot-password-claim:
     responses:
       '200':
         description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/UserLogin.yaml'
 
 auth/verify-forgot-password-token:
   post:

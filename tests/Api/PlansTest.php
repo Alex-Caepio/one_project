@@ -23,6 +23,13 @@ class PlansTest extends TestCase
         $this->user = $this->createUser();
         $this->login($this->user);
     }
+    public function test_get_service_types_plan(): void
+    {
+
+        Plan::factory()->create();
+        $response = $this->json('get', "/api/plans");
+        $response->assertOk();
+    }
 
     public function test_user_can_subscribe_to_a_plan(): void
     {

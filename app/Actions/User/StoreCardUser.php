@@ -9,10 +9,9 @@ use Stripe\StripeClient;
 
 class StoreCardUser
 {
-    public function execute()
+    public function execute(StripeClient $stripe)
     {
-        $stripe_id = Auth::user()->stripe_id;
-        $stripe = app(StripeClient::class);
+        $stripe_id = Auth::user()->stripe_customer_id;
         $stripe->customers->createSource($stripe_id, ['source' => 'tok_visa']);
     }
 }
