@@ -58,7 +58,7 @@ class EmailVariables
 
     public function getPlatform_name()
     {
-        return 'lister';
+        return 'Oneness';
     }
 
     public function getPractitioner_URL()
