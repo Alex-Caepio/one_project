@@ -32,6 +32,7 @@ class RegisterRequest extends FormRequest
                 'required',
                 Rule::in(['client', 'practitioner']),
             ],
+            'accepted_terms' => 'required|accepted'
         ];
     }
 
