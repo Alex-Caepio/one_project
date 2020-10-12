@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Hash;
 
 class CreateUserFromRequest
 {
-    public static $safeFields = ['first_name', 'last_name', 'email', 'password','account_type'];
+    public static $safeFields = ['first_name', 'last_name', 'email', 'password','account_type', 'emails_holistify_update'];
 
     public function execute(Request $request, array $overrides): User
     {

@@ -38,11 +38,13 @@ class AuthTest extends TestCase
     {
         $user    = User::factory()->make();
         $payload = [
-            'first_name'   => $user->first_name,
-            'last_name'    => $user->last_name,
-            'email'        => $user->email,
-            'password'     => $user->password,
-            'account_type' => 'client'
+            'first_name'     => $user->first_name,
+            'last_name'      => $user->last_name,
+            'email'          => $user->email,
+            'password'       => $user->password,
+            'account_type'   => 'client',
+            'accepted_terms' => true,
+            'emails_holistify_update' => true,
         ];
 
         $response = $this->json('post', '/api/auth/register', $payload);
