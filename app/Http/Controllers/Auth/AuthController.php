@@ -33,7 +33,7 @@ class AuthController extends Controller
             'stripe_customer_id' => $stripeCustomer->id,
             'stripe_account_id' => $stripeAccount->id
         ]);
-        
+
         event(new UserRegistered($user));
 
         return fractal($user, new UserTransformer())
@@ -93,13 +93,13 @@ class AuthController extends Controller
 
     public function verifyEmail(Request $request)
     {
-        if (!$request->hasValidSignature()) {
+        if (!$request->hasValidSignature() || !$request->user || !$request->email) {
             abort(401);
         }
 
         $user = User::where('id', $request->user)
             ->where('email', $request->email)
-            ->first();
+            ->firstOrFail();
 
         $user->email_verified_at = now();
         $user->save();
