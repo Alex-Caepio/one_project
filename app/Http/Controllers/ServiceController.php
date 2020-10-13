@@ -2,30 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\ServiceListingLive;
-use App\Events\ServiceUnpublished;
-use App\Filters\ServiceFiltrator;
-use App\Http\Requests\Request;
-use App\Http\Requests\Services\StoreServiceRequest;
-use App\Http\Requests\Services\UpdateServiceRequest;
-use App\Models\Schedule;
 use App\Models\Service;
-use App\Transformers\ScheduleTransformer;
+use App\Http\Requests\Request;
+use App\Filters\ServiceFiltrator;
+use App\Events\ServiceListingLive;
 use App\Transformers\ServiceTransformer;
+use App\Http\Requests\Services\StoreServiceRequest;
 use Illuminate\Support\Facades\Auth;
 
 class ServiceController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Service::query();
+        $query         = Service::query();
         $serviceFilter = new ServiceFiltrator();
         $serviceFilter->apply($query, $request);
 
         $includes = $request->getIncludes();
 
         $paginator = $query->with($includes)->paginate($request->getLimit());
-        $services = $paginator->getCollection();
+        $services  = $paginator->getCollection();
 
         $fractal = fractal($services, new ServiceTransformer())
             ->parseIncludes($includes)
@@ -45,19 +41,41 @@ class ServiceController extends Controller
 
     public function store(StoreServiceRequest $request)
     {
-        $user = $request->user();
-        $data = $request->all();
+        $user    = $request->user();
+        $data    = $request->all();
         $service = $user->services()->create($data);
-        if(!$service){
-            event(new ServiceUnpublished($service, $user));
+
+        if($request->filled('media_images')){
+//            $mediaImages = collect($request->get('media_images'));
+            $service->mediaImages()->createMany($request->get('media_images'));
         }
-        event(new ServiceListingLive($service, $user));
+
         return fractal($service, new ServiceTransformer())->respond();
     }
 
     public function update(Request $request, Service $service)
     {
         $service->update($request->all());
+        return fractal($service, new ServiceTransformer())->respond();
+    }
+
+    public function publish(Request $request, Service $service)
+    {
+        $service->is_published = true;
+        $service->save();
+        $service->fresh();
+
+        event(new ServiceListingLive($service, $request->user()));
+
+        return fractal($service, new ServiceTransformer())->respond();
+    }
+
+    public function unpublish(Service $service)
+    {
+        $service->is_published = false;
+        $service->save();
+        $service->fresh();
+
         return fractal($service, new ServiceTransformer())->respond();
     }
 
