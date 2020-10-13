@@ -33,14 +33,10 @@ class AuthController extends Controller
             'stripe_customer_id' => $stripeCustomer->id,
             'stripe_account_id' => $stripeAccount->id
         ]);
-
-        $token = $user->createToken('access-token');
-        $user->withAccessToken($token);
-
+        
         event(new UserRegistered($user));
 
         return fractal($user, new UserTransformer())
-            ->parseIncludes('access_token')
             ->respond();
     }
 
