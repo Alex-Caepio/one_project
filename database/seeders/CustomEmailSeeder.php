@@ -26,8 +26,14 @@ class CustomEmailSeeder extends Seeder
                 'from_title' => Str::random(8),
                 'subject' => '{{platform_name}} Email Verification',
                 'logo' => Str::random(5),
-                'text' => 'Hi {{first_name}} Thank you for creating your Client Account on {{platform_name}}. We are extremely excited to welcome you and empower you on your personal transformation journey.
-To begin, please verify your email by clicking on the button below or copying and pasting the long URL into your browser: Verify Email {{email_verification_url}} Thank you The {{platform_name}} Team',
+                'text' => 'Hi {{first_name}} <br/>
+Thank you for creating your Client Account on {{platform_name}}. We are extremely excited to welcome you and empower you on your personal transformation journey. <br/>
+ <br/>
+To begin, please verify your email by clicking on the button below or copying and pasting the long URL into your browser:  <br/>
+<a href="{{email_verification_url}}">Verify Email</a> <br/>
+ <br/>
+Thank you <br/>
+The {{platform_name}} Team <br/>',
                 'delay' => rand(5, 20)
             ],
             //2
@@ -38,10 +44,15 @@ To begin, please verify your email by clicking on the button below or copying an
                 'from_title' => Str::random(8),
                 'subject' => '{[platform_name}} Email Verification',
                 'logo' => Str::random(5),
-                'text' => 'Hi {{first_name}} Thank you for creating your Practitioner Account on {{platform_name}}. We are extremely excited to welcome you and to empower you in your Business.
-You will be able to advertise your business and sell your services and book the services of other practitioners. Here is a guide to help you get started.
-To begin, please verify your email by clicking on the button below or copying and pasting the long URL into your browser:
-{{verify_email}} {{email_verification_url}} Thank you The {{platform_name}} Team',
+                'text' => 'Hi {{first_name}} <br/>
+Thank you for creating your Practitioner Account on {{platform_name}}. We are extremely excited to welcome you and to empower you in your Business.<br/>
+<br/>
+You will be able to advertise your business and sell your services and book the services of other practitioners. Here is a guide to help you get started.<br/>
+To begin, please verify your email by clicking on the button below or copying and pasting the long URL into your browser:<br/>
+<a href="{{email_verification_url}}">Verify Email</a> <br/>
+<br/>
+Thank you <br/>
+The {{platform_name}} Team<br/>',
                 'delay' => rand(5, 20)
             ],
             //3
