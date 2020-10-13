@@ -16,7 +16,6 @@ class LoginRequest extends FormRequest
      */
     public function authorize()
     {
-
         return true;
     }
 
@@ -26,17 +25,22 @@ class LoginRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'required|email',
+            'email'    => 'required|email',
             'password' => 'required',
         ];
     }
 
     public function withValidator($validator)
     {
-        $result = User::where('email', $this->get('email'))->first();
-        $validator->after(function ($validator) use ($result) {
-            if (!$result || !Hash::check($this->get('password'), $result->password)) {
+        $user = User::where('email', $this->get('email'))->first();
+        $validator->after(function ($validator) use ($user) {
+            if (!$user || !Hash::check($this->get('password'), $user->password)) {
                 $validator->errors()->add('email', 'The Email and Password were not valid');
+                return;
+            }
+
+            if (!$user->email_verified_at) {
+                $validator->errors()->add('email', 'The email has to be verified first');
             }
         });
     }
