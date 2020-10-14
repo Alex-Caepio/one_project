@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddStripeAccountTokenUsersTable extends Migration
+class AddsDisciplineDisciplineTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,11 @@ class AddStripeAccountTokenUsersTable extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            //
+        Schema::create('discipline_discipline', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedInteger('parent_id');
+            $table->unsignedInteger('related_id');
+            $table->timestamps();
         });
     }
 
@@ -25,8 +28,6 @@ class AddStripeAccountTokenUsersTable extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('discipline_discipline');
     }
 }

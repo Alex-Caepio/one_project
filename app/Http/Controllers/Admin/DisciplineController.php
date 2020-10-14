@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Discipline;
+use App\Http\Requests\Request;
+use App\Http\Controllers\Controller;
+use App\Transformers\DisciplineTransformer;
 use App\Actions\Discipline\DisciplineStore;
 use App\Actions\Discipline\DisciplineUpdate;
-use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\DisciplineStoreRequest;
 use App\Http\Requests\Admin\DisciplinePublishRequest;
-use App\Http\Requests\Request;
-use App\Models\Discipline;
-use App\Models\DisciplineImage;
-use App\Models\DisciplineVideo;
-use App\Transformers\DisciplineTransformer;
+use Illuminate\Support\Str;
 
 class
 DisciplineController extends Controller
@@ -19,36 +19,34 @@ DisciplineController extends Controller
     public function index(Request $request)
     {
         $discipline = Discipline::all();
-        return fractal($discipline, new DisciplineTransformer())->parseIncludes($request->getIncludes())
-            ->toArray();
+        return fractal($discipline, new DisciplineTransformer())
+            ->parseIncludes($request->getIncludes())
+            ->respond();
     }
 
-    public function store(Request $request)
+    public function store(DisciplineStoreRequest $request)
     {
-        run_action(DisciplineStore::class, $request);
-    }
+        $data = $request->all();
+        $url = $data['url'] ?? to_url($data['name']);
+        $data['url'] = $url;
+        $discipline = Discipline::create($data);
 
-    public function storeImage(Request $request, Discipline $discipline)
-    {
-        $path = public_path('\img\discipline\\' . $discipline->id . '\\');
-        $fileName = $request->file('image')->getClientOriginalName();
-        $request->file('image')->move($path, $fileName);
-        $imageDiscipline = new DisciplineImage();
-        $imageDiscipline->forceFill([
-            'discipline_id' => $discipline->id,
-            'path' => $path . $fileName,
-        ]);
-        $imageDiscipline->save();
-    }
+        if ($request->filled('featured_practitioners')) {
+            $discipline->featured_practitioners()->sync($request->get('featured_practitioners'));
+        }
+        if ($request->filled('featured_services')) {
+            $discipline->featured_services()->sync($request->get('featured_services'));
+        }
+        if ($request->filled('focus_areas')) {
+            $discipline->focus_areas()->sync($request->get('focus_areas'));
+        }
+        if ($request->filled('related_disciplines')) {
+            $discipline->related_disciplines()->sync($request->get('related_disciplines'));
+        }
 
-    public function storeVideo(Request $request, Discipline $discipline)
-    {
-        $videoDiscipline = new DisciplineVideo();
-        $videoDiscipline->forceFill([
-            'discipline_id' => $discipline->id,
-            'link' => $request->get('link'),
-        ]);
-        $videoDiscipline->save();
+        return fractal($discipline, new DisciplineTransformer())
+            ->parseIncludes($request->getIncludes())
+            ->respond();
     }
 
     public function show(Discipline $discipline, Request $request)
@@ -82,6 +80,12 @@ DisciplineController extends Controller
             'is_published' => true,
         ]);
         $discipline->update();
+    }
+
+    public function toUrl($string)
+    {
+        $kebab = Str::kebab($string);
+        return  preg_replace("/[^a-zA-Z0-9\-]+/", "", $kebab);
     }
 
 }

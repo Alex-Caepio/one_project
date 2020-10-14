@@ -1,4 +1,7 @@
 <?php
+
+use Illuminate\Support\Str;
+
 if (!function_exists('run_action')) {
     /**
      * @param $actionClass
@@ -12,5 +15,13 @@ if (!function_exists('run_action')) {
             : app($actionClass);
 
         return call_user_func([$object, 'execute'], ...$arguments);
+    }
+}
+
+if (!function_exists('to_url')) {
+    function to_url(string $string): string
+    {
+        $kebab = Str::kebab(trim($string));
+        return  preg_replace("/[^a-zA-Z0-9-]+/", "", $kebab);
     }
 }

@@ -13,27 +13,34 @@ class DisciplineTransformer extends Transformer
 {
     protected $availableIncludes = ['services', 'articles',
         'focus_areas', 'practitioners', 'discipline_videos',
-        'discipline_images','featured_practitioners','featured_services'];
+        'discipline_images', 'featured_practitioners', 'featured_services'];
 
     public function transform(Discipline $discipline)
     {
         return [
-            'id' => $discipline->id,
-            'name' => $discipline->name,
-            'is_published' => (bool) $discipline->is_published,
-            'url' => $discipline->url,
-            'created_at' => $discipline->created_at,
-            'updated_at' => $discipline->updated_at,
+            'id'           => $discipline->id,
+            'name'         => $discipline->name,
+            'introduction' => $discipline->introduction,
+            'description'  => $discipline->description,
+            'url'          => $discipline->url,
+            'banner_url'   => $discipline->banner_url,
+            'icon_url'     => $discipline->icon_url,
+            'is_published' => (bool)$discipline->is_published,
+            'created_at'   => $this->dateTime($discipline->created_at),
+            'updated_at'   => $this->dateTime($discipline->updated_at),
         ];
     }
+
     public function includeFeaturedPractitioners(Discipline $discipline)
     {
         return $this->collectionOrNull($discipline->featured_practitioners, new UserTransformer());
     }
+
     public function includeFeaturedServices(Discipline $discipline)
     {
         return $this->collectionOrNull($discipline->featured_services, new ServiceTransformer());
     }
+
     public function includeServices(Discipline $discipline)
     {
         return $this->collectionOrNull($discipline->services, new ServiceTransformer());
