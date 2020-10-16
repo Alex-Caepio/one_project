@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\PublishRequest;
 use App\Http\Requests\Auth\RegisterRequest;
+use App\Http\Requests\Auth\UpdateRequest;
 use App\Models\User;
 use App\Transformers\UserTransformer;
 use DB;
@@ -25,13 +26,13 @@ class AuthController extends Controller
     public function register(RegisterRequest $request, StripeClient $stripe)
     {
         $stripeCustomer = run_action(CreateStripeUserByEmail::class, $request->email);
-        $stripeAccount = $stripe->accounts->create([
-            'type' => 'standard',
+        $stripeAccount  = $stripe->accounts->create([
+            'type'  => 'standard',
             'email' => $request->email,
         ]);
-        $user = run_action(CreateUserFromRequest::class, $request, [
+        $user           = run_action(CreateUserFromRequest::class, $request, [
             'stripe_customer_id' => $stripeCustomer->id,
-            'stripe_account_id' => $stripeAccount->id
+            'stripe_account_id'  => $stripeAccount->id
         ]);
 
         event(new UserRegistered($user));
@@ -53,7 +54,7 @@ class AuthController extends Controller
 
     public function publish(PublishRequest $request)
     {
-        $user = $request->user();
+        $user               = $request->user();
         $user->is_published = true;
         $user->save();
         return fractal($request->user(), new UserTransformer())
@@ -66,12 +67,13 @@ class AuthController extends Controller
             ->respond();
     }
 
-    public function update(Request $request)
+    public function update(UpdateRequest $request)
     {
-        Auth::user()->update($request->all());
-        $user = Auth::user();
+        $user = $request->user();
+        $user->update($request->all());
         if ($request->filled('password')) {
-            Hash::make($request->get('password'));
+            $user->password = Hash::make($request->get('password'));
+            $user->save();
             event(new PasswordChanged($user));
         }
         return fractal($user, new UserTransformer())->respond();
@@ -79,14 +81,14 @@ class AuthController extends Controller
 
     public function avatar(Request $request)
     {
-        $path = public_path('\img\profile\\' . Auth::id() . '\\');
+        $path     = public_path('\img\profile\\' . Auth::id() . '\\');
         $fileName = $request->file('image')->getClientOriginalName();
         $request->file('avatar')->move($path, $fileName);
     }
 
     public function background(Request $request)
     {
-        $path = public_path('\img\profile\\' . Auth::id() . '\\');
+        $path     = public_path('\img\profile\\' . Auth::id() . '\\');
         $fileName = $request->file('image')->getClientOriginalName();
         $request->file('background')->move($path, $fileName);
     }
