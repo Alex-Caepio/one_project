@@ -33,7 +33,7 @@ use App\Http\Controllers\CountryController;
 
 Route::post('auth/register', [AuthController::class, 'register']);
 Route::post('auth/login', [AuthController::class, 'login']);
-Route::get('auth/verify-email', [AuthController::class, 'verifyEmail'])->name('verify-email');
+Route::post('auth/verify-email', [AuthController::class, 'verifyEmail'])->name('verify-email');
 
 Route::post('auth/forgot-password-ask', [ResetPasswordController::class, 'askForReset']);
 Route::post('auth/verify-forgot-password-token', [ResetPasswordController::class, 'verifyToken']);
