@@ -49,14 +49,41 @@ components:
       properties:
         id:
           type: integer
+          example: 123
         name:
           type: string
-        url:
-          type: string
+          example: Yoga practice
         introduction:
           type: string
+          nullable: true
+          example: Yoga desc
         description:
           type: string
+          nullable: true
+          example: Yoga loooooong description
+        url:
+          type: string
+          nullable: true
+          example: yoga-practice
+        icon_url:
+          type: string
+          nullable: true
+          example: http://cdn.com/yoga-practice.png
+        banner_url:
+          type: string
+          nullable: true
+          example: http://cdn.com/yoga-practice.png
+        is_published:
+          type: boolean
+          nullable: true
+          example: true
+        created_at:
+          type: string
+          nullable: true
+        updated_at:
+          type: string
+          nullable: true
+          format: date-time
     FocusArea:
       type: object
       properties:
@@ -315,6 +342,12 @@ paths:
                   enum:
                     - client
                     - practitioner
+                accepted_terms:
+                  type: boolean
+                  example: true
+                emails_holistify_update:
+                  type: boolean
+                  example: true
       responses:
         "200":
           description: OK
@@ -418,6 +451,48 @@ paths:
                         - The first name may not be greater than 30 characters.
                       last_name:
                         - The last name may not be greater than 30 characters.
+  /auth/verify-email:
+    get:
+      operationId: verify-email
+      tags:
+        - Auth
+      parameters:
+        - name: email
+          in: query
+          description: Email of a user
+          required: true
+          schema:
+            type: string
+            example: eleanor.rigby@gmail.com
+        - name: expires
+          in: query
+          description: Timestamp of signature expiration (48 hours by default)
+          required: true
+          schema:
+            type: integer
+            example: 1603004168
+        - name: user
+          in: query
+          description: User ID
+          required: true
+          schema:
+            type: integer
+            example: 9
+        - name: signatire
+          in: query
+          description: Unique hash signature of a request
+          required: true
+          schema:
+            type: string
+            example: d521f3be510b5a8b77124ae82bf3123e528424174e9536ae759b26f88e673b5d
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1api~1auth~1register/post/responses/200/content/application~1js\
+                  on/schema"
   /api/auth/profile:
     get:
       operationId: get-current-user-info
@@ -850,3 +925,76 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/User"
+  /admin/disciplines:
+    post:
+      tags:
+        - Discipline
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  example: Yoga practice
+                introduction:
+                  type: string
+                  nullable: true
+                  example: Yoga desc
+                description:
+                  type: string
+                  nullable: true
+                  example: Yoga loooooong description
+                url:
+                  type: string
+                  nullable: true
+                  example: yoga-practice
+                icon_url:
+                  type: string
+                  nullable: true
+                  example: http://cdn.com/yoga-practice.png
+                banner_url:
+                  type: string
+                  nullable: true
+                  example: http://cdn.com/yoga-practice.png
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Discipline"
+    get:
+      tags:
+        - Discipline
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Discipline"
+  "/admin/diciplines/{id}":
+    get:
+      tags:
+        - Discipline
+      parameters:
+        - name: id
+          in: path
+          description: Discipline ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Discipline"

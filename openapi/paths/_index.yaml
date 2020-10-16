@@ -1,6 +1,8 @@
 #auth
 /api/auth/register:
   $ref: "./Auth.yaml#/auth~1register"
+/auth/verify-email:
+  $ref: "./Auth.yaml#/auth~1verify-email"
 /api/auth/profile:
   $ref: "./Auth.yaml#/auth~1profile"
 /api/auth/login:
@@ -53,3 +55,7 @@
 ## ADMIN ENDPOINTS
 /admin/profile:
   $ref: "./AdminProfile.yaml#/profile"
+/admin/disciplines:
+  $ref: "./AdminDiscipline.yaml#/disciplines"
+/admin/diciplines/{id}:
+  $ref: "./AdminDiscipline.yaml#/disciplines~1{id}"

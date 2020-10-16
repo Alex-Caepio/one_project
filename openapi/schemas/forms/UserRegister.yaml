@@ -21,4 +21,7 @@ properties:
   accepted_terms:
     type: boolean
     example: true
+  emails_holistify_update:
+    type: boolean
+    example: true
 

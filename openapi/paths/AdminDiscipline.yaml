@@ -1,0 +1,52 @@
+disciplines:
+  post:
+    tags:
+      - Discipline
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/forms/admin/Discipline.yaml'
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/Discipline.yaml'
+  get:
+    tags:
+      - Discipline
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../schemas/Discipline.yaml'
+
+disciplines/{id}:
+  get:
+    tags:
+      - Discipline
+    parameters:
+      - $ref: "#/parameters/id"
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/Discipline.yaml'
+
+parameters:
+  id:
+    name: id
+    in: path
+    description: Discipline ID
+    required: true
+    schema:
+      type: integer
