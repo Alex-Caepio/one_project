@@ -38,6 +38,12 @@ auth/profile:
     operationId: update-current-user-info
     tags:
       - Auth
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/forms/UserUpdate.yaml'
     responses:
       '200':
         description: OK
@@ -136,16 +142,39 @@ auth/verify-forgot-password-token:
         description: Token has expired
 
 auth/verify-email:
-  post:
+  get:
     operationId: verify-email
     tags:
       - Auth
-    requestBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            $ref: '../schemas/forms/VerifyEmail.yaml'
+    parameters:
+      - name: email
+        in: query
+        description: Email of a user
+        required: true
+        schema:
+          type: string
+          example: eleanor.rigby@gmail.com
+      - name: expires
+        in: query
+        description: Timestamp of signature expiration (48 hours by default)
+        required: true
+        schema:
+          type: integer
+          example: 1603004168
+      - name: user
+        in: query
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          example: 9
+      - name: signatire
+        in: query
+        description: Unique hash signature of a request
+        required: true
+        schema:
+          type: string
+          example: d521f3be510b5a8b77124ae82bf3123e528424174e9536ae759b26f88e673b5d
     responses:
       '200':
         description: OK
