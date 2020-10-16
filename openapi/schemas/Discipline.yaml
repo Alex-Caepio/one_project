@@ -4,9 +4,19 @@ properties:
     type: integer
   name:
     type: string
-  url:
-    type: string
   introduction:
     type: string
   description:
+    type: string
+  url:
+    type: string
+  icon_url:
+    type: string
+  banner_url:
+    type: string
+  is_published:
+    type: boolean
+  created_at:
+    type: string
+  updated_at:
     type: string
