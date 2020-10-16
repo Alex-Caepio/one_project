@@ -17,21 +17,21 @@ DisciplineController extends Controller
 {
     public function index(Request $request)
     {
-        $includes = $request->getIncludes();
+        $includes   = $request->getIncludes();
         $discipline = Discipline::with($includes)
             ->paginate($request->getLimit());
 
-        return fractal($discipline, new DisciplineTransformer())
-            ->parseIncludes($includes)
-            ->respond();
+        return response(fractal($discipline->getCollection(), new DisciplineTransformer())
+            ->parseIncludes($includes)->toArray())
+            ->withPaginationHeaders($discipline);
     }
 
     public function store(DisciplineStoreRequest $request)
     {
-        $data = $request->all();
-        $url = $data['url'] ?? to_url($data['name']);
+        $data        = $request->all();
+        $url         = $data['url'] ?? to_url($data['name']);
         $data['url'] = $url;
-        $discipline = Discipline::create($data);
+        $discipline  = Discipline::create($data);
 
         if ($request->filled('featured_practitioners')) {
             $discipline->featured_practitioners()->sync($request->get('featured_practitioners'));
@@ -76,7 +76,8 @@ DisciplineController extends Controller
         ]);
         $discipline->update();
     }
-    public function publish(Discipline $discipline,DisciplinePublishRequest $request)
+
+    public function publish(Discipline $discipline, DisciplinePublishRequest $request)
     {
         $discipline->forceFill([
             'is_published' => true,
@@ -87,7 +88,7 @@ DisciplineController extends Controller
     public function toUrl($string)
     {
         $kebab = Str::kebab($string);
-        return  preg_replace("/[^a-zA-Z0-9\-]+/", "", $kebab);
+        return preg_replace("/[^a-zA-Z0-9\-]+/", "", $kebab);
     }
 
 }

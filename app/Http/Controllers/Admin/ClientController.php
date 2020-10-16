@@ -31,15 +31,19 @@ class ClientController extends Controller
     public function index(Request $request)
     {
         $paginator = User::where('account_type', 'client')->paginate($request->getLimit());
-        $user = $paginator->getCollection();
-        return response(fractal($user, new UserTransformer())->parseIncludes($request->getIncludes()))
+        $user      = $paginator->getCollection();
+        return response(
+            fractal($user, new UserTransformer())
+                ->parseIncludes($request->getIncludes())
+                ->toArray()
+        )
             ->withPaginationHeaders($paginator);
     }
 
     public function store(RegisterRequest $request)
     {
         $customer = run_action(CreateStripeUserByEmail::class, $request->email);
-        $user = run_action(CreateUserFromRequest::class, $request, ['stripe_customer_id' => $customer->id, 'is_admin' => null, 'account_type' => 'client']);
+        $user     = run_action(CreateUserFromRequest::class, $request, ['stripe_customer_id' => $customer->id, 'is_admin' => null, 'account_type' => 'client']);
 
         $token = $user->createToken('access-token');
         $user->withAccessToken($token);
@@ -66,9 +70,9 @@ class ClientController extends Controller
     public function destroy(User $client, ClientDestroyRequest $request)
     {
         $client->delete();
-       // event(new BookingCancelledByClient($client));
-       // event(new AccountUpgradedToPractitioner($client));
-       // event(new AccountTerminatedByAdmin($client));
+        // event(new BookingCancelledByClient($client));
+        // event(new AccountUpgradedToPractitioner($client));
+        // event(new AccountTerminatedByAdmin($client));
         //event(new AccountDeleted($client));
         return response(null, 204);
     }
@@ -76,7 +80,7 @@ class ClientController extends Controller
     protected function sendVerificationEmail($user)
     {
         $linkApi = URL::temporarySignedRoute('verify-email', now()->addMinute(60), [
-            'user' => $user->id,
+            'user'  => $user->id,
             'email' => $user->email
         ]);
 
