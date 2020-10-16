@@ -10,7 +10,10 @@ class Discipline extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'url'];
+    protected $fillable = [
+        'name', 'url', 'icon_url', 'banner_url',
+        'introduction', 'description'
+    ];
 
     public function featured_practitioners(): BelongsToMany
     {
