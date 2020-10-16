@@ -15,12 +15,14 @@ use Illuminate\Support\Str;
 class
 DisciplineController extends Controller
 {
-
     public function index(Request $request)
     {
-        $discipline = Discipline::all();
+        $includes = $request->getIncludes();
+        $discipline = Discipline::with($includes)
+            ->paginate($request->getLimit());
+
         return fractal($discipline, new DisciplineTransformer())
-            ->parseIncludes($request->getIncludes())
+            ->parseIncludes($includes)
             ->respond();
     }
 

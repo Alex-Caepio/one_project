@@ -103,7 +103,12 @@ class AuthController extends Controller
 
         $user->email_verified_at = now();
         $user->save();
-        response(null, 200);
+
+        $user->withAccessToken($user->createToken('access-token'));
+
+        return fractal($user, new UserTransformer())
+            ->parseIncludes('access_token')
+            ->respond();
     }
 
     public function resendVerification(Request $request)

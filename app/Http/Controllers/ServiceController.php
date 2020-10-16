@@ -46,7 +46,6 @@ class ServiceController extends Controller
         $service = $user->services()->create($data);
 
         if($request->filled('media_images')){
-//            $mediaImages = collect($request->get('media_images'));
             $service->mediaImages()->createMany($request->get('media_images'));
         }
 
