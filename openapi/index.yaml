@@ -80,6 +80,7 @@ components:
         created_at:
           type: string
           nullable: true
+          format: date-time
         updated_at:
           type: string
           nullable: true
@@ -452,39 +453,34 @@ paths:
                       last_name:
                         - The last name may not be greater than 30 characters.
   /auth/verify-email:
-    get:
+    post:
       operationId: verify-email
       tags:
         - Auth
-      parameters:
-        - name: email
-          in: query
-          description: Email of a user
-          required: true
-          schema:
-            type: string
-            example: eleanor.rigby@gmail.com
-        - name: expires
-          in: query
-          description: Timestamp of signature expiration (48 hours by default)
-          required: true
-          schema:
-            type: integer
-            example: 1603004168
-        - name: user
-          in: query
-          description: User ID
-          required: true
-          schema:
-            type: integer
-            example: 9
-        - name: signatire
-          in: query
-          description: Unique hash signature of a request
-          required: true
-          schema:
-            type: string
-            example: d521f3be510b5a8b77124ae82bf3123e528424174e9536ae759b26f88e673b5d
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - expires
+                - user
+                - signatire
+              properties:
+                email:
+                  type: string
+                  example: eleanor.rigby@gmail.com
+                expires:
+                  type: integer
+                  example: 1603004168
+                user:
+                  type: integer
+                  example: 9
+                signatire:
+                  type: string
+                  example: qd723bxqwp0qam2ey37cvbwasu
       responses:
         "200":
           description: OK
