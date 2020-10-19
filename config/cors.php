@@ -25,7 +25,18 @@ return [
 
     'allowed_headers' => ['*'],
 
-    'exposed_headers' => [],
+    'exposed_headers' => [
+        'X-pagination-current_page',
+        'X-pagination-last_page',
+        'X-pagination-per_page',
+        'X-pagination-from',
+        'X-pagination-to',
+        'X-pagination-total',
+        'X-pagination-first_page_url',
+        'X-pagination-last_page_url',
+        'X-pagination-prev_page_url',
+        'X-pagination-next_page_url',
+    ],
 
     'max_age' => 0,
 
