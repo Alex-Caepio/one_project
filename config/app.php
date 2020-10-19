@@ -58,6 +58,7 @@ return [
     'frontend_stripe_account_redirect_back' => env('FRONTEND_STRIPE_ACCOUNT_REDIRECT_BACK', 'http://localhost'),
     'frontend_password_reset_link' => env('PASSWORD_RESET_FRONTEND_LINK'),
     'frontend_reset_password_form_url' => env('FRONTEND_URL_RESET_PASSWORD_FORM', 'http://localhost'),
+    'frontend_email_confirm_page' => env('FRONTEND_EMAIL_CONFIRM_PAGE', 'http://localhost'),
     'asset_url' => env('ASSET_URL', null),
 
     /*

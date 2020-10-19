@@ -72,7 +72,7 @@ class EmailVariables
             'user' => $this->event->user->id,
             'email' => $this->event->user->email
         ]);
-        return config('app.frontend_password_reset_link') . '?' . explode('?', $linkApi)[1];
+        return config('app.frontend_email_confirm_page') . '?' . explode('?', $linkApi)[1];
     }
 
     public function getArticle_url()
