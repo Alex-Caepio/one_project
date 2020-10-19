@@ -2,29 +2,22 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Actions\Admin\CreateAdminFromRequest;
-use App\Actions\Stripe\CreateStripeUserByEmail;
-use App\Actions\User\CreateUserFromRequest;
-use App\Events\AccountDeleted;
-use App\Events\AccountTerminatedByAdmin;
-use App\Events\AccountUpgradedToPractitioner;
-use App\Events\BookingCancelledByClient;
+use App\Models\User;
+use App\Mail\VerifyEmail;
+use App\Http\Requests\Request;
 use App\Events\UserRegistered;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\ClientDestroyRequest;
-use App\Http\Requests\Admin\ClientShowRequest;
-use App\Http\Requests\Admin\ClientUpdateRequest;
-use App\Http\Requests\AdminUpdateRequest;
-use App\Http\Requests\Auth\RegisterRequest;
-use App\Http\Requests\Request;
-use App\Mail\VerifyEmail;
-use App\Models\User;
 use App\Transformers\UserTransformer;
+use App\Http\Requests\AdminUpdateRequest;
+use App\Actions\User\CreateUserFromRequest;
+use App\Http\Requests\Admin\ClientShowRequest;
+use App\Actions\Stripe\CreateStripeUserByEmail;
+use App\Http\Requests\Admin\ClientCreateRequest;
+use App\Http\Requests\Admin\ClientUpdateRequest;
+use App\Http\Requests\Admin\ClientDestroyRequest;
 use Hash;
-use Illuminate\Console\Scheduling\Event;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
-use Stripe\StripeClient;
 
 class ClientController extends Controller
 {
@@ -40,7 +33,7 @@ class ClientController extends Controller
             ->withPaginationHeaders($paginator);
     }
 
-    public function store(RegisterRequest $request)
+    public function store(ClientCreateRequest $request)
     {
         $customer = run_action(CreateStripeUserByEmail::class, $request->email);
         $user     = run_action(CreateUserFromRequest::class, $request, ['stripe_customer_id' => $customer->id, 'is_admin' => null, 'account_type' => 'client']);

@@ -45,6 +45,15 @@ DisciplineController extends Controller
         if ($request->filled('related_disciplines')) {
             $discipline->related_disciplines()->sync($request->get('related_disciplines'));
         }
+        if($request->filled('media_images')){
+            $discipline->mediaImages()->createMany($request->get('media_images'));
+        }
+        if($request->filled('media_videos')){
+            $discipline->mediaVideos()->createMany($request->get('media_videos'));
+        }
+        if($request->filled('media_files')){
+            $discipline->mediaFiles()->createMany($request->get('media_files'));
+        }
 
         return fractal($discipline, new DisciplineTransformer())
             ->parseIncludes($request->getIncludes())

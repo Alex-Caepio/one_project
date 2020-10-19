@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\CustomEmailController;
 use App\Http\Controllers\Admin\DisciplineController;
@@ -39,13 +40,15 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::put('/plans/{plan}', [PlanController::class, 'update']);
         Route::delete('/plans/{plan}', [PlanController::class, 'destroy']);
 
-        Route::get('/admins', [AdminController::class, 'index']);
-        Route::post('/admins', [AdminController::class, 'store']);
-        Route::get('/admins/{admin}', [AdminController::class, 'show']);
-        Route::put('/profile',[AdminController::class, 'update']);
-        Route::delete('/admins/{admin}', [AdminController::class, 'destroy']);
+        Route::put('/profile',[AdminProfileController::class, 'update']);
 
-        Route::get('/profile',[AdminController::class, 'indexProfile']);
+//        Route::get('/admins', [AdminController::class, 'index']);
+//        Route::post('/admins', [AdminController::class, 'store']);
+//        Route::get('/admins/{admin}', [AdminController::class, 'show']);
+//        Route::delete('/admins/{admin}', [AdminController::class, 'destroy']);
+
+        Route::get('/profile',[ProfileController::class, 'show']);
+        Route::put('/profile',[ProfileController::class, 'update']);
 
         Route::get('/focus-areas', [FocusAreaController::class, 'index']);
         Route::put('/focus-areas/{focusArea}/update', [FocusAreaController::class, 'update']);

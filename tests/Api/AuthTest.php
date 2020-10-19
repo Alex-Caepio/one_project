@@ -93,7 +93,6 @@ class AuthTest extends TestCase
             Hash::check('newPassword1', $this->user->password),
             'Password was not updated'
         );
-
     }
 
     public function test_user_update_password_logic(): void

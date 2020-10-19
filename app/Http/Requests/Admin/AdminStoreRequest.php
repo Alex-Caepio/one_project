@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Http\Requests\Auth;
-
+namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 
-class RegisterRequest extends FormRequest
+class AdminStoreRequest extends FormRequest
 {
     /**
-     * Authorization rules
+     * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
@@ -32,8 +32,6 @@ class RegisterRequest extends FormRequest
                 'required',
                 Rule::in(['client', 'practitioner']),
             ],
-            'accepted_terms'          => 'required|accepted',
-            'emails_holistify_update' => 'required|boolean',
         ];
     }
 
@@ -44,4 +42,5 @@ class RegisterRequest extends FormRequest
             'password.regex' => 'The password must include both uppercase and lowercase letters and at least one number'
         ];
     }
+
 }

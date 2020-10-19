@@ -21,7 +21,7 @@ class ClientTest extends TestCase
     public function test_all_client(): void
     {
         User::factory()->count(2)->create(['account_type' => 'client']);
-        $response = $this->json('get', "/admin/clients");
+        $response = $this->json('get', '/admin/clients');
 
         $response
             ->assertOk()->assertJsonStructure([
@@ -38,7 +38,7 @@ class ClientTest extends TestCase
             'email' => $user->email,
             'password' => $user->password,
             'account_type' => 'client'];
-        $response = $this->json('post', "/admin/clients", $payload);
+        $response = $this->json('post', '/admin/clients', $payload);
 
         $response->assertOk();
     }

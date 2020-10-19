@@ -34,7 +34,8 @@ class AppServiceProvider extends ServiceProvider
         );
 
         Relation::morphMap([
-            'service' => Service::class,
+            'service'    => Service::class,
+            'discipline' => Discipline::class,
         ]);
     }
 }

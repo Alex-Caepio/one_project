@@ -39,6 +39,16 @@ class Service extends Model
         return $this->morphMany(MediaImage::class, 'morphesTo', 'model_name', 'model_id');
     }
 
+    public function mediaVideos()
+    {
+        return $this->morphMany(MediaVideo::class, 'morphesTo', 'model_name', 'model_id');
+    }
+
+    public function mediaFiles()
+    {
+        return $this->morphMany(MediaFiles::class, 'morphesTo', 'model_name', 'model_id');
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

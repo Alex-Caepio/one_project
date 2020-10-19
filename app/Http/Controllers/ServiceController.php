@@ -49,6 +49,14 @@ class ServiceController extends Controller
             $service->mediaImages()->createMany($request->get('media_images'));
         }
 
+        if($request->filled('media_videos')){
+            $service->mediaVideos()->createMany($request->get('media_videos'));
+        }
+
+        if($request->filled('media_files')){
+            $service->mediaFiles()->createMany($request->get('media_files'));
+        }
+
         return fractal($service, new ServiceTransformer())->respond();
     }
 

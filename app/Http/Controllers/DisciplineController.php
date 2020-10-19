@@ -6,6 +6,7 @@ use App\Actions\Discipline\DisciplineFilter;
 use App\Http\Requests\Request;
 use App\Models\Discipline;
 use App\Transformers\DisciplineTransformer;
+use App\Http\Requests\Services\StoreDisciplineRequest;
 
 
 class DisciplineController extends Controller
@@ -16,6 +17,27 @@ class DisciplineController extends Controller
         return fractal($discipline, new DisciplineTransformer())
             ->parseIncludes($request->getIncludes())
             ->toArray();
+    }
+
+    public function store(StoreDisciplineRequest $request)
+    {
+        $user    = $request->user();
+        $data    = $request->all();
+        $service = $user->services()->create($data);
+
+        if($request->filled('media_images')){
+            $service->mediaImages()->createMany($request->get('media_images'));
+        }
+
+        if($request->filled('media_videos')){
+            $service->mediaVideos()->createMany($request->get('media_videos'));
+        }
+
+        if($request->filled('media_files')){
+            $service->mediaFiles()->createMany($request->get('media_files'));
+        }
+
+        return fractal($service, new DisciplineTransformer())->respond();
     }
     public function show(Discipline $discipline,Request $request)
     {
