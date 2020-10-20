@@ -25,7 +25,7 @@ class DisciplineTest extends TestCase
 
     public function test_index_discipline(): void
     {
-        Discipline::factory()->count(2)->create();
+        Discipline::factory()->count(10)->create();
         $this->json('get', "/admin/disciplines")
             ->assertOk()
             ->assertJsonStructure([self::$disciplineStructure]);

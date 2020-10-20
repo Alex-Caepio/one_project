@@ -32,13 +32,13 @@ class Request extends FormRequest
                 ?: config('api.pagination_limit_default');
     }
 
-    public function getPage()
+    public function getPage(): int
     {
         return (int)$this->query->get('page')
             ?: (int)$this->header('X-page') ?: 1;
     }
 
-    public function hasSearch()
+    public function hasSearch(): bool
     {
         return $this->filled('search');
     }
@@ -46,6 +46,21 @@ class Request extends FormRequest
     public function search()
     {
         return $this->search;
+    }
+
+    public function getOrderBy(): array
+    {
+        $options = explode(':', $this->orderBy);
+
+        return [
+            'column'    => $options[0] ?? null,
+            'direction' => $options[1] ?? null,
+        ];
+    }
+
+    public function hasOrderBy(): bool
+    {
+        return $this->has('orderBy');
     }
 
 }

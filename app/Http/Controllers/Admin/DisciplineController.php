@@ -19,6 +19,11 @@ DisciplineController extends Controller
     {
         $query = Discipline::query();
 
+        if ($request->hasOrderBy()) {
+            $order = $request->getOrderBy();
+            $query->orderBy($order['column'], $order['direction']);
+        }
+
         if ($request->hasSearch()) {
             $search = $request->search();
 
