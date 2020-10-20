@@ -11,11 +11,13 @@ use App\Models\FocusArea;
 
 class DisciplineTransformer extends Transformer
 {
-    protected $availableIncludes = ['services', 'articles',
-        'focus_areas', 'practitioners', 'discipline_videos',
-        'discipline_images', 'featured_practitioners', 'featured_services'];
+    protected $availableIncludes = [
+        'services', 'articles', 'focus_areas', 'practitioners',
+        'featured_practitioners', 'featured_services',
+        'media_images', 'media_videos', 'media_files'
+    ];
 
-    public function transform(Discipline $discipline)
+    public function transform(Discipline $discipline): array
     {
         return [
             'id'           => $discipline->id,
@@ -56,19 +58,23 @@ class DisciplineTransformer extends Transformer
         return $this->collectionOrNull($discipline->focus_areas, new FocusAreaTransformer());
     }
 
-    public function includeDisciplineVideos(Discipline $discipline)
-    {
-        return $this->collectionOrNull($discipline->discipline_videos, new DisciplineVideoTransformer());
-    }
-
-    public function includeDisciplineImage(Discipline $discipline)
-    {
-        return $this->collectionOrNull($discipline->discipline_images, new DisciplineImageTransformer());
-    }
-
     public function includePractitioners(Discipline $discipline)
     {
         return $this->collectionOrNull($discipline->practitioners, new UserTransformer());
     }
 
+    public function includeMediaImages(Discipline $discipline)
+    {
+        return $this->collectionOrNull($discipline->media_images, new MediaImageTransformer());
+    }
+
+    public function includeMediaVideos(Discipline $discipline)
+    {
+        return $this->collectionOrNull($discipline->media_videos, new MediaVideoTransformer());
+    }
+
+    public function includeMediaFiles(Discipline $discipline)
+    {
+        return $this->collectionOrNull($discipline->media_files, new MediaFileTransformer());
+    }
 }

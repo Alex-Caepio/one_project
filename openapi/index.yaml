@@ -1052,6 +1052,20 @@ paths:
           schema:
             type: integer
             example: 10
+        - name: with
+          in: query
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: featured_practitioners,featured_services,media_images,media_videos,media_files
+        - name: x-with
+          in: header
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: integer
+            example: featured_practitioners,featured_services,media_images,media_videos,media_files
       responses:
         "200":
           description: OK

@@ -83,9 +83,9 @@ class DisciplineTest extends TestCase
         self::assertCount(3, $discipline->featured_services);
         self::assertCount(3, $discipline->focus_areas);
         self::assertCount(3, $discipline->related_disciplines);
-        self::assertCount(2, $discipline->mediaImages);
-        self::assertCount(2, $discipline->mediaVideos);
-        self::assertCount(2, $discipline->mediaFiles);
+        self::assertCount(2, $discipline->media_images);
+        self::assertCount(2, $discipline->media_videos);
+        self::assertCount(2, $discipline->media_files);
     }
 
     public function test_url_saving(): void

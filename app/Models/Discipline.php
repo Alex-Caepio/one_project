@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Collection;
 
 /**
  * Class Discipline
@@ -18,6 +19,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @property string banner_url
  * @property string description
  * @property string introduction
+ * @property Collection media_images
+ * @property Collection media_videos
+ * @property Collection media_files
  * @property Carbon created_at
  * @property Carbon updated_at
  */
@@ -42,6 +46,9 @@ class Discipline extends Model
             ->withTimeStamps();
     }
 
+    /**
+     * @deprecated
+     */
     public function discipline_images(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(DisciplineImage::class);
@@ -84,17 +91,17 @@ class Discipline extends Model
             ->withTimeStamps();
     }
 
-    public function mediaImages()
+    public function media_images()
     {
         return $this->morphMany(MediaImage::class, 'morphesTo', 'model_name', 'model_id');
     }
 
-    public function mediaVideos()
+    public function media_videos()
     {
         return $this->morphMany(MediaVideo::class, 'morphesTo', 'model_name', 'model_id');
     }
 
-    public function mediaFiles()
+    public function media_files()
     {
         return $this->morphMany(MediaFiles::class, 'morphesTo', 'model_name', 'model_id');
     }
