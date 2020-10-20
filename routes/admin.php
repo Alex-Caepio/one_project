@@ -70,7 +70,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/disciplines/{discipline}/videos',[DisciplineController::class, 'storeVideo']);
         Route::get('/disciplines/{discipline}', [DisciplineController::class, 'show']);
         Route::put('/disciplines/{discipline}', [DisciplineController::class, 'update']);
-        Route::delete('/disciplines/{discipline}', [DisciplineController::class, 'destroy']);
         Route::post('/disciplines/{discipline}/unpublish', [DisciplineController::class, 'unpublish']);
         Route::post('/disciplines/{discipline}/publish', [DisciplineController::class, 'publish']);
 

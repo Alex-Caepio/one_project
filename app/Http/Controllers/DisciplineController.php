@@ -6,7 +6,7 @@ use App\Actions\Discipline\DisciplineFilter;
 use App\Http\Requests\Request;
 use App\Models\Discipline;
 use App\Transformers\DisciplineTransformer;
-use App\Http\Requests\Services\StoreDisciplineRequest;
+use App\Http\Requests\Disciplines\StoreDisciplineRequest;
 
 
 class DisciplineController extends Controller

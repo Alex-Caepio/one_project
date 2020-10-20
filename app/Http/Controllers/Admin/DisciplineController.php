@@ -17,13 +17,29 @@ DisciplineController extends Controller
 {
     public function index(Request $request)
     {
-        $includes   = $request->getIncludes();
-        $discipline = Discipline::with($includes)
+        $query = Discipline::query();
+
+        if ($request->hasSearch()) {
+            $search = $request->search();
+
+            $query->where(
+                function ($query) use ($search) {
+                    $query->where('name', 'like', "%{$search}%")
+                        ->orWhere('introduction', 'like', "%{$search}%")
+                        ->orWhere('description', 'like', "%{$search}%");
+                }
+            );
+        }
+
+        $includes = $request->getIncludes();
+        $paginator = $query->with($includes)
             ->paginate($request->getLimit());
 
-        return response(fractal($discipline->getCollection(), new DisciplineTransformer())
+        $discipline = $paginator->getCollection();
+
+        return response(fractal($discipline, new DisciplineTransformer())
             ->parseIncludes($includes)->toArray())
-            ->withPaginationHeaders($discipline);
+            ->withPaginationHeaders($paginator);
     }
 
     public function store(DisciplineStoreRequest $request)
@@ -66,17 +82,27 @@ DisciplineController extends Controller
             ->toArray();
     }
 
-    public function update(Request $request, Discipline $discipline)
-    {
-        run_action(DisciplineUpdate::class, $request, $discipline);
-    }
+    // public function update(Request $request, Discipline $discipline)
+    // {
+    //     $data        = $request->all();
+    //     $url         = $data['url'] ?? to_url($data['name']);
+    //     $data['url'] = $url;
+    //     $discipline->update($data);
 
-    public function destroy(Discipline $discipline)
-    {
-        $discipline->delete();
+    //     if($request->filled('media_images')){
+    //         $discipline->mediaImages()->updateOrCreate($request->get('media_images'));
+    //     }
+    //     if($request->filled('media_videos')){
+    //         $discipline->mediaVideos()->createMany($request->get('media_videos'));
+    //     }
+    //     if($request->filled('media_files')){
+    //         $discipline->mediaFiles()->createMany($request->get('media_files'));
+    //     }
 
-        return response(null, 204);
-    }
+    //     return fractal($discipline, new DisciplineTransformer())
+    //         ->parseIncludes($request->getIncludes())
+    //         ->respond();
+    // }
 
     public function unpublish(Discipline $discipline)
     {

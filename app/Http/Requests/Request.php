@@ -38,4 +38,14 @@ class Request extends FormRequest
             ?: (int)$this->header('X-page') ?: 1;
     }
 
+    public function hasSearch()
+    {
+        return $this->filled('search');
+    }
+
+    public function search()
+    {
+        return $this->search;
+    }
+
 }

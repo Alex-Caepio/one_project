@@ -19,6 +19,7 @@ use App\Http\Controllers\RescheduleRequestController;
 use App\Http\Controllers\FocusAreaController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\CountryController;
+use App\Http\Controllers\TimezoneController;
 
 /*
 |--------------------------------------------------------------------------
@@ -130,4 +131,6 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::get('/messages/receiver/{user}', [MessageController::class, 'showByReceiver']);
 
     Route::get('/countries', [CountryController::class, 'filter']);
+
+    Route::get('timezones', [TimezoneController::class, 'index']);
 });
