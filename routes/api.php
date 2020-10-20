@@ -78,9 +78,6 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::delete('/articles/{article}', [ArticleController::class, 'destroy']);
 
     Route::get('disciplines', [DisciplineController::class, 'index']);
-    Route::post('disciplines', [DisciplineController::class, 'store']);
-    Route::get('disciplines/list', [DisciplineController::class, 'list']);
-    Route::get('disciplines/filter', [DisciplineController::class, 'filter']);
     Route::get('disciplines/{discipline}', [DisciplineController::class, 'show']);
 
     Route::get('keywords', [KeywordController::class, 'index']);
