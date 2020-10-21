@@ -32,6 +32,9 @@ class DisciplineStoreRequest extends Request
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
+            if($validator->errors()->isNotEmpty()){
+                return;
+            }
             $url       = $this->get('url') ?? to_url($this->get('name'));
             $fieldName = $this->get('url') ? 'url' : 'name';
 
