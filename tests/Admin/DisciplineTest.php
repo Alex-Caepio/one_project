@@ -143,8 +143,7 @@ class DisciplineTest extends TestCase
         /** @var Discipline $discipline */
         $discipline = Discipline::factory()->create();
         $this->json('delete', "/admin/disciplines/{$discipline->id}")
-            ->assertStatus(204)
-            ->assertJsonStructure(self::$disciplineStructure);
+            ->assertStatus(204);
     }
 
     public function test_discipline_publish(): void

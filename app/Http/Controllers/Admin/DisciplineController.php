@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Discipline;
 use App\Http\Requests\Request;
 use App\Http\Controllers\Controller;
+use App\Models\FocusArea;
 use App\Transformers\DisciplineTransformer;
 use App\Actions\Discipline\DisciplineStore;
 use App\Actions\Discipline\DisciplineUpdate;
@@ -127,6 +128,7 @@ class DisciplineController extends Controller
     public function unpublish(Discipline $discipline)
     {
         $discipline->forceFill([
+
             'is_published' => false,
         ]);
         $discipline->update();
@@ -140,10 +142,9 @@ class DisciplineController extends Controller
         $discipline->update();
     }
 
-    public function toUrl($string)
+    public function destroy(Discipline $discipline)
     {
-        $kebab = Str::kebab($string);
-        return preg_replace("/[^a-zA-Z0-9\-]+/", "", $kebab);
+        $discipline->delete();
+        return response(null, 204);
     }
-
 }
