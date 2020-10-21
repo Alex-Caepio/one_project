@@ -72,6 +72,22 @@ disciplines:
                 $ref: '../schemas/Discipline.yaml'
 
 disciplines/{id}:
+  put:
+    tags:
+      - Discipline
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/forms/admin/Discipline.yaml'
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/Discipline.yaml'
   get:
     tags:
       - Discipline

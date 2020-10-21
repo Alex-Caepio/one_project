@@ -103,7 +103,7 @@ class Discipline extends Model
 
     public function media_files()
     {
-        return $this->morphMany(MediaFiles::class, 'morphesTo', 'model_name', 'model_id');
+        return $this->morphMany(MediaFile::class, 'morphesTo', 'model_name', 'model_id');
     }
 
     public function resolveRouteBinding($value, $field = null)

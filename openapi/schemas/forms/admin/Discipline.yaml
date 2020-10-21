@@ -25,3 +25,44 @@ properties:
     type: string
     nullable: true
     example: 'http://cdn.com/yoga-practice.png'
+  featured_practitioners:
+    type: array
+    items:
+      type: integer
+    example: [123, 231, 312]
+  featured_services:
+    type: array
+    items:
+      type: integer
+    example: [123, 231, 312]
+  focus_areas:
+    type: array
+    items:
+      type: integer
+    example: [123, 231, 312]
+  related_disciplines:
+    type: array
+    items:
+      type: integer
+    example: [123, 231, 312]
+  media_images:
+    type: array
+    items:
+      type: object
+    example:
+      - url: http://cdn.com/yoga-practice.png
+      - url: http://cdn.com/another-picture.png
+  media_videos:
+    type: array
+    items:
+      type: object
+    example:
+      - url: http://cdn.com/yoga-practice.mov
+      - url: http://cdn.com/another-picture.mov
+  media_files:
+    type: array
+    items:
+      type: object
+    example:
+      - url: http://cdn.com/yoga-practice.pdf
+      - url: http://cdn.com/another-picture.docx

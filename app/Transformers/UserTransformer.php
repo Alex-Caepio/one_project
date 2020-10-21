@@ -35,6 +35,8 @@ class UserTransformer extends Transformer
             'email' => $user->email,
             'is_admin'=>$user->is_admin,
             'account_type' => $user->account_type,
+            'avatar_url'   => $user->avatar_url,
+            'background_url'   => $user->background_url,
             'created_at' => $this->dateTime($user->created_at),
             'updated_at' => $this->dateTime($user->updated_at),
         ];

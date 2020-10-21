@@ -48,6 +48,8 @@ class UserRequest extends FormRequest
             'email'                       => 'required|email|unique',
             'email_verified_at'           => 'date_format:Y-m-d H:i:s',
             'password'                    => 'required|max:45',
+            'avatar_url'                  => 'min:5',
+            'background_url'              => 'min:5',
         ];
     }
 

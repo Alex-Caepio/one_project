@@ -12,8 +12,7 @@ use App\Http\Requests\Admin\DisciplineStoreRequest;
 use App\Http\Requests\Admin\DisciplinePublishRequest;
 use Illuminate\Support\Str;
 
-class
-DisciplineController extends Controller
+class DisciplineController extends Controller
 {
     public function index(Request $request)
     {
@@ -36,7 +35,7 @@ DisciplineController extends Controller
             );
         }
 
-        $includes = $request->getIncludes();
+        $includes  = $request->getIncludes();
         $paginator = $query->with($includes)
             ->paginate($request->getLimit());
 
@@ -66,13 +65,13 @@ DisciplineController extends Controller
         if ($request->filled('related_disciplines')) {
             $discipline->related_disciplines()->sync($request->get('related_disciplines'));
         }
-        if($request->filled('media_images')){
+        if ($request->filled('media_images')) {
             $discipline->media_images()->createMany($request->get('media_images'));
         }
-        if($request->filled('media_videos')){
+        if ($request->filled('media_videos')) {
             $discipline->media_videos()->createMany($request->get('media_videos'));
         }
-        if($request->filled('media_files')){
+        if ($request->filled('media_files')) {
             $discipline->media_files()->createMany($request->get('media_files'));
         }
 
@@ -87,27 +86,43 @@ DisciplineController extends Controller
             ->toArray();
     }
 
-    // public function update(Request $request, Discipline $discipline)
-    // {
-    //     $data        = $request->all();
-    //     $url         = $data['url'] ?? to_url($data['name']);
-    //     $data['url'] = $url;
-    //     $discipline->update($data);
+     public function update(Request $request, Discipline $discipline)
+     {
+         $data        = $request->all();
+         $url         = $data['url'] ?? to_url($data['name']);
+         $data['url'] = $url;
 
-    //     if($request->filled('media_images')){
-    //         $discipline->mediaImages()->updateOrCreate($request->get('media_images'));
-    //     }
-    //     if($request->filled('media_videos')){
-    //         $discipline->mediaVideos()->createMany($request->get('media_videos'));
-    //     }
-    //     if($request->filled('media_files')){
-    //         $discipline->mediaFiles()->createMany($request->get('media_files'));
-    //     }
+         $discipline->update($data);
 
-    //     return fractal($discipline, new DisciplineTransformer())
-    //         ->parseIncludes($request->getIncludes())
-    //         ->respond();
-    // }
+         if ($request->filled('featured_practitioners')) {
+             $discipline->featured_practitioners()->sync($request->get('featured_practitioners'));
+         }
+         if ($request->filled('featured_services')) {
+             $discipline->featured_services()->sync($request->get('featured_services'));
+         }
+         if ($request->filled('focus_areas')) {
+             $discipline->focus_areas()->sync($request->get('focus_areas'));
+         }
+         if ($request->filled('related_disciplines')) {
+             $discipline->related_disciplines()->sync($request->get('related_disciplines'));
+         }
+         if($request->has('media_images')){
+             $discipline->media_images()->delete();
+             $discipline->media_images()->createMany($request->get('media_images'));
+         }
+         if($request->has('media_videos')){
+             $discipline->media_videos()->delete();
+             $discipline->media_videos()->createMany($request->get('media_videos'));
+         }
+         if($request->has('media_files')){
+             $discipline->media_files()->delete();
+             $discipline->media_files()->createMany($request->get('media_files'));
+         }
+
+         return fractal($discipline, new DisciplineTransformer())
+             ->parseIncludes($request->getIncludes())
+             ->respond();
+     }
 
     public function unpublish(Discipline $discipline)
     {
