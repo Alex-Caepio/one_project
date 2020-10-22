@@ -59,3 +59,7 @@
   $ref: "./AdminDiscipline.yaml#/disciplines"
 /admin/diciplines/{id}:
   $ref: "./AdminDiscipline.yaml#/disciplines~1{id}"
+/admin/diciplines/{id}/publish:
+  $ref: "./AdminDiscipline.yaml#/disciplines~1{id}~1publish"
+/admin/diciplines/{id}/unpublish:
+  $ref: "./AdminDiscipline.yaml#/disciplines~1{id}~1unpublish"

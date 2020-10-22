@@ -75,6 +75,8 @@ disciplines/{id}:
   put:
     tags:
       - Discipline
+    parameters:
+      - $ref: "#/parameters/id"
     requestBody:
       required: true
       content:
@@ -100,6 +102,42 @@ disciplines/{id}:
           application/json:
             schema:
               $ref: '../schemas/Discipline.yaml'
+  delete:
+    tags:
+      - Discipline
+    parameters:
+      - $ref: "#/parameters/id"
+    responses:
+      '204':
+        description: OK
+
+disciplines/{id}/publish:
+  post:
+    operationId: admin-publish-discipline
+    parameters:
+      - $ref: "#/parameters/id"
+    tags:
+      - Discipline
+    responses:
+      '422':
+        description: Validation errors
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/422/DisciplinePublish.yaml'
+      '204':
+        description: OK
+
+disciplines/{id}/unpublish:
+  post:
+    operationId: admin-unpublish-discipline
+    parameters:
+      - $ref: "#/parameters/id"
+    tags:
+      - Discipline
+    responses:
+      '204':
+        description: OK
 
 parameters:
   id:

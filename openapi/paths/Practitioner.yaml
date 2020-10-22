@@ -53,12 +53,8 @@ practitioners/{id}:
     parameters:
       - $ref: "#/parameters/id"
     responses:
-      '200':
+      '204':
         description: OK
-        content:
-          application/json:
-            schema:
-              $ref: '../schemas/User.yaml'
 
 parameters:
   id:

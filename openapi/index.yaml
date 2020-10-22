@@ -890,12 +890,8 @@ paths:
       parameters:
         - $ref: "#/paths/~1services~1%7Bid%7D/get/parameters/0"
       responses:
-        "200":
+        "204":
           description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Service"
   /practitoners: {}
   /plans:
     get:
@@ -1130,6 +1126,8 @@ paths:
                   $ref: "#/components/schemas/Discipline"
   "/admin/diciplines/{id}":
     put:
+      tags:
+        - Discipline
       parameters:
         - name: id
           in: path
@@ -1137,8 +1135,6 @@ paths:
           required: true
           schema:
             type: integer
-      tags:
-        - Discipline
       requestBody:
         required: true
         content:
@@ -1157,12 +1153,7 @@ paths:
       tags:
         - Discipline
       parameters:
-        - name: id
-          in: path
-          description: Discipline ID
-          required: true
-          schema:
-            type: integer
+        - $ref: "#/paths/~1admin~1diciplines~1%7Bid%7D/put/parameters/0"
       responses:
         "200":
           description: OK
@@ -1170,3 +1161,63 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Discipline"
+    delete:
+      tags:
+        - Discipline
+      parameters:
+        - $ref: "#/paths/~1admin~1diciplines~1%7Bid%7D/put/parameters/0"
+      responses:
+        "204":
+          description: OK
+  "/admin/diciplines/{id}/publish":
+    post:
+      operationId: admin-publish-discipline
+      parameters:
+        - name: id
+          in: path
+          description: Discipline ID
+          required: true
+          schema:
+            type: integer
+      tags:
+        - Discipline
+      responses:
+        "204":
+          description: OK
+        "422":
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: The given data was invalid.
+                  errors:
+                    type: object
+                    example:
+                      business_name:
+                        - You have not filled in the field "Business name"
+                      business_address:
+                        - You have not filled in the field "Business address"
+                      business_email:
+                        - You have not filled in the field "Business email"
+                      business_introduction:
+                        - You have not filled in the field "Business
+                          introduction"
+  "/admin/diciplines/{id}/unpublish":
+    post:
+      operationId: admin-unpublish-discipline
+      parameters:
+        - name: id
+          in: path
+          description: Discipline ID
+          required: true
+          schema:
+            type: integer
+      tags:
+        - Discipline
+      responses:
+        "204":
+          description: OK
