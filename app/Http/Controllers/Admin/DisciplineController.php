@@ -132,6 +132,8 @@ class DisciplineController extends Controller
             'is_published' => false,
         ]);
         $discipline->update();
+
+        return response(null, 204);
     }
 
     public function publish(Discipline $discipline, DisciplinePublishRequest $request)
@@ -140,6 +142,8 @@ class DisciplineController extends Controller
             'is_published' => true,
         ]);
         $discipline->update();
+
+        return response(null, 204);
     }
 
     public function destroy(Discipline $discipline)

@@ -46,15 +46,15 @@ class ServiceController extends Controller
         $service = $user->services()->create($data);
 
         if($request->filled('media_images')){
-            $service->mediaImages()->createMany($request->get('media_images'));
+            $service->media_images()->createMany($request->get('media_images'));
         }
 
         if($request->filled('media_videos')){
-            $service->mediaVideos()->createMany($request->get('media_videos'));
+            $service->media_videos()->createMany($request->get('media_videos'));
         }
 
         if($request->filled('media_files')){
-            $service->mediaFiles()->createMany($request->get('media_files'));
+            $service->media_files()->createMany($request->get('media_files'));
         }
 
         return fractal($service, new ServiceTransformer())->respond();

@@ -34,17 +34,17 @@ class Service extends Model
         'url'
     ];
 
-    public function mediaImages()
+    public function media_images()
     {
         return $this->morphMany(MediaImage::class, 'morphesTo', 'model_name', 'model_id');
     }
 
-    public function mediaVideos()
+    public function media_videos()
     {
         return $this->morphMany(MediaVideo::class, 'morphesTo', 'model_name', 'model_id');
     }
 
-    public function mediaFiles()
+    public function media_files()
     {
         return $this->morphMany(MediaFile::class, 'morphesTo', 'model_name', 'model_id');
     }
