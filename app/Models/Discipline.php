@@ -88,7 +88,7 @@ class Discipline extends Model
     public function related_disciplines(): BelongsToMany
     {
         return $this->belongsToMany(__CLASS__, 'discipline_discipline', 'related_id', 'parent_id')
-            ->withTimeStamps();
+            ->where('is_published', true)->withTimeStamps();
     }
 
     public function media_images()

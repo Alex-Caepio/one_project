@@ -15,7 +15,7 @@ class FocusArea extends Model
     }
     public function disciplines()
     {
-        return $this->belongsToMany(Discipline::class,'discipline_focus_area','discipline_id','focus_area_id')->withTimeStamps();
+        return $this->belongsToMany(Discipline::class,'discipline_focus_area','discipline_id','focus_area_id')->where('is_published', true)->withTimeStamps();
     }
     public function focus_area_images()
     {

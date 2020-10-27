@@ -11,9 +11,9 @@ class CalculatePromoPrice
         $promotion = $promo->promotion;
         $isPercentage = $promotion->discount_type == 'percentage';
         $promoValue = $promotion->discount_value;
-        $newCost = $isPercentage
+
+        return $isPercentage
             ? $scheduleCost - ($scheduleCost * ($promoValue / 100))
             : $scheduleCost - $promoValue;
-        return $newCost;
     }
 }

@@ -29,17 +29,20 @@ class DisciplineStoreRequest extends Request
         ];
     }
 
-    public function withValidator($validator)
+    public function withValidator($validator): void
     {
         $validator->after(function ($validator) {
-            if($validator->errors()->isNotEmpty()){
+            if ($validator->errors()->isNotEmpty()) {
                 return;
             }
             $url       = $this->get('url') ?? to_url($this->get('name'));
             $fieldName = $this->get('url') ? 'url' : 'name';
 
             if (Discipline::where('url', $url)->exists()) {
-                $validator->errors()->add($fieldName, "The slug {$url} is not unique! Please, chose the different {$fieldName}.");
+                $validator->errors()->add(
+                    $fieldName,
+                    "The slug {$url} is not unique! Please, chose the different {$fieldName}."
+                );
             }
         });
     }

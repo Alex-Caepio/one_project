@@ -1124,7 +1124,7 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Discipline"
-  "/admin/diciplines/{id}":
+  "/admin/disciplines/{id}":
     put:
       tags:
         - Discipline
@@ -1153,7 +1153,7 @@ paths:
       tags:
         - Discipline
       parameters:
-        - $ref: "#/paths/~1admin~1diciplines~1%7Bid%7D/put/parameters/0"
+        - $ref: "#/paths/~1admin~1disciplines~1%7Bid%7D/put/parameters/0"
       responses:
         "200":
           description: OK
@@ -1165,11 +1165,11 @@ paths:
       tags:
         - Discipline
       parameters:
-        - $ref: "#/paths/~1admin~1diciplines~1%7Bid%7D/put/parameters/0"
+        - $ref: "#/paths/~1admin~1disciplines~1%7Bid%7D/put/parameters/0"
       responses:
         "204":
           description: OK
-  "/admin/diciplines/{id}/publish":
+  "/admin/disciplines/{id}/publish":
     post:
       operationId: admin-publish-discipline
       parameters:
@@ -1197,16 +1197,11 @@ paths:
                   errors:
                     type: object
                     example:
-                      business_name:
-                        - You have not filled in the field "Business name"
-                      business_address:
-                        - You have not filled in the field "Business address"
-                      business_email:
-                        - You have not filled in the field "Business email"
-                      business_introduction:
-                        - You have not filled in the field "Business
-                          introduction"
-  "/admin/diciplines/{id}/unpublish":
+                      name:
+                        - You have not filled in the field "Discipline name"
+                      url:
+                        - You have not filled in the field "Discipline url"
+  "/admin/disciplines/{id}/unpublish":
     post:
       operationId: admin-unpublish-discipline
       parameters:

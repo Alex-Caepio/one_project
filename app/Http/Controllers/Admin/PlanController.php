@@ -13,37 +13,45 @@ class PlanController extends Controller
     public function index(Request $request)
     {
         $plans = Plan::with('service_types')->get();
-        return fractal($plans, new PlanTransformer())->parseIncludes($request->getIncludes())
+
+        return fractal($plans, new PlanTransformer())
+            ->parseIncludes($request->getIncludes())
             ->toArray();
     }
-    public function show(Plan $plan,Request $request)
+
+    public function show(Plan $plan, Request $request)
     {
-        return fractal($plan, new PlanTransformer())->parseIncludes($request->getIncludes())
+        return fractal($plan, new PlanTransformer())
+            ->parseIncludes($request->getIncludes())
             ->toArray();
     }
+
     public function store(Request $request, StripeClient $stripe)
     {
-        $plan = new Plan();
+        $plan       = new Plan();
         $planStripe = $stripe->plans->create([
-            'amount' => $request->get('amount'),
+            'amount'   => $request->get('amount'),
             'currency' => 'usd',
             'interval' => 'month',
-            'product' => ['name' => $request->get('name')],
+            'product'  => ['name' => $request->get('name')],
         ]);
-        $plan->forceFill([
-            'name' => $request->get('name'),
-            'stripe_id' => $planStripe->id,
-            'price' => $planStripe->amount,
-        ]);
+
+        $data = $request->all();
+        $data['stripe_id'] = $planStripe->id;
+
+        $plan->fill($data);
         $plan->save();
         $plan->service_types()->sync($request->get('service_types'));
+
         return fractal($plan, new PlanTransformer())->respond();
     }
+
     public function update(Request $request, Plan $plan)
     {
         $plan->update($request->all());
         return fractal($plan, new PlanTransformer())->respond();
     }
+
     public function destroy(Plan $plan)
     {
         $plan->delete();

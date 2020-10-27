@@ -61,7 +61,7 @@ class Service extends Model
 
     public function disciplines()
     {
-        return $this->belongsToMany(Discipline::class);
+        return $this->belongsToMany(Discipline::class)->where('is_published', true);
     }
 
     public function focus_areas()

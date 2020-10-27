@@ -14,7 +14,7 @@ class Article extends Model
     ];
     public function disciplines()
     {
-        return $this->belongsToMany(Discipline::class,'discipline_practitioner','discipline_id','practitioner_id')->withTimeStamps();
+        return $this->belongsToMany(Discipline::class,'discipline_practitioner','discipline_id','practitioner_id')->where('is_published', true)->withTimeStamps();
     }
     public function user()
     {

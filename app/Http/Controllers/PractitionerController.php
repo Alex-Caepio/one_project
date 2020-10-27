@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Request;
 use App\Models\User;
+use App\Http\Requests\Request;
 use App\Transformers\UserTransformer;
 use Illuminate\Support\Facades\Auth;
 

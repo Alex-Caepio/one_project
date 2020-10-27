@@ -11,6 +11,7 @@ use App\Actions\Discipline\DisciplineStore;
 use App\Actions\Discipline\DisciplineUpdate;
 use App\Http\Requests\Admin\DisciplineStoreRequest;
 use App\Http\Requests\Admin\DisciplinePublishRequest;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class DisciplineController extends Controller
@@ -87,43 +88,43 @@ class DisciplineController extends Controller
             ->toArray();
     }
 
-     public function update(Request $request, Discipline $discipline)
-     {
-         $data        = $request->all();
-         $url         = $data['url'] ?? to_url($data['name']);
-         $data['url'] = $url;
+    public function update(Request $request, Discipline $discipline)
+    {
+        $data        = $request->all();
+        $url         = $data['url'] ?? to_url($data['name']);
+        $data['url'] = $url;
 
-         $discipline->update($data);
+        $discipline->update($data);
 
-         if ($request->filled('featured_practitioners')) {
-             $discipline->featured_practitioners()->sync($request->get('featured_practitioners'));
-         }
-         if ($request->filled('featured_services')) {
-             $discipline->featured_services()->sync($request->get('featured_services'));
-         }
-         if ($request->filled('focus_areas')) {
-             $discipline->focus_areas()->sync($request->get('focus_areas'));
-         }
-         if ($request->filled('related_disciplines')) {
-             $discipline->related_disciplines()->sync($request->get('related_disciplines'));
-         }
-         if($request->has('media_images')){
-             $discipline->media_images()->delete();
-             $discipline->media_images()->createMany($request->get('media_images'));
-         }
-         if($request->has('media_videos')){
-             $discipline->media_videos()->delete();
-             $discipline->media_videos()->createMany($request->get('media_videos'));
-         }
-         if($request->has('media_files')){
-             $discipline->media_files()->delete();
-             $discipline->media_files()->createMany($request->get('media_files'));
-         }
+        if ($request->filled('featured_practitioners')) {
+            $discipline->featured_practitioners()->sync($request->get('featured_practitioners'));
+        }
+        if ($request->filled('featured_services')) {
+            $discipline->featured_services()->sync($request->get('featured_services'));
+        }
+        if ($request->filled('focus_areas')) {
+            $discipline->focus_areas()->sync($request->get('focus_areas'));
+        }
+        if ($request->filled('related_disciplines')) {
+            $discipline->related_disciplines()->sync($request->get('related_disciplines'));
+        }
+        if ($request->has('media_images')) {
+            $discipline->media_images()->delete();
+            $discipline->media_images()->createMany($request->get('media_images'));
+        }
+        if ($request->has('media_videos')) {
+            $discipline->media_videos()->delete();
+            $discipline->media_videos()->createMany($request->get('media_videos'));
+        }
+        if ($request->has('media_files')) {
+            $discipline->media_files()->delete();
+            $discipline->media_files()->createMany($request->get('media_files'));
+        }
 
-         return fractal($discipline, new DisciplineTransformer())
-             ->parseIncludes($request->getIncludes())
-             ->respond();
-     }
+        return fractal($discipline, new DisciplineTransformer())
+            ->parseIncludes($request->getIncludes())
+            ->respond();
+    }
 
     public function unpublish(Discipline $discipline)
     {
@@ -148,7 +149,21 @@ class DisciplineController extends Controller
 
     public function destroy(Discipline $discipline)
     {
+        DB::beginTransaction();
+        $discipline->services()->detach();
+        $discipline->articles()->detach();
+        $discipline->featured_services()->detach();
+        $discipline->featured_practitioners()->detach();
+        $discipline->practitioners()->detach();
+        $discipline->focus_areas()->detach();
+        $discipline->related_disciplines()->detach();
+
+        $discipline->media_images()->delete();
+        $discipline->media_videos()->delete();
+        $discipline->media_files()->delete();
         $discipline->delete();
+        DB::commit();
+
         return response(null, 204);
     }
 }

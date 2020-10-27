@@ -6,11 +6,7 @@ properties:
   errors:
     type: object
     example:
-      business_name:
-        - You have not filled in the field "Business name"
-      business_address:
-        - You have not filled in the field "Business address"
-      business_email:
-        - You have not filled in the field "Business email"
-      business_introduction:
-        - You have not filled in the field "Business introduction"
+      name:
+        - You have not filled in the field "Discipline name"
+      url:
+        - You have not filled in the field "Discipline url"

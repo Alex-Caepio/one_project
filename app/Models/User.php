@@ -12,7 +12,7 @@ use Laravel\Sanctum\HasApiTokens;
 /**
  * Class User
  *
- * @property int id
+ * @property int    id
  * @property string email
  * @property string last_name
  * @property string first_name
@@ -20,12 +20,13 @@ use Laravel\Sanctum\HasApiTokens;
  * @property string stripe_customer_id
  * @property string stripe_account_id
  * @property Carbon email_verified_at
+ * @property Plan   plan
  *
  * @package App\Models
  */
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use Notifiable, HasApiTokens,HasFactory;
+    use Notifiable, HasApiTokens, HasFactory;
 
     /**
      * The attributes that are mass assignable.
@@ -77,6 +78,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(Service::class);
     }
+
     public function timezone()
     {
         return $this->belongsTo(Timezone::class);
@@ -94,7 +96,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function disciplines()
     {
-        return $this->belongsToMany(Discipline::class, 'discipline_practitioner', 'discipline_id', 'practitioner_id')->withTimeStamps();
+        return $this->belongsToMany(Discipline::class, 'discipline_practitioner', 'discipline_id', 'practitioner_id')->where('is_published', true)->withTimeStamps();
     }
 
     public function promotion_codes()
@@ -128,10 +130,8 @@ class User extends Authenticatable implements MustVerifyEmail
             ->where('date_to', '>', now()->toDateTimeString())
             ->orWhere('indefinite_period', '=', true)
             ->first();
-        if ($customRate) {
-            return $customRate->rate;
-        } else
-            return $this->plan->commission_on_sale;
+
+        return $customRate->rate ?? $this->plan->commission_on_sale;
 
 
     }

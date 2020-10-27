@@ -33,19 +33,34 @@ class PublishRequest extends FormRequest
         $validator->after(function ($validator) {
             $user = $this->user();
             if (!$user->business_name) {
-                $validator->errors()->add('business_name', 'You have not filled in the field "Business name"');
+                $validator->errors()->add(
+                    'business_name',
+                    'You have not filled in the field "Business name"'
+                );
             }
             if (!$user->business_address) {
-                $validator->errors()->add('business_address', 'You have not filled in the field "Business address"');
+                $validator->errors()->add(
+                    'business_address',
+                    'You have not filled in the field "Business address"'
+                );
             }
             if (!$user->business_email) {
-                $validator->errors()->add('business_email', 'You have not filled in the field "Business email"');
+                $validator->errors()->add(
+                    'business_email',
+                    'You have not filled in the field "Business email"'
+                );
             }
             if (!$user->business_introduction) {
-                $validator->errors()->add('business_introduction', 'You have not filled in the field "Business introduction"');
+                $validator->errors()->add(
+                    'business_introduction',
+                    'You have not filled in the field "Business introduction"'
+                );
             }
             if (!$user->timezone_id) {
-                $validator->errors()->add('timezone_id', 'You have not filled in the field "Timezone"');
+                $validator->errors()->add(
+                    'timezone_id',
+                    'You have not filled in the field "Timezone"'
+                );
             }
 
         });

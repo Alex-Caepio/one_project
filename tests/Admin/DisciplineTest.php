@@ -142,8 +142,26 @@ class DisciplineTest extends TestCase
     {
         /** @var Discipline $discipline */
         $discipline = Discipline::factory()->create();
+        $featuredService   = Service::factory()->create();
+        $practitoner       = User::factory()->create();
+        $focusArea         = FocusArea::factory()->create();
+        $relatedDiscipline = Discipline::factory()->create();
+
+        $discipline->featured_practitioners()->attach($practitoner->id);
+        $discipline->featured_services()->attach($featuredService->id);
+        $discipline->focus_areas()->attach($focusArea->id);
+        $discipline->related_disciplines()->attach($relatedDiscipline->id);
+
         $this->json('delete', "/admin/disciplines/{$discipline->id}")
             ->assertStatus(204);
+
+        $this->assertDeleted($discipline);
+
+        //assert relations are deleted
+        $this->assertEquals(0, $discipline->featured_practitioners()->count());
+        $this->assertEquals(0, $discipline->featured_services()->count());
+        $this->assertEquals(0, $discipline->focus_areas()->count());
+        $this->assertEquals(0, $discipline->related_disciplines()->count());
     }
 
     public function test_discipline_publish(): void
