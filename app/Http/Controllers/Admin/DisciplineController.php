@@ -5,14 +5,11 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Discipline;
 use App\Http\Requests\Request;
 use App\Http\Controllers\Controller;
-use App\Models\FocusArea;
 use App\Transformers\DisciplineTransformer;
 use App\Actions\Discipline\DisciplineStore;
-use App\Actions\Discipline\DisciplineUpdate;
 use App\Http\Requests\Admin\DisciplineStoreRequest;
 use App\Http\Requests\Admin\DisciplinePublishRequest;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 class DisciplineController extends Controller
 {
