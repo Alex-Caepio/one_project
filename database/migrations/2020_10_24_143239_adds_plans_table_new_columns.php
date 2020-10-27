@@ -42,10 +42,13 @@ class AddsPlansTableNewColumns extends Migration
     public function down()
     {
         Schema::table('plans', function (Blueprint $table) {
-            $table->dropColumn(['description', 'image_url', 'is_free', 'contact_clients_with_booking', 'market_to_clients',
-                'client_reviews', 'article_publishing', 'article_publishing_unlimited', 'prioritised_business_profile_search',
-                'prioritised_serivce_search', 'busines_profile_page', 'unique_web_address', 'onboarding_support',
-                'client_analytics', 'service_analytics', 'financial_analytics']);
+            $table->dropColumn([
+                'description', 'image_url', 'is_free', 'contact_clients_with_booking',
+                'market_to_clients', 'client_reviews', 'article_publishing', 'article_publishing_unlimited',
+                'prioritised_business_profile_search', 'prioritised_serivce_search', 'busines_profile_page',
+                'unique_web_address', 'onboarding_support', 'client_analytics', 'service_analytics',
+                'financial_analytics'
+            ]);
             DB::statement('alter table plans modify commission_on_sale varchar(255)');
         });
     }

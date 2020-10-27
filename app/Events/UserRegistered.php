@@ -13,7 +13,7 @@ class UserRegistered
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
-     * @var User 
+     * @var User
      */
     public $user;
 

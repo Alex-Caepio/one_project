@@ -26,20 +26,9 @@ class EmailVariables
     public function replace($body)
     {
         $openBracket = strpos($body, '{{');
-        // $openBracketSubject = strpos($subject, '{{');
         if (!$openBracket) {
             return $body;
         }
-//        if (!$openBracketSubject) {
-//            return $subject;
-//        }
-
-//        $closeBracketSubject = strpos($subject, '}}');
-//        $lengthVariableSubject = $closeBracketSubject - $openBracketSubject - 2;
-//        $variableSubject = trim(substr($body, $openBracketSubject + 2, $lengthVariableSubject));
-//        $lengthSub = $closeBracketSubject - $openBracketSubject + 2;
-//
-//        $newBodySubject = substr_replace($subject, $this->$variableSubject, $openBracket, $lengthSub);
 
         $closeBracket = strpos($body, '}}');
         $lengthVariable = $closeBracket - $openBracket - 2;

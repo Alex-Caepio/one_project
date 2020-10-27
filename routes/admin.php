@@ -1,16 +1,15 @@
 <?php
 
-use App\Http\Controllers\Admin\ProfileController;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\CustomEmailController;
-use App\Http\Controllers\Admin\DisciplineController;
-use App\Http\Controllers\Admin\FocusAreaController;
-use App\Http\Controllers\Admin\AdminController;
-use App\Http\Controllers\Admin\PromotionCodeController;
-use App\Http\Controllers\Admin\PractitionerController;
+use App\Http\Controllers\Admin\PlanController;
 use App\Http\Controllers\Admin\ClientController;
 use App\Http\Controllers\Admin\ServiceController;
-use App\Http\Controllers\Admin\PlanController;
+use App\Http\Controllers\Admin\ProfileController;
+use App\Http\Controllers\Admin\FocusAreaController;
+use App\Http\Controllers\Admin\DisciplineController;
+use App\Http\Controllers\Admin\CustomEmailController;
+use App\Http\Controllers\Admin\PractitionerController;
+use App\Http\Controllers\Admin\PromotionCodeController;
+use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::middleware(['admin'])->group(function () {
@@ -42,11 +41,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
         Route::put('/profile',[AdminProfileController::class, 'update']);
 
-//        Route::get('/admins', [AdminController::class, 'index']);
-//        Route::post('/admins', [AdminController::class, 'store']);
-//        Route::get('/admins/{admin}', [AdminController::class, 'show']);
-//        Route::delete('/admins/{admin}', [AdminController::class, 'destroy']);
-
         Route::get('/profile',[ProfileController::class, 'show']);
         Route::put('/profile',[ProfileController::class, 'update']);
 
@@ -77,6 +71,5 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/transactional-emails/{customEmail}', [CustomEmailController::class, 'show']);
         Route::put('/transactional-emails/{customEmail}', [CustomEmailController::class, 'update']);
         Route::delete('/transactional-emails/{customEmail}', [CustomEmailController::class, 'destroy']);
-
     });
 });

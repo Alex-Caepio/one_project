@@ -22,18 +22,18 @@ class CustomEmailFactory extends Factory
      */
     public function definition()
     {
-        $user_type = [
+        $userType = [
             'client', 'practitioner'
         ];
         return [
-            'name' => $this->faker->sentence(),
-            'user_type' => $this->faker->randomElement($user_type),
+            'name'       => $this->faker->sentence(),
+            'user_type'  => $this->faker->randomElement($userType),
             'from_email' => $this->faker->unique()->safeEmail,
             'from_title' => $this->faker->sentence(),
-            'subject' => $this->faker->realText(),
-            'logo' => $this->faker->sentence(),
-            'text' => $this->faker->text(),
-            'delay'         => $this->faker->randomNumber(3)
+            'subject'    => $this->faker->realText(),
+            'logo'       => $this->faker->sentence(),
+            'text'       => $this->faker->text(),
+            'delay'      => $this->faker->randomNumber(3)
         ];
     }
 }

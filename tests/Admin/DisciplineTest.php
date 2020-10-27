@@ -13,7 +13,11 @@ class DisciplineTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public static $disciplineStructure = ['id', 'name', 'url', 'description', 'introduction', 'icon_url', 'banner_url', 'is_published'];
+    public static $disciplineStructure = [
+        'id', 'name', 'url', 'description',
+        'introduction', 'icon_url', 'banner_url',
+        'is_published'
+    ];
 
     public function setUp(): void
     {
@@ -141,7 +145,7 @@ class DisciplineTest extends TestCase
     public function test_delete_discipline(): void
     {
         /** @var Discipline $discipline */
-        $discipline = Discipline::factory()->create();
+        $discipline        = Discipline::factory()->create();
         $featuredService   = Service::factory()->create();
         $practitoner       = User::factory()->create();
         $focusArea         = FocusArea::factory()->create();

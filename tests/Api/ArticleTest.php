@@ -30,7 +30,6 @@ class ArticleTest extends TestCase
     public function test_can_create_article(): void
     {
         $service = Article::factory()->make();
-        $user = User::factory()->make();
         $response = $this->json('post', '/api/articles', [
             'description' => $service->description,
             'introduction' => $service->introduction,

@@ -2,9 +2,7 @@
 
 namespace App\Http\Requests\Services;
 
-use App\Models\Service;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
 
 class StoreServiceRequest extends FormRequest
 {
@@ -16,10 +14,6 @@ class StoreServiceRequest extends FormRequest
     public function authorize()
     {
         return true;
-//        $serviceId = $this->route('services');
-//
-//        return Service::where('id', $serviceId)
-//            ->where('user_id', Auth::id())->exists();
     }
 
     /**
