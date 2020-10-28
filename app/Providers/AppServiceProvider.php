@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\Article;
+use App\Models\Discipline;
 use App\Models\Service;
 use App\ScarryClass;
 use App\FakeStripeClient;
@@ -34,8 +36,9 @@ class AppServiceProvider extends ServiceProvider
         );
 
         Relation::morphMap([
-            'service'    => Service::class,
-            'discipline' => Discipline::class,
-        ]);
+                               'service'    => Service::class,
+                               'discipline' => Discipline::class,
+                               'article'    => Article::class,
+                           ]);
     }
 }

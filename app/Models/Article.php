@@ -9,9 +9,11 @@ use Illuminate\Support\Facades\Auth;
 class Article extends Model
 {
     use HasFactory;
-    protected $fillable=[
-        'title','introduction','url','description'
+
+    protected $fillable = [
+        'title','introduction','url','description', 'image_url'
     ];
+
     public function disciplines()
     {
         return $this->belongsToMany(Discipline::class,'discipline_practitioner','discipline_id','practitioner_id')->where('is_published', true)->withTimeStamps();
@@ -25,10 +27,37 @@ class Article extends Model
     {
         return $this->belongsToMany(Article::class);
     }
+
     public function articlefavorite()
     {
         return (bool) ArticleFavorite::where('user_id', Auth::id())
             ->where('article_id', $this->id)
             ->first();
     }
+
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     */
+    public function media_images()
+    {
+        return $this->morphMany(MediaImage::class, 'morphesTo', 'model_name', 'model_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     */
+    public function media_videos()
+    {
+        return $this->morphMany(MediaVideo::class, 'morphesTo', 'model_name', 'model_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     */
+    public function media_files()
+    {
+        return $this->morphMany(MediaFile::class, 'morphesTo', 'model_name', 'model_id');
+    }
+
 }
