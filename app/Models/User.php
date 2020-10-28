@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Scopes\PublishedScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -26,7 +27,7 @@ use Laravel\Sanctum\HasApiTokens;
  */
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use Notifiable, HasApiTokens, HasFactory;
+    use Notifiable, HasApiTokens, HasFactory, PublishedScope;
 
     /**
      * The attributes that are mass assignable.
@@ -96,7 +97,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function disciplines()
     {
-        return $this->belongsToMany(Discipline::class, 'discipline_practitioner', 'discipline_id', 'practitioner_id')->where('is_published', true)->withTimeStamps();
+        return $this->belongsToMany(Discipline::class, 'discipline_practitioner', 'discipline_id', 'practitioner_id')->published()->withTimeStamps();
     }
 
     public function promotion_codes()

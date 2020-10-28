@@ -57,10 +57,6 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::delete('services/{service}/favourite', [ServiceController::class, 'deleteFavorite']);
     Route::get('/services/favourites', [UserController::class, 'serviceFavorites']);
 
-    Route::post('articles/{article}/favourite', [ArticleController::class, 'storeFavorite']);
-    Route::delete('articles/{article}/favourite', [ArticleController::class, 'deleteFavorite']);
-    Route::get('/articles/favourites', [UserController::class, 'articleFavorites']);
-
     Route::post('practitioners/{practitioner}/favourite', [PractitionerController::class, 'storeFavorite']);
     Route::delete('practitioners/{practitioner}/favourite', [PractitionerController::class, 'deleteFavorite']);
     Route::get('/practitioners/favourites', [UserController::class, 'practitionerFavorites']);
@@ -71,11 +67,22 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::put('/services/{service}', [ServiceController::class, 'update']);
     Route::delete('/services/{service}', [ServiceController::class, 'destroy']);
 
+    /*
+     * ARTICLES START
+     */
+    Route::post('articles/{article}/favourite', [ArticleController::class, 'storeFavorite']);
+    Route::delete('articles/{article}/favourite', [ArticleController::class, 'deleteFavorite']);
+    Route::get('/articles/favourites', [UserController::class, 'articleFavorites']);
     Route::get('/articles', [ArticleController::class, 'index']);
     Route::post('/articles', [ArticleController::class, 'store']);
     Route::get('/articles/{article}', [ArticleController::class, 'show']);
     Route::put('/articles/{article}', [ArticleController::class, 'edit']);
     Route::delete('/articles/{article}', [ArticleController::class, 'destroy']);
+    /*
+     * ARTICLES END
+     */
+
+
 
     Route::get('disciplines', [DisciplineController::class, 'index']);
     Route::get('disciplines/{discipline}', [DisciplineController::class, 'show']);

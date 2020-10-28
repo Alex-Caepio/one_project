@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Scopes\PublishedScope;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -27,7 +28,7 @@ use Illuminate\Support\Collection;
  */
 class Discipline extends Model
 {
-    use HasFactory;
+    use HasFactory, PublishedScope;
 
     protected $fillable = [
         'name', 'url', 'icon_url', 'banner_url',
