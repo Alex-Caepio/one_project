@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class FocusArea extends Model
 {
     use HasFactory;
-    protected $fillable = ['name','url','description','introduction'];
+    protected $fillable = ['name','url','description','introduction', 'banner_url', 'icon_url'];
 
     public function services()
     {

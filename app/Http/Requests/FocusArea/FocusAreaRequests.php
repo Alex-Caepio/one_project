@@ -24,8 +24,11 @@ class FocusAreaRequests extends FormRequest
     public function rules()
     {
         return [
-            'name'=>'max:200',
-            'url'=> 'url',
+            'name'          => 'max:200',
+            'url'           => 'url',
+            'banner_url'    => 'max:200',
+            'icon_url'      => 'max:200'
+
         ];
     }
 }
