@@ -27,22 +27,21 @@ class DisciplinePublishRequest extends FormRequest
             //
         ];
     }
+
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
-            $this->noPublish($validator);
+            $discipline = $this->discipline;
+            if (!$discipline->name) {
+                $validator->errors()->add('name', "You have not filled in the field \"Discipline name\"");
+            }
+            if (!$discipline->url) {
+                $validator->errors()->add('url', "You have not filled in the field \"Discipline url\"");
+            }
 
+            if (!$discipline->icon_url) {
+                $validator->errors()->add('icon_url', "You have not filled in the field \"Icon url\"");
+            }
         });
-    }
-    public function noPublish($validator)
-    {
-        $discipline = $this->discipline;
-        if (!$discipline->name){
-            $validator->errors()->add('name', "You have not filled in the field \"Discipline name\"");
-        }
-        if (!$discipline->url){
-            $validator->errors()->add('url', "You have not filled in the field \"Discipline url\"");
-        }
-
     }
 }

@@ -17,7 +17,7 @@ class DisciplineTest extends TestCase
 
     public static $disciplineStructure = [
         'id', 'name', 'url', 'description',
-        'introduction', 'icon_url', 'banner_url', 
+        'introduction', 'icon_url', 'banner_url',
         'is_published'
     ];
 
@@ -199,9 +199,8 @@ class DisciplineTest extends TestCase
         {
             /** @var Discipline $discipline */
             $discipline = Discipline::factory()->create();
-            $discipline['is_published'] = true;
 
-            $response = $this->json('post', "admin/disciplines/{$discipline->id}/publish", $discipline->toArray());
+            $response = $this->json('post', "admin/disciplines/{$discipline->id}/publish");
             $this->assertEquals($discipline['is_published'], $discipline->is_published);
             $response->assertStatus(204);
 
@@ -218,18 +217,15 @@ class DisciplineTest extends TestCase
             $response->assertStatus(204);
         }
 
-    public function test_discipline_unpublished_with_status_422(): void
+    public function test_discipline_published_with_status_422(): void
         {
             /** @var Discipline $discipline */
-            $discipline = Discipline::factory()->create();
+            $discipline = Discipline::factory()->create([
+                'url' => null
+            ]);
 
-            $this->json('post', "admin/disciplines/{$discipline->id}/unpublish",[
-                'name' => '',
-                'url' => ''
-            ])
-                ->assertStatus(422)
-                ->assertJsonFragment(['name' => ['Field must been required!']])
-                ->assertJsonFragment(['url' => ['Field must been required!']]);
+            $this->json('post', "admin/disciplines/{$discipline->id}/publish")
+                ->assertStatus(422);
 
         }
 
