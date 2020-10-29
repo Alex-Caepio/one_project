@@ -86,10 +86,8 @@ class Discipline extends Model
         return $this->hasMany(DisciplineVideo::class);
     }
 
-    public function related_disciplines(): BelongsToMany
-    {
-        return $this->belongsToMany(__CLASS__, 'discipline_discipline', 'related_id', 'parent_id')
-            ->where('is_published', true)->withTimeStamps();
+    public function related_disciplines(): BelongsToMany {
+        return $this->belongsToMany(__CLASS__, 'discipline_discipline', 'related_id', 'parent_id')->published()->withTimeStamps();
     }
 
     public function media_images()

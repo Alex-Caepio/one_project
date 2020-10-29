@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\DisciplineController;
 use App\Http\Controllers\Admin\CustomEmailController;
 use App\Http\Controllers\Admin\PractitionerController;
 use App\Http\Controllers\Admin\PromotionCodeController;
+use App\Http\Controllers\Admin\ArticleController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth:sanctum'])->group(function () {
@@ -72,5 +73,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/transactional-emails/{customEmail}', [CustomEmailController::class, 'show']);
         Route::put('/transactional-emails/{customEmail}', [CustomEmailController::class, 'update']);
         Route::delete('/transactional-emails/{customEmail}', [CustomEmailController::class, 'destroy']);
+
+        Route::get('/articles', [ArticleController::class, 'index']);
+
     });
 });

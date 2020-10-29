@@ -8,26 +8,14 @@ use App\Events\ArticleUnpublished;
 use App\Http\Requests\Articles\ArticleRequest;
 use Illuminate\Support\Facades\Auth;
 
-class ArticleStore
-{
-    public function execute(ArticleRequest $request)
-    {
-        $article = new Article();
-        $article->forceFill([
-            'title'        => $request->get('title'),
-            'introduction' => $request->get('introduction'),
-            'user_id'      => Auth::id(),
-            'url'          => $request->get('url'),
-            'description'  => $request->get('description'),
-        ]);
-        $article->save();
-        $user = Auth::user();
-        if (!$article) {
-            event(new ArticleUnpublished($article, $user));
-        } else {
-            event(new ArticlePublished($article, $user));
-        }
+class ArticleStore extends ArticleAction {
 
-        return $article;
+    /**
+     * @param \App\Http\Requests\Articles\ArticleRequest $request
+     * @return \App\Models\Article
+     */
+    public function execute(ArticleRequest $request): Article {
+        $article = new Article();
+        return $this->fillArticle($article, $request);
     }
 }

@@ -34,11 +34,6 @@ class Article extends Model {
         return $this->belongsToMany(Article::class);
     }
 
-    public function articlefavorite() {
-        return (bool)ArticleFavorite::where('user_id', Auth::id())->where('article_id', $this->id)->first();
-    }
-
-
     /**
      * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */

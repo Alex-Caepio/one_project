@@ -36,6 +36,7 @@ class ArticleTransformer extends Transformer
             'image_url'    => $article->image_url,
             'created_at'   => $this->dateTime($article->created_at),
             'updated_at'   => $this->dateTime($article->updated_at),
+            'deleted_at'   => $this->dateTime($article->deleted_at),
         ];
     }
 
