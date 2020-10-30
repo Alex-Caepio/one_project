@@ -44,6 +44,20 @@ components:
           type: string
         url:
           type: string
+        image_url:
+          type: string
+        created_at:
+          type: string
+          nullable: false
+          format: date-time
+        updated_at:
+          type: string
+          nullable: false
+          format: date-time
+        deleted_at:
+          type: string
+          nullable: true
+          format: date-time
     Discipline:
       type: object
       properties:

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Actions\Article\ArticleStore;
+use App\Actions\Article\ArticleUpdate;
 use App\Events\ArticlePublished;
 use App\Events\ArticleUnpublished;
 use App\Http\Requests\Articles\ArticleRequest;
@@ -10,46 +11,38 @@ use App\Http\Requests\Request;
 use App\Models\Article;
 use App\Transformers\ArticleTransformer;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
-class ArticleController extends Controller
-{
-    public function index(Request $request)
-    {
-        $paginator = Article::paginate($request->getLimit());
+class ArticleController extends Controller {
+
+    public function index(Request $request) {
+        $paginator = Article::published()->whereHas('user', function($query) {
+            $query->published();
+        })->paginate($request->getLimit());
         $articles = $paginator->getCollection();
-        return response(fractal($articles, new ArticleTransformer())
-            ->parseIncludes($request->getIncludes()))
-            ->withPaginationHeaders($paginator);
+        return response(fractal($articles, new ArticleTransformer())->parseIncludes($request->getIncludes()))->withPaginationHeaders($paginator);
     }
 
-    public function show(Article $article, Request $request)
-    {
-        return fractal($article, new ArticleTransformer())
-        ->parseIncludes($request->getIncludes())
-        ->respond();
+    public function show(Article $article, Request $request) {
+        return fractal($article, new ArticleTransformer())->parseIncludes($request->getIncludes())->respond();
     }
 
-    public function store(ArticleRequest $request)
-    {
-        $article = run_action(ArticleStore::class,$request);
+    public function store(ArticleRequest $request) {
+        $article = run_action(ArticleStore::class, $request);
         return fractal($article, new ArticleTransformer())->respond();
     }
 
-    public function edit(ArticleRequest $request, Article $article)
-    {
-        $article->update($request->all());
-
+    public function edit(ArticleRequest $request, Article $article) {
+        $article = run_action(ArticleUpdate::class, $request, $article);
         return fractal($article, new ArticleTransformer())->respond();
     }
 
-    public function destroy(Article $article)
-    {
+    public function destroy(Article $article) {
         $article->delete();
         return response(null, 204);
     }
 
-    public function storeFavorite(Article $article)
-    {
+    public function storeFavorite(Article $article) {
         if ($article->articlefavorite()) {
             return response(null, 200);
         }
@@ -58,9 +51,9 @@ class ArticleController extends Controller
         return response(null, 201);
     }
 
-    public function deleteFavorite(Article $article)
-    {
+    public function deleteFavorite(Article $article) {
         Auth::user()->favourite_articles()->detach($article->id);
         return response(null, 204);
     }
+
 }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Scopes\PublishedScope;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -27,7 +28,7 @@ use Illuminate\Support\Collection;
  */
 class Discipline extends Model
 {
-    use HasFactory;
+    use HasFactory, PublishedScope;
 
     protected $fillable = [
         'name', 'url', 'icon_url', 'banner_url',
@@ -85,10 +86,8 @@ class Discipline extends Model
         return $this->hasMany(DisciplineVideo::class);
     }
 
-    public function related_disciplines(): BelongsToMany
-    {
-        return $this->belongsToMany(__CLASS__, 'discipline_discipline', 'related_id', 'parent_id')
-            ->where('is_published', true)->withTimeStamps();
+    public function related_disciplines(): BelongsToMany {
+        return $this->belongsToMany(__CLASS__, 'discipline_discipline', 'related_id', 'parent_id')->published()->withTimeStamps();
     }
 
     public function media_images()

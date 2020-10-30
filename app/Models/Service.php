@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Scopes\PublishedScope;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -25,7 +26,7 @@ use Illuminate\Support\Facades\Auth;
  */
 class Service extends Model
 {
-    use SoftDeletes, HasFactory;
+    use SoftDeletes, HasFactory, PublishedScope;
 
     protected $fillable = [
         'title',
@@ -61,7 +62,7 @@ class Service extends Model
 
     public function disciplines()
     {
-        return $this->belongsToMany(Discipline::class)->where('is_published', true);
+        return $this->belongsToMany(Discipline::class)->published();
     }
 
     public function focus_areas()
