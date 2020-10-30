@@ -1,4 +1,5 @@
 <?php
+
 namespace Tests\Admin;
 
 use Tests\TestCase;
@@ -17,25 +18,25 @@ class DisciplineTest extends TestCase
 
     public static $disciplineStructure = [
         'id', 'name', 'url', 'description',
-        'introduction', 'icon_url', 'banner_url', 
+        'introduction', 'icon_url', 'banner_url',
         'is_published'
     ];
 
     public function setUp(): void
-        {
-            parent::setUp();
+    {
+        parent::setUp();
 
-            $this->user = $this->createAdmin();
-            $this->login($this->user);
-        }
+        $this->user = $this->createAdmin();
+        $this->login($this->user);
+    }
 
     public function test_index_discipline(): void
-        {
-            Discipline::factory()->count(10)->create();
-            $this->json('get', "/admin/disciplines")
+    {
+        Discipline::factory()->count(10)->create();
+        $this->json('get', "/admin/disciplines")
             ->assertOk()
             ->assertJsonStructure([self::$disciplineStructure]);
-        }
+    }
 
     public function test_show_discipline(): void
     {
@@ -57,26 +58,26 @@ class DisciplineTest extends TestCase
     {
         $discipline = Discipline::factory()->make();
 
-        $featuredServices = Service::factory()->count(3)->create();
-        $practitoners = User::factory()->count(3)->create();
-        $focusAreas = FocusArea::factory()->count(3)->create();
-        $relatedDisciplines = Discipline::factory()->count(3)->create();
+        $featuredServices   = Service::factory()->count(3)->create();
+        $practitoners       = User::factory()->count(3)->create();
+        $focusAreas         = FocusArea::factory()->count(3)->create();
+        $relatedDisciplines = Discipline::factory()->count(3)->create(['is_published' => true]);
 
         $response = $this->json('post', '/admin/disciplines', [
-            'name' => $discipline->name,
+            'name'                   => $discipline->name,
             'featured_practitioners' => $practitoners->pluck('id'),
-            'featured_services' => $featuredServices->pluck('id'),
-            'focus_areas' => $focusAreas->pluck('id'),
-            'related_disciplines' => $relatedDisciplines->pluck('id'),
-            'media_images' => [
+            'featured_services'      => $featuredServices->pluck('id'),
+            'focus_areas'            => $focusAreas->pluck('id'),
+            'related_disciplines'    => $relatedDisciplines->pluck('id'),
+            'media_images'           => [
                 ['url' => 'http://google.com'],
                 ['url' => 'http://google.com'],
             ],
-            'media_videos' => [
+            'media_videos'           => [
                 ['url' => 'http://google.com'],
                 ['url' => 'http://google.com'],
             ],
-            'media_files' => [
+            'media_files'            => [
                 ['url' => 'http://google.com'],
                 ['url' => 'http://google.com'],
             ],
@@ -104,21 +105,21 @@ class DisciplineTest extends TestCase
         // 2. Check that url field get advantage over name
         $this->json('post', '/admin/disciplines', [
             'name' => 'Heartbreaker',
-            'url' => 'whole-lotta-love',
-            ])
+            'url'  => 'whole-lotta-love',
+        ])
             ->assertOk()
             ->assertJsonFragment(['url' => 'whole-lotta-love']);
 
         // 3. Check that same url or name can not be saved twice
         $this->json('post', '/admin/disciplines', [
             'name' => 'Heartbreaker',
-            'url' => 'whole-lotta-love',
-            ])
+            'url'  => 'whole-lotta-love',
+        ])
             ->assertStatus(422);
-            // ->assertJsonFragment([
-            // 'url' => ['The slug whole-lotta-love is not unique! Please, chose the different url.']
-            // ])
-            // ->assertJsonFragment(['name' => ['The name has already been taken.']]);
+        // ->assertJsonFragment([
+        // 'url' => ['The slug whole-lotta-love is not unique! Please, chose the different url.']
+        // ])
+        // ->assertJsonFragment(['name' => ['The name has already been taken.']]);
 
         // 4. Check that generated url from name is unique
         $this->json('post', '/admin/disciplines', ['name' => 'Whole lotta love'])
@@ -129,125 +130,121 @@ class DisciplineTest extends TestCase
     }
 
     public function test_update_discipline(): void
-        {
-            $featuredServices = Service::factory()->count(3)->create();
-            $practitoners = User::factory()->count(3)->create();
-            $mediaImage = MediaImage::factory()->count(2)->create();
-            $mediaVideo = MediaVideo::factory()->count(2)->create();
-            $mediaFile = MediaFile::factory()->create();
+    {
+        $featuredServices = Service::factory()->count(3)->create();
+        $practitoners     = User::factory()->count(3)->create();
+        $mediaImage       = MediaImage::factory()->count(2)->create();
+        $mediaVideo       = MediaVideo::factory()->count(2)->create();
+        $mediaFile        = MediaFile::factory()->count(2)->create();
 
-            /** @var Discipline $discipline */
-            $discipline = Discipline::factory()->create();
-            $discipline['name'] = 'Discipline';
+        /** @var Discipline $discipline */
+        $discipline         = Discipline::factory()->create();
+        $discipline['name'] = 'Discipline';
 
-            $response = $this->json('put', '/admin/disciplines/'. $discipline->id, [
-                'name' => 'name',
-                'featured_practitioners' => $practitoners->pluck('id'),
-                'featured_services' => $featuredServices->pluck('id'),
-            ]);
+        $response = $this->json('put', '/admin/disciplines/' . $discipline->id, [
+            'name'                   => 'name',
+            'featured_practitioners' => $practitoners->pluck('id'),
+            'featured_services'      => $featuredServices->pluck('id'),
+        ]);
 
-            $discipline->featured_practitioners()->sync($practitoners);
-            $discipline->featured_services()->sync($featuredServices);
+        $discipline->featured_practitioners()->sync($practitoners);
+        $discipline->featured_services()->sync($featuredServices);
 
-            $discipline->media_images()->delete();
-            $discipline->media_videos()->delete();
-            $discipline->media_files()->delete();
+        $discipline->media_images()->delete();
+        $discipline->media_videos()->delete();
+        $discipline->media_files()->delete();
 
-            $discipline->media_images()->saveMany($mediaImage);
-            $discipline->media_videos()->saveMany($mediaVideo);
-            $discipline->media_files()->saveMany($mediaFile);
+        $discipline->media_images()->saveMany($mediaImage);
+        $discipline->media_videos()->saveMany($mediaVideo);
+        $discipline->media_files()->saveMany($mediaFile);
 
-            $response->assertOk()->assertJsonStructure(self::$disciplineStructure);
+        $response->assertOk()->assertJsonStructure(self::$disciplineStructure);
 
-            $this->assertEquals($discipline['name'], $discipline->name);
+        $this->assertEquals($discipline['name'], $discipline->name);
 
-            $discipline = Discipline::find($response->getOriginalContent()->id);
-            self::assertCount(3, $discipline->featured_practitioners);
-            self::assertCount(3, $discipline->featured_services);
-            self::assertCount(2, $discipline->media_images);
-            self::assertCount(2, $discipline->media_videos);
-            self::assertCount(2, $discipline->media_files);
-        }
+        $discipline = Discipline::find($response->getOriginalContent()->id);
+        self::assertCount(3, $discipline->featured_practitioners);
+        self::assertCount(3, $discipline->featured_services);
+        self::assertCount(2, $discipline->media_images);
+        self::assertCount(2, $discipline->media_videos);
+        self::assertCount(2, $discipline->media_files);
+    }
 
     public function test_delete_discipline(): void
-        {
-            /** @var Discipline $discipline */
-            $discipline = Discipline::factory()->create();
-            $mediaImage = MediaImage::factory()->create();
-            $mediaVideo = MediaVideo::factory()->create();
-            $mediaFile = MediaFile::factory()->create();
+    {
+        /** @var Discipline $discipline */
+        $discipline = Discipline::factory()->create();
+        $mediaImage = MediaImage::factory()->create();
+        $mediaVideo = MediaVideo::factory()->create();
+        $mediaFile  = MediaFile::factory()->create();
 
-            $response = $this->json('delete', "/admin/disciplines/{$discipline->id}");
-            $discipline->media_images()->delete();
-            $discipline->media_videos()->delete();
-            $discipline->media_files()->delete();
+        $response = $this->json('delete', "/admin/disciplines/{$discipline->id}");
+        $discipline->media_images()->delete();
+        $discipline->media_videos()->delete();
+        $discipline->media_files()->delete();
 
-            $this->assertDatabaseMissing('media_images', [
-                'model_id' => $discipline->id,
-            ]);
-            $this->assertDatabaseMissing('media_videos', [
-                'model_id' => $discipline->id,
-            ]);
-            $this->assertDatabaseMissing('media_files', [
-                'model_id' => $discipline->id,
-            ]);
+        $this->assertDatabaseMissing('media_images', [
+            'model_id' => $discipline->id,
+        ]);
+        $this->assertDatabaseMissing('media_videos', [
+            'model_id' => $discipline->id,
+        ]);
+        $this->assertDatabaseMissing('media_files', [
+            'model_id' => $discipline->id,
+        ]);
 
-            $response->assertStatus(204);
-        }
+        $response->assertStatus(204);
+    }
 
     public function test_discipline_publish(): void
-        {
-            /** @var Discipline $discipline */
-            $discipline = Discipline::factory()->create();
-            $discipline['is_published'] = true;
-
-            $response = $this->json('post', "admin/disciplines/{$discipline->id}/publish", $discipline->toArray());
-            $this->assertEquals($discipline['is_published'], $discipline->is_published);
-            $response->assertStatus(204);
-
-        }
+    {
+        /** @var Discipline $discipline */
+        $discipline = Discipline::factory()->create();
+        $this->json('post', "admin/disciplines/{$discipline->id}/publish",
+            [
+                'is_published' => true
+            ])
+            ->assertStatus(204);
+    }
 
     public function test_discipline_unpublished(): void
-        {
-            /** @var Discipline $discipline */
-            $discipline = Discipline::factory()->create();
-            $discipline['is_published'] = false;
-
-            $response = $this->json('post', "admin/disciplines/{$discipline->id}/unpublish", $discipline->toArray());
-            $this->assertEquals($discipline['is_published'], $discipline->is_published);
-            $response->assertStatus(204);
-        }
-
-    public function test_discipline_unpublished_with_status_422(): void
-        {
-            /** @var Discipline $discipline */
-            $discipline = Discipline::factory()->create();
-
-            $this->json('post', "admin/disciplines/{$discipline->id}/unpublish",[
-                'name' => '',
-                'url' => ''
+    {
+        /** @var Discipline $discipline */
+        $discipline = Discipline::factory()->create();
+        $this->json('post', "admin/disciplines/{$discipline->id}/unpublish",
+            [
+                'is_published' => false
             ])
-                ->assertStatus(422)
-                ->assertJsonFragment(['name' => ['Field must been required!']])
-                ->assertJsonFragment(['url' => ['Field must been required!']]);
+            ->assertStatus(204);
+    }
 
-        }
+    public function test_discipline_published_with_status_422(): void
+    {
+        /** @var Discipline $discipline */
+        $discipline = Discipline::factory()->create([
+            'url' => null
+        ]);
+
+        $this->json('post', "admin/disciplines/{$discipline->id}/publish")
+            ->assertStatus(422);
+
+    }
 
     public function test_index_can_search_disciplines(): void
-        {
-            $searchOne = Discipline::factory()->count(2)->create();
+    {
+        $searchOne = Discipline::factory()->count(2)->create();
 
-            $response = $this->json('get', '/admin/disciplines?search', ['search' => $searchOne[1]->name])
+        $response = $this->json('get', '/admin/disciplines?search', ['search' => $searchOne[1]->name])
             ->assertJsonFragment(['url' => $searchOne[1]->url])
-            ->assertJsonCount( 1);;
+            ->assertJsonCount(1);;
 
-            $response->assertOk();
+        $response->assertOk();
 
-            $response = $this->json('get', '/admin/disciplines?search', ['search' => $searchOne[0]->name]);
-            $response->assertJsonCount(1);
-            $response->assertJsonFragment(['url' => $searchOne[0]->url]);
+        $response = $this->json('get', '/admin/disciplines?search', ['search' => $searchOne[0]->name]);
+        $response->assertJsonCount(1);
+        $response->assertJsonFragment(['url' => $searchOne[0]->url]);
 
-            $response->assertOk();
+        $response->assertOk();
 
-        }
+    }
 }

@@ -38,17 +38,11 @@ class FocusAreaTest extends TestCase
 
     public function test_store_focus_area(): void
     {
-        $user =User::factory()->create();
-        $service = Service::factory()->create();
-        $article = Article::factory()->create();
-        $focusArea = FocusArea::factory()->create();
+        $focusArea = FocusArea::factory()->make();
         $response = $this->json('post', '/admin/focus-areas', [
             'name' => $focusArea->name,
             'url' => $focusArea->url,
         ]);
-        $focusArea->practitioners()->attach($user);
-        $focusArea->services()->attach($service);
-        $focusArea->articles()->attach($article);
         $response->assertOk($focusArea);
     }
 

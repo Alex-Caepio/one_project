@@ -20,54 +20,15 @@ class DisciplineTest extends TestCase
 
     public function test_can_get_all_discipline(): void
     {
-        Discipline::factory()->create();
-        $response = $this->json('get', "/api/disciplines");
-
-        $response
+        Discipline::factory()->count(10)->create();
+        $this->json('get', "/api/disciplines")
             ->assertOk();
     }
 
     public function test_show_discipline(): void
     {
-        $discipline = Discipline::factory()->make();
-        $response = $this->json('get', "api/disciplines/{$discipline->id}");
-
-        $response
+        $discipline = Discipline::factory()->create();
+        $this->json('get', "api/disciplines/{$discipline->id}")
             ->assertOk();
     }
-
-    public function test_can_get_all_discipline_list(): void
-    {
-        $discipline = Discipline::factory()->count(2)->create(['is_published' => true]);
-        $response = $this->json('get', "/api/disciplines/list");
-        $response->assertOk($discipline);
-    }
-
-    public function test_can_get_all_discipline_filter(): void
-    {
-        $filterTwo = Discipline::factory()->make(['is_published' => true]);
-        $response = $this->json('get', "api/disciplines/filter", [
-            'name' => $filterTwo->name,
-            'url' => $filterTwo->url,
-        ]);
-
-        $response->assertOk($filterTwo);
-    }
-
-    public function test_all_image_discipline(): void
-    {
-        $discipline = Discipline::factory()->create();
-        $response = $this->json('get', "/api/disciplines/{$discipline->id}/images");
-        $discipline->discipline_images;
-        $response->assertOk();
-    }
-
-    public function test_all_video_discipline(): void
-    {
-        $discipline = Discipline::factory()->create();
-        $response = $this->json('get', "/api/disciplines/{$discipline->id}/videos");
-        $discipline->discipline_videos;
-        $response->assertOk();
-    }
-
 }

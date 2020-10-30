@@ -1,0 +1,98 @@
+articles:
+  get:
+    tags:
+      - Article
+    parameters:
+      - name: page
+        in: query
+        description: Pagination page results
+        required: false
+        schema:
+          type: integer
+          example: 2
+      - name: limit
+        in: query
+        description: Results per page
+        required: false
+        schema:
+          type: integer
+          example: 10
+      - name: x-page
+        in: header
+        description: Pagination page results
+        required: false
+        schema:
+          type: integer
+          example: 2
+      - name: x-limit
+        in: header
+        description: Results per page
+        required: false
+        schema:
+          type: integer
+          example: 10
+      - name: with
+        in: query
+        description: Include additional objects in response
+        required: false
+        schema:
+          type: string
+          example: user,disciplines,favourite_articles,media_images,media_videos,media_files
+      - name: x-with
+        in: header
+        description: Include additional objects in response
+        required: false
+        schema:
+          type: integer
+          example: user,disciplines,favourite_articles,media_images,media_videos,media_files
+      - name: title
+        in: query
+        description: Article title
+        required: false
+        schema:
+          type: string
+          example: title
+      - name: published_from
+        in: query
+        description: Article created date
+        required: false
+        schema:
+          type: string
+          example: 2020-01-01 00:00:00
+      - name: published_to
+        in: query
+        description: Article created date
+        required: false
+        schema:
+          type: string
+          example: 2020-01-01 00:00:00
+      - name: is_deleted
+        in: query
+        description: Deleted or not
+        required: false
+        schema:
+          type: bool
+          example: false
+      - name: is_published
+        in: query
+        description: Published or not
+        required: false
+        schema:
+          type: bool
+          example: false
+      - name: practitioner
+        in: query
+        description: article owner
+        required: false
+        schema:
+          type: integer
+          example: 2
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../schemas/Article.yaml'

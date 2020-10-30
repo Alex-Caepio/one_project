@@ -19,6 +19,7 @@ class DisciplineFactory extends Factory
         return [
             'name'         => $name,
             'url'          => to_url($name),
+            'icon_url'          => $this->faker->imageUrl(),
             'is_published' => $this->faker->boolean,
         ];
     }

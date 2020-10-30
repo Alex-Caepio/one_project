@@ -20,3 +20,21 @@ properties:
 
   url:
     type: string
+
+  image_url:
+    type: string
+
+  created_at:
+    type: string
+    nullable: true
+    format: date-time
+
+  updated_at:
+    type: string
+    nullable: true
+    format: date-time
+
+  deleted_at:
+    type: string
+    nullable: true
+    format: date-time
