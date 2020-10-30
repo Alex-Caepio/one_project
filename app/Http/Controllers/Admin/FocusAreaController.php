@@ -56,7 +56,6 @@ class FocusAreaController extends Controller
         $data['url'] = $url;
         $focusArea   = FocusArea::create($data);
 
-
         $focusArea->practitioners()->attach($request->get('users'));
         $focusArea->services()->attach($request->get('services'));
         $focusArea->articles()->attach($request->get('articles'));
@@ -119,15 +118,15 @@ class FocusAreaController extends Controller
         ]);
         $imageFocus->save();
     }
-    public function storeVideos(Request $request, FocusArea $focusArea)
-    {
-        $videoFocus = new FocusAreaVideo();
-        $videoFocus->forceFill([
-            'focus_area_id' => $focusArea->id,
-            'link' => $request->get('link'),
-        ]);
-        $videoFocus->save();
-    }
+   public function storeVideos(Request $request, FocusArea $focusArea)
+   {
+       $videoFocus = new FocusAreaVideo();
+       $videoFocus->forceFill([
+           'focus_area_id' => $focusArea->id,
+           'link' => $request->get('link'),
+       ]);
+       $videoFocus->save();
+   }
     public function image(ImageRequests $request, FocusArea $focusArea)
     {
         $path = public_path('\img\focus-areas\\' . $focusArea->id . '\\');
@@ -135,11 +134,11 @@ class FocusAreaController extends Controller
         $request->file('image')->move($path, $fileName);
     }
 
-    public function icon(IconRequests $request, FocusArea $focusArea)
-    {
-        $path = public_path('\icon\focus-areas\\' . $focusArea->id . '\\');
-        $fileName = $request->file('icon')->getClientOriginalName();
-        $request->file('icon')->move($path, $fileName);
-    }
+   public function icon(IconRequests $request, FocusArea $focusArea)
+   {
+       $path = public_path('\icon\focus-areas\\' . $focusArea->id . '\\');
+       $fileName = $request->file('icon')->getClientOriginalName();
+       $request->file('icon')->move($path, $fileName);
+   }
 
 }
