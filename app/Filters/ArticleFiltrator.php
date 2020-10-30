@@ -10,6 +10,11 @@ class ArticleFiltrator {
 
     public function apply(Builder $queryBuilder, Request $request) {
 
+        if ($request->filled('title')) {
+            $title = $request->get('title');
+            $queryBuilder->where('title', 'like', "%$title%");
+        }
+
         if ($request->filled('published_from')) {
 
             $queryBuilder->where('created_at', '>=', $request->start_date);
