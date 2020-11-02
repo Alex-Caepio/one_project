@@ -17,11 +17,11 @@ class ArticleFiltrator {
 
         if ($request->filled('published_from')) {
 
-            $queryBuilder->where('created_at', '>=', $request->start_date);
+            $queryBuilder->where('created_at', '>=', $request->published_from);
         }
 
         if ($request->filled('published_to')) {
-            $queryBuilder->where('created_at', '<=', $request->end_date);
+            $queryBuilder->where('created_at', '<=', $request->published_to);
         }
 
         if ($request->filled('is_deleted')) {

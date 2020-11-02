@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Actions\Article\ArticleStore;
 use App\Actions\Article\ArticleUpdate;
-use App\Events\ArticlePublished;
-use App\Events\ArticleUnpublished;
 use App\Http\Requests\Articles\ArticleRequest;
 use App\Http\Requests\Request;
 use App\Models\Article;
