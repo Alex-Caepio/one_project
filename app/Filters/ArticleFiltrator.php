@@ -3,6 +3,7 @@
 namespace App\Filters;
 
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -17,12 +18,11 @@ class ArticleFiltrator {
         }
 
         if ($request->filled('published_from')) {
-
-            $queryBuilder->where('created_at', '>=', $request->published_from);
+            $queryBuilder->where('created_at', '>=', Carbon::parse($request->published_from)->startOfDay());
         }
 
         if ($request->filled('published_to')) {
-            $queryBuilder->where('created_at', '<=', $request->published_to);
+            $queryBuilder->where('created_at', '<=', Carbon::parse($request->published_to)->endOfDay());
         }
 
         if ($request->filled('is_deleted')) {
