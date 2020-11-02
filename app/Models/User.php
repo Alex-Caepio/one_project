@@ -29,6 +29,9 @@ class User extends Authenticatable implements MustVerifyEmail
 {
     use Notifiable, HasApiTokens, HasFactory, PublishedScope;
 
+    public const ACCOUNT_PRACTITIONER = 'practitioner';
+    public const ACCOUNT_CLIENT = 'client';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -141,4 +144,13 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(CustomRate::class);
     }
+
+
+    /**
+     * @return bool
+     */
+    public function isPractitioner(): bool {
+        return $this->account_type === self::ACCOUNT_PRACTITIONER;
+    }
+
 }

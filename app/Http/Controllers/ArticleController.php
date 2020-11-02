@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Actions\Article\ArticleStore;
 use App\Actions\Article\ArticleUpdate;
+use App\Http\Requests\Articles\ArticleDeleteRequest;
 use App\Http\Requests\Articles\ArticleRequest;
 use App\Http\Requests\Request;
 use App\Models\Article;
@@ -35,7 +36,7 @@ class ArticleController extends Controller {
         return fractal($article, new ArticleTransformer())->respond();
     }
 
-    public function destroy(Article $article) {
+    public function destroy(ArticleDeleteRequest $request, Article $article) {
         $article->delete();
         return response(null, 204);
     }
