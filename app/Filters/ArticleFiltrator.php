@@ -5,6 +5,7 @@ namespace App\Filters;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ArticleFiltrator {
 
@@ -38,7 +39,7 @@ class ArticleFiltrator {
 
         if ($request->filled('practitioner')) {
             $queryBuilder->whereHas('user', function($query) use ($request) {
-                $query->where('id', '=', (int)$request->get('practitioner'));
+                $query->whereIn('id', explode(',', $request->get('practitioner')));
             });
         }
 
