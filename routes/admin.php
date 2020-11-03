@@ -75,6 +75,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::delete('/transactional-emails/{customEmail}', [CustomEmailController::class, 'destroy']);
 
         Route::get('/articles', [ArticleController::class, 'index']);
+        Route::delete('/articles/{article}', [ArticleController::class, 'destroy']);
 
+        Route::post('/articles/{article}/publish', [ArticleController::class, 'publish']);
+        Route::post('/articles/{article}/unpublish', [ArticleController::class, 'unpublish']);
     });
 });

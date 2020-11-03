@@ -31,7 +31,7 @@ class Article extends Model {
     }
 
     public function favourite_articles() {
-        return $this->belongsToMany(Article::class);
+        return $this->belongsToMany(__CLASS__);
     }
 
     /**

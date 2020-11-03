@@ -1185,9 +1185,9 @@ paths:
           schema:
             type: integer
             example: user,disciplines,favourite_articles,media_images,media_videos,media_files
-        - name: title
+        - name: search
           in: query
-          description: Article title
+          description: Article title or author name
           required: false
           schema:
             type: string
@@ -1198,14 +1198,14 @@ paths:
           required: false
           schema:
             type: string
-            example: 2020-01-01 00:00:00
+            example: 2020-01-01
         - name: published_to
           in: query
           description: Article created date
           required: false
           schema:
             type: string
-            example: 2020-01-01 00:00:00
+            example: 2020-01-01
         - name: is_deleted
           in: query
           description: Deleted or not
@@ -1218,15 +1218,15 @@ paths:
           description: Published or not
           required: false
           schema:
-            type: bool
-            example: false
+            type: string
+            example: false,true
         - name: practitioner
           in: query
           description: article owner
           required: false
           schema:
-            type: integer
-            example: 2
+            type: string
+            example: 2,3,1
       responses:
         "200":
           description: OK

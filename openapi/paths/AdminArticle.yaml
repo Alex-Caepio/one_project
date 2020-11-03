@@ -45,9 +45,9 @@ articles:
         schema:
           type: integer
           example: user,disciplines,favourite_articles,media_images,media_videos,media_files
-      - name: title
+      - name: search
         in: query
-        description: Article title
+        description: Article title or author name
         required: false
         schema:
           type: string
@@ -58,14 +58,14 @@ articles:
         required: false
         schema:
           type: string
-          example: 2020-01-01 00:00:00
+          example: 2020-01-01
       - name: published_to
         in: query
         description: Article created date
         required: false
         schema:
           type: string
-          example: 2020-01-01 00:00:00
+          example: 2020-01-01
       - name: is_deleted
         in: query
         description: Deleted or not
@@ -78,15 +78,15 @@ articles:
         description: Published or not
         required: false
         schema:
-          type: bool
-          example: false
+          type: string
+          example: false,true
       - name: practitioner
         in: query
         description: article owner
         required: false
         schema:
-          type: integer
-          example: 2
+          type: string
+          example: 2,3,1
     responses:
       '200':
         description: OK
@@ -96,3 +96,35 @@ articles:
               type: array
               items:
                 $ref: '../schemas/Article.yaml'
+
+articles/{id}:
+  delete:
+    tags:
+      - Article
+    parameters:
+      - $ref: "#/parameters/id"
+    responses:
+      '204':
+        description: OK
+
+articles/{id}/publish:
+  post:
+    operationId: admin-publish-article
+    parameters:
+      - $ref: "#/parameters/id"
+    tags:
+      - Article
+    responses:
+      '204':
+        description: OK
+
+articles/{id}/unpublish:
+  post:
+    operationId: admin-unpublish-article
+    parameters:
+      - $ref: "#/parameters/id"
+    tags:
+      - Article
+    responses:
+      '204':
+        description: OK
