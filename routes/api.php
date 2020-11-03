@@ -137,4 +137,7 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::get('/countries', [CountryController::class, 'filter']);
 
     Route::get('timezones', [TimezoneController::class, 'index']);
+
+    Route::get('/users', [UserController::class, 'search']);
+
 });

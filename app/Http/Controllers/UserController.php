@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Actions\Test\GetUser;
+use App\Filters\UserFiltrator;
 use App\Http\Requests\Request;
+use App\Models\User;
 use App\Transformers\UserTransformer;
 use App\Transformers\ArticleTransformer;
 use App\Transformers\ServiceTransformer;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -36,4 +39,23 @@ class UserController extends Controller
             ->toArray();
     }
 
+
+    /**
+     * @param \App\Http\Requests\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function search(Request $request): Response
+    {
+        $query = User::query();
+
+        $userFilter = new UserFiltrator();
+        $userFilter->apply($query, $request);
+
+        $includes = $request->getIncludes();
+        $paginator = $query->with($includes)->paginate($request->getLimit());
+
+        $users = $paginator->getCollection();
+
+        return response(fractal($users, new UserTransformer())->parseIncludes($includes)->toArray())->withPaginationHeaders($paginator);
+    }
 }
