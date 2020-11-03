@@ -1,8 +1,6 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 
 class PublishedDateArticle extends Migration
 {
@@ -13,7 +11,7 @@ class PublishedDateArticle extends Migration
      */
     public function up()
     {
-        DB::statement("ALTER TABLE `articles` ADD COLUMN `published_at` DATETIME DEFAULT NULL';'");
+        DB::statement("ALTER TABLE `articles` ADD COLUMN `published_at` DATETIME DEFAULT NULL");
     }
 
     /**
