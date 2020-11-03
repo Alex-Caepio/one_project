@@ -53,7 +53,7 @@ class ArticleTransformer extends Transformer
      * @param \App\Models\Article $article
      * @return \League\Fractal\Resource\Collection|null
      */
-    public function includeDiscipline(Article $article): ?Collection
+    public function includeDisciplines(Article $article): ?Collection
     {
         return $this->collectionOrNull($article->disciplines, new DisciplineTransformer());
     }

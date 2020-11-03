@@ -27,7 +27,7 @@ class ArticlePublishRequest extends FormRequest {
     }
 
     public function withValidator(Validator $validator) {
-        $result = $validator->setRules([
+        $validator->setRules([
                                            'title'        => 'required|string|min:5',
                                            'url'          => 'required|url|unique:articles,url,' . $this->article->id,
                                            'description'  => 'required|string|min:5',
