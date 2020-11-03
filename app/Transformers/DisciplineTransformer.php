@@ -20,16 +20,66 @@ class DisciplineTransformer extends Transformer
     public function transform(Discipline $discipline): array
     {
         return [
-            'id'           => $discipline->id,
-            'name'         => $discipline->name,
-            'introduction' => $discipline->introduction,
-            'description'  => $discipline->description,
-            'url'          => $discipline->url,
-            'banner_url'   => $discipline->banner_url,
-            'icon_url'     => $discipline->icon_url,
-            'is_published' => (bool)$discipline->is_published,
-            'created_at'   => $this->dateTime($discipline->created_at),
-            'updated_at'   => $this->dateTime($discipline->updated_at),
+            'id'                        => $discipline->id,
+            'name'                      => $discipline->name,
+            'introduction'              => $discipline->introduction,
+            'description'               => $discipline->description,
+            'url'                       => $discipline->url,
+            'banner_url'                => $discipline->banner_url,
+            'icon_url'                  => $discipline->icon_url,
+            'is_published'              => (bool)$discipline->is_published,
+
+            'section_2_h2'              => $discipline->section_2_h2,
+            'section_2_h3'              => $discipline->section_2_h3,
+            'section_2_background'      => $discipline->section_2_background,
+            'section_2_textarea'        => $discipline->section_2_textarea,
+
+            'section_3_h2'              => $discipline->section_3_h2,
+            'section_3_h4'              => $discipline->section_3_h4,
+
+            'section_4_h2'              => $discipline->section_4_h2,
+            'section_4_h3'              => $discipline->section_4_h3,
+            'section_4_background'      => $discipline->section_4_background,
+            'section_4_textarea'        => $discipline->section_4_textarea,
+
+            'section_5_header_h2'       => $discipline->section_5_header_h2,
+
+            'section_6_h2'              => $discipline->section_6_h2,
+            'section_6_h3'              => $discipline->section_6_h3,
+            'section_6_background'      => $discipline->section_6_background,
+            'section_6_textarea'        => $discipline->section_6_textarea,
+
+            'section_7_media_url'       => $discipline->section_7_media_url,
+            'section_7_tag_line'        => $discipline->section_7_tag_line,
+            'section_7_alt_text'        => $discipline->section_7_alt_text,
+            'section_7_url'             => $discipline->section_7_url,
+            'section_7_target_blanc'    => $discipline->section_7_target_blanc,
+
+            'section_8_h2'              => $discipline->section_8_h2,
+
+            'section_9_h2'              => $discipline->section_9_h2,
+            'section_9_h3'              => $discipline->section_9_h3,
+            'section_9_background'      => $discipline->section_9_background,
+            'section_9_textarea'        => $discipline->section_9_textarea,
+
+            'section_10_h2'             => $discipline->section_10_h2,
+
+            'section_11_media_url'      => $discipline->section_11_media_url,
+            'section_11_tag_line'       => $discipline->section_11_tag_line,
+            'section_11_alt_text'       => $discipline->section_11_alt_text,
+            'section_11_url'            => $discipline->section_11_url,
+            'section_11_target_blanc'   => $discipline->section_11_target_blanc,
+
+            'section_12_h2'             => $discipline->section_12_h2,
+
+            'section_13_media_url'      => $discipline->section_13_media_url,
+            'section_13_tag_line'       => $discipline->section_13_tag_line,
+            'section_13_alt_text'       => $discipline->section_13_alt_text,
+            'section_13_url'            => $discipline->section_13_url,
+            'section_13_target_blanc'   => $discipline->section_13_target_blanc,
+
+            'created_at'                => $this->dateTime($discipline->created_at),
+            'updated_at'                => $this->dateTime($discipline->updated_at),
         ];
     }
 

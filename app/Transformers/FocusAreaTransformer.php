@@ -9,7 +9,13 @@ use App\Models\FocusAreaImage;
 
 class FocusAreaTransformer extends Transformer
 {
-    protected $availableIncludes = ['services', 'articles', 'practitioners', 'disciplines', 'focus_area_images', 'focus_area_videos'];
+    protected $availableIncludes = [
+        'services', 'articles', 'practitioners',
+        'disciplines', 'focus_area_images', 'focus_area_videos',
+        'featured_practitioners', 'featured_disciplines',
+        'featured_articles', 'featured_services',
+        'featured_focus_areas'
+    ];
 
     public function transform(FocusArea $focusArea)
     {
@@ -103,4 +109,28 @@ class FocusAreaTransformer extends Transformer
         return $this->collectionOrNull($focusArea->focus_area_videos, new FocusAreaVideoTransformer());
     }
 
+    public function includeFeaturedPractitioners(FocusArea $focusArea)
+    {
+        return $this->collectionOrNull($focusArea->featured_practitioners, new UserTransformer());
+    }
+
+    public function includeFeaturedDisciplines(FocusArea $focusArea)
+    {
+        return $this->collectionOrNull($focusArea->featured_disciplines, new DisciplineTransformer());
+    }
+
+    public function includeFeaturedArticle(FocusArea $focusArea)
+    {
+        return $this->collectionOrNull($focusArea->featured_articles, new ArticleTransformer());
+    }
+
+    public function includeFeaturedService(FocusArea $focusArea)
+    {
+        return $this->collectionOrNull($focusArea->featured_services, new ServiceTransformer());
+    }
+
+   public function includeFeaturedFocusAreas(FocusArea $focusArea)
+   {
+       return $this->collectionOrNull($focusArea->featured_focus_areas, new FocusAreaTransformer());
+   }
 }

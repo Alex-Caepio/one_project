@@ -55,4 +55,8 @@ class Article extends Model {
         return $this->morphMany(MediaFile::class, 'morphesTo', 'model_name', 'model_id');
     }
 
+    public function featured_articles()
+    {
+        return $this->belongsToMany(FocusArea::class, 'focus_area_featured_article', 'focus_area_id', 'article_id');
+    }
 }

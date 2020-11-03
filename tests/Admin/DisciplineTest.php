@@ -115,11 +115,21 @@ class DisciplineTest extends TestCase
             'name' => 'Heartbreaker',
             'url'  => 'whole-lotta-love',
         ])
-            ->assertStatus(422);
-        // ->assertJsonFragment([
-        // 'url' => ['The slug whole-lotta-love is not unique! Please, chose the different url.']
-        // ])
-        // ->assertJsonFragment(['name' => ['The name has already been taken.']]);
+            ->assertStatus(422)
+            ->assertJsonFragment([
+                'url' => ['The slug whole-lotta-love is not unique! Please, chose the different url.']
+            ])
+            ->assertJsonFragment(['name' => ['The name has already been taken.']]);
+
+        $this->json('post', '/admin/disciplines', [
+            'name' => 'Heartbreaker',
+            'url'  => 'whole-lotta-love',
+        ])
+            ->assertStatus(422)
+            ->assertJsonFragment([
+                'url' => ['The slug whole-lotta-love is not unique! Please, chose the different url.']
+            ])
+            ->assertJsonFragment(['name' => ['The name has already been taken.']]);
 
         // 4. Check that generated url from name is unique
         $this->json('post', '/admin/disciplines', ['name' => 'Whole lotta love'])

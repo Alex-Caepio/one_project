@@ -145,6 +145,10 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(CustomRate::class);
     }
 
+    public function featured_practitioners()
+    {
+        return $this->belongsToMany(FocusArea::class, 'focus_area_features_user', 'focus_area_id', 'user_id');
+    }
 
     /**
      * @return bool
@@ -152,5 +156,4 @@ class User extends Authenticatable implements MustVerifyEmail
     public function isPractitioner(): bool {
         return $this->account_type === self::ACCOUNT_PRACTITIONER;
     }
-
 }

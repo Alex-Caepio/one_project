@@ -7,13 +7,13 @@ namespace App\Actions\User;
 use Illuminate\Support\Facades\Auth;
 use Stripe\StripeClient;
 
-class AllCardUser
+class GetCreditCards
 {
     public function execute(StripeClient $stripe)
     {
-        $stripe_id = Auth::user()->stripe_customer_id;
+        $stripeId = Auth::user()->stripe_customer_id;
         return $stripe->customers->allSources(
-            $stripe_id,
+            $stripeId,
             ['object' => 'card', 'limit' => 99]
         );
     }

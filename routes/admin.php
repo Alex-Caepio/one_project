@@ -48,7 +48,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/focus-areas', [FocusAreaController::class, 'index']);
         Route::put('/focus-areas/{focusArea}/update', [FocusAreaController::class, 'update']);
         Route::post('/focus-areas', [FocusAreaController::class, 'store']);
-        Route::get('/focus-areas/{focus-areas}', [FocusAreaController::class, 'show']);
+        Route::get('/focus-areas/{focusArea}', [FocusAreaController::class, 'show']);
         Route::delete('/focus-areas/{focusArea}/destroy', [FocusAreaController::class, 'destroy']);
         Route::post('/focus-areas/{focusArea}/image', [FocusAreaController::class, 'image']);
         Route::post('/focus-areas/{focusArea}/images', [FocusAreaController::class, 'storeImages']);

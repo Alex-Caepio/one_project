@@ -56,9 +56,26 @@ class FocusAreaController extends Controller
         $data['url'] = $url;
         $focusArea   = FocusArea::create($data);
 
+        if ($request->filled('featured_practitioners')) {
+            $focusArea->featured_practitioners()->sync($request->get('featured_practitioners'));
+        }
+        if ($request->filled('featured_disciplines')) {
+            $focusArea->featured_disciplines()->sync($request->get('featured_disciplines'));
+        }
+        if ($request->filled('featured_articles')) {
+            $focusArea->featured_articles()->sync($request->get('featured_articles'));
+        }
+        if ($request->filled('featured_services')) {
+            $focusArea->featured_services()->sync($request->get('featured_services'));
+        }
+        if ($request->filled('featured_focus_areas')) {
+            $focusArea->featured_focus_areas()->sync($request->get('featured_focus_areas'));
+        }
+
         $focusArea->practitioners()->attach($request->get('users'));
         $focusArea->services()->attach($request->get('services'));
         $focusArea->articles()->attach($request->get('articles'));
+        $focusArea->disciplines()->attach($request->get('disciplines'));
 
         return fractal($focusArea, new FocusAreaTransformer())
             ->parseIncludes($request->getIncludes())
@@ -67,8 +84,9 @@ class FocusAreaController extends Controller
 
     public function show(FocusArea $focusArea, Request $request)
     {
-        return fractal($focusArea, new FocusAreaTransformer())->parseIncludes($request->getIncludes())
-            ->toArray();
+        return fractal($focusArea, new FocusAreaTransformer())
+            ->parseIncludes($request->getIncludes())
+            ->respond();
     }
 
     public function update(FocusAreaStoreRequest $request, FocusArea $focusArea)
@@ -79,6 +97,23 @@ class FocusAreaController extends Controller
 
         $focusArea->update($data);
 
+        if ($request->filled('featured_practitioners')) {
+            $focusArea->featured_practitioners()->sync($request->get('featured_practitioners'));
+        }
+        if ($request->filled('featured_disciplines')) {
+            $focusArea->featured_disciplines()->sync($request->get('featured_disciplines'));
+        }
+        if ($request->filled('featured_articles')) {
+            $focusArea->featured_articles()->sync($request->get('featured_articles'));
+        }
+        if ($request->filled('featured_services')) {
+            $focusArea->featured_services()->sync($request->get('featured_services'));
+        }
+        if ($request->filled('featured_focus_areas')) {
+            $focusArea->featured_focus_areas()->sync($request->get('featured_focus_areas'));
+        }
+
+
         if ($request->filled('practitioners')) {
             $focusArea->practitioners()->sync($request->get('users'));
         }
@@ -87,6 +122,9 @@ class FocusAreaController extends Controller
         }
         if ($request->filled('articles')) {
             $focusArea->articles()->sync($request->get('articles'));
+        }
+        if ($request->filled('disciplines')) {
+            $focusArea->disciplines()->sync($request->get('disciplines'));
         }
 
         return fractal($focusArea, new FocusAreaTransformer())

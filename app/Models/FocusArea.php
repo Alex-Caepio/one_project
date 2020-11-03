@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class FocusArea extends Model
 {
@@ -50,6 +51,31 @@ class FocusArea extends Model
     public function articles()
     {
         return $this->belongsToMany(Article::class, 'focus_area_article', 'focus_area_id', 'article_id')->withTimeStamps();
+    }
+
+    public function featured_practitioners(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'focus_area_featured_user', 'user_id', 'focus_area_id');
+    }
+
+    public function featured_disciplines(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Discipline::class, 'focus_area_featured_discipline', 'discipline_id', 'focus_area_id');
+    }
+
+    public function featured_articles(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Article::class, 'focus_area_featured_article', 'article_id', 'focus_area_id');
+    }
+
+    public function featured_services(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Service::class, 'focus_area_featured_service', 'service_id', 'focus_area_id');
+    }
+
+    public function featured_focus_areas(): BelongsToMany
+    {
+        return $this->belongsToMany(__CLASS__, 'focus_area_featured_focus_area', 'child_focus_area_id', 'parent_focus_area_id');
     }
 }
 

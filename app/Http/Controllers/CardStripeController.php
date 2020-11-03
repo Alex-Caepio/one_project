@@ -2,23 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Actions\User\AllCardUser;
-use App\Actions\User\StoreCardUser;
-use App\Http\Requests\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Actions\User\StoreCreditCard;
+use App\Actions\User\GetCreditCards;
 use Stripe\StripeClient;
 
 class CardStripeController extends Controller
 {
     public function index(StripeClient $stripeClient)
     {
-        $allCardsUser = run_action(AllCardUser::class, $stripeClient);
-        return response($allCardsUser);
+        return response(run_action(GetCreditCards::class, $stripeClient));
     }
 
     public function store(StripeClient $stripe)
     {
-        run_action(StoreCardUser::class,$stripe);
+        run_action(StoreCreditCard::class,$stripe);
+
+        return response(null, 200);
     }
 
 }

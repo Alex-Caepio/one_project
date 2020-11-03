@@ -1,13 +1,11 @@
 <?php
 
-
 namespace App\Actions\User;
 
-
-use Illuminate\Support\Facades\Auth;
 use Stripe\StripeClient;
+use Illuminate\Support\Facades\Auth;
 
-class StoreCardUser
+class StoreCreditCard
 {
     public function execute(StripeClient $stripe)
     {

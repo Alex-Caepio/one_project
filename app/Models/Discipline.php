@@ -111,4 +111,9 @@ class Discipline extends Model
             ->orWhere('url', $value)
             ->firstOrFail();
     }
+
+    public function featured_disciplines()
+    {
+        return $this->belongsToMany(FocusArea::class, 'focus_area_featured_discipline', 'focus_area_id', 'discipline_id');
+    }
 }

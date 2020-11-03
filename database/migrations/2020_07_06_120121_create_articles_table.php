@@ -17,7 +17,6 @@ class CreateArticlesTable extends Migration
             $table->id();
             $table->string('title')->nullable();
             $table->text('description')->nullable();
-           // $table->enum('type',['appointment','course','class','event','e-Content','retreat','product','workshop'])->nullable();
             $table->integer('user_id')->nullable();
             $table->boolean('is_published')->nullable();
             $table->text('introduction')->nullable();

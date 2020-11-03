@@ -14,7 +14,7 @@ class CreateServicesTable extends Migration
      */
     public function up()
     {
-        $table = Schema::create('services', function (Blueprint $table) {
+        Schema::create('services', function (Blueprint $table) {
             $table->id();
             $table->string('title')->nullable();
             $table->text('description')->nullable();
@@ -32,7 +32,6 @@ class CreateServicesTable extends Migration
         ON services(description)');
         DB::statement('CREATE FULLTEXT INDEX service_introduction_index
         ON services(introduction)');
-//        DB::statement('ALTER TABLE services ADD FULLTEXT (description)');
     }
 
     /**
