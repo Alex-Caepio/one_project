@@ -16,8 +16,10 @@ class ArticleFiltrator {
             $search = '%' . $request->get('search') . '%';
             $queryBuilder->where(function($query) use ($search) {
                 $query->where('title', 'LIKE', $search)->orWhereHas('user', function($userQuery) use ($search) {
-                        $userQuery->where('first_name', 'LIKE', $search)->orWhere('last_name', 'LIKE', $search);
-                    });
+                    $userQuery->where('first_name', 'LIKE', $search)
+                              ->orWhere('last_name', 'LIKE', $search)
+                              ->orWhere('business_name', 'LIKE', $search);
+                });
             });
         }
 
