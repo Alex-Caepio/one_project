@@ -126,7 +126,6 @@ class DisciplineController extends Controller
     public function unpublish(Discipline $discipline)
     {
         $discipline->forceFill([
-
             'is_published' => false,
         ]);
         $discipline->update();
