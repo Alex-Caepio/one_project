@@ -32,8 +32,10 @@ class ArticleFiltrator {
         }
 
         $onlyTrashed = true;
+        $withTrashed = true;
         if ($request->filled('is_published')) {
             $onlyTrashed = false;
+            $withTrashed = false;
             $publishedVariants = explode(',', $request->get('is_published'));
             if (count($publishedVariants) === 1) {
                 $isPublished = filter_var($request->get('is_published'), FILTER_VALIDATE_BOOLEAN);
@@ -52,6 +54,8 @@ class ArticleFiltrator {
             } elseif ($isDeleted && !$onlyTrashed) {
                 $queryBuilder->withTrashed();
             }
+        } elseif ($withTrashed) {
+            $queryBuilder->withTrashed();
         }
 
 
