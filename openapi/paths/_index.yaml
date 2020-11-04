@@ -52,6 +52,11 @@
 /plans/{id}/purchase:
   $ref: "./Plan.yaml#/plans~1{plan}~1purchase"
 
+#users
+/users:
+  $ref: "./User.yaml#/users"
+
+
 ## ADMIN ENDPOINTS
 /admin/profile:
   $ref: "./AdminProfile.yaml#/profile"
