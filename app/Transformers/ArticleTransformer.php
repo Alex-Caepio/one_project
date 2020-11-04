@@ -13,8 +13,7 @@ use League\Fractal\Resource\Item;
  *
  * @package App\Transformers
  */
-class ArticleTransformer extends Transformer
-{
+class ArticleTransformer extends Transformer {
     /**
      * @var string[]
      */
@@ -37,6 +36,7 @@ class ArticleTransformer extends Transformer
             'created_at'   => $this->dateTime($article->created_at),
             'updated_at'   => $this->dateTime($article->updated_at),
             'deleted_at'   => $this->dateTime($article->deleted_at),
+            'published_at' => $this->dateTime($article->published_at),
         ];
     }
 
@@ -44,8 +44,7 @@ class ArticleTransformer extends Transformer
      * @param \App\Models\Article $article
      * @return \League\Fractal\Resource\Item|null
      */
-    public function includeUser(Article $article): ?Item
-    {
+    public function includeUser(Article $article): ?Item {
         return $this->itemOrNull($article->user, new UserTransformer());
     }
 
@@ -53,8 +52,7 @@ class ArticleTransformer extends Transformer
      * @param \App\Models\Article $article
      * @return \League\Fractal\Resource\Collection|null
      */
-    public function includeDisciplines(Article $article): ?Collection
-    {
+    public function includeDisciplines(Article $article): ?Collection {
         return $this->collectionOrNull($article->disciplines, new DisciplineTransformer());
     }
 
@@ -62,8 +60,7 @@ class ArticleTransformer extends Transformer
      * @param \App\Models\Article $article
      * @return \League\Fractal\Resource\Collection|null
      */
-    public function includeFavouriteArticles(Article $article): ?Collection
-    {
+    public function includeFavouriteArticles(Article $article): ?Collection {
         return $this->collectionOrNull($article->favourite_articles, new ArticleTransformer());
     }
 
@@ -71,8 +68,7 @@ class ArticleTransformer extends Transformer
      * @param \App\Models\Article $article
      * @return \League\Fractal\Resource\Collection|null
      */
-    public function includeMediaImages(Article $article): ?Collection
-    {
+    public function includeMediaImages(Article $article): ?Collection {
         return $this->collectionOrNull($article->media_images, new MediaImageTransformer());
     }
 
@@ -80,8 +76,7 @@ class ArticleTransformer extends Transformer
      * @param \App\Models\Article $article
      * @return \League\Fractal\Resource\Collection|null
      */
-    public function includeMediaVideos(Article $article): ?Collection
-    {
+    public function includeMediaVideos(Article $article): ?Collection {
         return $this->collectionOrNull($article->media_videos, new MediaVideoTransformer());
     }
 
@@ -89,8 +84,7 @@ class ArticleTransformer extends Transformer
      * @param \App\Models\Article $article
      * @return \League\Fractal\Resource\Collection|null
      */
-    public function includeMediaFiles(Article $article): ?Collection
-    {
+    public function includeMediaFiles(Article $article): ?Collection {
         return $this->collectionOrNull($article->media_files, new MediaFileTransformer());
     }
 }

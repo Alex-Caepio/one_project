@@ -20,6 +20,10 @@ class Article extends Model {
         'image_url'
     ];
 
+    protected $casts = [
+        'is_published' => 'boolean',
+    ];
+
     public function disciplines() {
         return $this->belongsToMany(Discipline::class, 'discipline_practitioner', 'discipline_id', 'practitioner_id')
                     ->published()
