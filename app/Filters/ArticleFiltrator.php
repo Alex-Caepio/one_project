@@ -13,8 +13,12 @@ class ArticleFiltrator {
     public function apply(Builder $queryBuilder, Request $request) {
 
         if ($request->filled('search')) {
-            $search = $request->get('search');
-            $queryBuilder->where('title', 'like', "%$search%");
+            $search = '%' . $request->get('search') . '%';
+            $queryBuilder->where(function($query) use ($search) {
+                $query->where('title', 'LIKE', $search)->orWhereHas('user', function($userQuery) use ($search) {
+                        $userQuery->where('first_name', 'LIKE', $search)->orWhere('last_name', 'LIKE', $search);
+                    });
+            });
         }
 
         if ($request->filled('published_from')) {
@@ -25,17 +29,29 @@ class ArticleFiltrator {
             $queryBuilder->where('created_at', '<=', Carbon::parse($request->published_to)->endOfDay());
         }
 
-        if ($request->filled('is_deleted')) {
-            if ((bool)$request->get('is_deleted')) {
-                $queryBuilder->onlyTrashed();
+        $onlyTrashed = true;
+        if ($request->filled('is_published')) {
+            $onlyTrashed = false;
+            $publishedVariants = explode(',', $request->get('is_published'));
+            if (count($publishedVariants) === 1) {
+                $isPublished = filter_var($request->get('is_published'), FILTER_VALIDATE_BOOLEAN);
+                if ($isPublished) {
+                    $queryBuilder->published();
+                } else {
+                    $queryBuilder->unpublished();
+                }
             }
-        } else {
-            $queryBuilder->withTrashed();
         }
 
-        if ($request->filled('is_published')) {
-            $queryBuilder->where('is_published', (bool)$request->get('is_published'));
+        if ($request->filled('is_deleted')) {
+            $isDeleted = filter_var($request->get('is_deleted'), FILTER_VALIDATE_BOOLEAN);
+            if ($isDeleted && $onlyTrashed) {
+                $queryBuilder->onlyTrashed();
+            } elseif ($isDeleted && !$onlyTrashed) {
+                $queryBuilder->withTrashed();
+            }
         }
+
 
         if ($request->filled('practitioner')) {
             $queryBuilder->whereHas('user', function($query) use ($request) {
