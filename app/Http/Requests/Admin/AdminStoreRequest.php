@@ -3,7 +3,6 @@
 namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 
 class AdminStoreRequest extends FormRequest
@@ -24,7 +23,12 @@ class AdminStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'email'                   => 'required|email|max:255|unique:users',
+            'email'      => [
+                'rquired',
+                'email',
+                'max:255',
+                Rule::unique('users')->ignore($this->user()->id)
+            ],
             'password'                => 'required|max:20|min:8|regex:/(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]/',
             'first_name'              => 'required|string|min:2|max:30',
             'last_name'               => 'required|string|min:2|max:30',

@@ -4,6 +4,7 @@ namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 
 class AdminUpdateRequest extends FormRequest
 {
@@ -31,7 +32,11 @@ class AdminUpdateRequest extends FormRequest
             'current_password' => 'required_with:password',
             'first_name'       => 'string|min:2|max:30',
             'last_name'        => 'string|min:2|max:30',
-            'email'            => 'email|max:255|unique:users',
+            'email'            => [
+                'email',
+                'max:255',
+                Rule::unique('users')->ignore($this->user()->id)
+            ],
             'password'         => 'max:20|min:8|regex:/(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]/',
         ];
 

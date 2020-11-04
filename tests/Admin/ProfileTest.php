@@ -22,12 +22,12 @@ class ProfileTest extends TestCase
 
     public function test_update_profile(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->make();
         $response = $this->json('put', 'admin/profile',
             [
                 'first_name' => $user->first_name,
                 'last_name' => $user->last_name,
-                'email' => 'gasgjasdj@adshas.com',
+                'email' => $user->email,
             ]);
 
         $response->assertOk();
