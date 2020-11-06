@@ -22,8 +22,8 @@ class ArticleController extends Controller {
         return response(fractal($articles, new ArticleTransformer())->parseIncludes($request->getIncludes()))->withPaginationHeaders($paginator);
     }
 
-    public function show(Article $article, Request $request) {
-        return fractal($article, new ArticleTransformer())->parseIncludes($request->getIncludes())->respond();
+    public function show(Article $publicArticle, Request $request) {
+        return fractal($publicArticle, new ArticleTransformer())->parseIncludes($request->getIncludes())->respond();
     }
 
     public function store(ArticleRequest $request) {

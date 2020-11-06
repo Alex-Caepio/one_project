@@ -3,7 +3,6 @@
 
 namespace App\Transformers;
 
-
 use App\Models\Article;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
@@ -17,7 +16,16 @@ class ArticleTransformer extends Transformer {
     /**
      * @var string[]
      */
-    protected $availableIncludes = ['user', 'disciplines', 'favourite_articles', 'media_images', 'media_videos', 'media_files'];
+    protected $availableIncludes = [
+        'user',
+        'disciplines',
+        'favourite_articles',
+        'media_images',
+        'media_videos',
+        'media_files',
+        'focus_areas',
+        'keywords'
+    ];
 
     /**
      * @param \App\Models\Article $article
@@ -86,5 +94,21 @@ class ArticleTransformer extends Transformer {
      */
     public function includeMediaFiles(Article $article): ?Collection {
         return $this->collectionOrNull($article->media_files, new MediaFileTransformer());
+    }
+
+    /**
+     * @param \App\Models\Article $article
+     * @return \League\Fractal\Resource\Collection|null
+     */
+    public function includeFocusAreas(Article $article): ?Collection {
+        return $this->collectionOrNull($article->focus_areas, new FocusAreaTransformer());
+    }
+
+    /**
+     * @param \App\Models\Article $article
+     * @return \League\Fractal\Resource\Collection|null
+     */
+    public function includeKeywords(Article $article): ?Collection {
+        return $this->collectionOrNull($article->keywords, new KeywordTransformer());
     }
 }

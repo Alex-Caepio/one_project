@@ -6,6 +6,8 @@ use App\Actions\Keyword\KeywordFilter;
 use App\Http\Requests\Request;
 use App\Models\Keyword;
 use App\Transformers\KeywordTransformer;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 class KeywordController extends Controller
 {
@@ -17,8 +19,11 @@ class KeywordController extends Controller
             ->toArray();
     }
 
-    public function list()
-    {
+
+    /**
+     * @return \Illuminate\Support\Collection
+     */
+    public function list(): Collection {
         $keyword = Keyword::query();
         return $keyword->pluck('title', 'id');
     }

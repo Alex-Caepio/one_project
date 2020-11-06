@@ -41,6 +41,8 @@ Route::post('auth/verify-forgot-password-token', [ResetPasswordController::class
 Route::post('auth/forgot-password-claim', [ResetPasswordController::class, 'claimReset'])
     ->name('claim-reset');
 
+Route::get('/articles', [ArticleController::class, 'index']);
+Route::get('/articles/{publicArticle}', [ArticleController::class, 'show']);
 
 Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::get('auth/profile', [AuthController::class, 'profile']);
@@ -70,12 +72,15 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     /*
      * ARTICLES START
      */
+
+    /* Routes only for practitioner */
+    Route::get('/articles/practitioner', [ArticleController::class, 'index']);
+    Route::get('/articles/practitioner/{article}', [ArticleController::class, 'show']);
+
     Route::post('articles/{article}/favourite', [ArticleController::class, 'storeFavorite']);
     Route::delete('articles/{article}/favourite', [ArticleController::class, 'deleteFavorite']);
     Route::get('/articles/favourites', [UserController::class, 'articleFavorites']);
-    Route::get('/articles', [ArticleController::class, 'index']);
     Route::post('/articles', [ArticleController::class, 'store']);
-    Route::get('/articles/{article}', [ArticleController::class, 'show']);
     Route::put('/articles/{article}', [ArticleController::class, 'edit']);
     Route::delete('/articles/{article}', [ArticleController::class, 'destroy']);
     /*
