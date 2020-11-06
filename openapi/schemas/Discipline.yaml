@@ -38,3 +38,77 @@ properties:
     type: string
     nullable: true
     format: date-time
+  section_2_h2:
+    type: string
+  section_2_h3:
+    type: string
+  section_2_background:
+    type: string
+  section_2_textarea:
+    type: string
+  section_3_h2:
+    type: string
+  section_3_h4:
+    type: string
+  section_4_h2:
+    type: string
+  section_4_h3:
+    type: string
+  section_4_background:
+    type: string
+  section_4_textarea:
+    type: string
+  section_5_header_h2:
+    type: string
+  section_6_h2:
+    type: string
+  section_6_h3:
+    type: string
+  section_6_background:
+    type: string
+  section_6_textarea:
+    type: string
+  section_7_media_url:
+    type: string
+  section_7_tag_line:
+    type: string
+  section_7_alt_text:
+    type: string
+  section_7_url:
+    type: string
+  section_7_target_blanc:
+    type: boolean
+  section_8_h2:
+    type: string
+  section_9_h2:
+    type: string
+  section_9_h3:
+    type: string
+  section_9_background:
+    type: string
+  section_9_textarea:
+    type: string
+  section_10_h2:
+    type: string
+  section_11_media_url:
+    type: string
+  section_11_tag_line:
+    type: string
+  section_11_alt_text:
+    type: string
+  section_11_url:
+    type: string
+  section_11_target_blanc:
+    type: boolean
+  section_12_h2:
+    type: string
+  section_13_media_url:
+    type: string
+  section_13_tag_line:
+    type: string
+  section_13_alt_text:
+    type: string
+  section_13_url:
+    type: string
+  section_13_target_blanc:
+    type: boolean
