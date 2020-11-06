@@ -31,33 +31,24 @@ class ArticleFiltrator {
             $queryBuilder->where('created_at', '<=', Carbon::parse($request->published_to)->endOfDay());
         }
 
-        $onlyTrashed = true;
-        $withTrashed = true;
-        if ($request->filled('is_published')) {
-            $onlyTrashed = false;
-            $withTrashed = false;
-            $publishedVariants = explode(',', $request->get('is_published'));
-            if (count($publishedVariants) === 1) {
-                $isPublished = filter_var($request->get('is_published'), FILTER_VALIDATE_BOOLEAN);
-                if ($isPublished) {
-                    $queryBuilder->published();
-                } else {
-                    $queryBuilder->unpublished();
-                }
-            }
-        }
+        // Or Condition
+        $publishedVariants = $request->filled('is_published') ? explode(',', $request->get('is_published')) : [];
+        $isDeleted = $request->filled('is_deleted') ? filter_var($request->get('is_deleted'), FILTER_VALIDATE_BOOLEAN) : null;
 
-        if ($request->filled('is_deleted')) {
-            $isDeleted = filter_var($request->get('is_deleted'), FILTER_VALIDATE_BOOLEAN);
-            if ($isDeleted && $onlyTrashed) {
-                $queryBuilder->onlyTrashed();
-            } elseif ($isDeleted && !$onlyTrashed) {
-                $queryBuilder->withTrashed();
-            }
-        } elseif ($withTrashed) {
+        if ($isDeleted === null && count($publishedVariants) === 0) {
             $queryBuilder->withTrashed();
+        } else if (count($publishedVariants) === 1) {
+            $isPublished = filter_var($publishedVariants[0], FILTER_VALIDATE_BOOLEAN);
+            if ($isDeleted) {
+                $queryBuilder->where(function($query) use ($isPublished) {
+                    $query->where('is_published', $isPublished)->orWhereNotNull('deleted_at');
+                })->withTrashed();
+            } else {
+                $queryBuilder->where('is_published', $isPublished);
+            }
+        } else if ($isDeleted === true && !count($publishedVariants)) {
+            $queryBuilder->onlyTrashed();
         }
-
 
         if ($request->filled('practitioner')) {
             $queryBuilder->whereHas('user', function($query) use ($request) {
