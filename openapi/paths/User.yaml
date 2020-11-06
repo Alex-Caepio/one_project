@@ -50,14 +50,14 @@ users:
         description: User has articles
         required: false
         schema:
-          type: bool
+          type: boolean
           example: true
       - name: is_published
         in: query
         description: User has published business account
         required: false
         schema:
-          type: bool
+          type: boolean
           example: true
     responses:
       '200':

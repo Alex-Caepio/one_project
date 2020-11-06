@@ -71,7 +71,7 @@ articles:
         description: Deleted or not
         required: false
         schema:
-          type: bool
+          type: boolean
           example: false
       - name: is_published
         in: query
