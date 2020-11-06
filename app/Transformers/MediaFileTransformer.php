@@ -2,13 +2,13 @@
 
 namespace App\Transformers;
 
-use App\Models\MediaFiles;
+use App\Models\MediaFile;
 
 class MediaFileTransformer extends Transformer
 {
     protected $availableIncludes = [];
 
-    public function transform(MediaFiles $file): array
+    public function transform(MediaFile $file): array
     {
         return [
             'url' => $file->url,
