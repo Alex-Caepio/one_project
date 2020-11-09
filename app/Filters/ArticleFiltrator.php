@@ -10,7 +10,13 @@ use Illuminate\Support\Facades\Log;
 
 class ArticleFiltrator {
 
-    public function apply(Builder $queryBuilder, Request $request) {
+
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder $queryBuilder
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function apply(Builder $queryBuilder, Request $request): Builder {
 
         if ($request->filled('search')) {
             $search = '%' . $request->get('search') . '%';
@@ -33,11 +39,14 @@ class ArticleFiltrator {
 
         // Or Condition
         $publishedVariants = $request->filled('is_published') ? explode(',', $request->get('is_published')) : [];
-        $isDeleted = $request->filled('is_deleted') ? filter_var($request->get('is_deleted'), FILTER_VALIDATE_BOOLEAN) : null;
+        $isDeleted = $request->filled('is_deleted')
+            ? filter_var($request->get('is_deleted'), FILTER_VALIDATE_BOOLEAN)
+            : null;
 
-        if ($isDeleted === null && count($publishedVariants) === 0) {
+        if (($isDeleted === null && count($publishedVariants) === 0)
+            || ($isDeleted === true && count($publishedVariants) === 2)) {
             $queryBuilder->withTrashed();
-        } else if (count($publishedVariants) === 1) {
+        } elseif (count($publishedVariants) === 1) {
             $isPublished = filter_var($publishedVariants[0], FILTER_VALIDATE_BOOLEAN);
             if ($isDeleted) {
                 $queryBuilder->where(function($query) use ($isPublished) {
@@ -46,7 +55,7 @@ class ArticleFiltrator {
             } else {
                 $queryBuilder->where('is_published', $isPublished);
             }
-        } else if ($isDeleted === true && !count($publishedVariants)) {
+        } elseif ($isDeleted === true && !count($publishedVariants)) {
             $queryBuilder->onlyTrashed();
         }
 
