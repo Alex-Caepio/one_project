@@ -113,6 +113,12 @@ class DisciplineTest extends TestCase
         // 3. Check that same url or name can not be saved twice
         $this->json('post', '/admin/disciplines', [
             'name' => 'Heartbreaker',
+        ])
+            ->assertStatus(422)
+            ->assertJsonFragment(['name' => ['The name has already been taken.']]);
+
+        $this->json('post', '/admin/disciplines', [
+            'name' => 'Moby Dick',
             'url'  => 'whole-lotta-love',
         ])
             ->assertStatus(422)

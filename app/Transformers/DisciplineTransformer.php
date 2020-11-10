@@ -14,7 +14,8 @@ class DisciplineTransformer extends Transformer
     protected $availableIncludes = [
         'services', 'articles', 'focus_areas', 'practitioners',
         'featured_practitioners', 'featured_services',
-        'media_images', 'media_videos', 'media_files'
+        'media_images', 'media_videos', 'media_files',
+        'featured_focus_area', 'featured_articles'
     ];
 
     public function transform(Discipline $discipline): array
@@ -127,4 +128,15 @@ class DisciplineTransformer extends Transformer
     {
         return $this->collectionOrNull($discipline->media_files, new MediaFileTransformer());
     }
+
+    public function includeFeaturedFocusAreas(Discipline $discipline)
+    {
+        return $this->collectionOrNull($discipline->featured_focus_area, new FocusAreaTransformer());
+    }
+
+    public function includeFeaturedArticles(Discipline $discipline)
+    {
+        return $this->collectionOrNull($discipline->featured_articles, new ArticleTransformer());
+    }
+
 }

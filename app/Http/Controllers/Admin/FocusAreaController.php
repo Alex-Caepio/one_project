@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\FocusAreaPublishRequest;
 use App\Http\Requests\Admin\FocusAreaStoreRequest;
 use App\Http\Requests\Image\IconRequests;
 use App\Http\Requests\Image\ImageRequests;
@@ -179,4 +180,24 @@ class FocusAreaController extends Controller
        $request->file('icon')->move($path, $fileName);
    }
 
+    public function unpublish(FocusArea $focusArea)
+    {
+        $focusArea->forceFill([
+
+            'is_published' => false,
+        ]);
+        $focusArea->update();
+
+        return response(null, 204);
+    }
+
+    public function publish(FocusArea $focusArea, FocusAreaPublishRequest $request)
+    {
+        $focusArea->forceFill([
+            'is_published' => true,
+        ]);
+        $focusArea->update();
+
+        return response(null, 204);
+    }
 }

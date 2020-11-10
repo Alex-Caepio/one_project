@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\MainPageController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\StripeAccountController;
 use App\Http\Controllers\UserController;
@@ -145,4 +146,5 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
 
     Route::get('/users', [UserController::class, 'search']);
 
+    Route::get('/mainpage', [MainPageController::class, 'index']);
 });

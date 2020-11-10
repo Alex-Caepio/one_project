@@ -97,6 +97,16 @@ class Service extends Model
             ->first();
     }
 
+    public function featured_focus_area()
+    {
+        return $this->belongsToMany(FocusArea::class, 'focus_area_featured_service', 'service_id', 'focus_area_id');
+    }
+
+    public function featured_main_pages(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(MainPage::class, 'main_page_featured_service', 'service_id', 'main_page_id');
+    }
+
     public function featured_services()
     {
         return $this->belongsToMany(FocusArea::class, 'focus_area_featured_service', 'focus_area_id', 'service_id');

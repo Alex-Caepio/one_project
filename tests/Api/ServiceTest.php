@@ -63,7 +63,7 @@ class ServiceTest extends TestCase
             ]
         ]);
         $response->assertOk();
-        $this->assertCount(2, $service->mediaImages);
+        $this->assertCount(2, $service->media_images);
     }
 
     public function test_user_update_service(): void

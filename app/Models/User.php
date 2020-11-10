@@ -100,7 +100,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function disciplines()
     {
-        return $this->belongsToMany(Discipline::class, 'discipline_practitioner', 'discipline_id', 'practitioner_id')->published()->withTimeStamps();
+        return $this->belongsToMany(Discipline::class, 'discipline_practitioner', 'practitioner_id', 'discipline_id')->published()->withTimeStamps();
     }
 
     public function promotion_codes()
@@ -120,7 +120,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function favourite_practitioners()
     {
-        return $this->belongsToMany(User::class, 'practitioner_favorites', 'user_id', 'practitioner_id')->withTimeStamps();
+        return $this->belongsToMany(User::class, 'practitioner_favorites', 'practitioner_id', 'user_id')->withTimeStamps();
     }
 
     public function plan()
@@ -145,6 +145,10 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(CustomRate::class);
     }
 
+    public function featured_focus_area()
+    {
+        return $this->belongsToMany(FocusArea::class, 'focus_area_features_user', 'user_id', 'focus_area_id');
+    }
     public function featured_practitioners()
     {
         return $this->belongsToMany(FocusArea::class, 'focus_area_features_user', 'focus_area_id', 'user_id');
@@ -155,5 +159,10 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function isPractitioner(): bool {
         return $this->account_type === self::ACCOUNT_PRACTITIONER;
+    }
+
+    public function featured_main_pages(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(MainPage::class, 'main_page_featured_practitioner', 'user_id', 'main_page_id');
     }
 }
