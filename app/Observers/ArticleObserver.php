@@ -8,31 +8,19 @@ use Carbon\Carbon;
 class ArticleObserver {
 
     /**
-     * Handle the article "created" event.
-     *
-     * @param \App\Models\Article $article
-     * @return void
-     */
-    public function created(Article $article) {
-        //
-    }
-
-
-    /**
-     * @param \App\Models\Article $article
-     */
-    public function creating(Article $article) {
-
-    }
-
-    /**
      * Handle the article "updated" event.
      *
      * @param \App\Models\Article $article
      * @return void
      */
     public function saved(Article $article) {
-        //
+        if ($article->isDirty('is_published')) {
+            if (!$article->is_published) {
+                // @todo: Published email event
+            } else {
+               // @todo: Unpublished email event
+            }
+        }
     }
 
     /**

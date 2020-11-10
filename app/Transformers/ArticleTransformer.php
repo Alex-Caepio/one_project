@@ -24,7 +24,8 @@ class ArticleTransformer extends Transformer {
         'media_videos',
         'media_files',
         'focus_areas',
-        'keywords'
+        'keywords',
+        'services'
     ];
 
     /**
@@ -110,5 +111,13 @@ class ArticleTransformer extends Transformer {
      */
     public function includeKeywords(Article $article): ?Collection {
         return $this->collectionOrNull($article->keywords, new KeywordTransformer());
+    }
+
+    /**
+     * @param \App\Models\Article $article
+     * @return \League\Fractal\Resource\Collection|null
+     */
+    public function includeServices(Article $article): ?Collection {
+        return $this->collectionOrNull($article->services, new ServiceTransformer());
     }
 }

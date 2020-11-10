@@ -13,6 +13,7 @@ class ArticleStore extends ArticleAction {
      */
     public function execute(ArticleRequest $request): Article {
         $article = new Article();
-        return $this->fillArticle($article, $request);
+        $this->fillArticle($article, $request);
+        return $article;
     }
 }

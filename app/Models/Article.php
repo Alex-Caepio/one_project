@@ -68,7 +68,11 @@ class Article extends Model {
         return $this->belongsToMany(FocusArea::class, 'focus_area_article', 'article_id', 'focus_area_id')->withTimeStamps();
     }
 
-    public function keywords() {
+    public function keywords(): BelongsToMany {
         return $this->belongsToMany(Keyword::class);
+    }
+
+    public function services(): BelongsToMany {
+        return $this->belongsToMany(Service::class);
     }
 }
