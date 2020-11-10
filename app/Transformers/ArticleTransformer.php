@@ -25,7 +25,8 @@ class ArticleTransformer extends Transformer {
         'media_files',
         'focus_areas',
         'keywords',
-        'services'
+        'services',
+        'last_published'
     ];
 
     /**
@@ -119,5 +120,19 @@ class ArticleTransformer extends Transformer {
      */
     public function includeServices(Article $article): ?Collection {
         return $this->collectionOrNull($article->services, new ServiceTransformer());
+    }
+
+
+    /**
+     * @param \App\Models\Article $article
+     * @return \League\Fractal\Resource\Collection|null
+     */
+    public function includeLastPublished(Article $article): ?Collection {
+        return $this->collectionOrNull(Article::where('id', '<>', $article->id)
+                                              ->where('user_id', $article->user_id)
+                                              ->published()
+                                              ->orderBy('published_at', 'desc')
+                                              ->limit(3)
+                                              ->get(), new self());
     }
 }
