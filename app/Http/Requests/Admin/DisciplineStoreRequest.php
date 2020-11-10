@@ -25,7 +25,62 @@ class DisciplineStoreRequest extends Request
     public function rules()
     {
         return [
-            'name' => 'required|unique:disciplines,name',
+            'name'                      => 'required|unique:disciplines,name',
+            'introduction'              => 'max:200',
+            'description'               => 'max:200',
+            'url'                       => 'url',
+            'banner_url'                => 'max:200',
+            'icon_url'                  => 'max:200',
+            'is_published'              => 'nullable|boolean',
+
+            'section_2_h2'              => 'nullable|max:300',
+            'section_2_h3'              => 'nullable|max:300',
+            'section_2_background'      => 'nullable|min:6|max:6',
+            'section_2_textarea'        => 'nullable|max:2000',
+
+            'section_3_h2'              => 'nullable|max:300',
+            'section_3_h4'              => 'nullable|max:300',
+
+            'section_4_h2'              => 'nullable|max:300',
+            'section_4_h3'              => 'nullable|max:300',
+            'section_4_background'      => 'nullable|min:6|max:6',
+            'section_4_textarea'        => 'nullable|max:2000',
+
+            'section_5_header_h2'       => 'nullable|max:300',
+
+            'section_6_h2'              => 'nullable|max:300',
+            'section_6_h3'              => 'nullable|max:300',
+            'section_6_background'      => 'nullable|min:6|max:6',
+            'section_6_textarea'        => 'nullable|max:2000',
+
+            'section_7_media_url'       => 'nullable|url',
+            'section_7_tag_line',
+            'section_7_alt_text'        => 'nullable|max:150',
+            'section_7_url'             => 'nullable|url',
+            'section_7_target_blanc'    => 'nullable|boolean',
+
+            'section_8_h2'              => 'nullable|max:300',
+
+            'section_9_h2'              => 'nullable|max:300',
+            'section_9_h3'              => 'nullable|max:300',
+            'section_9_background'      => 'nullable|min:6|max:6',
+            'section_9_textarea'        => 'nullable|max:2000',
+
+            'section_10_h2'             => 'nullable|max:300',
+
+            'section_11_media_url'      => 'nullable|url',
+            'section_11_tag_line',
+            'section_11_alt_text'       => 'nullable|max:150',
+            'section_11_url'            => 'nullable|url',
+            'section_11_target_blanc'   => 'nullable|boolean',
+
+            'section_12_h2'             => 'nullable|max:300',
+
+            'section_13_media_url'      => 'nullable|url',
+            'section_13_tag_line',
+            'section_13_alt_text'       => 'nullable|max:150',
+            'section_13_url'            => 'nullable|url',
+            'section_13_target_blanc'   => 'nullable|boolean',
         ];
     }
 

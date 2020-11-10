@@ -240,5 +240,30 @@ class FocusAreaTest extends TestCase
         Storage::files($path, $fileName);
     }
 
+    public function test_focus_area_publish(): void
+    {
+        $focus = FocusArea::factory()->create();
+        $this->json('post', "admin/focus-areas/{$focus->id}/publish")
+            ->assertStatus(204);
+    }
+
+    public function test_focus_area_unpublished(): void
+    {
+        $focus = FocusArea::factory()->create();
+        $this->json('post', "admin/focus-areas/{$focus->id}/unpublish")
+            ->assertStatus(204);
+    }
+
+    public function test_focus_area_published_with_status_422(): void
+    {
+        $focus = FocusArea::factory()->create([
+            'url' => null
+        ]);
+
+        $this->json('post', "admin/focus-areas/{$focus->id}/publish")
+            ->assertStatus(422);
+
+    }
+
 }
 

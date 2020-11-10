@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
         $this->call(CustomEmailSeeder::class);
         $this->call(TimezoneSeeder::class);
         $this->call(CountriesTableSeeder::class);
+        $this->call(MainPageTableSeeder::class);
         //factory(\App\Models\CustomEmail::class,50)->create();
     }
 }

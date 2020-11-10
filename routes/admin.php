@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\MainPageController;
 use App\Http\Controllers\Admin\PlanController;
 use App\Http\Controllers\Admin\ClientController;
 use App\Http\Controllers\Admin\ServiceController;
@@ -54,6 +55,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/focus-areas/{focusArea}/images', [FocusAreaController::class, 'storeImages']);
         Route::post('/focus-areas/{focusArea}/videos',[FocusAreaController::class, 'storeVideos']);
         Route::post('/focus-areas/{focusArea}/icon', [FocusAreaController::class, 'icon']);
+        Route::post('/focus-areas/{focusArea}/unpublish', [FocusAreaController::class, 'unpublish']);
+        Route::post('/focus-areas/{focusArea}/publish', [FocusAreaController::class, 'publish']);
 
         Route::get('/promotion-codes', [PromotionCodeController::class, 'index']);
         Route::put('/promotion-codes/{promotionCode}/update', [PromotionCodeController::class, 'update']);
@@ -79,5 +82,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
         Route::post('/articles/{article}/publish', [ArticleController::class, 'publish']);
         Route::post('/articles/{article}/unpublish', [ArticleController::class, 'unpublish']);
+
+        Route::get('/mainpage', [MainPageController::class, 'index']);
+        Route::put('/mainpage', [MainPageController::class, 'update']);
     });
 });

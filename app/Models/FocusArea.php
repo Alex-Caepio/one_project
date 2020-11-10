@@ -11,7 +11,7 @@ class FocusArea extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'url', 'description', 'introduction', 'banner_url', 'icon_url',
+        'name', 'url', 'description', 'introduction', 'banner_url', 'icon_url', 'is_published',
         'section_2_h2', 'section_2_h3', 'section_2_background',
         'section_2_textarea', 'section_3_h2', 'section_4_tag_line', 'section_4_alt_text',
         'section_4_url', 'section_4_target_blanc', 'section_5_h2', 'section_5_h3',
@@ -30,7 +30,7 @@ class FocusArea extends Model
 
     public function disciplines()
     {
-        return $this->belongsToMany(Discipline::class, 'discipline_focus_area', 'discipline_id', 'focus_area_id')->where('is_published', true)->withTimeStamps();
+        return $this->belongsToMany(Discipline::class, 'discipline_focus_area', 'focus_area_id', 'discipline_id')->where('is_published', true)->withTimeStamps();
     }
 
     public function focus_area_images()
@@ -55,27 +55,37 @@ class FocusArea extends Model
 
     public function featured_practitioners(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'focus_area_featured_user', 'user_id', 'focus_area_id');
+        return $this->belongsToMany(User::class, 'focus_area_featured_user', 'focus_area_id', 'user_id');
     }
 
     public function featured_disciplines(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        return $this->belongsToMany(Discipline::class, 'focus_area_featured_discipline', 'discipline_id', 'focus_area_id');
+        return $this->belongsToMany(Discipline::class, 'focus_area_featured_discipline', 'focus_area_id', 'discipline_id');
     }
 
     public function featured_articles(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        return $this->belongsToMany(Article::class, 'focus_area_featured_article', 'article_id', 'focus_area_id');
+        return $this->belongsToMany(Article::class, 'focus_area_featured_article', 'focus_area_id', 'article_id');
     }
 
     public function featured_services(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        return $this->belongsToMany(Service::class, 'focus_area_featured_service', 'service_id', 'focus_area_id');
+        return $this->belongsToMany(Service::class, 'focus_area_featured_service', 'focus_area_id', 'service_id');
     }
 
     public function featured_focus_areas(): BelongsToMany
     {
-        return $this->belongsToMany(__CLASS__, 'focus_area_featured_focus_area', 'child_focus_area_id', 'parent_focus_area_id');
+        return $this->belongsToMany(__CLASS__, 'focus_area_featured_focus_area', 'parent_focus_area_id', 'child_focus_area_id');
+    }
+
+    public function featured_at_disciplines(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Discipline::class, 'discipline_featured_focus_area', 'focus_area_id', 'discipline_id');
+    }
+
+    public function featured_main_pages(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(MainPage::class, 'main_page_featured_focus_area', 'focus_area_id', 'main_page_id');
     }
 }
 

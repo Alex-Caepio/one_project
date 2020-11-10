@@ -27,6 +27,7 @@ class FocusAreaTransformer extends Transformer
             'url'                       => $focusArea->url,
             'banner_url'                => $focusArea->banner_url,
             'icon_url'                  => $focusArea->icon_url,
+            'is_published'              => (bool)$focusArea->is_published,
 
             'section_2_h2'              => $focusArea->section_2_h2,
             'section_2_h3'              => $focusArea->section_2_h3,

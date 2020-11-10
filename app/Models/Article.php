@@ -60,6 +60,15 @@ class Article extends Model {
         return $this->morphMany(MediaFile::class, 'morphesTo', 'model_name', 'model_id');
     }
 
+    public function featured_focus_area()
+    {
+        return $this->belongsToMany(FocusArea::class, 'focus_area_featured_focus_area', 'discipline_id', 'focus_area_id');
+    }
+
+    public function featured_at_disciplines(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Discipline::class, 'discipline_feature_articles', 'article_id', 'discipline_id');
+    }
     public function featured_articles() {
         return $this->belongsToMany(FocusArea::class, 'focus_area_featured_article', 'focus_area_id', 'article_id');
     }
