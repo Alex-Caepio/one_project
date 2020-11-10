@@ -7,7 +7,7 @@ use App\Models\Service;
 
 class ServiceTransformer extends Transformer
 {
-    protected $availableIncludes = ['user', 'keywords', 'disciplines', 'focus_areas', 'location', 'schedules', 'favourite_services', 'service_types'];
+    protected $availableIncludes = ['user', 'keywords', 'disciplines', 'focus_areas', 'location', 'schedules', 'favourite_services', 'service_types', 'articles'];
 
     public function transform(Service $service)
     {
@@ -63,8 +63,11 @@ class ServiceTransformer extends Transformer
         return $this->collectionOrNull($service->favourite_services, new ServiceTransformer());
     }
 
-    public function includeServiceType(Service $service)
-    {
+    public function includeServiceType(Service $service) {
         return $this->collectionOrNull($service->service_types, new ServiceTypeTransformer());
+    }
+
+    public function includeArticles(Service $service) {
+        return $this->collectionOrNull($service->articles, new ArticleTransformer());
     }
 }

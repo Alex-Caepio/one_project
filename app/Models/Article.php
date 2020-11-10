@@ -69,10 +69,10 @@ class Article extends Model {
     }
 
     public function keywords(): BelongsToMany {
-        return $this->belongsToMany(Keyword::class);
+        return $this->belongsToMany(Keyword::class)->withTimeStamps();
     }
 
     public function services(): BelongsToMany {
-        return $this->belongsToMany(Service::class);
+        return $this->belongsToMany(Service::class)->withTimeStamps();
     }
 }

@@ -102,4 +102,7 @@ class Service extends Model
         return $this->belongsToMany(FocusArea::class, 'focus_area_featured_service', 'focus_area_id', 'service_id');
     }
 
+    public function articles() {
+        return $this->belongsToMany(Article::class)->published();
+    }
 }
