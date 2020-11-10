@@ -1481,6 +1481,35 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Article"
+  "/admin/articles/{id}":
+    delete:
+      tags:
+        - Article
+      parameters:
+        - {}
+      responses:
+        "204":
+          description: OK
+  "/admin/articles/{id}/publish":
+    post:
+      operationId: admin-publish-article
+      parameters:
+        - {}
+      tags:
+        - Article
+      responses:
+        "204":
+          description: OK
+  "/admin/articles/{id}/unpublish":
+    post:
+      operationId: admin-unpublish-article
+      parameters:
+        - {}
+      tags:
+        - Article
+      responses:
+        "204":
+          description: OK
   "/admin/disciplines/{id}":
     put:
       tags:
