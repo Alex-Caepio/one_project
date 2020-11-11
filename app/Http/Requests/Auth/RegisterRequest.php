@@ -28,7 +28,7 @@ class RegisterRequest extends FormRequest
                 'rquired',
                 'email',
                 'max:255',
-                Rule::unique('users')->ignore($this->user()->id)
+                Rule::unique('users')
             ],
             'password'                => 'required|max:20|min:8|regex:/(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]/',
             'first_name'              => 'required|string|min:2|max:30',
