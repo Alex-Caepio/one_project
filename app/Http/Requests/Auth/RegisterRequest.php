@@ -25,7 +25,7 @@ class RegisterRequest extends FormRequest
     {
         return [
             'email'      => [
-                'rquired',
+                'required',
                 'email',
                 'max:255',
                 Rule::unique('users')

@@ -24,7 +24,7 @@ class AdminStoreRequest extends FormRequest
     {
         return [
             'email'      => [
-                'rquired',
+                'required',
                 'email',
                 'max:255',
                 Rule::unique('users')->ignore($this->user()->id)
