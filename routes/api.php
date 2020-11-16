@@ -75,15 +75,15 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
      */
 
     /* Routes only for practitioner */
-    Route::get('/articles/practitioner', [ArticleController::class, 'index']);
-    Route::get('/articles/practitioner/{article}', [ArticleController::class, 'show']);
+    Route::get('/articles/practitioner', [ArticleController::class, 'practitionerList']);
+    Route::get('/articles/practitioner/{article}', [ArticleController::class, 'practitionerShow']);
+    Route::post('/articles', [ArticleController::class, 'store']);
+    Route::put('/articles/{article}', [ArticleController::class, 'edit']);
+    Route::delete('/articles/{article}', [ArticleController::class, 'destroy']);
 
     Route::post('articles/{article}/favourite', [ArticleController::class, 'storeFavorite']);
     Route::delete('articles/{article}/favourite', [ArticleController::class, 'deleteFavorite']);
     Route::get('/articles/favourites', [UserController::class, 'articleFavorites']);
-    Route::post('/articles', [ArticleController::class, 'store']);
-    Route::put('/articles/{article}', [ArticleController::class, 'edit']);
-    Route::delete('/articles/{article}', [ArticleController::class, 'destroy']);
     /*
      * ARTICLES END
      */

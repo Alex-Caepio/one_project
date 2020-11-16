@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Filters\UserFiltrator;
 use App\Models\User;
 use App\Mail\VerifyEmail;
 use App\Http\Requests\Request;
 use App\Events\UserRegistered;
 use App\Http\Controllers\Controller;
 use App\Transformers\UserTransformer;
-use App\Http\Requests\AdminUpdateRequest;
 use App\Actions\User\CreateUserFromRequest;
 use App\Http\Requests\Admin\ClientShowRequest;
 use App\Actions\Stripe\CreateStripeUserByEmail;
@@ -19,49 +19,42 @@ use Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
 
-class ClientController extends Controller
-{
-    public function index(Request $request)
-    {
-        $paginator = User::where('account_type', 'client')->paginate($request->getLimit());
-        $user      = $paginator->getCollection();
-        return response(
-            fractal($user, new UserTransformer())
-                ->parseIncludes($request->getIncludes())
-                ->toArray()
-        )
-            ->withPaginationHeaders($paginator);
+class ClientController extends Controller {
+
+    public function index(Request $request) {
+        $userQuery = User::where('account_type', User::ACCOUNT_CLIENT);
+        $userFilter = new UserFiltrator();
+        $userFilter->apply($userQuery, $request);
+
+        $includes = $request->getIncludes();
+
+        $paginator = $userQuery->with($includes)->paginate($request->getLimit());
+        $practitioners = $paginator->getCollection();
+        return response(fractal($practitioners, new UserTransformer())->parseIncludes($includes))->withPaginationHeaders($paginator);
     }
 
-    public function store(ClientCreateRequest $request)
-    {
+    public function store(ClientCreateRequest $request) {
         $customer = run_action(CreateStripeUserByEmail::class, $request->email);
-        $user     = run_action(CreateUserFromRequest::class, $request, ['stripe_customer_id' => $customer->id, 'is_admin' => null, 'account_type' => 'client']);
+        $user = run_action(CreateUserFromRequest::class, $request, ['stripe_customer_id' => $customer->id, 'is_admin' => null, 'account_type' => 'client']);
 
         $token = $user->createToken('access-token');
         $user->withAccessToken($token);
 
         event(new UserRegistered($user));
 
-        return fractal($user, new UserTransformer())
-            ->parseIncludes('access_token')
-            ->respond();
+        return fractal($user, new UserTransformer())->parseIncludes('access_token')->respond();
     }
 
-    public function show(User $client, ClientShowRequest $request)
-    {
-        return fractal($client, new UserTransformer())->parseIncludes($request->getIncludes())
-            ->toArray();
+    public function show(User $client, ClientShowRequest $request) {
+        return fractal($client, new UserTransformer())->parseIncludes($request->getIncludes())->toArray();
     }
 
-    public function update(ClientUpdateRequest $request, User $client)
-    {
+    public function update(ClientUpdateRequest $request, User $client) {
         $client->update($request->all());
         return fractal($client, new UserTransformer())->respond();
     }
 
-    public function destroy(User $client, ClientDestroyRequest $request)
-    {
+    public function destroy(User $client, ClientDestroyRequest $request) {
         $client->delete();
         // event(new BookingCancelledByClient($client));
         // event(new AccountUpgradedToPractitioner($client));
@@ -70,8 +63,7 @@ class ClientController extends Controller
         return response(null, 204);
     }
 
-    protected function sendVerificationEmail($user)
-    {
+    protected function sendVerificationEmail($user) {
         $linkApi = URL::temporarySignedRoute('verify-email', now()->addMinute(60), [
             'user'  => $user->id,
             'email' => $user->email
@@ -80,7 +72,7 @@ class ClientController extends Controller
         $linkFrontend = config('app.frontend_password_reset_link') . '?' . explode('?', $linkApi)[1];
 
         Mail::to([
-            'email' => $user->email
-        ])->send(new VerifyEmail($linkFrontend));
+                     'email' => $user->email
+                 ])->send(new VerifyEmail($linkFrontend));
     }
 }

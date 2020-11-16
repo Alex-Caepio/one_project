@@ -6,6 +6,7 @@ use App\Scopes\PublishedScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -27,7 +28,7 @@ use Laravel\Sanctum\HasApiTokens;
  */
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use Notifiable, HasApiTokens, HasFactory, PublishedScope;
+    use Notifiable, HasApiTokens, HasFactory, PublishedScope, SoftDeletes;
 
     public const ACCOUNT_PRACTITIONER = 'practitioner';
     public const ACCOUNT_CLIENT = 'client';
@@ -159,6 +160,13 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function isPractitioner(): bool {
         return $this->account_type === self::ACCOUNT_PRACTITIONER;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isClient(): bool {
+        return $this->account_type === self::ACCOUNT_CLIENT;
     }
 
     public function featured_main_pages(): \Illuminate\Database\Eloquent\Relations\BelongsToMany

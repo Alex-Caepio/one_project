@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Filters\UserFiltrator;
 use App\Models\User;
 use App\Mail\VerifyEmail;
 use App\Http\Requests\Request;
@@ -21,9 +22,15 @@ class PractitionerController extends Controller
 {
     public function index(Request $request)
     {
-        $paginator    = User::where('account_type', 'practitioner')->paginate($request->getLimit());
-        $practitioner = $paginator->getCollection();
-        return response(fractal($practitioner, new UserTransformer())->parseIncludes($request->getIncludes()))
+        $userQuery = User::where('account_type', User::ACCOUNT_PRACTITIONER);
+        $userFilter = new UserFiltrator();
+        $userFilter->apply($userQuery, $request);
+
+        $includes = $request->getIncludes();
+
+        $paginator = $userQuery->with($includes)->paginate($request->getLimit());
+        $practitioners = $paginator->getCollection();
+        return response(fractal($practitioners, new UserTransformer())->parseIncludes($includes))
             ->withPaginationHeaders($paginator);
     }
 

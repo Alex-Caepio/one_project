@@ -2,18 +2,17 @@
 
 namespace App\Http\Requests\Admin;
 
+use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 
-class ClientDestroyRequest extends FormRequest
-{
+class ClientDestroyRequest extends FormRequest {
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
-    public function authorize()
-    {
-        return $this->client->account_type == 'client';
+    public function authorize() {
+        return $this->client->isClient();
     }
 
     /**
@@ -21,10 +20,8 @@ class ClientDestroyRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
-    {
-        return [
-            //
+    public function rules() {
+        return [//
         ];
     }
 }

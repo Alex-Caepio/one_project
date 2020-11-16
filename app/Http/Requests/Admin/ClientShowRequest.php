@@ -13,7 +13,7 @@ class ClientShowRequest extends Request
      */
     public function authorize()
     {
-        return $this->client->account_type == 'client';
+        return $this->client->isClient();
     }
 
     /**

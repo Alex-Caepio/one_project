@@ -1500,6 +1500,13 @@ paths:
           schema:
             type: boolean
             example: true
+        - name: search
+          in: query
+          description: User first name, last name or business name
+          required: false
+          schema:
+            type: string
+            example: test
       responses:
         "200":
           description: OK
@@ -2344,3 +2351,165 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Mainpage"
+  /admin/clients:
+    get:
+      tags:
+        - User as a Client
+      parameters:
+        - name: page
+          in: query
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: limit
+          in: query
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: x-page
+          in: header
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: x-limit
+          in: header
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: with
+          in: query
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: access_token, services, articles, schedules, disciplines,
+              promotion_codes, favourite_services, favourite_articles,
+              favourite_practitioners
+        - name: x-with
+          in: header
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: integer
+            example: access_token, services, articles, schedules, disciplines,
+              promotion_codes, favourite_services, favourite_articles,
+              favourite_practitioners
+        - name: is_author
+          in: query
+          description: User has articles
+          required: false
+          schema:
+            type: boolean
+            example: true
+        - name: is_published
+          in: query
+          description: User has published business account
+          required: false
+          schema:
+            type: boolean
+            example: true
+        - name: search
+          in: query
+          description: User first name, last name or business name
+          required: false
+          schema:
+            type: string
+            example: test
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+  /admin/partitioners:
+    get:
+      tags:
+        - User list as a Practitioner
+      parameters:
+        - name: page
+          in: query
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: limit
+          in: query
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: x-page
+          in: header
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: x-limit
+          in: header
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: with
+          in: query
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: access_token, services, articles, schedules, disciplines,
+              promotion_codes, favourite_services, favourite_articles,
+              favourite_practitioners
+        - name: x-with
+          in: header
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: integer
+            example: access_token, services, articles, schedules, disciplines,
+              promotion_codes, favourite_services, favourite_articles,
+              favourite_practitioners
+        - name: is_author
+          in: query
+          description: User has articles
+          required: false
+          schema:
+            type: boolean
+            example: true
+        - name: is_published
+          in: query
+          description: User has published business account
+          required: false
+          schema:
+            type: boolean
+            example: true
+        - name: search
+          in: query
+          description: User first name, last name or business name
+          required: false
+          schema:
+            type: string
+            example: test
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"

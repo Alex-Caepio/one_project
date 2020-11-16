@@ -13,7 +13,7 @@ class PractitionerDestroyRequest extends FormRequest
      */
     public function authorize()
     {
-        return $this->practitioner->account_type == 'practitioner';
+        return $this->practitioner->isPractitioner();
     }
 
     /**

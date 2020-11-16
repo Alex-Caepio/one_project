@@ -1,7 +1,7 @@
-users:
+clients:
   get:
     tags:
-      - User
+      - User as a Client
     parameters:
       - name: page
         in: query
@@ -37,14 +37,14 @@ users:
         required: false
         schema:
           type: string
-          example: access_token,services,articles,schedules,disciplines,promotion_codes,favourite_services,favourite_articles,favourite_practitioners
+          example: access_token, services, articles, schedules, disciplines, promotion_codes, favourite_services, favourite_articles, favourite_practitioners
       - name: x-with
         in: header
         description: Include additional objects in response
         required: false
         schema:
           type: integer
-          example: access_token,services,articles,schedules,disciplines,promotion_codes,favourite_services,favourite_articles,favourite_practitioners
+          example: access_token, services, articles, schedules, disciplines, promotion_codes, favourite_services, favourite_articles, favourite_practitioners
       - name: is_author
         in: query
         description: User has articles

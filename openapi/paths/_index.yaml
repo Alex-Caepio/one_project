@@ -81,3 +81,7 @@
   $ref: "./AdminDiscipline.yaml#/disciplines~1{id}~1unpublish"
 /admin/mainpage:
   $ref: "./AdminMainpage.yaml#/mainpage"
+/admin/clients:
+  $ref: "./AdminClient.yaml#/clients"
+/admin/partitioners:
+  $ref: "./AdminPractitioner.yaml#/practitioners"

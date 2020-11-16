@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Admin;
 
 use App\Http\Requests\Request;
+use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 
 class PractitionerShowRequest extends Request
@@ -14,7 +15,7 @@ class PractitionerShowRequest extends Request
      */
     public function authorize()
     {
-        return $this->practitioner->account_type == 'practitioner';
+        return $this->practitioner->isPractitioner();
     }
 
     /**
