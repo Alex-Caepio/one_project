@@ -22,3 +22,5 @@ ServiceType:
   $ref: "./ServiceType.yaml"
 User:
   $ref: "./User.yaml"
+Mainpage:
+  $ref: "./Mainpage.yaml"

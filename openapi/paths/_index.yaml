@@ -56,6 +56,9 @@
 /users:
   $ref: "./User.yaml#/users"
 
+/mainpage:
+  $ref: "./Mainpage.yaml#/mainpage"
+
 
 ## ADMIN ENDPOINTS
 /admin/profile:
@@ -76,3 +79,5 @@
   $ref: "./AdminDiscipline.yaml#/disciplines~1{id}~1publish"
 /admin/disciplines/{id}/unpublish:
   $ref: "./AdminDiscipline.yaml#/disciplines~1{id}~1unpublish"
+/admin/mainpage:
+  $ref: "./AdminMainpage.yaml#/mainpage"

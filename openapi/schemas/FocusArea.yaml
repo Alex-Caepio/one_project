@@ -78,3 +78,31 @@ properties:
     type: string
   section_13_target_blanc:
     type: boolean
+  media_images:
+    type: array
+    items:
+      $ref: '../schemas/MediaImage.yaml'
+  media_videos:
+    type: array
+    items:
+      $ref: '../schemas/MediaVideo.yaml'
+  media_files:
+    type: array
+    items:
+      $ref: '../schemas/MediaFile.yaml'
+  featured_services:
+    type: array
+    items:
+      $ref: '../schemas/Service.yaml'
+  featured_disciplines:
+    type: array
+    items:
+      $ref: '../schemas/Discipline.yaml'
+  featured_articles:
+    type: array
+    items:
+      $ref: '../schemas/Article.yaml'
+  featured_practitioners:
+    type: array
+    items:
+      $ref: '../schemas/User.yaml'

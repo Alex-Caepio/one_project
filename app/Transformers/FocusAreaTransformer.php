@@ -120,12 +120,12 @@ class FocusAreaTransformer extends Transformer
         return $this->collectionOrNull($focusArea->featured_disciplines, new DisciplineTransformer());
     }
 
-    public function includeFeaturedArticle(FocusArea $focusArea)
+    public function includeFeaturedArticles(FocusArea $focusArea)
     {
         return $this->collectionOrNull($focusArea->featured_articles, new ArticleTransformer());
     }
 
-    public function includeFeaturedService(FocusArea $focusArea)
+    public function includeFeaturedServices(FocusArea $focusArea)
     {
         return $this->collectionOrNull($focusArea->featured_services, new ServiceTransformer());
     }

@@ -117,7 +117,7 @@ class Discipline extends Model
         return $this->belongsToMany(FocusArea::class, 'focus_area_featured_discipline', 'discipline_id', 'focus_area_id');
     }
 
-    public function featured_focus_area()
+    public function featured_focus_areas()
     {
         return $this->belongsToMany(FocusArea::class, 'discipline_featured_focus_area', 'discipline_id', 'focus_area_id');
     }

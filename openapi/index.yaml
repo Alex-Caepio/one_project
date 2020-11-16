@@ -104,79 +104,156 @@ components:
           nullable: true
           format: date-time
         section_2_h2:
+          nullable: true
           type: string
         section_2_h3:
+          nullable: true
           type: string
         section_2_background:
+          nullable: true
           type: string
         section_2_textarea:
+          nullable: true
           type: string
         section_3_h2:
+          nullable: true
           type: string
         section_3_h4:
+          nullable: true
           type: string
         section_4_h2:
+          nullable: true
           type: string
         section_4_h3:
+          nullable: true
           type: string
         section_4_background:
+          nullable: true
           type: string
         section_4_textarea:
+          nullable: true
           type: string
         section_5_header_h2:
+          nullable: true
           type: string
         section_6_h2:
+          nullable: true
           type: string
         section_6_h3:
+          nullable: true
           type: string
         section_6_background:
+          nullable: true
           type: string
         section_6_textarea:
+          nullable: true
           type: string
         section_7_media_url:
+          nullable: true
           type: string
         section_7_tag_line:
+          nullable: true
           type: string
         section_7_alt_text:
+          nullable: true
           type: string
         section_7_url:
+          nullable: true
           type: string
         section_7_target_blanc:
+          nullable: true
           type: boolean
         section_8_h2:
+          nullable: true
           type: string
         section_9_h2:
+          nullable: true
           type: string
         section_9_h3:
+          nullable: true
           type: string
         section_9_background:
+          nullable: true
           type: string
         section_9_textarea:
+          nullable: true
           type: string
         section_10_h2:
+          nullable: true
           type: string
         section_11_media_url:
+          nullable: true
           type: string
         section_11_tag_line:
+          nullable: true
           type: string
         section_11_alt_text:
+          nullable: true
           type: string
         section_11_url:
+          nullable: true
           type: string
         section_11_target_blanc:
+          nullable: true
           type: boolean
         section_12_h2:
+          nullable: true
           type: string
         section_13_media_url:
+          nullable: true
           type: string
         section_13_tag_line:
+          nullable: true
           type: string
         section_13_alt_text:
+          nullable: true
           type: string
         section_13_url:
+          nullable: true
           type: string
         section_13_target_blanc:
+          nullable: true
           type: boolean
+        media_images:
+          type: array
+          items:
+            type: object
+            properties:
+              url:
+                type: string
+                example: http://cdn.com/yoga-practice.png
+        media_videos:
+          type: array
+          items:
+            type: object
+            properties:
+              url:
+                type: string
+                example: http://cdn.com/yoga-practice.mp4
+        media_files:
+          type: array
+          items:
+            type: object
+            properties:
+              url:
+                type: string
+                example: http://cdn.com/yoga-practice.pdf
+        featured_services:
+          type: array
+          items:
+            $ref: "#/components/schemas/Service"
+        featured_focus_areas:
+          type: array
+          items:
+            $ref: "#/components/schemas/FocusArea"
+        featured_articles:
+          type: array
+          items:
+            $ref: "#/components/schemas/Article"
+        featured_practitioners:
+          type: array
+          items:
+            $ref: "#/components/schemas/User"
     FocusArea:
       type: object
       properties:
@@ -258,6 +335,34 @@ components:
           type: string
         section_13_target_blanc:
           type: boolean
+        media_images:
+          type: array
+          items:
+            $ref: "#/components/schemas/Discipline/properties/media_images/items"
+        media_videos:
+          type: array
+          items:
+            $ref: "#/components/schemas/Discipline/properties/media_videos/items"
+        media_files:
+          type: array
+          items:
+            $ref: "#/components/schemas/Discipline/properties/media_files/items"
+        featured_services:
+          type: array
+          items:
+            $ref: "#/components/schemas/Service"
+        featured_disciplines:
+          type: array
+          items:
+            $ref: "#/components/schemas/Discipline"
+        featured_articles:
+          type: array
+          items:
+            $ref: "#/components/schemas/Article"
+        featured_practitioners:
+          type: array
+          items:
+            $ref: "#/components/schemas/User"
     Keyword:
       type: object
       properties:
@@ -470,6 +575,225 @@ components:
         timezone_id:
           type: integer
           example: 98
+    Mainpage:
+      type: object
+      properties:
+        id:
+          type: string
+        section_1_image_url:
+          nullable: true
+          type: string
+        section_1_alt_text:
+          nullable: true
+          type: string
+        section_1_intro_text:
+          nullable: true
+          type: string
+        section_2_background:
+          nullable: true
+          type: string
+        section_3_h1:
+          nullable: true
+          type: string
+        section_3_h2:
+          nullable: true
+          type: string
+        section_3_background:
+          nullable: true
+          type: string
+        section_3_button_text:
+          nullable: true
+          type: string
+        section_3_button_color:
+          nullable: true
+          type: string
+        section_3_button_url:
+          nullable: true
+          type: string
+        section_3_text:
+          nullable: true
+          type: string
+        section_3_target_blanc:
+          nullable: true
+          type: boolean
+        section_4_h2:
+          nullable: true
+          type: string
+        section_5_h2:
+          nullable: true
+          type: string
+        section_5_h3:
+          nullable: true
+          type: string
+        section_5_background:
+          nullable: true
+          type: string
+        section_5_text:
+          nullable: true
+          type: string
+        section_6_h1:
+          nullable: true
+          type: string
+        section_6_h3:
+          nullable: true
+          type: string
+        section_6_button_text:
+          nullable: true
+          type: string
+        section_6_button_color:
+          nullable: true
+          type: string
+        section_6_button_url:
+          nullable: true
+          type: string
+        section_6_target_blanc:
+          nullable: true
+          type: boolean
+        section_6_text:
+          nullable: true
+          type: string
+        section_6_media_url:
+          nullable: true
+          type: string
+        section_6_alt_text:
+          nullable: true
+          type: string
+        section_7_h2:
+          nullable: true
+          type: string
+        section_8_h1:
+          nullable: true
+          type: string
+        section_8_h3:
+          nullable: true
+          type: string
+        section_8_background:
+          nullable: true
+          type: string
+        section_8_text:
+          nullable: true
+          type: string
+        section_9_h2:
+          nullable: true
+          type: string
+        section_10_h2:
+          nullable: true
+          type: string
+        section_10_h3:
+          nullable: true
+          type: string
+        section_10_text:
+          nullable: true
+          type: string
+        section_10_media_url:
+          nullable: true
+          type: string
+        section_10_alt_text:
+          nullable: true
+          type: string
+        section_11_h2:
+          nullable: true
+          type: string
+        section_11_h3:
+          nullable: true
+          type: string
+        section_11_text:
+          nullable: true
+          type: string
+        section_11_button_text:
+          nullable: true
+          type: string
+        section_11_button_url:
+          nullable: true
+          type: string
+        section_11_button_color:
+          nullable: true
+          type: string
+        section_11_target_blanc:
+          nullable: true
+          type: boolean
+        section_11_media_url:
+          nullable: true
+          type: string
+        section_11_alt_text:
+          nullable: true
+          type: string
+        section_12_h2:
+          nullable: true
+          type: string
+        section_12_h3:
+          nullable: true
+          type: string
+        section_12_media_1_media_url:
+          nullable: true
+          type: string
+        section_12_media_1_url:
+          nullable: true
+          type: string
+        section_12_media_1_traget_blanc:
+          nullable: true
+          type: string
+        section_12_media_2_media_url:
+          nullable: true
+          type: string
+        section_12_media_2_url:
+          nullable: true
+          type: string
+        section_12_media_2_traget_blanc:
+          nullable: true
+          type: boolean
+        section_12_media_3_media_url:
+          nullable: true
+          type: string
+        section_12_media_3_url:
+          nullable: true
+          type: string
+        section_12_media_3_traget_blanc:
+          nullable: true
+          type: boolean
+        section_12_media_4_media_url:
+          nullable: true
+          type: string
+        section_12_media_4_url:
+          nullable: true
+          type: string
+        section_12_media_4_traget_blanc:
+          nullable: true
+          type: boolean
+        section_12_media_5_media_url:
+          nullable: true
+          type: string
+        section_12_media_5_url:
+          nullable: true
+          type: string
+        section_12_media_5_traget_blanc:
+          nullable: true
+          type: boolean
+        section_12_media_6_media_url:
+          nullable: true
+          type: string
+        section_12_media_6_url:
+          nullable: true
+          type: string
+        section_12_media_6_traget_blanc:
+          nullable: true
+          type: boolean
+        featured_focus_areas:
+          type: array
+          items:
+            $ref: "#/components/schemas/FocusArea"
+        featured_disciplines:
+          type: array
+          items:
+            $ref: "#/components/schemas/Discipline"
+        featured_practitioners:
+          type: array
+          items:
+            $ref: "#/components/schemas/User"
+        featured_services:
+          type: array
+          items:
+            $ref: "#/components/schemas/Service"
 paths:
   /api/auth/register:
     post:
@@ -1185,6 +1509,34 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/User"
+  /mainpage:
+    get:
+      tags:
+        - Main Page
+      parameters:
+        - name: with
+          in: query
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: featured_focus_areas,featured_disciplines,featured_practitioners,featured_services
+        - name: x-with
+          in: header
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: integer
+            example: featured_focus_areas,featured_disciplines,featured_practitioners,featured_services
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Mainpage"
   /admin/profile:
     get:
       operationId: get-profile
@@ -1268,6 +1620,117 @@ paths:
                   type: string
                   nullable: true
                   example: http://cdn.com/yoga-practice.png
+                section_2_h2:
+                  nullable: true
+                  type: string
+                section_2_h3:
+                  nullable: true
+                  type: string
+                section_2_background:
+                  nullable: true
+                  type: string
+                section_2_textarea:
+                  nullable: true
+                  type: string
+                section_3_h2:
+                  nullable: true
+                  type: string
+                section_3_h4:
+                  nullable: true
+                  type: string
+                section_4_h2:
+                  nullable: true
+                  type: string
+                section_4_h3:
+                  nullable: true
+                  type: string
+                section_4_background:
+                  nullable: true
+                  type: string
+                section_4_textarea:
+                  nullable: true
+                  type: string
+                section_5_header_h2:
+                  nullable: true
+                  type: string
+                section_6_h2:
+                  nullable: true
+                  type: string
+                section_6_h3:
+                  nullable: true
+                  type: string
+                section_6_background:
+                  nullable: true
+                  type: string
+                section_6_textarea:
+                  nullable: true
+                  type: string
+                section_7_media_url:
+                  nullable: true
+                  type: string
+                section_7_tag_line:
+                  nullable: true
+                  type: string
+                section_7_alt_text:
+                  nullable: true
+                  type: string
+                section_7_url:
+                  nullable: true
+                  type: string
+                section_7_target_blanc:
+                  nullable: true
+                  type: boolean
+                section_8_h2:
+                  nullable: true
+                  type: string
+                section_9_h2:
+                  nullable: true
+                  type: string
+                section_9_h3:
+                  nullable: true
+                  type: string
+                section_9_background:
+                  nullable: true
+                  type: string
+                section_9_textarea:
+                  nullable: true
+                  type: string
+                section_10_h2:
+                  nullable: true
+                  type: string
+                section_11_media_url:
+                  nullable: true
+                  type: string
+                section_11_tag_line:
+                  nullable: true
+                  type: string
+                section_11_alt_text:
+                  nullable: true
+                  type: string
+                section_11_url:
+                  nullable: true
+                  type: string
+                section_11_target_blanc:
+                  nullable: true
+                  type: boolean
+                section_12_h2:
+                  nullable: true
+                  type: string
+                section_13_media_url:
+                  nullable: true
+                  type: string
+                section_13_tag_line:
+                  nullable: true
+                  type: string
+                section_13_alt_text:
+                  nullable: true
+                  type: string
+                section_13_url:
+                  nullable: true
+                  type: string
+                section_13_target_blanc:
+                  nullable: true
+                  type: boolean
                 featured_practitioners:
                   type: array
                   items:
@@ -1604,3 +2067,280 @@ paths:
       responses:
         "204":
           description: OK
+  /admin/mainpage:
+    get:
+      tags:
+        - Main Page
+      parameters:
+        - name: with
+          in: query
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: featured_focus_areas,featured_disciplines,featured_practitioners,featured_services
+        - name: x-with
+          in: header
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: integer
+            example: featured_focus_areas,featured_disciplines,featured_practitioners,featured_services
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Mainpage"
+    put:
+      tags:
+        - Main Page
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                section_1_image_url:
+                  nullable: true
+                  type: string
+                section_1_alt_text:
+                  nullable: true
+                  type: string
+                section_1_intro_text:
+                  nullable: true
+                  type: string
+                section_2_background:
+                  nullable: true
+                  type: string
+                section_3_h1:
+                  nullable: true
+                  type: string
+                section_3_h2:
+                  nullable: true
+                  type: string
+                section_3_background:
+                  nullable: true
+                  type: string
+                section_3_button_text:
+                  nullable: true
+                  type: string
+                section_3_button_color:
+                  nullable: true
+                  type: string
+                section_3_button_url:
+                  nullable: true
+                  type: string
+                section_3_text:
+                  nullable: true
+                  type: string
+                section_3_target_blanc:
+                  nullable: true
+                  type: boolean
+                section_4_h2:
+                  nullable: true
+                  type: string
+                section_5_h2:
+                  nullable: true
+                  type: string
+                section_5_h3:
+                  nullable: true
+                  type: string
+                section_5_background:
+                  nullable: true
+                  type: string
+                section_5_text:
+                  nullable: true
+                  type: string
+                section_6_h1:
+                  nullable: true
+                  type: string
+                section_6_h3:
+                  nullable: true
+                  type: string
+                section_6_button_text:
+                  nullable: true
+                  type: string
+                section_6_button_color:
+                  nullable: true
+                  type: string
+                section_6_button_url:
+                  nullable: true
+                  type: string
+                section_6_target_blanc:
+                  nullable: true
+                  type: boolean
+                section_6_text:
+                  nullable: true
+                  type: string
+                section_6_media_url:
+                  nullable: true
+                  type: string
+                section_6_alt_text:
+                  nullable: true
+                  type: string
+                section_7_h2:
+                  nullable: true
+                  type: string
+                section_8_h1:
+                  nullable: true
+                  type: string
+                section_8_h3:
+                  nullable: true
+                  type: string
+                section_8_background:
+                  nullable: true
+                  type: string
+                section_8_text:
+                  nullable: true
+                  type: string
+                section_9_h2:
+                  nullable: true
+                  type: string
+                section_10_h2:
+                  nullable: true
+                  type: string
+                section_10_h3:
+                  nullable: true
+                  type: string
+                section_10_text:
+                  nullable: true
+                  type: string
+                section_10_media_url:
+                  nullable: true
+                  type: string
+                section_10_alt_text:
+                  nullable: true
+                  type: string
+                section_11_h2:
+                  nullable: true
+                  type: string
+                section_11_h3:
+                  nullable: true
+                  type: string
+                section_11_text:
+                  nullable: true
+                  type: string
+                section_11_button_text:
+                  nullable: true
+                  type: string
+                section_11_button_url:
+                  nullable: true
+                  type: string
+                section_11_button_color:
+                  nullable: true
+                  type: string
+                section_11_target_blanc:
+                  nullable: true
+                  type: boolean
+                section_11_media_url:
+                  nullable: true
+                  type: string
+                section_11_alt_text:
+                  nullable: true
+                  type: string
+                section_12_h2:
+                  nullable: true
+                  type: string
+                section_12_h3:
+                  nullable: true
+                  type: string
+                section_12_media_1_media_url:
+                  nullable: true
+                  type: string
+                section_12_media_1_url:
+                  nullable: true
+                  type: string
+                section_12_media_1_traget_blanc:
+                  nullable: true
+                  type: string
+                section_12_media_2_media_url:
+                  nullable: true
+                  type: string
+                section_12_media_2_url:
+                  nullable: true
+                  type: string
+                section_12_media_2_traget_blanc:
+                  nullable: true
+                  type: boolean
+                section_12_media_3_media_url:
+                  nullable: true
+                  type: string
+                section_12_media_3_url:
+                  nullable: true
+                  type: string
+                section_12_media_3_traget_blanc:
+                  nullable: true
+                  type: boolean
+                section_12_media_4_media_url:
+                  nullable: true
+                  type: string
+                section_12_media_4_url:
+                  nullable: true
+                  type: string
+                section_12_media_4_traget_blanc:
+                  nullable: true
+                  type: boolean
+                section_12_media_5_media_url:
+                  nullable: true
+                  type: string
+                section_12_media_5_url:
+                  nullable: true
+                  type: string
+                section_12_media_5_traget_blanc:
+                  nullable: true
+                  type: boolean
+                section_12_media_6_media_url:
+                  nullable: true
+                  type: string
+                section_12_media_6_url:
+                  nullable: true
+                  type: string
+                section_12_media_6_traget_blanc:
+                  nullable: true
+                  type: boolean
+                featured_focus_areas:
+                  type: array
+                  items:
+                    type: integer
+                  example:
+                    - 123
+                    - 231
+                    - 312
+                featured_disciplines:
+                  type: array
+                  items:
+                    type: integer
+                  example:
+                    - 123
+                    - 231
+                    - 312
+                featured_practitioners:
+                  type: array
+                  items:
+                    type: integer
+                  example:
+                    - 123
+                    - 231
+                    - 312
+                featured_services:
+                  type: array
+                  items:
+                    type: integer
+                  example:
+                    - 123
+                    - 231
+                    - 312
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Mainpage"
