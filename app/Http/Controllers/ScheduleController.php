@@ -9,11 +9,11 @@ use App\Models\PromotionCode;
 use App\Models\ScheduleFreeze;
 use App\Http\Requests\Request;
 use App\Transformers\UserTransformer;
-use App\Actions\Schedule\ScheduleStore;
 use App\Events\ServiceScheduleWentLive;
 use App\Transformers\ScheduleTransformer;
 use App\Actions\Promo\CalculatePromoPrice;
 use App\Http\Requests\PromotionCode\PurchaseRequest;
+use App\Http\Requests\Api\v2\Checkout\Interfaces\CreateScheduleInterface;
 use Carbon\Carbon;
 use Stripe\StripeClient;
 use Illuminate\Support\Facades\Auth;
@@ -28,10 +28,53 @@ class ScheduleController extends Controller
             ->toArray();
     }
 
-    public function store(Request $request, Service $service)
+    public function store(CreateScheduleInterface $request, Service $service)
     {
-        $schedule = run_action(ScheduleStore::class, $request, $service);
-        $user     = $request->user();
+        $data   = $request->all();
+        $data['service_id'] = $service->id;
+        $schedule = Schedule::create($data);
+        $user = $request->user();
+
+        if ($request->filled('media_files')) {
+            $schedule->media_files()->createMany($request->get('media_files'));
+        }
+        if ($request->filled('prices')) {
+            $schedule->prices()->createMany($request->get('prices'));
+        }
+        if ($request->filled('schedule_availabilities')) {
+            $schedule->schedule_availabilities()->sync($request->get('schedule_availabilities'));
+        }
+        if ($request->filled('schedule_unavailabilities')) {
+            $schedule->schedule_unavailabilities()->sync($request->get('schedule_unavailabilities'));
+        }
+
+        event(new ServiceScheduleWentLive($service, $user, $schedule));
+    }
+
+    public function update(CreateScheduleInterface $request, Service $service, Schedule $schedule)
+    {
+        $data   = $request->all();
+        $data['service_id'] = $service->id;
+        $schedule->update($data);
+        $user = $request->user();
+
+        if ($request->has('media_files')) {
+            $schedule->media_files()->delete();
+            $schedule->media_files()->createMany($request->get('media_files'));
+        }
+        if ($request->has('prices')) {
+            $schedule->prices()->delete();
+            $schedule->prices()->createMany($request->get('prices'));
+        }
+        if ($request->filled('schedule_availabilities')) {
+            $schedule->schedule_availabilities()->delete();
+            $schedule->schedule_availabilities()->sync($request->get('schedule_availabilities'));
+        }
+        if ($request->filled('schedule_unavailabilities')) {
+            $schedule->schedule_unavailabilities()->delete();
+            $schedule->schedule_unavailabilities()->sync($request->get('schedule_unavailabilities'));
+        }
+
         event(new ServiceScheduleWentLive($service, $user, $schedule));
     }
 

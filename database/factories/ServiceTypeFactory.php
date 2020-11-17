@@ -14,6 +14,7 @@ class ServiceTypeFactory extends Factory
     public function definition()
     {
         return [
+            'id'   => 'econtent',
             'name' => $this->faker->sentence(),
         ];
     }

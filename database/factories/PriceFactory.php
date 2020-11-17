@@ -14,8 +14,13 @@ class PriceFactory extends Factory
     public function definition()
     {
         return [
-            'amount' => $this->faker->randomDigitNotNull,
-            'schedule_id' => $this->faker->randomNumber(3),
+            'amount'            => $this->faker->randomDigitNotNull,
+            'schedule_id'       => $this->faker->randomNumber(3),
+            'name'              => $this->faker->name,
+            'is_free'           => $this->faker->boolean,
+            'available_till'    => $this->faker->date(),
+            'min_purchase'      => $this->faker->randomDigit,
+            'number_available'  => $this->faker->randomDigit,
         ];
     }
 }

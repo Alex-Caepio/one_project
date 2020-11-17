@@ -24,6 +24,7 @@ class ScheduleFactory extends Factory
             'venue'              => $this->faker->city,
             'city'               => $this->faker->city,
             'country'            => $this->faker->country,
+            'url'                => $this->faker->url,
         ];
     }
 }

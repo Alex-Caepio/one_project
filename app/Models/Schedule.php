@@ -13,7 +13,24 @@ class Schedule extends Model
     protected $fillable = [
         'title',
         'location_id',
-        'cost'
+        'cost',
+        'meals_breakfast',
+        'meals_lunch',
+        'meals_dinner',
+        'meals_alcoholic_beverages',
+        'meals_dietry_accomodated',
+        'refund_terms',
+        'deposit_accepted',
+        'deposit_amount',
+        'deposit_final_date',
+        'booking_message',
+        'repeat',
+        'repeat_every',
+        'repeat_period',
+        'notice_min_time',
+        'notice_min_period',
+        'buffer_time',
+        'buffer_period',
     ];
 
     public function location()
@@ -50,5 +67,20 @@ class Schedule extends Model
         } else
             return (bool)$this->attendees <= $purchased + $freezed;
 
+    }
+
+    public function media_files()
+    {
+        return $this->morphMany(MediaFile::class, 'morphesTo', 'model_name', 'model_id');
+    }
+
+    public function  schedule_availabilities()
+    {
+        return $this->belongsTo(ScheduleAvailabilities::class);
+    }
+
+    public function  schedule_unavailabilities()
+    {
+        return $this->belongsTo(ScheduleUnavailabilities::class);
     }
 }

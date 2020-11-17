@@ -32,7 +32,8 @@ class Service extends Model
         'title',
         'description',
         'introduction',
-        'url'
+        'url',
+        'service_type_id'
     ];
 
     public function media_images()
@@ -85,9 +86,17 @@ class Service extends Model
         return $this->belongsToMany(Service::class);
     }
 
+    /**
+     * @deprecated
+     */
     public function service_types()
     {
         return $this->belongsToMany(ServiceType::class, 'service_type_service', 'service_id', 'service_type_id')->withTimeStamps();
+    }
+
+    public function service_type()
+    {
+        return $this->belongsTo(ServiceType::class);
     }
 
     public function favorite()

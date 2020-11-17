@@ -43,6 +43,10 @@ class ServiceController extends Controller
     {
         $user    = $request->user();
         $data    = $request->all();
+
+        $url         = $data['url'] ?? to_url($data['name']);
+        $data['url'] = $url;
+
         $service = $user->services()->create($data);
 
         if($request->filled('media_images')){

@@ -100,7 +100,7 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::get('locations', [LocationController::class, 'index']);
     Route::get('locations/list', [LocationController::class, 'list']);
 
-    Route::get('practitioners', [PractitionerController::class, 'index']);
+//    Route::get('practitioners', [PractitionerController::class, 'index']);
     Route::get('practitioners/list', [PractitionerController::class, 'list']);
 
     Route::post('/credit-cards', [CardStripeController::class, 'store']);
@@ -116,6 +116,7 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
 
     Route::post('/services/{service}/schedules', [ScheduleController::class, 'store']);
     Route::get('/services/{service}/schedules', [ScheduleController::class, 'index']);
+    Route::put('/schedules/{schedule}/edit', [ScheduleController::class, 'update']);
     Route::post('/schedules/{schedule}/purchase', [ScheduleController::class, 'purchase']);
     Route::get('/schedule/{schedule}/attendants', [ScheduleController::class, 'allUser']);
     Route::post('/schedules/{schedule}/freeze', [ScheduleController::class, 'freeze']);

@@ -37,14 +37,18 @@ class ScheduleTest extends TestCase
 
     public function test_store_schedule(): void
     {
-        $service = Service::factory()->create();
-        $schedule = Schedule::factory()->create();
+        $service = Service::factory()->create(['service_type_id' => 1]);
+        $schedule = Schedule::factory()->make();
         $response = $this->json('post', "api/services/{$service->id}/schedules", [
             'title' => $schedule->title,
             'service_id' => $service->id,
             'start_date' => $schedule->start_date,
             'end_date' => $schedule->end_date,
             'cost' => $schedule->cost,
+            'madia_files' => [
+                ['url' => 'http://google.com'],
+                ['url' => 'http://google.com'],
+            ],
         ]);
         $response->assertOk();
     }
@@ -87,4 +91,104 @@ class ScheduleTest extends TestCase
         $response = $this->json('post', "api/schedules/{$schedule->id}/promoсodes", ['promo_code' => $promoCode->name]);
         $response->assertOk();
     }
+
+    public function test_validate_request_schedule(): void
+    {
+        $schedule = Schedule::factory()->make();
+
+        $service = Service::factory()->create(['service_type_id' => 'class_ad_hoc']);
+        $response = $this->json('post', "api/services/{$service->id}/schedules", [
+            'title' => $schedule->title,
+            'service_id' => $service->id,
+        ]);
+        $response->assertOk();
+
+        $service = Service::factory()->create(['service_type_id' => 'workshop']);
+        $response = $this->json('post', "api/services/{$service->id}/schedules", [
+            'title' => $schedule->title,
+            'service_id' => $service->id,
+        ]);
+        $response->assertOk();
+
+        $service = Service::factory()->create(['service_type_id' => 'econtent']);
+        $schedule = Schedule::factory()->make();
+        $response = $this->json('post', "api/services/{$service->id}/schedules", [
+            'title' => $schedule->title,
+            'service_id' => $service->id,
+        ]);
+        $response->assertOk();
+
+        $service = Service::factory()->create(['service_type_id' => 'class']);
+        $schedule = Schedule::factory()->make();
+        $response = $this->json('post', "api/services/{$service->id}/schedules", [
+            'title' => $schedule->title,
+            'service_id' => $service->id,
+        ]);
+        $response->assertOk();
+
+        $service = Service::factory()->create(['service_type_id' => 'class_ad_hoc']);
+        $schedule = Schedule::factory()->make();
+        $response = $this->json('post', "api/services/{$service->id}/schedules", [
+            'title' => $schedule->title,
+            'service_id' => $service->id,
+        ]);
+        $response->assertOk();
+
+        $service = Service::factory()->create(['service_type_id' => 'cource_program']);
+        $schedule = Schedule::factory()->make();
+        $response = $this->json('post', "api/services/{$service->id}/schedules", [
+            'title' => $schedule->title,
+            'service_id' => $service->id,
+        ]);
+        $response->assertOk();
+
+        $service = Service::factory()->create(['service_type_id' => 'event']);
+        $schedule = Schedule::factory()->make();
+        $response = $this->json('post', "api/services/{$service->id}/schedules", [
+            'title' => $schedule->title,
+            'service_id' => $service->id,
+        ]);
+        $response->assertOk();
+
+        $service = Service::factory()->create(['service_type_id' => 'product']);
+        $schedule = Schedule::factory()->make();
+        $response = $this->json('post', "api/services/{$service->id}/schedules", [
+            'title' => $schedule->title,
+            'service_id' => $service->id,
+        ]);
+        $response->assertOk();
+
+        $service = Service::factory()->create(['service_type_id' => 'class_ad_hoc']);
+        $schedule = Schedule::factory()->make();
+        $response = $this->json('post', "api/services/{$service->id}/schedules", [
+            'title' => $schedule->title,
+            'service_id' => $service->id,
+        ]);
+        $response->assertOk();
+
+        $service = Service::factory()->create(['service_type_id' => 'retreat']);
+        $schedule = Schedule::factory()->make();
+        $response = $this->json('post', "api/services/{$service->id}/schedules", [
+            'title' => $schedule->title,
+            'service_id' => $service->id,
+        ]);
+        $response->assertOk();
+
+        $service = Service::factory()->create(['service_type_id' => 'training_program']);
+        $schedule = Schedule::factory()->make();
+        $response = $this->json('post', "api/services/{$service->id}/schedules", [
+            'title' => $schedule->title,
+            'service_id' => $service->id,
+        ]);
+        $response->assertOk();
+
+        $service = Service::factory()->create(['service_type_id' => 'purchase']);
+        $schedule = Schedule::factory()->make();
+        $response = $this->json('post', "api/services/{$service->id}/schedules", [
+            'title' => $schedule->title,
+            'service_id' => $service->id,
+        ]);
+        $response->assertOk();
+    }
+
 }
