@@ -83,27 +83,12 @@ class Service extends Model
 
     public function favourite_services()
     {
-        return $this->belongsToMany(Service::class);
-    }
-
-    /**
-     * @deprecated
-     */
-    public function service_types()
-    {
-        return $this->belongsToMany(ServiceType::class, 'service_type_service', 'service_id', 'service_type_id')->withTimeStamps();
+        return $this->belongsToMany(__CLASS__);
     }
 
     public function service_type()
     {
         return $this->belongsTo(ServiceType::class);
-    }
-
-    public function favorite()
-    {
-        return (bool)Favorite::where('user_id', Auth::id())
-            ->where('service_id', $this->id)
-            ->first();
     }
 
     public function featured_focus_area()

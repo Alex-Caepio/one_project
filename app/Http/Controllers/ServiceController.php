@@ -2,76 +2,88 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Services\ServiceActionRequest;
 use App\Models\Service;
 use App\Http\Requests\Request;
 use App\Filters\ServiceFiltrator;
 use App\Events\ServiceListingLive;
 use App\Transformers\ServiceTransformer;
 use App\Http\Requests\Services\StoreServiceRequest;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 
-class ServiceController extends Controller
-{
-    public function index(Request $request)
-    {
-        $query         = Service::query();
+class ServiceController extends Controller {
+
+    public function index(Request $request) {
+        $paginator = $this->getServiceList(Service::published(), $request);
+        $services = $paginator->getCollection();
+        $fractal = fractal($services, new ServiceTransformer())->parseIncludes($request->getIncludes())->toArray();
+        return response($fractal)->withPaginationHeaders($paginator);
+    }
+
+    public function practitionerServiceList(Request $request) {
+        $paginator = $this->getServiceList(Service::where('user_id', Auth::user()->id), $request);
+        $services = $paginator->getCollection();
+        $fractal = fractal($services, new ServiceTransformer())->parseIncludes($request->getIncludes())->toArray();
+        return response($fractal)->withPaginationHeaders($paginator);
+    }
+
+
+    /**
+     * @param Builder $queryBuilder
+     * @param \App\Http\Requests\Request $request
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
+    private function getServiceList(Builder $queryBuilder, Request $request): LengthAwarePaginator {
         $serviceFilter = new ServiceFiltrator();
-        $serviceFilter->apply($query, $request);
-
-        $includes = $request->getIncludes();
-
-        $paginator = $query->with($includes)->paginate($request->getLimit());
-        $services  = $paginator->getCollection();
-
-        $fractal = fractal($services, new ServiceTransformer())
-            ->parseIncludes($includes)
-            ->toArray();
-
-        return response($fractal)
-            ->withPaginationHeaders($paginator);
-
+        $serviceFilter->apply($queryBuilder, $request);
+        return $queryBuilder->with($request->getIncludes())->paginate($request->getLimit());
     }
 
-    public function show(Request $request, Service $service)
-    {
-        return fractal($service, new ServiceTransformer())
-            ->parseIncludes($request->getIncludes())
-            ->respond();
+    public function show(Request $request, Service $publicService) {
+        return fractal($publicService, new ServiceTransformer())->parseIncludes($request->getIncludes())->respond();
     }
 
-    public function store(StoreServiceRequest $request)
-    {
-        $user    = $request->user();
-        $data    = $request->all();
+    public function practitionerServiceShow(ServiceActionRequest $request, Service $service) {
+        return fractal($service, new ServiceTransformer())->parseIncludes($request->getIncludes())->respond();
+    }
 
-        $url         = $data['url'] ?? to_url($data['name']);
+    public function destroy(ServiceActionRequest $request, Service $service) {
+        $service->delete();
+        return response(null, 204);
+    }
+
+    public function store(StoreServiceRequest $request) {
+        $user = $request->user();
+        $data = $request->all();
+
+        $url = $data['url'] ?? to_url($data['name']);
         $data['url'] = $url;
 
         $service = $user->services()->create($data);
 
-        if($request->filled('media_images')){
+        if ($request->filled('media_images')) {
             $service->media_images()->createMany($request->get('media_images'));
         }
 
-        if($request->filled('media_videos')){
+        if ($request->filled('media_videos')) {
             $service->media_videos()->createMany($request->get('media_videos'));
         }
 
-        if($request->filled('media_files')){
+        if ($request->filled('media_files')) {
             $service->media_files()->createMany($request->get('media_files'));
         }
 
         return fractal($service, new ServiceTransformer())->respond();
     }
 
-    public function update(Request $request, Service $service)
-    {
+    public function update(ServiceActionRequest $request, Service $service) {
         $service->update($request->all());
         return fractal($service, new ServiceTransformer())->respond();
     }
 
-    public function publish(Request $request, Service $service)
-    {
+    public function publish(ServiceActionRequest $request, Service $service) {
         $service->is_published = true;
         $service->save();
         $service->fresh();
@@ -81,20 +93,12 @@ class ServiceController extends Controller
         return fractal($service, new ServiceTransformer())->respond();
     }
 
-    public function unpublish(Service $service)
-    {
+    public function unpublish(ServiceActionRequest $service) {
         $service->is_published = false;
         $service->save();
         $service->fresh();
 
         return fractal($service, new ServiceTransformer())->respond();
-    }
-
-    public function destroy(Service $service)
-    {
-        $service->delete();
-
-        return response(null, 204);
     }
 
     public function storeFavorite(Service $service)

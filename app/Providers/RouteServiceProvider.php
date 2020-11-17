@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Article;
+use App\Models\Service;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
 
@@ -31,6 +32,12 @@ class RouteServiceProvider extends ServiceProvider {
     public function boot() {
         Route::bind('publicArticle', function($value) {
             return Article::published()->where('id', (int)$value)->whereHas('user', function($query) {
+                $query->published();
+            })->firstOrFail();
+        });
+
+        Route::bind('publicService', function($value) {
+            return Service::published()->where('id', (int)$value)->whereHas('user', function($query) {
                 $query->published();
             })->firstOrFail();
         });

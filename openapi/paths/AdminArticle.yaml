@@ -37,14 +37,14 @@ articles:
         required: false
         schema:
           type: string
-          example: user,disciplines,favourite_articles,media_images,media_videos,media_files
+          example: user,disciplines,favourite_articles,media_images,media_videos,media_files,focus_areas,keywords,services,last_published
       - name: x-with
         in: header
         description: Include additional objects in response
         required: false
         schema:
-          type: integer
-          example: user,disciplines,favourite_articles,media_images,media_videos,media_files
+          type: string
+          example: user,disciplines,favourite_articles,media_images,media_videos,media_files,focus_areas,keywords,services,last_published
       - name: search
         in: query
         description: Article title or author name
@@ -128,3 +128,12 @@ articles/{id}/unpublish:
     responses:
       '204':
         description: OK
+
+parameters:
+  id:
+    name: id
+    in: path
+    description: Article ID
+    required: true
+    schema:
+      type: integer

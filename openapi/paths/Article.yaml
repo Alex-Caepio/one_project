@@ -41,6 +41,20 @@ articles:
         schema:
           type: integer
           example: 10
+      - name: with
+        in: query
+        description: Include additional objects in response
+        required: false
+        schema:
+          type: string
+          example: user,disciplines,favourite_articles,media_images,media_videos,media_files,focus_areas,keywords,services,last_published
+      - name: x-with
+        in: header
+        description: Include additional objects in response
+        required: false
+        schema:
+          type: string
+          example: user,disciplines,favourite_articles,media_images,media_videos,media_files,focus_areas,keywords,services,last_published
     responses:
       '200':
         description: OK
@@ -50,13 +64,83 @@ articles:
               type: array
               items:
                 $ref: '../schemas/Article.yaml'
-
+articles/practitioner:
+  get:
+    operationId: articles-practitioner
+    tags:
+      - Article
+    parameters:
+      - name: page
+        in: query
+        description: Pagination page results
+        required: false
+        schema:
+          type: integer
+          example: 2
+      - name: limit
+        in: query
+        description: Results per page
+        required: false
+        schema:
+          type: integer
+          example: 10
+      - name: x-page
+        in: header
+        description: Pagination page results
+        required: false
+        schema:
+          type: integer
+          example: 2
+      - name: x-limit
+        in: header
+        description: Results per page
+        required: false
+        schema:
+          type: integer
+          example: 10
+      - name: with
+        in: query
+        description: Include additional objects in response
+        required: false
+        schema:
+          type: string
+          example: user,disciplines,favourite_articles,media_images,media_videos,media_files,focus_areas,keywords,services,last_published
+      - name: x-with
+        in: header
+        description: Include additional objects in response
+        required: false
+        schema:
+          type: string
+          example: user,disciplines,favourite_articles,media_images,media_videos,media_files,focus_areas,keywords,services,last_published
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../schemas/Article.yaml'
 articles/{id}:
   get:
     tags:
       - Article
     parameters:
       - $ref: "#/parameters/id"
+      - name: with
+        in: query
+        description: Include additional objects in response
+        required: false
+        schema:
+          type: string
+          example: user,disciplines,favourite_articles,media_images,media_videos,media_files,focus_areas,keywords,services,last_published
+      - name: x-with
+        in: header
+        description: Include additional objects in response
+        required: false
+        schema:
+          type: string
+          example: user,disciplines,favourite_articles,media_images,media_videos,media_files,focus_areas,keywords,services,last_published
     responses:
       '200':
         description: OK
@@ -88,7 +172,33 @@ articles/{id}:
           application/json:
             schema:
               $ref: '../schemas/Article.yaml'
-
+articles/practitioner/{id}:
+  get:
+    tags:
+      - Article
+    parameters:
+      - $ref: "#/parameters/id"
+      - name: with
+        in: query
+        description: Include additional objects in response
+        required: false
+        schema:
+          type: string
+          example: user,disciplines,favourite_articles,media_images,media_videos,media_files,focus_areas,keywords,services,last_published
+      - name: x-with
+        in: header
+        description: Include additional objects in response
+        required: false
+        schema:
+          type: string
+          example: user,disciplines,favourite_articles,media_images,media_videos,media_files,focus_areas,keywords,services,last_published
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/Article.yaml'
 parameters:
   id:
     name: id

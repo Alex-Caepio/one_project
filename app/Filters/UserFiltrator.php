@@ -2,8 +2,8 @@
 namespace App\Filters;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use App\Http\Requests\Request;
 
 class UserFiltrator {
 
@@ -34,6 +34,10 @@ class UserFiltrator {
             });
         }
 
-        return $queryBuilder;
+        if ($request->hasOrderBy()) {
+            $order = $request->getOrderBy();
+            $queryBuilder->orderBy($order['column'], $order['direction']);
+        }
+
     }
 }

@@ -4,12 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Actions\Article\ArticleStore;
 use App\Actions\Article\ArticleUpdate;
-use App\Http\Requests\Articles\ArticleDeleteRequest;
+use App\Http\Requests\Articles\ArticleActionRequest;
 use App\Http\Requests\Articles\ArticleRequest;
 use App\Http\Requests\Articles\PractitionerArticleRequest;
 use App\Http\Requests\Request;
 use App\Models\Article;
 use App\Transformers\ArticleTransformer;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
@@ -20,13 +21,9 @@ class ArticleController extends Controller {
      * @return mixed
      */
     public function index(Request $request) {
-        $includes = $request->getIncludes();
-        $paginator = Article::published()->whereHas('user', function($query) {
-            $query->published();
-        })->with($includes)->paginate($request->getLimit());
-        $articles = $paginator->getCollection();
-
-        return response(fractal($articles, new ArticleTransformer())->parseIncludes($includes))->withPaginationHeaders($paginator);
+        $paginator = $this->getArticleList($request);
+        return response(fractal($paginator->getCollection(), new ArticleTransformer())->parseIncludes($request->getIncludes()))
+            ->withPaginationHeaders($paginator);
     }
 
     /**
@@ -58,17 +55,6 @@ class ArticleController extends Controller {
     }
 
     /**
-     * @param \App\Http\Requests\Articles\ArticleDeleteRequest $request
-     * @param \App\Models\Article $article
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
-     * @throws \Exception
-     */
-    public function destroy(ArticleDeleteRequest $request, Article $article) {
-        $article->delete();
-        return response(null, 204);
-    }
-
-    /**
      * @param \App\Models\Article $article
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
      */
@@ -91,13 +77,48 @@ class ArticleController extends Controller {
     }
 
 
-
-    public function practitionerList(PractitionerArticleRequest $request) {
-
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function practitionerArticleList(Request $request) {
+        $paginator = $this->getArticleList($request, Auth::user()->id, false);
+        return response(fractal($paginator->getCollection(), new ArticleTransformer())->parseIncludes($request->getIncludes()))
+            ->withPaginationHeaders($paginator);
     }
 
-    public function practitionerShow(PractitionerArticleRequest $request) {
 
+    public function practitionerArticleShow(Article $article, ArticleActionRequest $request) {
+        return fractal($article, new ArticleTransformer())->parseIncludes($request->getIncludes())->respond();
     }
 
+    /**
+     * @param ArticleActionRequest $request
+     * @param \App\Models\Article $article
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     * @throws \Exception
+     */
+    public function destroy(ArticleActionRequest $request, Article $article) {
+        $article->delete();
+        return response(null, 204);
+    }
+
+    /**
+     * @param \App\Http\Requests\Request $request
+     * @param int|null $userId
+     * @param bool $isPublished
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
+    private function getArticleList(Request $request, ?int $userId = null, bool $isPublished = true): LengthAwarePaginator {
+        $queryBuilder = Article::with($request->getIncludes());
+        if ($userId !== null) {
+            $queryBuilder->where('user_id', $userId);
+        }
+        if ($isPublished) {
+            $queryBuilder->published()->whereHas('user', function($query) {
+                $query->published();
+            });
+        }
+        return $queryBuilder->paginate($request->getLimit());
+    }
 }

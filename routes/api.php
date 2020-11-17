@@ -42,8 +42,11 @@ Route::post('auth/verify-forgot-password-token', [ResetPasswordController::class
 Route::post('auth/forgot-password-claim', [ResetPasswordController::class, 'claimReset'])
     ->name('claim-reset');
 
-Route::get('/articles', [ArticleController::class, 'index']);
-Route::get('/articles/{publicArticle}', [ArticleController::class, 'show']);
+/* Public Routes For Services And Articles */
+Route::get('articles', [ArticleController::class, 'index']);
+Route::get('articles/{publicArticle}', [ArticleController::class, 'show'])->where('publicArticle', '[0-9]+');
+Route::get('services', [ServiceController::class, 'index']);
+Route::get('services/{publicService}', [ServiceController::class, 'show'])->where('publicService', '[0-9]+');
 
 Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::get('auth/profile', [AuthController::class, 'profile']);
@@ -64,31 +67,23 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::delete('practitioners/{practitioner}/favourite', [PractitionerController::class, 'deleteFavorite']);
     Route::get('/practitioners/favourites', [UserController::class, 'practitionerFavorites']);
 
-    Route::get('/services', [ServiceController::class, 'index']);
-    Route::post('/services', [ServiceController::class, 'store']);
-    Route::get('/services/{service}', [ServiceController::class, 'show']);
-    Route::put('/services/{service}', [ServiceController::class, 'update']);
-    Route::delete('/services/{service}', [ServiceController::class, 'destroy']);
+    Route::middleware(['practitioner'])->group(function () {
+        Route::get('articles/practitioner', [ArticleController::class, 'practitionerArticleList']);
+        Route::get('articles/practitioner/{article}', [ArticleController::class, 'practitionerArticleShow']);
+        Route::post('articles', [ArticleController::class, 'store']);
+        Route::put('articles/{article}', [ArticleController::class, 'edit']);
+        Route::delete('articles/{article}', [ArticleController::class, 'destroy']);
 
-    /*
-     * ARTICLES START
-     */
+        Route::get('services/practitioner', [ServiceController::class, 'practitionerServiceList']);
+        Route::get('services/practitioner/{service}', [ServiceController::class, 'practitionerServiceShow']);
+        Route::post('services', [ServiceController::class, 'store']);
+        Route::put('services/{service}', [ServiceController::class, 'update']);
+        Route::delete('services/{service}', [ServiceController::class, 'destroy']);
+    });
 
-    /* Routes only for practitioner */
-    Route::get('/articles/practitioner', [ArticleController::class, 'practitionerList']);
-    Route::get('/articles/practitioner/{article}', [ArticleController::class, 'practitionerShow']);
-    Route::post('/articles', [ArticleController::class, 'store']);
-    Route::put('/articles/{article}', [ArticleController::class, 'edit']);
-    Route::delete('/articles/{article}', [ArticleController::class, 'destroy']);
-
-    Route::post('articles/{article}/favourite', [ArticleController::class, 'storeFavorite']);
-    Route::delete('articles/{article}/favourite', [ArticleController::class, 'deleteFavorite']);
+    Route::post('/articles/{article}/favourite', [ArticleController::class, 'storeFavorite']);
+    Route::delete('/articles/{article}/favourite', [ArticleController::class, 'deleteFavorite']);
     Route::get('/articles/favourites', [UserController::class, 'articleFavorites']);
-    /*
-     * ARTICLES END
-     */
-
-
 
     Route::get('disciplines', [DisciplineController::class, 'index']);
     Route::get('disciplines/{discipline}', [DisciplineController::class, 'show']);

@@ -1202,6 +1202,77 @@ paths:
           schema:
             type: integer
             example: 10
+        - name: with
+          in: query
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: user,disciplines,favourite_articles,media_images,media_videos,media_files,focus_areas,keywords,services,last_published
+        - name: x-with
+          in: header
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: user,disciplines,favourite_articles,media_images,media_videos,media_files,focus_areas,keywords,services,last_published
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Article"
+  /articles/practitioner:
+    get:
+      operationId: articles-practitioner
+      tags:
+        - Article
+      parameters:
+        - name: page
+          in: query
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: limit
+          in: query
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: x-page
+          in: header
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: x-limit
+          in: header
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: with
+          in: query
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: user,disciplines,favourite_articles,media_images,media_videos,media_files,focus_areas,keywords,services,last_published
+        - name: x-with
+          in: header
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: user,disciplines,favourite_articles,media_images,media_videos,media_files,focus_areas,keywords,services,last_published
       responses:
         "200":
           description: OK
@@ -1222,6 +1293,20 @@ paths:
           required: true
           schema:
             type: integer
+        - name: with
+          in: query
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: user,disciplines,favourite_articles,media_images,media_videos,media_files,focus_areas,keywords,services,last_published
+        - name: x-with
+          in: header
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: user,disciplines,favourite_articles,media_images,media_videos,media_files,focus_areas,keywords,services,last_published
       responses:
         "200":
           description: OK
@@ -1246,6 +1331,38 @@ paths:
         - Article
       parameters:
         - $ref: "#/paths/~1articles~1%7Bid%7D/get/parameters/0"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Article"
+  "/articles/practitioner/{id}":
+    get:
+      tags:
+        - Article
+      parameters:
+        - name: id
+          in: path
+          description: Article ID
+          required: true
+          schema:
+            type: integer
+        - name: with
+          in: query
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: user,disciplines,favourite_articles,media_images,media_videos,media_files,focus_areas,keywords,services,last_published
+        - name: x-with
+          in: header
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: user,disciplines,favourite_articles,media_images,media_videos,media_files,focus_areas,keywords,services,last_published
       responses:
         "200":
           description: OK
@@ -1358,6 +1475,49 @@ paths:
     get:
       tags:
         - Service
+      parameters:
+        - name: page
+          in: query
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: limit
+          in: query
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: x-page
+          in: header
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: x-limit
+          in: header
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: with
+          in: query
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles
+        - name: x-with
+          in: header
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles
       responses:
         "200":
           description: OK
@@ -1378,6 +1538,20 @@ paths:
           required: true
           schema:
             type: integer
+        - name: with
+          in: query
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles
+        - name: x-with
+          in: header
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles
       responses:
         "200":
           description: OK
@@ -1405,6 +1579,94 @@ paths:
       responses:
         "204":
           description: OK
+  /services/practitioner:
+    get:
+      tags:
+        - Service
+      parameters:
+        - name: page
+          in: query
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: limit
+          in: query
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: x-page
+          in: header
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: x-limit
+          in: header
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: with
+          in: query
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles
+        - name: x-with
+          in: header
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Service"
+  "/services/practitioner/{id}":
+    get:
+      tags:
+        - Service
+      parameters:
+        - name: id
+          in: path
+          description: Service ID
+          required: true
+          schema:
+            type: integer
+        - name: with
+          in: query
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles
+        - name: x-with
+          in: header
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Service"
   /practitoners: {}
   /plans:
     get:
@@ -1892,14 +2154,14 @@ paths:
           required: false
           schema:
             type: string
-            example: user,disciplines,favourite_articles,media_images,media_videos,media_files
+            example: user,disciplines,favourite_articles,media_images,media_videos,media_files,focus_areas,keywords,services,last_published
         - name: x-with
           in: header
           description: Include additional objects in response
           required: false
           schema:
-            type: integer
-            example: user,disciplines,favourite_articles,media_images,media_videos,media_files
+            type: string
+            example: user,disciplines,favourite_articles,media_images,media_videos,media_files,focus_areas,keywords,services,last_published
         - name: search
           in: query
           description: Article title or author name
@@ -1956,7 +2218,12 @@ paths:
       tags:
         - Article
       parameters:
-        - {}
+        - name: id
+          in: path
+          description: Article ID
+          required: true
+          schema:
+            type: integer
       responses:
         "204":
           description: OK
@@ -1964,7 +2231,12 @@ paths:
     post:
       operationId: admin-publish-article
       parameters:
-        - {}
+        - name: id
+          in: path
+          description: Article ID
+          required: true
+          schema:
+            type: integer
       tags:
         - Article
       responses:
@@ -1974,7 +2246,12 @@ paths:
     post:
       operationId: admin-unpublish-article
       parameters:
-        - {}
+        - name: id
+          in: path
+          description: Article ID
+          required: true
+          schema:
+            type: integer
       tags:
         - Article
       responses:

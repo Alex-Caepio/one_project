@@ -7,25 +7,25 @@ use App\Models\Service;
 
 class ServiceTransformer extends Transformer
 {
-    protected $availableIncludes = ['user', 'keywords', 'disciplines', 'focus_areas', 'location', 'schedules', 'favourite_services', 'service_types', 'articles'];
+    protected $availableIncludes = ['user', 'keywords', 'disciplines', 'focus_areas', 'location', 'schedules', 'favourite_services', 'service_type', 'articles'];
 
-    public function transform(Service $service)
-    {
+    public function transform(Service $service) {
         return [
-            'id' => $service->id,
-            'title' => $service->title,
-            'description' => $service->description,
-            'type' => $service->type,
-            'locations' => $service->locations,
-            'basic_location' => $service->basic_location,
+            'id'                          => $service->id,
+            'title'                       => $service->title,
+            'description'                 => $service->description,
+            'locations'                   => $service->locations,
+            'basic_location'              => $service->basic_location,
             'deposit_instalment_payments' => $service->deposit_instalment_payments,
-            'user_id' => $service->user_id,
-            'is_published' => (bool) $service->is_published,
-            'introduction' => $service->introduction,
-            'url' => $service->url,
-            'service_type_id' => $service->service_type_id,
-            'created_at' => $service->created_at,
-            'updated_at' => $service->updated_at,
+            'user_id'                     => $service->user_id,
+            'is_published'                => (bool)$service->is_published,
+            'introduction'                => $service->introduction,
+            'url'                         => $service->url,
+            'service_type_id'             => $service->service_type_id,
+            'created_at'                  => $this->dateTime($service->created_at),
+            'updated_at'                  => $this->dateTime($service->updated_at),
+            'deleted_at'                  => $this->dateTime($service->deleted_at),
+
         ];
     }
 
@@ -65,7 +65,7 @@ class ServiceTransformer extends Transformer
     }
 
     public function includeServiceType(Service $service) {
-        return $this->collectionOrNull($service->service_types, new ServiceTypeTransformer());
+        return $this->itemOrNull($service->service_type, new ServiceTypeTransformer());
     }
 
     public function includeArticles(Service $service) {

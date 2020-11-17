@@ -19,8 +19,12 @@
 #articels
 /articles:
   $ref: "./Article.yaml#/articles"
+/articles/practitioner:
+  $ref: "./Article.yaml#/articles~1practitioner"
 /articles/{id}:
   $ref: "./Article.yaml#/articles~1{id}"
+/articles/practitioner/{id}:
+  $ref: "./Article.yaml#/articles~1practitioner~1{id}"
 
 #disciplines
 /focus-areas:
@@ -39,6 +43,10 @@
   $ref: "./Service.yaml#/services"
 /services/{id}:
   $ref: "./Service.yaml#/services~1{id}"
+/services/practitioner:
+  $ref: "./Service.yaml#/services~1practitioner"
+/services/practitioner/{id}:
+  $ref: "./Service.yaml#/services~1practitioner~1{id}"
 
 #practitioners
 /practitoners:
