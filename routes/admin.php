@@ -47,16 +47,17 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::put('/profile',[ProfileController::class, 'update']);
 
         Route::get('/focus-areas', [FocusAreaController::class, 'index']);
-        Route::put('/focus-areas/{focusArea}/update', [FocusAreaController::class, 'update']);
+        Route::put('/focus-areas/{focusArea}', [FocusAreaController::class, 'update']);
         Route::post('/focus-areas', [FocusAreaController::class, 'store']);
         Route::get('/focus-areas/{focusArea}', [FocusAreaController::class, 'show']);
-        Route::delete('/focus-areas/{focusArea}/destroy', [FocusAreaController::class, 'destroy']);
+        Route::delete('/focus-areas/{focusArea}', [FocusAreaController::class, 'destroy']);
+        Route::post('/focus-areas/{focusArea}/unpublish', [FocusAreaController::class, 'unpublish']);
+        Route::post('/focus-areas/{focusArea}/publish', [FocusAreaController::class, 'publish']);
+        //probably below are deprecated
         Route::post('/focus-areas/{focusArea}/image', [FocusAreaController::class, 'image']);
         Route::post('/focus-areas/{focusArea}/images', [FocusAreaController::class, 'storeImages']);
         Route::post('/focus-areas/{focusArea}/videos',[FocusAreaController::class, 'storeVideos']);
         Route::post('/focus-areas/{focusArea}/icon', [FocusAreaController::class, 'icon']);
-        Route::post('/focus-areas/{focusArea}/unpublish', [FocusAreaController::class, 'unpublish']);
-        Route::post('/focus-areas/{focusArea}/publish', [FocusAreaController::class, 'publish']);
 
         Route::get('/promotion-codes', [PromotionCodeController::class, 'index']);
         Route::put('/promotion-codes/{promotionCode}/update', [PromotionCodeController::class, 'update']);
