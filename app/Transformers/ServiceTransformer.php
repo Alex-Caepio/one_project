@@ -4,10 +4,23 @@
 namespace App\Transformers;
 
 use App\Models\Service;
+use League\Fractal\Resource\Collection;
 
 class ServiceTransformer extends Transformer
 {
-    protected $availableIncludes = ['user', 'keywords', 'disciplines', 'focus_areas', 'location', 'schedules', 'favourite_services', 'service_type', 'articles'];
+    protected $availableIncludes = ['user',
+                                    'keywords',
+                                    'disciplines',
+                                    'focus_areas',
+                                    'location',
+                                    'schedules',
+                                    'favourite_services',
+                                    'service_type',
+                                    'articles',
+                                    'media_images',
+                                    'media_files',
+                                    'media_videos'
+        ];
 
     public function transform(Service $service) {
         return [
@@ -71,4 +84,29 @@ class ServiceTransformer extends Transformer
     public function includeArticles(Service $service) {
         return $this->collectionOrNull($service->articles, new ArticleTransformer());
     }
+
+    /**
+     * @param \App\Models\Service $service
+     * @return \League\Fractal\Resource\Collection|null
+     */
+    public function includeMediaImages(Service $service): ?Collection {
+        return $this->collectionOrNull($service->media_images, new MediaImageTransformer());
+    }
+
+    /**
+     * @param \App\Models\Service $service
+     * @return \League\Fractal\Resource\Collection|null
+     */
+    public function includeMediaVideos(Service $service): ?Collection {
+        return $this->collectionOrNull($service->media_videos, new MediaVideoTransformer());
+    }
+
+    /**
+     * @param \App\Models\Service $service
+     * @return \League\Fractal\Resource\Collection|null
+     */
+    public function includeMediaFiles(Service $service): ?Collection {
+        return $this->collectionOrNull($service->media_files, new MediaFileTransformer());
+    }
+
 }

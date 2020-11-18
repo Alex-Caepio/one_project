@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\Admin;
 
-use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ClientDestroyRequest extends FormRequest {
@@ -21,7 +20,6 @@ class ClientDestroyRequest extends FormRequest {
      * @return array
      */
     public function rules() {
-        return [//
-        ];
+        return [];
     }
 }

@@ -6,7 +6,7 @@ use App\Models\ScheduleFreeze;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 
-class ScheduleFreezesTunkate extends Command
+class ScheduleFreezesTruncate extends Command
 {
     /**
      * The name and signature of the console command.
