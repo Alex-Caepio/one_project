@@ -487,6 +487,27 @@ components:
         url:
           type: string
           nullable: true
+        service_type_id:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          nullable: true
+          format: date-time
+        updated_at:
+          type: string
+          nullable: true
+          format: date-time
+        deleted_at:
+          type: string
+          nullable: true
+          format: date-time
+        image_url:
+          type: string
+          nullable: true
+        icon_url:
+          type: string
+          nullable: true
     ServiceType:
       type: object
       properties:
@@ -575,6 +596,10 @@ components:
         timezone_id:
           type: integer
           example: 98
+        termination_message:
+          type: string
+          nullable: true
+          example: Termination reason
     Mainpage:
       type: object
       properties:
@@ -1510,14 +1535,21 @@ paths:
           required: false
           schema:
             type: string
-            example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles
+            example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles,media_images,media_videos,media_files
         - name: x-with
           in: header
           description: Include additional objects in response
           required: false
           schema:
             type: string
-            example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles
+            example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles,media_images,media_videos,media_files
+        - name: service_type
+          in: query
+          description: Include service types
+          required: false
+          schema:
+            type: string
+            example: workshop,events,retreat,appointment,cources
       responses:
         "200":
           description: OK
@@ -1544,14 +1576,14 @@ paths:
           required: false
           schema:
             type: string
-            example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles
+            example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles,media_images,media_videos,media_files,last_published
         - name: x-with
           in: header
           description: Include additional objects in response
           required: false
           schema:
             type: string
-            example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles
+            example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles,media_images,media_videos,media_files,last_published
       responses:
         "200":
           description: OK
@@ -1618,14 +1650,21 @@ paths:
           required: false
           schema:
             type: string
-            example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles
+            example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles,media_images,media_videos,media_files
         - name: x-with
           in: header
           description: Include additional objects in response
           required: false
           schema:
             type: string
-            example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles
+            example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles,media_images,media_videos,media_files
+        - name: service_type
+          in: query
+          description: Include service types
+          required: false
+          schema:
+            type: string
+            example: workshop,events,retreat,appointment,cources
       responses:
         "200":
           description: OK
@@ -1652,14 +1691,14 @@ paths:
           required: false
           schema:
             type: string
-            example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles
+            example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles,media_images,media_videos,media_files,last_published
         - name: x-with
           in: header
           description: Include additional objects in response
           required: false
           schema:
             type: string
-            example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles
+            example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles,media_images,media_videos,media_files,last_published
       responses:
         "200":
           description: OK

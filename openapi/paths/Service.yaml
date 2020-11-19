@@ -56,12 +56,12 @@ services:
           type: string
           example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles,media_images,media_videos,media_files
       - name: service_type
-          in: query
-          description: Include service types
-          required: false
-          schema:
-            type: string
-            example: workshop,events,retreat,appointment,cources
+        in: query
+        description: Include service types
+        required: false
+        schema:
+          type: string
+          example: workshop,events,retreat,appointment,cources
     responses:
       '200':
         description: OK
@@ -119,12 +119,12 @@ services/practitioner:
           type: string
           example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles,media_images,media_videos,media_files
       - name: service_type
-          in: query
-          description: Include service types
-          required: false
-          schema:
-            type: string
-            example: workshop,events,retreat,appointment,cources
+        in: query
+        description: Include service types
+        required: false
+        schema:
+          type: string
+          example: workshop,events,retreat,appointment,cources
     responses:
       '200':
         description: OK
