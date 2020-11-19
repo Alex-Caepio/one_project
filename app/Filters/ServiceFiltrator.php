@@ -3,8 +3,9 @@
 
 namespace App\Filters;
 
+use App\Http\Requests\Request;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ServiceFiltrator {
 
@@ -23,6 +24,11 @@ class ServiceFiltrator {
             $queryBuilder->whereHas('schedules.locations', function($query) use ($request) {
                 $query->where('id', '=', $request->id);
             });
+        }
+
+        $serviceTypes = $request->getArrayFromRequest('service_type');
+        if (!empty($serviceTypes)) {
+            $queryBuilder->whereIn('service_type_id', array_values($serviceTypes));
         }
 
         $searchString = $request->get('search');

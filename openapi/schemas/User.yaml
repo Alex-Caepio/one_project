@@ -78,3 +78,7 @@ properties:
   timezone_id:
     type: integer
     example: 98
+  termination_message:
+    type: string
+    nullable: true
+    example: 'Termination reason'

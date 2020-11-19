@@ -55,6 +55,13 @@ services:
         schema:
           type: string
           example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles,media_images,media_videos,media_files
+      - name: service_type
+          in: query
+          description: Include service types
+          required: false
+          schema:
+            type: string
+            example: workshop,events,retreat,appointment,cources
     responses:
       '200':
         description: OK
@@ -111,6 +118,13 @@ services/practitioner:
         schema:
           type: string
           example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles,media_images,media_videos,media_files
+      - name: service_type
+          in: query
+          description: Include service types
+          required: false
+          schema:
+            type: string
+            example: workshop,events,retreat,appointment,cources
     responses:
       '200':
         description: OK
@@ -133,14 +147,14 @@ services/{id}:
         required: false
         schema:
           type: string
-          example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles,media_images,media_videos,media_files
+          example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles,media_images,media_videos,media_files,last_published
       - name: x-with
         in: header
         description: Include additional objects in response
         required: false
         schema:
           type: string
-          example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles,media_images,media_videos,media_files
+          example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles,media_images,media_videos,media_files,last_published
     responses:
       '200':
         description: OK
@@ -181,14 +195,14 @@ services/practitioner/{id}:
         required: false
         schema:
           type: string
-          example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles,media_images,media_videos,media_files
+          example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles,media_images,media_videos,media_files,last_published
       - name: x-with
         in: header
         description: Include additional objects in response
         required: false
         schema:
           type: string
-          example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles,media_images,media_videos,media_files
+          example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles,media_images,media_videos,media_files,last_published
     responses:
       '200':
         description: OK

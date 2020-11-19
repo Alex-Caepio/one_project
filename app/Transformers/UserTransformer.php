@@ -47,6 +47,7 @@ class UserTransformer extends Transformer {
             'background_url'              => $user->background_url,
             'created_at'                  => $this->dateTime($user->created_at),
             'updated_at'                  => $this->dateTime($user->updated_at),
+            'termination_message'         => $user->termination_message,
         ];
     }
 
