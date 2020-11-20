@@ -75,3 +75,47 @@ practitioners:
               type: array
               items:
                 $ref: '../schemas/User.yaml'
+practitioners/{id}:
+  delete:
+    tags:
+      - User
+    parameters:
+      - $ref: "#/parameters/id"
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name: message
+              type: string
+            required:
+              - message
+    responses:
+      '204':
+        description: OK
+      '422':
+        description: Validation error
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: The given data was invalid.
+                errors:
+                  type: object
+                  example:
+                    message:
+                      - Message is required.
+
+parameters:
+  id:
+    name: id
+    in: path
+    description: Practitioner ID
+    required: true
+    schema:
+      type: integer

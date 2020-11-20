@@ -91,5 +91,9 @@
   $ref: "./AdminMainpage.yaml#/mainpage"
 /admin/clients:
   $ref: "./AdminClient.yaml#/clients"
+/admin/clients/{id}:
+  $ref: "./AdminClient.yaml#/clients~1{id}"
 /admin/partitioners:
   $ref: "./AdminPractitioner.yaml#/practitioners"
+/admin/partitioners/{id}:
+  $ref: "./AdminPractitioner.yaml#/practitioners~1{id}"

@@ -81,6 +81,7 @@ class PractitionerController extends Controller
 
     public function destroy(User $practitioner, PractitionerDestroyRequest $request)
     {
+        $practitioner->update(['termination_message' => $request->get('message')]);
         $practitioner->delete();
         event(new AccountDeleted($practitioner));
         return response(null, 204);

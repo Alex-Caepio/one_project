@@ -55,6 +55,7 @@ class ClientController extends Controller {
     }
 
     public function destroy(User $client, ClientDestroyRequest $request) {
+        $client->update(['termination_message' => $request->get('message')]);
         $client->delete();
         // event(new BookingCancelledByClient($client));
         // event(new AccountUpgradedToPractitioner($client));
