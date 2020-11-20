@@ -14,7 +14,8 @@ class FocusAreaTransformer extends Transformer
         'disciplines', 'focus_area_images', 'focus_area_videos',
         'featured_practitioners', 'featured_disciplines',
         'featured_articles', 'featured_services',
-        'featured_focus_areas'
+        'featured_focus_areas', 'media_images',
+        'media_videos', 'media_files',
     ];
 
     public function transform(FocusArea $focusArea)
@@ -134,4 +135,19 @@ class FocusAreaTransformer extends Transformer
    {
        return $this->collectionOrNull($focusArea->featured_focus_areas, new FocusAreaTransformer());
    }
+
+    public function includeMediaImages(FocusArea $focusArea)
+    {
+        return $this->collectionOrNull($focusArea->media_images, new MediaImageTransformer());
+    }
+
+    public function includeMediaVideos(FocusArea $focusArea)
+    {
+        return $this->collectionOrNull($focusArea->media_videos, new MediaVideoTransformer());
+    }
+
+    public function includeMediaFiles(FocusArea $focusArea)
+    {
+        return $this->collectionOrNull($focusArea->media_files, new MediaFileTransformer());
+    }
 }

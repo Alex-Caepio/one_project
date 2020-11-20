@@ -83,4 +83,14 @@ class Schedule extends Model
     {
         return $this->belongsTo(ScheduleUnavailabilities::class);
     }
+
+    public function S()
+    {
+        return $this->hasMany(ScheduleFile::class);
+    }
+
+    public function schedule_hidden_file()
+    {
+        return $this->hasMany(ScheduleHiddenFile::class);
+    }
 }

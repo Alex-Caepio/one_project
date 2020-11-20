@@ -73,6 +73,16 @@ class FocusAreaController extends Controller
             $focusArea->featured_focus_areas()->sync($request->get('featured_focus_areas'));
         }
 
+        if ($request->filled('media_images')) {
+            $focusArea->media_images()->createMany($request->get('media_images'));
+        }
+        if ($request->filled('media_videos')) {
+            $focusArea->media_videos()->createMany($request->get('media_videos'));
+        }
+        if ($request->filled('media_files')) {
+            $focusArea->media_files()->createMany($request->get('media_files'));
+        }
+
         $focusArea->practitioners()->attach($request->get('users'));
         $focusArea->services()->attach($request->get('services'));
         $focusArea->articles()->attach($request->get('articles'));
@@ -126,6 +136,19 @@ class FocusAreaController extends Controller
         }
         if ($request->filled('disciplines')) {
             $focusArea->disciplines()->sync($request->get('disciplines'));
+        }
+
+        if ($request->has('media_images')) {
+            $focusArea->media_images()->delete();
+            $focusArea->media_images()->createMany($request->get('media_images'));
+        }
+        if ($request->has('media_videos')) {
+            $focusArea->media_videos()->delete();
+            $focusArea->media_videos()->createMany($request->get('media_videos'));
+        }
+        if ($request->has('media_files')) {
+            $focusArea->media_files()->delete();
+            $focusArea->media_files()->createMany($request->get('media_files'));
         }
 
         return fractal($focusArea, new FocusAreaTransformer())

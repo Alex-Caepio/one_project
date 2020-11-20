@@ -2,8 +2,9 @@
 
 namespace Tests\Api;
 
-use App\Models\Service;
 use App\Models\User;
+use App\Models\Service;
+use App\Models\ServiceType;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
@@ -33,14 +34,17 @@ class ServiceTest extends TestCase
     public function test_practitioner_can_create_service(): void
     {
         $service = Service::factory()->make();
+        $type    = ServiceType::factory()->create();
 
         $response = $this->json('post', '/api/services', [
-            'description'  => $service->description,
-            'introduction' => $service->introduction,
-            'is_published' => $service->is_published,
-            'title'        => $service->title,
-            'user_id'      => $service->user_id,
-            'url'          => $service->url,
+            'description'     => $service->description,
+            'service_type_id' => $type->id,
+            'introduction'    => $service->introduction,
+            'is_published'    => $service->is_published,
+            'title'           => $service->title,
+            'user_id'         => $service->user_id,
+            'url'             => $service->url,
+            'keywords'        => ['waka']
         ]);
         $response->assertOk();
     }

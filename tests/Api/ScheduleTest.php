@@ -4,9 +4,14 @@ namespace Tests\Api;
 
 use App\Models\Discipline;
 use App\Models\FocusArea;
+use App\Models\Price;
 use App\Models\Promotion;
 use App\Models\PromotionCode;
 use App\Models\Schedule;
+use App\Models\ScheduleAvailabilities;
+use App\Models\ScheduleFile;
+use App\Models\ScheduleHiddenFile;
+use App\Models\ScheduleUnavailabilities;
 use App\Models\Service;
 use App\Models\ServiceType;
 use App\Models\User;
@@ -92,103 +97,226 @@ class ScheduleTest extends TestCase
         $response->assertOk();
     }
 
-    public function test_validate_request_schedule(): void
+    public function test_validate_request_class_ad_hoc_schedule(): void
     {
         $schedule = Schedule::factory()->make();
-
         $service = Service::factory()->create(['service_type_id' => 'class_ad_hoc']);
+        $price = Price::factory()->create();
+
         $response = $this->json('post', "api/services/{$service->id}/schedules", [
             'title' => $schedule->title,
             'service_id' => $service->id,
+            'prices' => $price->pluck('id')
         ]);
+        $response->assertJsonFragment($schedule->prices->toArray());
         $response->assertOk();
 
-        $service = Service::factory()->create(['service_type_id' => 'workshop']);
-        $response = $this->json('post', "api/services/{$service->id}/schedules", [
-            'title' => $schedule->title,
-            'service_id' => $service->id,
-        ]);
-        $response->assertOk();
-
-        $service = Service::factory()->create(['service_type_id' => 'econtent']);
-        $schedule = Schedule::factory()->make();
-        $response = $this->json('post', "api/services/{$service->id}/schedules", [
-            'title' => $schedule->title,
-            'service_id' => $service->id,
-        ]);
-        $response->assertOk();
-
-        $service = Service::factory()->create(['service_type_id' => 'class']);
-        $schedule = Schedule::factory()->make();
-        $response = $this->json('post', "api/services/{$service->id}/schedules", [
-            'title' => $schedule->title,
-            'service_id' => $service->id,
-        ]);
-        $response->assertOk();
-
-        $service = Service::factory()->create(['service_type_id' => 'class_ad_hoc']);
-        $schedule = Schedule::factory()->make();
-        $response = $this->json('post', "api/services/{$service->id}/schedules", [
-            'title' => $schedule->title,
-            'service_id' => $service->id,
-        ]);
-        $response->assertOk();
-
-        $service = Service::factory()->create(['service_type_id' => 'cource_program']);
-        $schedule = Schedule::factory()->make();
-        $response = $this->json('post', "api/services/{$service->id}/schedules", [
-            'title' => $schedule->title,
-            'service_id' => $service->id,
-        ]);
-        $response->assertOk();
-
-        $service = Service::factory()->create(['service_type_id' => 'event']);
-        $schedule = Schedule::factory()->make();
-        $response = $this->json('post', "api/services/{$service->id}/schedules", [
-            'title' => $schedule->title,
-            'service_id' => $service->id,
-        ]);
-        $response->assertOk();
-
-        $service = Service::factory()->create(['service_type_id' => 'product']);
-        $schedule = Schedule::factory()->make();
-        $response = $this->json('post', "api/services/{$service->id}/schedules", [
-            'title' => $schedule->title,
-            'service_id' => $service->id,
-        ]);
-        $response->assertOk();
-
-        $service = Service::factory()->create(['service_type_id' => 'class_ad_hoc']);
-        $schedule = Schedule::factory()->make();
-        $response = $this->json('post', "api/services/{$service->id}/schedules", [
-            'title' => $schedule->title,
-            'service_id' => $service->id,
-        ]);
-        $response->assertOk();
-
-        $service = Service::factory()->create(['service_type_id' => 'retreat']);
-        $schedule = Schedule::factory()->make();
-        $response = $this->json('post', "api/services/{$service->id}/schedules", [
-            'title' => $schedule->title,
-            'service_id' => $service->id,
-        ]);
-        $response->assertOk();
-
-        $service = Service::factory()->create(['service_type_id' => 'training_program']);
-        $schedule = Schedule::factory()->make();
-        $response = $this->json('post', "api/services/{$service->id}/schedules", [
-            'title' => $schedule->title,
-            'service_id' => $service->id,
-        ]);
-        $response->assertOk();
-
-        $service = Service::factory()->create(['service_type_id' => 'purchase']);
-        $schedule = Schedule::factory()->make();
-        $response = $this->json('post', "api/services/{$service->id}/schedules", [
-            'title' => $schedule->title,
-            'service_id' => $service->id,
-        ]);
-        $response->assertOk();
+        $schedule = Schedule::find($response->getOriginalContent()->id);
+        self::assertCount(1, $schedule->prices);
     }
 
+    public function test_validate_request_workshop_schedule(): void
+    {
+        $schedule = Schedule::factory()->make();
+        $service = Service::factory()->create(['service_type_id' => 'workshop']);
+        $price = Price::factory()->create();
+        $response = $this->json('post', "api/services/{$service->id}/schedules", [
+            'title' => $schedule->title,
+            'service_id' => $service->id,
+            'prices' => $price->pluck('id')
+        ]);
+        $response->assertOk();
+        $response->assertJsonFragment($schedule->prices->toArray());
+
+        $schedule = Schedule::find($response->getOriginalContent()->id);
+        self::assertCount(1, $schedule->prices);
+    }
+
+    public function test_validate_request_econtent_schedule(): void
+    {
+        $service = Service::factory()->create(['service_type_id' => 'econtent']);
+        $schedule = Schedule::factory()->make();
+        $price = Price::factory()->create();
+
+        $response = $this->json('post', "api/services/{$service->id}/schedules", [
+            'title' => $schedule->title,
+            'service_id' => $service->id,
+            'prices' => $price->pluck('id')
+        ]);
+        $response->assertOk();
+        $response->assertJsonFragment($schedule->prices->toArray());
+
+        $schedule = Schedule::find($response->getOriginalContent()->id);
+        self::assertCount(1, $schedule->prices);
+    }
+
+    public function test_validate_request_class_schedule(): void
+    {
+        $service = Service::factory()->create(['service_type_id' => 'class']);
+        $schedule = Schedule::factory()->make();
+        $price = Price::factory()->create();
+
+        $response = $this->json('post', "api/services/{$service->id}/schedules", [
+            'title' => $schedule->title,
+            'service_id' => $service->id,
+            'prices' => $price->pluck('id')
+        ]);
+        $response->assertOk();
+        $response->assertJsonFragment($schedule->prices->toArray());
+
+        $schedule = Schedule::find($response->getOriginalContent()->id);
+        self::assertCount(1, $schedule->prices);
+    }
+
+    public function test_validate_request_cources_schedule(): void
+    {
+        $service = Service::factory()->create(['service_type_id' => 'cources']);
+        $schedule = Schedule::factory()->make();
+        $price = Price::factory()->create();
+
+        $response = $this->json('post', "api/services/{$service->id}/schedules", [
+            'title' => $schedule->title,
+            'service_id' => $service->id,
+            'prices' => $price->pluck('id')
+        ]);
+        $response->assertOk();
+        $response->assertJsonFragment($schedule->prices->toArray());
+
+        $schedule = Schedule::find($response->getOriginalContent()->id);
+        self::assertCount(1, $schedule->prices);
+    }
+
+    public function test_validate_request_events_schedule(): void
+    {
+        $service = Service::factory()->create(['service_type_id' => 'events']);
+        $schedule = Schedule::factory()->make();
+        $price = Price::factory()->create();
+
+        $response = $this->json('post', "api/services/{$service->id}/schedules", [
+            'title' => $schedule->title,
+            'service_id' => $service->id,
+            'prices' => $price->pluck('id')
+        ]);
+        $response->assertOk();
+        $response->assertJsonFragment($schedule->prices->toArray());
+
+        $schedule = Schedule::find($response->getOriginalContent()->id);
+        self::assertCount(1, $schedule->prices);
+    }
+
+    public function test_validate_request_product_schedule(): void
+    {
+        $service = Service::factory()->create(['service_type_id' => 'product']);
+        $schedule = Schedule::factory()->make();
+        $price = Price::factory()->create();
+
+        $response = $this->json('post', "api/services/{$service->id}/schedules", [
+            'title' => $schedule->title,
+            'service_id' => $service->id,
+            'prices' => $price->pluck('id')
+        ]);
+        $response->assertOk();
+        $response->assertJsonFragment($schedule->prices->toArray());
+
+        $schedule = Schedule::find($response->getOriginalContent()->id);
+        self::assertCount(1, $schedule->prices);
+    }
+
+    public function test_validate_request_retreat_schedule(): void
+    {
+        $service = Service::factory()->create(['service_type_id' => 'retreat']);
+        $schedule = Schedule::factory()->make();
+        $price = Price::factory()->create();
+
+        $response = $this->json('post', "api/services/{$service->id}/schedules", [
+            'title' => $schedule->title,
+            'service_id' => $service->id,
+            'prices' => $price->pluck('id')
+        ]);
+        $response->assertOk();
+        $response->assertJsonFragment($schedule->prices->toArray());
+
+        $schedule = Schedule::find($response->getOriginalContent()->id);
+        self::assertCount(1, $schedule->prices);
+    }
+
+    public function test_validate_request_raining_program_schedule(): void
+    {
+        $service = Service::factory()->create(['service_type_id' => 'training_program']);
+        $schedule = Schedule::factory()->make();
+        $price = Price::factory()->create();
+
+        $response = $this->json('post', "api/services/{$service->id}/schedules", [
+            'title' => $schedule->title,
+            'service_id' => $service->id,
+            'prices' => $price->pluck('id')
+        ]);
+        $response->assertOk();
+        $response->assertJsonFragment($schedule->prices->toArray());
+
+        $schedule = Schedule::find($response->getOriginalContent()->id);
+        self::assertCount(1, $schedule->prices);
+    }
+
+    public function test_saving_apointment_schedule_with_relations(): void
+    {
+        $service = Service::factory()->create(['service_type_id' => 'appointment']);
+        $schedule = Schedule::factory()->make();
+        $scheduleUnavailabilities = ScheduleUnavailabilities::factory()->count(2)->create();
+        $scheduleAvailabilities = ScheduleAvailabilities::factory()->count(2)->create();
+        $price = Price::factory()->create();
+
+        $response = $this->json('post', "api/services/{$service->id}/schedules", [
+            'title' => $schedule->title,
+            'service_id' => $service->id,
+            'schedule_unavailabilities' => $scheduleUnavailabilities->pluck('id'),
+            'schedule_availabilities' => $scheduleAvailabilities->pluck('id'),
+            'prices' => $price->pluck('id')
+        ]);
+        $response->assertOk();
+        $response->assertJsonFragment($schedule->prices->toArray());
+
+        $schedule = Schedule::find($response->getOriginalContent()->id);
+        self::assertCount(2, $schedule->schedule_unavailabilities);
+        self::assertCount(2, $schedule->schedule_availabilities);
+        self::assertCount(1, $schedule->prices);
+    }
+
+    public function test_saving_schedule_files_relationships_schedules(): void
+    {
+        $service = Service::factory()->create(['service_type_id' => 'appointment']);
+        $schedule = Schedule::factory()->make();
+        $scheduleFiles = ScheduleFile::factory()->count(3)->create();
+
+        $response = $this->json('post', "api/services/{$service->id}/schedules", [
+            'title' => $schedule->title,
+            'service_id' => $service->id,
+            'schedule_files' => $scheduleFiles->pluck('id'),
+        ]);
+
+        $response->assertOk();
+        $response->assertJsonFragment($schedule->schedule_files->toArray());
+
+        $schedule = Schedule::find($response->getOriginalContent()->id);
+        self::assertCount(3, $schedule->schedule_files);
+    }
+
+    public function test_saving_schedule_hidden_files_relationships_schedules(): void
+    {
+        $service = Service::factory()->create(['service_type_id' => 'appointment']);
+        $schedule = Schedule::factory()->make();
+        $scheduleHiddenFiles = ScheduleHiddenFile::factory()->count(3)->create();
+
+        $response = $this->json('post', "api/services/{$service->id}/schedules", [
+            'title' => $schedule->title,
+            'service_id' => $service->id,
+            'schedule_hidden_files' => $scheduleHiddenFiles->pluck('id'),
+        ]);
+
+        $response->assertOk();
+        $response->assertJsonFragment($schedule->schedule_hidden_files->toArray());
+
+        $schedule = Schedule::find($response->getOriginalContent()->id);
+        self::assertCount(3, $schedule->schedule_hidden_files);
+    }
 }

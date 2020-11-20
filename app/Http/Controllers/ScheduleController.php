@@ -48,6 +48,13 @@ class ScheduleController extends Controller
             $schedule->schedule_unavailabilities()->sync($request->get('schedule_unavailabilities'));
         }
 
+        if ($request->filled('schedule_file')) {
+            $schedule->schedule_file()->createMany($request->get('schedule_file'));
+        }
+        if ($request->filled('schedule_hidden_file')) {
+            $schedule->schedule_hidden_file()->createMany($request->get('schedule_hidden_file'));
+        }
+
         event(new ServiceScheduleWentLive($service, $user, $schedule));
     }
 
@@ -73,6 +80,15 @@ class ScheduleController extends Controller
         if ($request->filled('schedule_unavailabilities')) {
             $schedule->schedule_unavailabilities()->delete();
             $schedule->schedule_unavailabilities()->sync($request->get('schedule_unavailabilities'));
+        }
+
+        if ($request->has('schedule_file')) {
+            $schedule->schedule_file()->delete();
+            $schedule->schedule_file()->createMany($request->get('schedule_file'));
+        }
+        if ($request->has('schedule_hidden_file')) {
+            $schedule->schedule_hidden_file()->delete();
+            $schedule->schedule_hidden_file()->createMany($request->get('schedule_hidden_file'));
         }
 
         event(new ServiceScheduleWentLive($service, $user, $schedule));

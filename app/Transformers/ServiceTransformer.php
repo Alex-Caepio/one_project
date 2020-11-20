@@ -6,8 +6,9 @@ namespace App\Transformers;
 use App\Models\Service;
 use League\Fractal\Resource\Collection;
 
-class ServiceTransformer extends Transformer {
-    
+class ServiceTransformer extends Transformer
+{
+
     protected $availableIncludes = [
         'user',
         'keywords',
@@ -24,7 +25,8 @@ class ServiceTransformer extends Transformer {
         'last_published'
     ];
 
-    public function transform(Service $service) {
+    public function transform(Service $service)
+    {
         return [
             'id'                          => $service->id,
             'title'                       => $service->title,
@@ -46,39 +48,48 @@ class ServiceTransformer extends Transformer {
         ];
     }
 
-    public function includeUser(Service $service) {
+    public function includeUser(Service $service)
+    {
         return $this->itemOrNull($service->user, new UserTransformer());
     }
 
-    public function includeKeywords(Service $service) {
+    public function includeKeywords(Service $service)
+    {
         return $this->collectionOrNull($service->keywords, new KeywordTransformer());
     }
 
-    public function includeDisciplines(Service $service) {
+    public function includeDisciplines(Service $service)
+    {
         return $this->collectionOrNull($service->disciplines, new DisciplineTransformer());
     }
 
-    public function includeFocusAreas(Service $service) {
+    public function includeFocusAreas(Service $service)
+    {
         return $this->collectionOrNull($service->focus_areas, new FocusAreaTransformer());
     }
 
-    public function includeLocation(Service $service) {
+    public function includeLocation(Service $service)
+    {
         return $this->itemOrNull($service->location, new LocationTransformer());
     }
 
-    public function includeSchedules(Service $service) {
+    public function includeSchedules(Service $service)
+    {
         return $this->collectionOrNull($service->schedules, new ScheduleTransformer());
     }
 
-    public function includeFavoritesService(Service $service) {
+    public function includeFavoritesService(Service $service)
+    {
         return $this->collectionOrNull($service->favourite_services, new ServiceTransformer());
     }
 
-    public function includeServiceType(Service $service) {
+    public function includeServiceType(Service $service)
+    {
         return $this->itemOrNull($service->service_type, new ServiceTypeTransformer());
     }
 
-    public function includeArticles(Service $service) {
+    public function includeArticles(Service $service)
+    {
         return $this->collectionOrNull($service->articles, new ArticleTransformer());
     }
 
@@ -86,7 +97,8 @@ class ServiceTransformer extends Transformer {
      * @param \App\Models\Service $service
      * @return \League\Fractal\Resource\Collection|null
      */
-    public function includeMediaImages(Service $service): ?Collection {
+    public function includeMediaImages(Service $service): ?Collection
+    {
         return $this->collectionOrNull($service->media_images, new MediaImageTransformer());
     }
 
@@ -94,7 +106,8 @@ class ServiceTransformer extends Transformer {
      * @param \App\Models\Service $service
      * @return \League\Fractal\Resource\Collection|null
      */
-    public function includeMediaVideos(Service $service): ?Collection {
+    public function includeMediaVideos(Service $service): ?Collection
+    {
         return $this->collectionOrNull($service->media_videos, new MediaVideoTransformer());
     }
 
@@ -102,7 +115,8 @@ class ServiceTransformer extends Transformer {
      * @param \App\Models\Service $service
      * @return \League\Fractal\Resource\Collection|null
      */
-    public function includeMediaFiles(Service $service): ?Collection {
+    public function includeMediaFiles(Service $service): ?Collection
+    {
         return $this->collectionOrNull($service->media_files, new MediaFileTransformer());
     }
 
@@ -110,12 +124,13 @@ class ServiceTransformer extends Transformer {
      * @param \App\Models\Service $service
      * @return \League\Fractal\Resource\Collection|null
      */
-    public function includeLastPublished(Service $service): ?Collection {
+    public function includeLastPublished(Service $service): ?Collection
+    {
         return $this->collectionOrNull(Service::where('id', '<>', $service->id)
-                                              ->published()
-                                              ->orderBy('updated_at', 'desc')
-                                              ->limit(3)
-                                              ->get(), new self());
+            ->published()
+            ->orderBy('updated_at', 'desc')
+            ->limit(3)
+            ->get(), new self());
     }
 
 }

@@ -43,7 +43,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->app->instance(StripeClient::class, new StripeClient(env('STRIPE_SECRET')));
+       $this->app->instance(StripeClient::class, new StripeClient(env('STRIPE_SECRET')));
 
         Relation::morphMap([
             'service'    => Service::class,
@@ -64,7 +64,7 @@ class AppServiceProvider extends ServiceProvider
                 return new ClassScheduleRequest();
             } else if (request()->service->service_type->id == 'courses') {
                 return new CourceProgramScheduleRequest();
-            } else if (request()->service->service_type->id == 'event') {
+            } else if (request()->service->service_type->id == 'events') {
                 return new EventScheduleRequest();
             } else if (request()->service->service_type->id == 'product') {
                 return new ProductScheduleRequest();
@@ -72,9 +72,7 @@ class AppServiceProvider extends ServiceProvider
                 return new RetreatScheduleRequest();
             } else if (request()->service->service_type->id == 'training_program') {
                 return new TrainingProgramScheduleRequest();
-            } else if (request()->service->service_type->id == 'purchase') {
-                return new PurchaseScheduleRequest();
-            } else if (request()->service->service_type->id == 'appointment') {
+            }  else if (request()->service->service_type->id == 'appointment') {
                 return new AppointmentScheduleRequest();
             }
         });

@@ -87,5 +87,20 @@ class FocusArea extends Model
     {
         return $this->belongsToMany(MainPage::class, 'main_page_featured_focus_area', 'focus_area_id', 'main_page_id');
     }
+
+    public function media_images()
+    {
+        return $this->morphMany(MediaImage::class, 'morphesTo', 'model_name', 'model_id');
+    }
+
+    public function media_videos()
+    {
+        return $this->morphMany(MediaVideo::class, 'morphesTo', 'model_name', 'model_id');
+    }
+
+    public function media_files()
+    {
+        return $this->morphMany(MediaFile::class, 'morphesTo', 'model_name', 'model_id');
+    }
 }
 
