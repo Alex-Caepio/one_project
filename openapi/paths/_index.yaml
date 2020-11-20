@@ -71,8 +71,6 @@
 ## ADMIN ENDPOINTS
 /admin/profile:
   $ref: "./AdminProfile.yaml#/profile"
-/admin/disciplines:
-  $ref: "./AdminDiscipline.yaml#/disciplines"
 /admin/articles:
   $ref: "./AdminArticle.yaml#/articles"
 /admin/articles/{id}:
@@ -81,6 +79,16 @@
   $ref: "./AdminArticle.yaml#/articles~1{id}~1publish"
 /admin/articles/{id}/unpublish:
   $ref: "./AdminArticle.yaml#/articles~1{id}~1unpublish"
+/admin/focus-areas:
+  $ref: "./AdminFocusArea.yaml#/focus-areas"
+/admin/focus-areas/{id}:
+  $ref: "./AdminFocusArea.yaml#/focus-areas~1{id}"
+/admin/focus-areas/{id}/publish:
+  $ref: "./AdminFocusArea.yaml#/focus-areas~1{id}~1publish"
+/admin/focus-areas/{id}/unpublish:
+  $ref: "./AdminFocusArea.yaml#/focus-areas~1{id}~1unpublish"
+/admin/disciplines:
+  $ref: "./AdminDiscipline.yaml#/disciplines"
 /admin/disciplines/{id}:
   $ref: "./AdminDiscipline.yaml#/disciplines~1{id}"
 /admin/disciplines/{id}/publish:

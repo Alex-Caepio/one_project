@@ -263,77 +263,114 @@ components:
           type: string
         url:
           type: string
+          nullable: true
         introduction:
+          nullable: true
           type: string
         description:
+          nullable: true
           type: string
         section_2_h2:
+          nullable: true
           type: string
         section_2_h3:
+          nullable: true
           type: string
         section_2_background:
+          nullable: true
           type: string
         section_2_textarea:
+          nullable: true
           type: string
         section_3_h2:
+          nullable: true
           type: string
         section_4_tag_line:
+          nullable: true
           type: string
         section_4_alt_text:
+          nullable: true
           type: string
         section_4_url:
+          nullable: true
           type: string
         section_4_target_blanc:
+          nullable: true
           type: boolean
         section_5_h2:
+          nullable: true
           type: string
         section_5_h3:
+          nullable: true
           type: string
         section_5_background:
+          nullable: true
           type: string
         section_5_textarea:
+          nullable: true
           type: string
         section_6_header_h2:
+          nullable: true
           type: string
         section_7_h2:
+          nullable: true
           type: string
         section_7_h3:
+          nullable: true
           type: string
         section_7_background:
+          nullable: true
           type: string
         section_7_text:
+          nullable: true
           type: string
         section_8_h2:
+          nullable: true
           type: string
         section_9_tag_line:
+          nullable: true
           type: string
         section_9_alt_text:
+          nullable: true
           type: string
         section_9_url:
+          nullable: true
           type: string
         section_9_target_blanc:
+          nullable: true
           type: boolean
         section_10_h2:
+          nullable: true
           type: string
         section_10_h3:
+          nullable: true
           type: string
         section_10_background:
+          nullable: true
           type: string
         section_10_textarea:
+          nullable: true
           type: string
         section_11_h2:
+          nullable: true
           type: string
         section_12_h2:
+          nullable: true
           type: string
         section_12_h4:
+          nullable: true
           type: string
         section_13_tag_line:
+          nullable: true
           type: string
         section_13_alt_text:
+          nullable: true
           type: string
         section_13_url:
+          nullable: true
           type: string
         section_13_target_blanc:
+          nullable: true
           type: boolean
         media_images:
           type: array
@@ -1397,6 +1434,49 @@ paths:
                 $ref: "#/components/schemas/Article"
   /focus-areas:
     get:
+      parameters:
+        - name: page
+          in: query
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: limit
+          in: query
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: x-page
+          in: header
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: x-limit
+          in: header
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: with
+          in: query
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: featured_practitioners,featured_disciplines,featured_articles,featured_services,featured_focus_areas,media_images,media_videos,media_files
+        - name: x-with
+          in: header
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: featured_practitioners,featured_disciplines,featured_articles,featured_services,featured_focus_areas,media_images,media_videos,media_files
       tags:
         - Focus Area
       responses:
@@ -1892,6 +1972,487 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/User"
+  /admin/articles:
+    get:
+      tags:
+        - Article
+      parameters:
+        - name: page
+          in: query
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: limit
+          in: query
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: x-page
+          in: header
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: x-limit
+          in: header
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: with
+          in: query
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: user,disciplines,favourite_articles,media_images,media_videos,media_files,focus_areas,keywords,services,last_published
+        - name: x-with
+          in: header
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: user,disciplines,favourite_articles,media_images,media_videos,media_files,focus_areas,keywords,services,last_published
+        - name: search
+          in: query
+          description: Article title or author name
+          required: false
+          schema:
+            type: string
+            example: title
+        - name: published_from
+          in: query
+          description: Article created date
+          required: false
+          schema:
+            type: string
+            example: 2020-01-01
+        - name: published_to
+          in: query
+          description: Article created date
+          required: false
+          schema:
+            type: string
+            example: 2020-01-01
+        - name: is_deleted
+          in: query
+          description: Deleted or not
+          required: false
+          schema:
+            type: boolean
+            example: false
+        - name: is_published
+          in: query
+          description: Published or not
+          required: false
+          schema:
+            type: string
+            example: false,true
+        - name: practitioner
+          in: query
+          description: article owner
+          required: false
+          schema:
+            type: string
+            example: 2,3,1
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Article"
+  "/admin/articles/{id}":
+    delete:
+      tags:
+        - Article
+      parameters:
+        - name: id
+          in: path
+          description: Article ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: OK
+  "/admin/articles/{id}/publish":
+    post:
+      operationId: admin-publish-article
+      parameters:
+        - name: id
+          in: path
+          description: Article ID
+          required: true
+          schema:
+            type: integer
+      tags:
+        - Article
+      responses:
+        "204":
+          description: OK
+  "/admin/articles/{id}/unpublish":
+    post:
+      operationId: admin-unpublish-article
+      parameters:
+        - name: id
+          in: path
+          description: Article ID
+          required: true
+          schema:
+            type: integer
+      tags:
+        - Article
+      responses:
+        "204":
+          description: OK
+  /admin/focus-areas:
+    post:
+      tags:
+        - Focus Area
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                url:
+                  type: string
+                  nullable: true
+                introduction:
+                  nullable: true
+                  type: string
+                description:
+                  nullable: true
+                  type: string
+                section_2_h2:
+                  nullable: true
+                  type: string
+                section_2_h3:
+                  nullable: true
+                  type: string
+                section_2_background:
+                  nullable: true
+                  type: string
+                section_2_textarea:
+                  nullable: true
+                  type: string
+                section_3_h2:
+                  nullable: true
+                  type: string
+                section_4_tag_line:
+                  nullable: true
+                  type: string
+                section_4_alt_text:
+                  nullable: true
+                  type: string
+                section_4_url:
+                  nullable: true
+                  type: string
+                section_4_target_blanc:
+                  nullable: true
+                  type: boolean
+                section_5_h2:
+                  nullable: true
+                  type: string
+                section_5_h3:
+                  nullable: true
+                  type: string
+                section_5_background:
+                  nullable: true
+                  type: string
+                section_5_textarea:
+                  nullable: true
+                  type: string
+                section_6_header_h2:
+                  nullable: true
+                  type: string
+                section_7_h2:
+                  nullable: true
+                  type: string
+                section_7_h3:
+                  nullable: true
+                  type: string
+                section_7_background:
+                  nullable: true
+                  type: string
+                section_7_text:
+                  nullable: true
+                  type: string
+                section_8_h2:
+                  nullable: true
+                  type: string
+                section_9_tag_line:
+                  nullable: true
+                  type: string
+                section_9_alt_text:
+                  nullable: true
+                  type: string
+                section_9_url:
+                  nullable: true
+                  type: string
+                section_9_target_blanc:
+                  nullable: true
+                  type: boolean
+                section_10_h2:
+                  nullable: true
+                  type: string
+                section_10_h3:
+                  nullable: true
+                  type: string
+                section_10_background:
+                  nullable: true
+                  type: string
+                section_10_textarea:
+                  nullable: true
+                  type: string
+                section_11_h2:
+                  nullable: true
+                  type: string
+                section_12_h2:
+                  nullable: true
+                  type: string
+                section_12_h4:
+                  nullable: true
+                  type: string
+                section_13_tag_line:
+                  nullable: true
+                  type: string
+                section_13_alt_text:
+                  nullable: true
+                  type: string
+                section_13_url:
+                  nullable: true
+                  type: string
+                section_13_target_blanc:
+                  nullable: true
+                  type: boolean
+                featured_services:
+                  type: array
+                  items:
+                    type: integer
+                  example:
+                    - 123
+                    - 231
+                    - 312
+                featured_disciplines:
+                  type: array
+                  items:
+                    type: integer
+                  example:
+                    - 123
+                    - 231
+                    - 312
+                featured_articles:
+                  type: array
+                  items:
+                    type: integer
+                  example:
+                    - 123
+                    - 231
+                    - 312
+                featured_practitioners:
+                  type: array
+                  items:
+                    type: integer
+                  example:
+                    - 123
+                    - 231
+                    - 312
+                media_images:
+                  type: array
+                  items:
+                    type: object
+                  example:
+                    - url: http://cdn.com/yoga-practice.png
+                    - url: http://cdn.com/another-picture.png
+                media_videos:
+                  type: array
+                  items:
+                    type: object
+                  example:
+                    - url: http://cdn.com/yoga-practice.mov
+                    - url: http://cdn.com/another-picture.mov
+                media_files:
+                  type: array
+                  items:
+                    type: object
+                  example:
+                    - url: http://cdn.com/yoga-practice.pdf
+                    - url: http://cdn.com/another-picture.docx
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FocusArea"
+    get:
+      tags:
+        - Focus Area
+      parameters:
+        - name: page
+          in: query
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: limit
+          in: query
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: x-page
+          in: header
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: x-limit
+          in: header
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: with
+          in: query
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: featured_practitioners,featured_disciplines,featured_articles,featured_services,featured_focus_areas,media_images,media_videos,media_files
+        - name: x-with
+          in: header
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: featured_practitioners,featured_disciplines,featured_articles,featured_services,featured_focus_areas,media_images,media_videos,media_files
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/FocusArea"
+  "/admin/focus-areas/{id}":
+    put:
+      tags:
+        - Focus Area
+      parameters:
+        - name: id
+          in: path
+          description: Focus Area ID
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/paths/~1admin~1focus-areas/post/requestBody/content/application~1json/\
+                schema"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FocusArea"
+    get:
+      tags:
+        - Focus Area
+      parameters:
+        - $ref: "#/paths/~1admin~1focus-areas~1%7Bid%7D/put/parameters/0"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FocusArea"
+    delete:
+      tags:
+        - Focus Area
+      parameters:
+        - $ref: "#/paths/~1admin~1focus-areas~1%7Bid%7D/put/parameters/0"
+      responses:
+        "204":
+          description: OK
+  "/admin/focus-areas/{id}/publish":
+    post:
+      operationId: admin-publish-focus-area
+      parameters:
+        - name: id
+          in: path
+          description: Focus Area ID
+          required: true
+          schema:
+            type: integer
+      tags:
+        - Focus Area
+      responses:
+        "204":
+          description: OK
+        "422":
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: The given data was invalid.
+                  errors:
+                    type: object
+                    example:
+                      name:
+                        - You have not filled in the field "Discipline name"
+                      url:
+                        - You have not filled in the field "Discipline url"
+                      icon_url:
+                        - You have not filled in the field "Icon url"
+                      description:
+                        - You have not filled in the field "Description"
+                      introduction:
+                        - You have not filled in the field "Introduction"
+  "/admin/focus-areas/{id}/unpublish":
+    post:
+      operationId: admin-unpublish-focus-area
+      parameters:
+        - name: id
+          in: path
+          description: Focus Area ID
+          required: true
+          schema:
+            type: integer
+      tags:
+        - Focus Area
+      responses:
+        "204":
+          description: OK
   /admin/disciplines:
     post:
       tags:
@@ -2143,7 +2704,7 @@ paths:
           description: Include additional objects in response
           required: false
           schema:
-            type: integer
+            type: string
             example: featured_practitioners,featured_services,media_images,media_videos,media_files
       responses:
         "200":
@@ -2154,148 +2715,6 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Discipline"
-  /admin/articles:
-    get:
-      tags:
-        - Article
-      parameters:
-        - name: page
-          in: query
-          description: Pagination page results
-          required: false
-          schema:
-            type: integer
-            example: 2
-        - name: limit
-          in: query
-          description: Results per page
-          required: false
-          schema:
-            type: integer
-            example: 10
-        - name: x-page
-          in: header
-          description: Pagination page results
-          required: false
-          schema:
-            type: integer
-            example: 2
-        - name: x-limit
-          in: header
-          description: Results per page
-          required: false
-          schema:
-            type: integer
-            example: 10
-        - name: with
-          in: query
-          description: Include additional objects in response
-          required: false
-          schema:
-            type: string
-            example: user,disciplines,favourite_articles,media_images,media_videos,media_files,focus_areas,keywords,services,last_published
-        - name: x-with
-          in: header
-          description: Include additional objects in response
-          required: false
-          schema:
-            type: string
-            example: user,disciplines,favourite_articles,media_images,media_videos,media_files,focus_areas,keywords,services,last_published
-        - name: search
-          in: query
-          description: Article title or author name
-          required: false
-          schema:
-            type: string
-            example: title
-        - name: published_from
-          in: query
-          description: Article created date
-          required: false
-          schema:
-            type: string
-            example: 2020-01-01
-        - name: published_to
-          in: query
-          description: Article created date
-          required: false
-          schema:
-            type: string
-            example: 2020-01-01
-        - name: is_deleted
-          in: query
-          description: Deleted or not
-          required: false
-          schema:
-            type: boolean
-            example: false
-        - name: is_published
-          in: query
-          description: Published or not
-          required: false
-          schema:
-            type: string
-            example: false,true
-        - name: practitioner
-          in: query
-          description: article owner
-          required: false
-          schema:
-            type: string
-            example: 2,3,1
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Article"
-  "/admin/articles/{id}":
-    delete:
-      tags:
-        - Article
-      parameters:
-        - name: id
-          in: path
-          description: Article ID
-          required: true
-          schema:
-            type: integer
-      responses:
-        "204":
-          description: OK
-  "/admin/articles/{id}/publish":
-    post:
-      operationId: admin-publish-article
-      parameters:
-        - name: id
-          in: path
-          description: Article ID
-          required: true
-          schema:
-            type: integer
-      tags:
-        - Article
-      responses:
-        "204":
-          description: OK
-  "/admin/articles/{id}/unpublish":
-    post:
-      operationId: admin-unpublish-article
-      parameters:
-        - name: id
-          in: path
-          description: Article ID
-          required: true
-          schema:
-            type: integer
-      tags:
-        - Article
-      responses:
-        "204":
-          description: OK
   "/admin/disciplines/{id}":
     put:
       tags:

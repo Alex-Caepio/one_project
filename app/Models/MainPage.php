@@ -11,6 +11,7 @@ class MainPage extends Model
 
     protected $fillable = [
         'section_1_image_url',
+        'section_1_video_url',
         'section_1_alt_text',
         'section_1_intro_text',
 
@@ -39,7 +40,8 @@ class MainPage extends Model
         'section_6_button_url',
         'section_6_target_blanc',
         'section_6_text',
-        'section_6_media_url',
+        'section_6_image_url',
+        'section_6_video_url',
         'section_6_alt_text',
 
         'section_7_h2',
@@ -54,7 +56,8 @@ class MainPage extends Model
         'section_10_h2',
         'section_10_h3',
         'section_10_text',
-        'section_10_media_url',
+        'section_10_image_url',
+        'section_10_video_url',
         'section_10_alt_text',
 
         'section_11_h2',
@@ -64,7 +67,8 @@ class MainPage extends Model
         'section_11_button_url',
         'section_11_button_color',
         'section_11_target_blanc',
-        'section_11_media_url',
+        'section_11_image_url',
+        'section_11_video_url',
         'section_11_alt_text',
 
         'section_12_h2',

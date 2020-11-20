@@ -1,7 +1,7 @@
 type: object
+required:
+  - name
 properties:
-  id:
-    type: integer
   name:
     type: string
   url:
@@ -115,31 +115,44 @@ properties:
   section_13_target_blanc:
     nullable: true
     type: boolean
-  media_images:
-    type: array
-    items:
-      $ref: '../schemas/MediaImage.yaml'
-  media_videos:
-    type: array
-    items:
-      $ref: '../schemas/MediaVideo.yaml'
-  media_files:
-    type: array
-    items:
-      $ref: '../schemas/MediaFile.yaml'
   featured_services:
     type: array
     items:
-      $ref: '../schemas/Service.yaml'
+      type: integer
+    example: [123, 231, 312]
   featured_disciplines:
     type: array
     items:
-      $ref: '../schemas/Discipline.yaml'
+      type: integer
+    example: [123, 231, 312]
   featured_articles:
     type: array
     items:
-      $ref: '../schemas/Article.yaml'
+      type: integer
+    example: [123, 231, 312]
   featured_practitioners:
     type: array
     items:
-      $ref: '../schemas/User.yaml'
+      type: integer
+    example: [123, 231, 312]
+  media_images:
+    type: array
+    items:
+      type: object
+    example:
+      - url: http://cdn.com/yoga-practice.png
+      - url: http://cdn.com/another-picture.png
+  media_videos:
+    type: array
+    items:
+      type: object
+    example:
+      - url: http://cdn.com/yoga-practice.mov
+      - url: http://cdn.com/another-picture.mov
+  media_files:
+    type: array
+    items:
+      type: object
+    example:
+      - url: http://cdn.com/yoga-practice.pdf
+      - url: http://cdn.com/another-picture.docx
