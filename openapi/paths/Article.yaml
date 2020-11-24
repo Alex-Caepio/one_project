@@ -2,6 +2,12 @@ articles:
   post:
     tags:
       - Article
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/forms/Article.yaml'
     responses:
       '200':
         description: OK
@@ -9,6 +15,12 @@ articles:
           application/json:
             schema:
               $ref: '../schemas/Article.yaml'
+      '422':
+        description: Validation errors
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/422/Article.yaml'
   get:
     tags:
       - Article
@@ -153,6 +165,12 @@ articles/{id}:
       - Article
     parameters:
       - $ref: "#/parameters/id"
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/forms/Article.yaml'
     responses:
       '200':
         description: OK
@@ -160,6 +178,12 @@ articles/{id}:
           application/json:
             schema:
               $ref: '../schemas/Article.yaml'
+      '422':
+        description: Validation errors
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/422/Article.yaml'
   delete:
     tags:
       - Article

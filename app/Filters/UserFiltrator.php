@@ -34,6 +34,11 @@ class UserFiltrator {
             });
         }
 
+        $status = $request->getArrayFromRequest('status');
+        if (count($status)) {
+            $queryBuilder->whereIn('status', $status);
+        }
+
         if ($request->hasOrderBy()) {
             $order = $request->getOrderBy();
             $queryBuilder->orderBy($order['column'], $order['direction']);

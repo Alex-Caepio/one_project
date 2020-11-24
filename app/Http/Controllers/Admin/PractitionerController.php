@@ -41,7 +41,7 @@ class PractitionerController extends Controller
             [
                 'stripe_customer_id' => $customer->id,
                 'is_admin'           => null,
-                'account_type'       => 'practitioner'
+                'account_type'       => User::ACCOUNT_PRACTITIONER
             ]
         );
 
@@ -73,9 +73,9 @@ class PractitionerController extends Controller
             ->toArray();
     }
 
-    public function update(PractitionerUpdateRequest $request, User $practitioner)
-    {
-        $practitioner->update($request->all());
+    public function update(PractitionerUpdateRequest $request, User $practitioner) {
+        $practitioner->forceFill($request->all());
+        $practitioner->save();
         return fractal($practitioner, new UserTransformer())->respond();
     }
 

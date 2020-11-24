@@ -6,6 +6,7 @@ namespace App\Actions\Article;
 
 use App\Http\Requests\Articles\ArticleRequest;
 use App\Models\Article;
+use Illuminate\Support\Facades\DB;
 
 class ArticleUpdate extends ArticleAction {
 
@@ -14,7 +15,7 @@ class ArticleUpdate extends ArticleAction {
      * @param \App\Models\Article $article
      */
     public function execute(ArticleRequest $request, Article $article) {
-        $this->fillArticle($article, $request);
+        $this->saveArticle($article, $request);
         return $article;
     }
 

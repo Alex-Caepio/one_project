@@ -1,0 +1,71 @@
+type: object
+required:
+  - title
+  - description
+  - url
+  - introduction
+properties:
+  title:
+    type: string
+    example: 'Yoga practice'
+  introduction:
+    type: string
+    nullable: true
+    example: 'Yoga desc'
+  description:
+    type: string
+    nullable: true
+    example: 'Yoga loooooong description'
+  url:
+    type: string
+    nullable: true
+    example: 'yoga-practice'
+  image_url:
+    type: string
+    nullable: true
+    example: 'http://cdn.com/yoga-practice.png'
+  is_published:
+    type: boolean
+    nullable: false
+    example: true
+  focus_areas:
+    type: array
+    items:
+      type: integer
+    example: [123, 231, 312]
+  disciplines:
+    type: array
+    items:
+      type: integer
+    example: [123, 231, 312]
+  keywords:
+    type: array
+    items:
+      type: string
+    example: [test1, test2, test3]
+  services:
+    type: array
+    items:
+      type: integer
+    example: [123, 231, 312]
+  media_images:
+    type: array
+    items:
+      type: object
+    example:
+      - url: http://cdn.com/yoga-practice.png
+      - url: http://cdn.com/another-picture.png
+  media_videos:
+    type: array
+    items:
+      type: object
+    example:
+      - url: http://cdn.com/yoga-practice.mov
+      - url: http://cdn.com/another-picture.mov
+  media_files:
+    type: array
+    items:
+      type: object
+    example:
+      - url: http://cdn.com/yoga-practice.pdf
+      - url: http://cdn.com/another-picture.docx

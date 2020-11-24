@@ -50,7 +50,8 @@ class ClientController extends Controller {
     }
 
     public function update(ClientUpdateRequest $request, User $client) {
-        $client->update($request->all());
+        $client->forceFill($request->all());
+        $client->save();
         return fractal($client, new UserTransformer())->respond();
     }
 

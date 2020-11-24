@@ -31,6 +31,16 @@ class ServiceFiltrator {
             $queryBuilder->whereIn('service_type_id', array_values($serviceTypes));
         }
 
+        $isPublished = $request->getBoolFromRequest('is_published');
+        if ($isPublished !== null) {
+            $queryBuilder->where('is_published', $isPublished);
+        }
+
+        $practitioners = $request->getArrayFromRequest('practitioners');
+        if (!empty($practitioners)) {
+            $queryBuilder->whereIn('user_id', $practitioners);
+        }
+
         $searchString = $request->get('search');
         $sortBy = $request->get('sortby');
         $queryBuilder->when($request->filled('sortby'), static function(Builder $query) use ($sortBy, $searchString) {
@@ -48,6 +58,8 @@ class ServiceFiltrator {
                     $query->selectRaw("MATCH (description)
                         AGAINST ('{$searchString}' IN BOOLEAN MODE) AS rel");
                     $query->orderBy('rel', 'desc');
+                    break;
+                default:
                     break;
             }
         });

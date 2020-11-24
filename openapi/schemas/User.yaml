@@ -82,3 +82,6 @@ properties:
     type: string
     nullable: true
     example: 'Termination reason'
+  status:
+    type: string
+    example: registered,active,suspended,closed

@@ -3,17 +3,17 @@
 namespace App\Filters;
 
 
+use App\Http\Requests\Request;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
+
 
 class ArticleFiltrator {
 
 
     /**
      * @param \Illuminate\Database\Eloquent\Builder $queryBuilder
-     * @param \Illuminate\Http\Request $request
+     * @param \App\Http\Requests\Request $request
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function apply(Builder $queryBuilder, Request $request): Builder {
@@ -38,16 +38,14 @@ class ArticleFiltrator {
         }
 
         // Or Condition
-        $publishedVariants = $request->filled('is_published') ? explode(',', $request->get('is_published')) : [];
-        $isDeleted = $request->filled('is_deleted')
-            ? filter_var($request->get('is_deleted'), FILTER_VALIDATE_BOOLEAN)
-            : null;
+        $publishedVariants = $request->getArrayFromRequest('is_published');
+        $isDeleted = $request->getBoolFromRequest('is_deleted');
 
         if (($isDeleted === null && count($publishedVariants) === 0)
             || ($isDeleted === true && count($publishedVariants) === 2)) {
             $queryBuilder->withTrashed();
         } elseif (count($publishedVariants) === 1) {
-            $isPublished = filter_var($publishedVariants[0], FILTER_VALIDATE_BOOLEAN);
+            $isPublished = $request->getBoolValue($publishedVariants[0]);
             if ($isDeleted) {
                 $queryBuilder->where(function($query) use ($isPublished) {
                     $query->where('is_published', $isPublished)->orWhereNotNull('deleted_at');
@@ -59,9 +57,10 @@ class ArticleFiltrator {
             $queryBuilder->onlyTrashed();
         }
 
-        if ($request->filled('practitioner')) {
-            $queryBuilder->whereHas('user', function($query) use ($request) {
-                $query->whereIn('id', explode(',', $request->get('practitioner')));
+        $practitioners = $request->getArrayFromRequest('practitioner');
+        if (count($practitioners)) {
+            $queryBuilder->whereHas('user', function($query) use ($practitioners) {
+                $query->whereIn('id', $practitioners);
             });
         }
 

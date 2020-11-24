@@ -48,6 +48,7 @@ class UserTransformer extends Transformer {
             'created_at'                  => $this->dateTime($user->created_at),
             'updated_at'                  => $this->dateTime($user->updated_at),
             'termination_message'         => $user->termination_message,
+            'status'                      => $user->status,
         ];
     }
 

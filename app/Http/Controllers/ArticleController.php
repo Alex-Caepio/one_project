@@ -6,13 +6,11 @@ use App\Actions\Article\ArticleStore;
 use App\Actions\Article\ArticleUpdate;
 use App\Http\Requests\Articles\ArticleActionRequest;
 use App\Http\Requests\Articles\ArticleRequest;
-use App\Http\Requests\Articles\PractitionerArticleRequest;
 use App\Http\Requests\Request;
 use App\Models\Article;
 use App\Transformers\ArticleTransformer;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 
 class ArticleController extends Controller {
 

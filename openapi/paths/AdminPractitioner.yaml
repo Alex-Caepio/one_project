@@ -1,7 +1,7 @@
 practitioners:
   get:
     tags:
-      - User list as a Practitioner
+      - User as a Practitioner
     parameters:
       - name: page
         in: query
@@ -66,6 +66,13 @@ practitioners:
         schema:
           type: string
           example: test
+      - name: status
+        in: query
+        description: User statuses
+        required: false
+        schema:
+          type: string
+          example: registered,active,suspended,closed
     responses:
       '200':
         description: OK
@@ -78,7 +85,7 @@ practitioners:
 practitioners/{id}:
   delete:
     tags:
-      - User
+      - User as a Practitioner
     parameters:
       - $ref: "#/parameters/id"
     requestBody:

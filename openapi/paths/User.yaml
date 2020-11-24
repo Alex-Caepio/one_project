@@ -66,6 +66,13 @@ users:
         schema:
           type: string
           example: test
+      - name: status
+        in: query
+        description: User statuses
+        required: false
+        schema:
+          type: string
+          example: registered,active,suspended,closed
     responses:
       '200':
         description: OK

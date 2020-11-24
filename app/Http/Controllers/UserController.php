@@ -13,30 +13,23 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
 
-class UserController extends Controller
-{
-    public function serviceFavorites(Request $request)
-    {
+class UserController extends Controller {
+    public function serviceFavorites(Request $request) {
         $serviceFavorites = Auth::user()->favourite_services;
         return fractal($serviceFavorites, new ServiceTransformer())
-            ->parseIncludes($request->getIncludes())
-            ->toArray();
+            ->parseIncludes($request->getIncludes())->toArray();
     }
 
-    public function articleFavorites(Request $request)
-    {
+    public function articleFavorites(Request $request) {
         $articleFavorites = Auth::user()->favourite_articles;
         return fractal($articleFavorites, new ArticleTransformer())
-            ->parseIncludes($request->getIncludes())
-            ->toArray();
+            ->parseIncludes($request->getIncludes())->toArray();
     }
 
-    public function practitionerFavorites(Request $request)
-    {
+    public function practitionerFavorites(Request $request) {
         $practitionerFavorites = Auth::user()->favourite_practitioners;
         return fractal($practitionerFavorites, new UserTransformer())
-            ->parseIncludes($request->getIncludes())
-            ->toArray();
+            ->parseIncludes($request->getIncludes())->toArray();
     }
 
 
@@ -44,8 +37,7 @@ class UserController extends Controller
      * @param \App\Http\Requests\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function search(Request $request): Response
-    {
+    public function search(Request $request): Response {
         $query = User::query();
 
         $userFilter = new UserFiltrator();
@@ -56,6 +48,7 @@ class UserController extends Controller
 
         $users = $paginator->getCollection();
 
-        return response(fractal($users, new UserTransformer())->parseIncludes($includes)->toArray())->withPaginationHeaders($paginator);
+        return response(fractal($users, new UserTransformer())->parseIncludes($includes)
+                                                              ->toArray())->withPaginationHeaders($paginator);
     }
 }

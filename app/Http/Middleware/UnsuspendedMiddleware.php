@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\User;
 use Closure;
 use Illuminate\Support\Facades\Auth;
 
@@ -17,7 +18,7 @@ class UnsuspendedMiddleware
     public function handle($request, Closure $next)
     {
 
-        if (Auth::user()->is_suspended == 1) {
+        if (Auth::user()->status === User::STATUS_SUSPENDED) {
             return response(null, 500);
         }
         return $next($request);

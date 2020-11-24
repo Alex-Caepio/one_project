@@ -4,6 +4,7 @@ namespace App\Actions\Article;
 
 use App\Models\Article;
 use App\Http\Requests\Articles\ArticleRequest;
+use Illuminate\Support\Facades\DB;
 
 class ArticleStore extends ArticleAction {
 
@@ -13,7 +14,7 @@ class ArticleStore extends ArticleAction {
      */
     public function execute(ArticleRequest $request): Article {
         $article = new Article();
-        $this->fillArticle($article, $request);
+        $this->saveArticle($article, $request);
         return $article;
     }
 }

@@ -2,11 +2,10 @@
 
 namespace App\Http\Requests\Admin;
 
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Log;
+use App\Http\Requests\Request;
 use Illuminate\Validation\Validator;
 
-class ArticlePublishRequest extends FormRequest {
+class ArticlePublishRequest extends Request {
 
     /**
      * Determine if the user is authorized to make this request.
@@ -28,11 +27,11 @@ class ArticlePublishRequest extends FormRequest {
 
     public function withValidator(Validator $validator) {
         $validator->setRules([
-                                           'title'        => 'required|string|min:5',
-                                           'url'          => 'required|url|unique:articles,url,' . $this->article->id,
-                                           'description'  => 'required|string|min:5',
-                                           'introduction' => 'required|string|min:5'
-                                       ])->setData($this->article->toArray())->validate();
+                                 'title'        => 'required|string|min:5|max:120',
+                                 'url'          => 'required|url|unique:articles,url,' . $this->article->id,
+                                 'description'  => 'required|string|min:5|max:3000',
+                                 'introduction' => 'required|string|min:5|max:200'
+                             ])->setData($this->article->toArray())->validate();
         if (!$validator->fails()) {
             $validator->after(function($validator) {
                 if (!$this->article->user->is_published) {
