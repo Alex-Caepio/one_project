@@ -20,8 +20,8 @@ class ArticleController extends Controller {
      */
     public function index(Request $request) {
         $paginator = $this->getArticleList($request);
-        return response(fractal($paginator->getCollection(), new ArticleTransformer())->parseIncludes($request->getIncludes()))
-            ->withPaginationHeaders($paginator);
+        return response(fractal($paginator->getCollection(),
+                                new ArticleTransformer())->parseIncludes($request->getIncludes()))->withPaginationHeaders($paginator);
     }
 
     /**
@@ -81,8 +81,8 @@ class ArticleController extends Controller {
      */
     public function practitionerArticleList(Request $request) {
         $paginator = $this->getArticleList($request, Auth::user()->id, false);
-        return response(fractal($paginator->getCollection(), new ArticleTransformer())->parseIncludes($request->getIncludes()))
-            ->withPaginationHeaders($paginator);
+        return response(fractal($paginator->getCollection(),
+                                new ArticleTransformer())->parseIncludes($request->getIncludes()))->withPaginationHeaders($paginator);
     }
 
 
@@ -107,7 +107,8 @@ class ArticleController extends Controller {
      * @param bool $isPublished
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    private function getArticleList(Request $request, ?int $userId = null, bool $isPublished = true): LengthAwarePaginator {
+    private function getArticleList(Request $request, ?int $userId = null,
+                                    bool $isPublished = true): LengthAwarePaginator {
         $queryBuilder = Article::with($request->getIncludes());
         if ($userId !== null) {
             $queryBuilder->where('user_id', $userId);

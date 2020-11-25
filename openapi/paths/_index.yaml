@@ -99,9 +99,9 @@
   $ref: "./AdminMainpage.yaml#/mainpage"
 /admin/clients:
   $ref: "./AdminClient.yaml#/clients"
-/admin/clients/{id}:
-  $ref: "./AdminClient.yaml#/clients~1{id}"
-/admin/partitioners:
+/admin/clients/{id}/delete:
+  $ref: "./AdminClient.yaml#/clients~1{id}~1delete"
+/admin/practitioners:
   $ref: "./AdminPractitioner.yaml#/practitioners"
-/admin/partitioners/{id}:
-  $ref: "./AdminPractitioner.yaml#/practitioners~1{id}"
+/admin/practitioners/{id}/delete:
+  $ref: "./AdminPractitioner.yaml#/practitioners~1{id}~1delete"

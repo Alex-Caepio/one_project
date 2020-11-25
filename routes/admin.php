@@ -19,7 +19,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/practitioners', [PractitionerController::class, 'store']);
         Route::get('/practitioners/{practitioner}', [PractitionerController::class, 'show']);
         Route::put('/practitioners/{practitioner}', [PractitionerController::class, 'update']);
-        Route::delete('/practitioners/{practitioner}', [PractitionerController::class, 'destroy']);
+        Route::post('/practitioners/{practitioner}/delete', [PractitionerController::class, 'destroy']);
         Route::post('/practitioners/{practitioner}/unpublish', [PractitionerController::class, 'unpublish']);
         Route::post('/practitioners/{practitioner}/publish', [PractitionerController::class, 'publish']);
 
@@ -27,7 +27,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/clients', [ClientController::class, 'store']);
         Route::get('/clients/{client}', [ClientController::class, 'show']);
         Route::put('/clients/{client}', [ClientController::class, 'update']);
-        Route::delete('/clients/{client}', [ClientController::class, 'destroy']);
+        Route::post('/clients/{client}/delete', [ClientController::class, 'destroy']);
 
         Route::get('/services', [ServiceController::class, 'index']);
         Route::post('/services', [ServiceController::class, 'store']);

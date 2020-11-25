@@ -82,23 +82,19 @@ practitioners:
               type: array
               items:
                 $ref: '../schemas/User.yaml'
-practitioners/{id}:
-  delete:
-    tags:
-      - User as a Practitioner
+
+practitioners/{id}/delete:
+  post:
     parameters:
       - $ref: "#/parameters/id"
+    tags:
+      - User as a Practitioner
     requestBody:
       required: true
       content:
         application/json:
           schema:
-            type: object
-            properties:
-              name: message
-              type: string
-            required:
-              - message
+            $ref: '../schemas/forms/admin/PractitionerDelete.yaml'
     responses:
       '204':
         description: OK
@@ -107,16 +103,7 @@ practitioners/{id}:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                message:
-                  type: string
-                  example: The given data was invalid.
-                errors:
-                  type: object
-                  example:
-                    message:
-                      - Message is required.
+              $ref: '../schemas/422/PractitionerDelete.yaml'
 
 parameters:
   id:

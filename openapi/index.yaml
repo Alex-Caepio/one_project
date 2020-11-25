@@ -3306,10 +3306,8 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/User"
-  "/admin/clients/{id}":
-    delete:
-      tags:
-        - User as a Client
+  "/admin/clients/{id}/delete":
+    post:
       parameters:
         - name: id
           in: path
@@ -3317,17 +3315,20 @@ paths:
           required: true
           schema:
             type: integer
+      tags:
+        - User as a Client
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
-              properties:
-                name: message
-                type: string
               required:
                 - message
+              properties:
+                message:
+                  type: string
+                  example: Termination message
       responses:
         "204":
           description: OK
@@ -3345,8 +3346,10 @@ paths:
                     type: object
                     example:
                       message:
-                        - Message is required.
-  /admin/partitioners:
+                        - Message field may not be greater than 1000 characters.
+                        - Message field may not be less than 10 characters.
+                        - Message field may is required.
+  /admin/practitioners:
     get:
       tags:
         - User as a Practitioner
@@ -3434,10 +3437,8 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/User"
-  "/admin/partitioners/{id}":
-    delete:
-      tags:
-        - User as a Practitioner
+  "/admin/practitioners/{id}/delete":
+    post:
       parameters:
         - name: id
           in: path
@@ -3445,17 +3446,20 @@ paths:
           required: true
           schema:
             type: integer
+      tags:
+        - User as a Practitioner
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
-              properties:
-                name: message
-                type: string
               required:
                 - message
+              properties:
+                message:
+                  type: string
+                  example: Termination message
       responses:
         "204":
           description: OK
@@ -3473,4 +3477,6 @@ paths:
                     type: object
                     example:
                       message:
-                        - Message is required.
+                        - Message field may not be greater than 1000 characters.
+                        - Message field may not be less than 10 characters.
+                        - Message field may is required.

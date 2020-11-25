@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Actions\Admin\DeleteUser;
 use App\Filters\UserFiltrator;
 use App\Models\User;
 use App\Mail\VerifyEmail;
@@ -81,8 +82,7 @@ class PractitionerController extends Controller
 
     public function destroy(User $practitioner, PractitionerDestroyRequest $request)
     {
-        $practitioner->update(['termination_message' => $request->get('message')]);
-        $practitioner->delete();
+        run_action(DeleteUser::class, $practitioner, $request);
         event(new AccountDeleted($practitioner));
         return response(null, 204);
     }

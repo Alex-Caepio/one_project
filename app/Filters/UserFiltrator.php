@@ -9,8 +9,8 @@ class UserFiltrator {
 
     public function apply(Builder $queryBuilder, Request $request) {
 
-        if ($request->filled('is_author')) {
-            $isAuthor = filter_var($request->get('is_author'), FILTER_VALIDATE_BOOLEAN);
+        $isAuthor = $request->getBoolFromRequest('is_author');
+        if ($isAuthor !== null) {
             if ($isAuthor) {
                 $queryBuilder->has('articles');
             } else {
@@ -18,13 +18,9 @@ class UserFiltrator {
             }
         }
 
-        if ($request->filled('is_published')) {
-            $isPublished = filter_var($request->get('is_published'), FILTER_VALIDATE_BOOLEAN);
-            if  ($isPublished) {
-                $queryBuilder->published();
-            } else {
-                $queryBuilder->unpublished();
-            }
+        $isPublished = $request->getBoolFromRequest('is_published');
+        if ($isPublished !== null) {
+            $queryBuilder->where('is_published', $isPublished);
         }
 
         if ($request->filled('search')) {

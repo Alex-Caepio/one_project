@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Actions\Admin\DeleteUser;
 use App\Filters\UserFiltrator;
 use App\Models\User;
 use App\Mail\VerifyEmail;
@@ -56,8 +57,7 @@ class ClientController extends Controller {
     }
 
     public function destroy(User $client, ClientDestroyRequest $request) {
-        $client->update(['termination_message' => $request->get('message')]);
-        $client->delete();
+        run_action(DeleteUser::class, $client, $request);
         // event(new BookingCancelledByClient($client));
         // event(new AccountUpgradedToPractitioner($client));
         // event(new AccountTerminatedByAdmin($client));
