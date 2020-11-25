@@ -1,0 +1,14 @@
+type: object
+properties:
+  object:
+    type: string
+    example: account_link
+  created:
+    type: integer
+    example: 1606234817
+  expires_at:
+    type: integer
+    example: 1606235117
+  url:
+    type: string
+    example: https://connect.stripe.com/setup/s/TwTLWBLYqawZ

@@ -67,6 +67,11 @@
 /mainpage:
   $ref: "./Mainpage.yaml#/mainpage"
 
+#stripe
+/stripe/link:
+  $ref: "./Stripe.yaml#/link"
+/stripe/account:
+  $ref: "./Stripe.yaml#/account"
 
 ## ADMIN ENDPOINTS
 /admin/profile:
