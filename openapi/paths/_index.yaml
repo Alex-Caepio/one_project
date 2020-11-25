@@ -69,9 +69,12 @@
 
 #stripe
 /stripe/link:
-  $ref: "./Stripe.yaml#/link"
+  $ref: "./Stripe.yaml#/stripe~1link"
 /stripe/account:
-  $ref: "./Stripe.yaml#/account"
+  $ref: "./Stripe.yaml#/stripe~1account"
+
+/timezones:
+  $ref: "./Timezone.yaml#/timezones"
 
 ## ADMIN ENDPOINTS
 /admin/profile:

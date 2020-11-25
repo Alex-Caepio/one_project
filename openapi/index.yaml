@@ -4,9 +4,6 @@ info:
   title: ""
   description: ""
 servers:
-  # Added by API Auto Mocking Plugin
-  - description: SwaggerHub API Auto Mocking
-    url: https://virtserver.swaggerhub.com/cleverketchup/tom/1.0.0
   - description: The oneness movement API
     url: https://dev-oneness.andersenlab.dev/api/
 components:
@@ -2060,6 +2057,73 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Mainpage"
+  /stripe/link:
+    get:
+      operationId: get-stripe-link
+      tags:
+        - Stripe
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    object:
+                      type: string
+                      example: account_link
+                    created:
+                      type: integer
+                      example: 1606234817
+                    expires_at:
+                      type: integer
+                      example: 1606235117
+                    url:
+                      type: string
+                      example: https://connect.stripe.com/setup/s/TwTLWBLYqawZ
+  /stripe/account:
+    get:
+      operationId: get-stripe-account
+      tags:
+        - Stripe
+      responses:
+        "200":
+          description: OK
+          content:
+            ? application/json
+  /timezones:
+    get:
+      operationId: get-timezones
+      tags:
+        - Timezone
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    value:
+                      type: string
+                      example: -12:00
+                    label:
+                      type: string
+                      example: (GMT -12:00) Eniwetok, Kwajalein
+                    created_at:
+                      type: string
+                      format: date-time
+                    updated_at:
+                      type: string
+                      format: date-time
   /admin/profile:
     get:
       operationId: get-profile
