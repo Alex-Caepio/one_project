@@ -4,39 +4,21 @@ properties:
     type: integer
   name:
     type: string
-  valid_from:
+  uses_per_client:
+    type: integer
+    nullable: true
+  uses_per_code:
+    type: integer
+    nullable: true
+  created_at:
     type: string
+    nullable: true
     format: date-time
-    nullable: true
-  expiry_date:
+  updated_at:
     type: string
+    nullable: true
     format: date-time
-    nullable: true
-  spend_min:
-    type: number
-    format: double
-    nullable: true
-  spend_max:
-    type: number
-    format: double
-    nullable: true
-  discount_type:
+  deleted_at:
     type: string
-  discount_value:
-    type: number
-    format: double
-  service_type_id:
-    type: integer
     nullable: true
-  discipline_id:
-    type: integer
-    nullable: true
-  focus_area_id:
-    type: integer
-    nullable: true
-  max_uses_per_code:
-    type: integer
-    nullable: true
-  code_uses_per_customer:
-    type: integer
-    nullable: true
+    format: date-time

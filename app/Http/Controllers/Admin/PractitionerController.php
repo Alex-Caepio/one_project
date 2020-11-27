@@ -19,10 +19,8 @@ use App\Actions\Practitioners\CreatePractitionerFromRequest;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
 
-class PractitionerController extends Controller
-{
-    public function index(Request $request)
-    {
+class PractitionerController extends Controller {
+    public function index(Request $request) {
         $userQuery = User::where('account_type', User::ACCOUNT_PRACTITIONER);
         $userFilter = new UserFiltrator();
         $userFilter->apply($userQuery, $request);
@@ -31,31 +29,25 @@ class PractitionerController extends Controller
 
         $paginator = $userQuery->with($includes)->paginate($request->getLimit());
         $practitioners = $paginator->getCollection();
-        return response(fractal($practitioners, new UserTransformer())->parseIncludes($includes))
-            ->withPaginationHeaders($paginator);
+        return response(fractal($practitioners,
+                                new UserTransformer())->parseIncludes($includes))->withPaginationHeaders($paginator);
     }
 
-    public function store(RegisterRequest $request)
-    {
+    public function store(RegisterRequest $request) {
         $customer = run_action(CreateStripeUserByEmail::class, $request->email);
-        $user     = run_action(CreatePractitionerFromRequest::class, $request,
-            [
-                'stripe_customer_id' => $customer->id,
-                'is_admin'           => null,
-                'account_type'       => User::ACCOUNT_PRACTITIONER
-            ]
-        );
+        $user = run_action(CreatePractitionerFromRequest::class, $request, [
+            'stripe_customer_id' => $customer->id,
+            'is_admin'           => null,
+            'account_type'       => User::ACCOUNT_PRACTITIONER
+        ]);
 
         $token = $user->createToken('access-token');
         $user->withAccessToken($token);
 
-        return fractal($user, new UserTransformer())
-            ->parseIncludes('access_token')
-            ->respond();
+        return fractal($user, new UserTransformer())->parseIncludes('access_token')->respond();
     }
 
-    protected function sendVerificationEmail($user)
-    {
+    protected function sendVerificationEmail($user) {
         $linkApi = URL::temporarySignedRoute('verify-email', now()->addMinute(60), [
             'user'  => $user->id,
             'email' => $user->email
@@ -64,14 +56,12 @@ class PractitionerController extends Controller
         $linkFrontend = config('app.frontend_password_reset_link') . '?' . explode('?', $linkApi)[1];
 
         Mail::to([
-            'email' => $user->email
-        ])->send(new VerifyEmail($linkFrontend));
+                     'email' => $user->email
+                 ])->send(new VerifyEmail($linkFrontend));
     }
 
-    public function show(User $practitioner, PractitionerShowRequest $request)
-    {
-        return fractal($practitioner, new UserTransformer())->parseIncludes($request->getIncludes())
-            ->toArray();
+    public function show(User $practitioner, PractitionerShowRequest $request) {
+        return fractal($practitioner, new UserTransformer())->parseIncludes($request->getIncludes())->toArray();
     }
 
     public function update(PractitionerUpdateRequest $request, User $practitioner) {
@@ -80,26 +70,24 @@ class PractitionerController extends Controller
         return fractal($practitioner, new UserTransformer())->respond();
     }
 
-    public function destroy(User $practitioner, PractitionerDestroyRequest $request)
-    {
+    public function destroy(User $practitioner, PractitionerDestroyRequest $request) {
         run_action(DeleteUser::class, $practitioner, $request);
         event(new AccountDeleted($practitioner));
         return response(null, 204);
     }
 
-    public function unpublished(User $practitioner)
-    {
+    public function unpublished(User $practitioner) {
         $practitioner->forceFill([
-            'is_published' => false,
-        ]);
+                                     'is_published' => false,
+                                 ]);
         $practitioner->update();
+
     }
 
-    public function publish(User $practitioner)
-    {
+    public function publish(User $practitioner) {
         $practitioner->forceFill([
-            'is_published' => true,
-        ]);
+                                     'is_published' => true,
+                                 ]);
         $practitioner->update();
     }
 }

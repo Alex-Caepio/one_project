@@ -4,17 +4,30 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-class PromotionCode extends Model
-{
-    use HasFactory;
+/**
+ * @property mixed promotion
+ * @property mixed deleted_at
+ * @property mixed updated_at
+ * @property mixed created_at
+ * @property mixed uses_per_client
+ * @property mixed uses_per_code
+ * @property mixed name
+ * @property mixed id
+ */
+class PromotionCode extends Model {
+
+    use HasFactory, SoftDeletes;
+
     protected $fillable = ['name'];
-    public function users()
-    {
-        return $this->belongsToMany(User::class,'user_promotion_code','user_id','promotion_code_id')->withTimeStamps();
+
+    public function users() {
+        return $this->belongsToMany(User::class, 'user_promotion_code', 'user_id', 'promotion_code_id')
+                    ->withTimeStamps();
     }
-    public function promotion()
-    {
+
+    public function promotion() {
         return $this->belongsTo(Promotion::class);
     }
 

@@ -113,3 +113,8 @@
   $ref: "./AdminPractitioner.yaml#/practitioners"
 /admin/practitioners/{id}/delete:
   $ref: "./AdminPractitioner.yaml#/practitioners~1{id}~1delete"
+# Promotions
+/admin/promotions:
+  $ref: "./AdminPromotion.yaml#/promotions"
+/admin/promotions/{id}:
+  $ref: "./AdminPromotion.yaml#/promotions~1{id}"

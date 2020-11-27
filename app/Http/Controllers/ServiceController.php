@@ -55,12 +55,11 @@ class ServiceController extends Controller {
         return response(null, 204);
     }
 
-    public function store(StoreServiceRequest $request)
-    {
+    public function store(StoreServiceRequest $request) {
         $user = $request->user();
         $data = $request->all();
 
-        $url         = $data['url'] ?? to_url($data['name']);
+        $url = $data['url'] ?? to_url($data['name']);
         $data['url'] = $url;
 
         $service = $user->services()->create($data);
@@ -108,8 +107,7 @@ class ServiceController extends Controller {
         return fractal($service, new ServiceTransformer())->respond();
     }
 
-    public function storeFavorite(Service $service)
-    {
+    public function storeFavorite(Service $service) {
         if ($service->favorite()) {
             return response(null, 200);
         }
@@ -118,8 +116,7 @@ class ServiceController extends Controller {
         return response(null, 201);
     }
 
-    public function deleteFavorite(Service $service)
-    {
+    public function deleteFavorite(Service $service) {
         Auth::user()->favourite_services()->detach($service->id);
         return response(null, 204);
     }

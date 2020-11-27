@@ -127,7 +127,7 @@ class Discipline extends Model
         return $this->belongsToMany(Article::class, 'discipline_featured_articles', 'discipline_id', 'article_id');
     }
 
-    public function featured_main_pages(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function featured_main_pages(): BelongsToMany
     {
         return $this->belongsToMany(MainPage::class, 'main_page_featured_discipline', 'discipline_id', 'main_page_id');
     }
@@ -135,5 +135,9 @@ class Discipline extends Model
     public function featured_disciplines()
     {
         return $this->belongsToMany(FocusArea::class, 'focus_area_featured_discipline', 'focus_area_id', 'discipline_id');
+    }
+
+    public function promotions(): BelongsToMany {
+        return $this->belongsToMany(Promotion::class, 'promotion_discipline', 'discipline_id', 'promotion_id');
     }
 }

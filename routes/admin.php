@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\MainPageController;
 use App\Http\Controllers\Admin\PlanController;
 use App\Http\Controllers\Admin\ClientController;
+use App\Http\Controllers\Admin\PromotionController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\FocusAreaController;
@@ -41,8 +42,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::put('/plans/{plan}', [PlanController::class, 'update']);
         Route::delete('/plans/{plan}', [PlanController::class, 'destroy']);
 
-        Route::put('/profile',[AdminProfileController::class, 'update']);
-
         Route::get('/profile',[ProfileController::class, 'show']);
         Route::put('/profile',[ProfileController::class, 'update']);
 
@@ -58,6 +57,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/focus-areas/{focusArea}/images', [FocusAreaController::class, 'storeImages']);
         Route::post('/focus-areas/{focusArea}/videos',[FocusAreaController::class, 'storeVideos']);
         Route::post('/focus-areas/{focusArea}/icon', [FocusAreaController::class, 'icon']);
+
+        Route::get('/promotions', [PromotionController::class, 'index']);
+        Route::delete('/promotions/{promotion}', [PromotionController::class, 'destroy']);
 
         Route::get('/promotion-codes', [PromotionCodeController::class, 'index']);
         Route::put('/promotion-codes/{promotionCode}/update', [PromotionCodeController::class, 'update']);

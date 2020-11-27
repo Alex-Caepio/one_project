@@ -53,22 +53,22 @@ class FocusArea extends Model
         return $this->belongsToMany(Article::class, 'focus_area_article', 'focus_area_id', 'article_id')->withTimeStamps();
     }
 
-    public function featured_practitioners(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function featured_practitioners(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'focus_area_featured_user', 'focus_area_id', 'user_id');
     }
 
-    public function featured_disciplines(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function featured_disciplines(): BelongsToMany
     {
         return $this->belongsToMany(Discipline::class, 'focus_area_featured_discipline', 'focus_area_id', 'discipline_id');
     }
 
-    public function featured_articles(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function featured_articles(): BelongsToMany
     {
         return $this->belongsToMany(Article::class, 'focus_area_featured_article', 'focus_area_id', 'article_id');
     }
 
-    public function featured_services(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function featured_services(): BelongsToMany
     {
         return $this->belongsToMany(Service::class, 'focus_area_featured_service', 'focus_area_id', 'service_id');
     }
@@ -78,12 +78,12 @@ class FocusArea extends Model
         return $this->belongsToMany(__CLASS__, 'focus_area_featured_focus_area', 'parent_focus_area_id', 'child_focus_area_id');
     }
 
-    public function featured_at_disciplines(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function featured_at_disciplines(): BelongsToMany
     {
         return $this->belongsToMany(Discipline::class, 'discipline_featured_focus_area', 'focus_area_id', 'discipline_id');
     }
 
-    public function featured_main_pages(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function featured_main_pages(): BelongsToMany
     {
         return $this->belongsToMany(MainPage::class, 'main_page_featured_focus_area', 'focus_area_id', 'main_page_id');
     }
@@ -102,5 +102,10 @@ class FocusArea extends Model
     {
         return $this->morphMany(MediaFile::class, 'morphesTo', 'model_name', 'model_id');
     }
+
+    public function promotions(): BelongsToMany {
+        return $this->belongsToMany(Promotion::class, 'promotion_focus_area', 'focus_area_id', 'promotion_id');
+    }
+
 }
 

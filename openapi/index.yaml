@@ -427,7 +427,7 @@ components:
           type: string
         service_types:
           type: string
-    PromotionCode:
+    Promotion:
       type: object
       properties:
         id:
@@ -454,22 +454,53 @@ components:
           type: string
         discount_value:
           type: number
-          format: double
+          format: integer
         service_type_id:
+          type: string
+          nullable: true
+        applied_to:
+          type: string
+          nullable: true
+        status:
+          type: string
+          nullable: false
+        created_at:
+          type: string
+          nullable: true
+          format: date-time
+        updated_at:
+          type: string
+          nullable: true
+          format: date-time
+        deleted_at:
+          type: string
+          nullable: true
+          format: date-time
+    PromotionCode:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        uses_per_client:
           type: integer
           nullable: true
-        discipline_id:
+        uses_per_code:
           type: integer
           nullable: true
-        focus_area_id:
-          type: integer
+        created_at:
+          type: string
           nullable: true
-        max_uses_per_code:
-          type: integer
+          format: date-time
+        updated_at:
+          type: string
           nullable: true
-        code_uses_per_customer:
-          type: integer
+          format: date-time
+        deleted_at:
+          type: string
           nullable: true
+          format: date-time
     Schedule:
       type: object
       properties:
@@ -3547,3 +3578,137 @@ paths:
                         - Message field may not be greater than 1000 characters.
                         - Message field may not be less than 10 characters.
                         - Message field may is required.
+  /admin/promotions:
+    get:
+      tags:
+        - Promotions
+      parameters:
+        - name: page
+          in: query
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: limit
+          in: query
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: x-page
+          in: header
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: x-limit
+          in: header
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: with
+          in: query
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: promotion_codes,disciplines,focus_areas,service_type,practitioners
+        - name: x-with
+          in: header
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: promotion_codes,disciplines,focus_areas,service_type,practitioners
+        - name: search
+          in: query
+          description: Promotion name, practitioner email, promocode, service type,
+            discipline name, focus_area
+          required: false
+          schema:
+            type: string
+            example: title
+        - name: valid_from
+          in: query
+          description: Promotion Valid From
+          required: false
+          schema:
+            type: string
+            example: 2020-01-01
+        - name: expiry_date
+          in: query
+          description: Promotion expiry_date
+          required: false
+          schema:
+            type: string
+            example: 2020-01-01
+        - name: discount_type
+          in: query
+          description: Discount Type(percentage or fixed)
+          required: false
+          schema:
+            type: string
+            example: percentage
+        - name: discount_value
+          in: query
+          description: Discount value range
+          required: false
+          schema:
+            type: string
+            example: 0:100
+        - name: status
+          in: query
+          description: Status
+          required: false
+          schema:
+            type: string
+            example: active,disabled,complete,deleted
+        - name: applied_to
+          in: query
+          description: Applied To (host Or both)
+          required: false
+          schema:
+            type: string
+            example: host
+        - name: spend_min
+          in: query
+          description: Min spend to apply
+          required: false
+          schema:
+            type: string
+            example: 10.05
+        - name: spend_max
+          in: query
+          description: Max spend to apply
+          required: false
+          schema:
+            type: string
+            example: 1000.05
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Promotion"
+  "/admin/promotions/{id}":
+    delete:
+      tags:
+        - Promotions
+      parameters:
+        - name: id
+          in: path
+          description: Promotion ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: OK

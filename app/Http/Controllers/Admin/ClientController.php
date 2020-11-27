@@ -31,12 +31,14 @@ class ClientController extends Controller {
 
         $paginator = $userQuery->with($includes)->paginate($request->getLimit());
         $practitioners = $paginator->getCollection();
-        return response(fractal($practitioners, new UserTransformer())->parseIncludes($includes))->withPaginationHeaders($paginator);
+        return response(fractal($practitioners,
+                                new UserTransformer())->parseIncludes($includes))->withPaginationHeaders($paginator);
     }
 
     public function store(ClientCreateRequest $request) {
         $customer = run_action(CreateStripeUserByEmail::class, $request->email);
-        $user = run_action(CreateUserFromRequest::class, $request, ['stripe_customer_id' => $customer->id, 'is_admin' => null, 'account_type' => 'client']);
+        $user = run_action(CreateUserFromRequest::class, $request,
+                           ['stripe_customer_id' => $customer->id, 'is_admin' => null, 'account_type' => 'client']);
 
         $token = $user->createToken('access-token');
         $user->withAccessToken($token);

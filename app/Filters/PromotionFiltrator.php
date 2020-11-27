@@ -1,0 +1,75 @@
+<?php
+
+
+namespace App\Filters;
+
+use App\Http\Requests\Request;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
+
+class PromotionFiltrator {
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder $queryBuilder
+     * @param \App\Http\Requests\Request $request
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function apply(Builder $queryBuilder, Request $request): Builder {
+
+        if ($request->filled('search')) {
+            $search = '%' . $request->get('search') . '%';
+            $queryBuilder->where(function($query) use ($search) {
+                $query->where('name', 'LIKE', $search)
+                      ->orWhereHas('promotion_codes', function($userQuery) use ($search) {
+                          $userQuery->where('name', 'LIKE', $search);
+                      })
+                      ->orWhere('service_type_id', 'LIKE', $search)
+                      ->orWhereHas('disciplines', function($userQuery) use ($search) {
+                          $userQuery->where('name', 'LIKE', $search);
+                      })->orWhereHas('practitioners', function($userQuery) use ($search) {
+                        $userQuery->where('email', 'LIKE', $search);
+                    });
+
+            });
+        }
+
+        if ($request->filled('valid_from')) {
+            $queryBuilder->where('valid_from', '>=', Carbon::parse($request->valid_from)->startOfDay());
+        }
+
+        if ($request->filled('expiry_date')) {
+            $queryBuilder->where('expiry_date', '<=', Carbon::parse($request->expiry_date)->endOfDay());
+        }
+
+        if ($request->filled('discount_type')) {
+            $queryBuilder->where('discount_type', $request->get('discount_type'));
+
+            if ($request->filled('discount_value')) {
+                [$from, $to] = explode(':', $request->get('discount_value'));
+                $queryBuilder->where('discount_value', '>=', (int)$from);
+                if ($to !== null) {
+                    $queryBuilder->where('discount_value', '<=', (int)$to);
+                }
+            }
+
+        }
+
+        $statuses = $request->getArrayFromRequest('status');
+        if (count($statuses)) {
+            $queryBuilder->whereIn('status', $statuses);
+        }
+
+        if ($request->filled('applied_to')) {
+            $queryBuilder->where('applied_to', $request->get('applied_to'));
+        }
+
+        if ($request->filled('spend_min')) {
+            $queryBuilder->where('spend_min', '>=', (float)$request->get('spend_min'));
+        }
+
+        if ($request->filled('spend_max')) {
+            $queryBuilder->where('spend_max', '<=', (float)$request->get('spend_max'));
+        }
+
+        return $queryBuilder;
+    }
+}

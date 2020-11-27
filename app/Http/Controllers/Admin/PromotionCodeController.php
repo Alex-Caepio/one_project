@@ -7,30 +7,24 @@ use App\Models\PromotionCode;
 use App\Transformers\PromotionCodeTransformer;
 use App\Http\Requests\Request;
 
-class PromotionCodeController extends Controller
-{
-    public function index(Request $request)
-    {
+class PromotionCodeController extends Controller {
+    public function index(Request $request) {
         $promotion = PromotionCode::all();
-        return fractal($promotion, new PromotionCodeTransformer())->parseIncludes($request->getIncludes())
-            ->toArray();
+        return fractal($promotion, new PromotionCodeTransformer())->parseIncludes($request->getIncludes())->toArray();
     }
 
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
         $data = $request->all();
         $promotion = PromotionCode::create($data);
         return fractal($promotion, new PromotionCodeTransformer())->respond();
     }
 
-    public function destroy(PromotionCode $promotionCode)
-    {
+    public function destroy(PromotionCode $promotionCode) {
         $promotionCode->delete();
         return response(null, 204);
     }
 
-    public function update(Request $request, PromotionCode $promotionCode)
-    {
+    public function update(Request $request, PromotionCode $promotionCode) {
         $promotionCode->update($request->all());
         return fractal($promotionCode, new PromotionCodeTransformer())->respond();
     }

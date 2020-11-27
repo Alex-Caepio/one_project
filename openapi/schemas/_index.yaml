@@ -12,6 +12,8 @@ Location:
   $ref: "./Location.yaml"
 Plan:
   $ref: "./Plan.yaml"
+Promotion:
+  $ref: "./Promotion.yaml"
 PromotionCode:
   $ref: "./PromotionCode.yaml"
 Schedule:

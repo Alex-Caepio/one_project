@@ -6,6 +6,7 @@ use App\Scopes\PublishedScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -152,6 +153,10 @@ class User extends Authenticatable implements MustVerifyEmail {
         return $this->belongsToMany(FocusArea::class, 'focus_area_features_user', 'focus_area_id', 'user_id');
     }
 
+    public function featured_main_pages(): BelongsToMany {
+        return $this->belongsToMany(MainPage::class, 'main_page_featured_practitioner', 'user_id', 'main_page_id');
+    }
+
     /**
      * @return bool
      */
@@ -166,7 +171,8 @@ class User extends Authenticatable implements MustVerifyEmail {
         return $this->account_type === self::ACCOUNT_CLIENT;
     }
 
-    public function featured_main_pages(): \Illuminate\Database\Eloquent\Relations\BelongsToMany {
-        return $this->belongsToMany(MainPage::class, 'main_page_featured_practitioner', 'user_id', 'main_page_id');
+    public function promotions(): BelongsToMany {
+        return $this->belongsToMany(Promotion::class, 'promotion_practitioner', 'practitioner_id', 'promotion_id');
     }
+
 }
