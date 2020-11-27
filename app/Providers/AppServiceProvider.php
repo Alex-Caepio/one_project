@@ -16,8 +16,10 @@ use App\Http\Requests\Schedule\TrainingProgramScheduleRequest;
 use App\Http\Requests\Schedule\WorkshopScheduleRequest;
 use App\Models\Article;
 use App\Models\Discipline;
+use App\Models\Promotion;
 use App\Models\Service;
 use App\Observers\ArticleObserver;
+use App\Observers\PromotionObserver;
 use App\ScarryClass;
 use App\FakeStripeClient;
 use Stripe\StripeClient;
@@ -51,7 +53,9 @@ class AppServiceProvider extends ServiceProvider
             'article'    => Article::class,
         ]);
 
+        /* Events Observer */
         Article::observe(ArticleObserver::class);
+        Promotion::observe(PromotionObserver::class);
 
         $this->app->bind(CreateScheduleInterface::class, function () {
             if (request()->service->service_type['id'] == 'workshop') {

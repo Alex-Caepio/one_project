@@ -42,6 +42,19 @@ class PromotionController extends Controller {
 
     /**
      * @param \App\Models\Promotion $promotion
+     * @param \App\Http\Requests\Request $request
+     * @return mixed
+     */
+    public function show(Promotion $promotion, Request $request) {
+
+        return response(fractal($promotion, new PromotionTransformer())->parseIncludes($request->getIncludes())
+                                                                       ->toArray());
+
+    }
+
+
+    /**
+     * @param \App\Models\Promotion $promotion
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
      * @throws \Exception
      */

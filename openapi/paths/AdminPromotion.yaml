@@ -1,7 +1,7 @@
 promotions:
   get:
     tags:
-      - Promotions
+      - Promotion
     parameters:
       - name: page
         in: query
@@ -119,9 +119,21 @@ promotions:
                 $ref: '../schemas/Promotion.yaml'
 
 promotions/{id}:
+  get:
+    tags:
+      - Promotion
+    parameters:
+      - $ref: "#/parameters/id"
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/Promotion.yaml'
   delete:
     tags:
-      - Promotions
+      - Promotion
     parameters:
       - $ref: "#/parameters/id"
     responses:
