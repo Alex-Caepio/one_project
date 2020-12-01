@@ -28,13 +28,17 @@ class ResponseServiceProvider extends ServiceProvider {
         });
 
         Response::macro('withCustomInfo', function(array $customInfo) {
-            $newKeys = array_map(fn(string $key): string => 'X-Custom-' . $key,array_keys($customInfo));
+            $newKeys = array_map(static function(string $key) {
+                return 'X-Custom-' . $key;
+            }, array_keys($customInfo));
             return $this->withHeaders(array_combine($newKeys, array_values($customInfo)));
         });
 
         Response::macro('withFilters', function(Request $request) {
             $requestValues = $request->all();
-            $keys = array_map(fn(string $key): string => 'X-Filters-' . $key, array_keys($requestValues));
+            $keys = array_map(static function(string $key) {
+                return 'X-Filters-' . $key;
+            }, array_keys($requestValues));
             return $this->withHeaders(array_combine($keys, array_values($requestValues)));
         });
     }
