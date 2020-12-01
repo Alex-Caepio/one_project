@@ -40,8 +40,9 @@ class PromotionFiltrator {
             $queryBuilder->where('expiry_date', '<=', Carbon::parse($request->expiry_date)->endOfDay());
         }
 
-        if ($request->filled('discount_type')) {
-            $queryBuilder->where('discount_type', $request->get('discount_type'));
+        $discountType = $request->getArrayFromRequest('discount_type');
+        if (count($discountType)) {
+            $queryBuilder->whereIn('discount_type', $discountType);
 
             if ($request->filled('discount_value')) {
                 [$from, $to] = explode(':', $request->get('discount_value'));
@@ -58,8 +59,10 @@ class PromotionFiltrator {
             $queryBuilder->whereIn('status', $statuses);
         }
 
-        if ($request->filled('applied_to')) {
-            $queryBuilder->where('applied_to', $request->get('applied_to'));
+
+        $appliedTo = $request->getArrayFromRequest('applied_to');
+        if (count($appliedTo)) {
+            $queryBuilder->whereIn('applied_to', $appliedTo);
         }
 
         if ($request->filled('spend_min')) {
