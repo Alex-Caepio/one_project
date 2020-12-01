@@ -22,3 +22,6 @@ properties:
     type: string
     nullable: true
     format: date-time
+  status:
+    type: string
+    nullable: false

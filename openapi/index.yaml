@@ -501,6 +501,9 @@ components:
           type: string
           nullable: true
           format: date-time
+        status:
+          type: string
+          nullable: false
     Schedule:
       type: object
       properties:
@@ -3581,7 +3584,7 @@ paths:
   /admin/promotions:
     get:
       tags:
-        - Promotions
+        - Promotion
       parameters:
         - name: page
           in: query
@@ -3699,9 +3702,9 @@ paths:
                 items:
                   $ref: "#/components/schemas/Promotion"
   "/admin/promotions/{id}":
-    delete:
+    get:
       tags:
-        - Promotions
+        - Promotion
       parameters:
         - name: id
           in: path
@@ -3710,5 +3713,193 @@ paths:
           schema:
             type: integer
       responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Promotion"
+    delete:
+      tags:
+        - Promotion
+      parameters:
+        - $ref: "#/paths/~1admin~1promotions~1%7Bid%7D/get/parameters/0"
+      responses:
         "204":
           description: OK
+  "/admin/promotions/{id}/enable":
+    post:
+      tags:
+        - Promotion
+      parameters:
+        - name: id
+          in: path
+          description: Promotion ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Promotion"
+        "422":
+          description: Validation failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: The given data was invalid.
+                  errors:
+                    type: object
+                    example:
+                      status:
+                        - Promotion is expired and cannot be enabled
+  "/admin/promotions/{id}/disable":
+    post:
+      tags:
+        - Promotion
+      parameters:
+        - name: id
+          in: path
+          description: Promotion ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Promotion"
+  /admin/promotion-codes:
+    get:
+      tags:
+        - Promotion Codes
+      parameters:
+        - name: page
+          in: query
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: limit
+          in: query
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: x-page
+          in: header
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: x-limit
+          in: header
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: with
+          in: query
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: promotion,users
+        - name: x-with
+          in: header
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: promotion,users
+        - name: status
+          in: query
+          description: Status
+          required: false
+          schema:
+            type: string
+            example: active,disabled,complete,deleted
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PromotionCode"
+  "/admin/promotion-codes/{id}":
+    get:
+      tags:
+        - Promotion Codes
+      parameters:
+        - name: id
+          in: path
+          description: Promotion ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PromotionCode"
+    delete:
+      tags:
+        - Promotion Codes
+      parameters:
+        - $ref: "#/paths/~1admin~1promotion-codes~1%7Bid%7D/get/parameters/0"
+      responses:
+        "204":
+          description: OK
+  "/admin/promotion-codes/{id}/enable":
+    post:
+      tags:
+        - Promotion Codes
+      parameters:
+        - name: id
+          in: path
+          description: Promotion ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PromotionCode"
+  "/admin/promotion-codes/{id}/disable":
+    post:
+      tags:
+        - Promotion Codes
+      parameters:
+        - name: id
+          in: path
+          description: Promotion ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PromotionCode"

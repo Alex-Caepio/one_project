@@ -1,0 +1,122 @@
+promotion-codes:
+  get:
+    tags:
+      - Promotion Codes
+    parameters:
+      - name: page
+        in: query
+        description: Pagination page results
+        required: false
+        schema:
+          type: integer
+          example: 2
+      - name: limit
+        in: query
+        description: Results per page
+        required: false
+        schema:
+          type: integer
+          example: 10
+      - name: x-page
+        in: header
+        description: Pagination page results
+        required: false
+        schema:
+          type: integer
+          example: 2
+      - name: x-limit
+        in: header
+        description: Results per page
+        required: false
+        schema:
+          type: integer
+          example: 10
+      - name: with
+        in: query
+        description: Include additional objects in response
+        required: false
+        schema:
+          type: string
+          example: promotion,users
+      - name: x-with
+        in: header
+        description: Include additional objects in response
+        required: false
+        schema:
+          type: string
+          example: promotion,users
+      - name: status
+        in: query
+        description: Status
+        required: false
+        schema:
+          type: string
+          example: active,disabled,complete,deleted
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../schemas/PromotionCode.yaml'
+
+promotion-codes/{id}:
+  get:
+    tags:
+      - Promotion Codes
+    parameters:
+      - $ref: "#/parameters/id"
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/PromotionCode.yaml'
+  delete:
+    tags:
+      - Promotion Codes
+    parameters:
+      - $ref: "#/parameters/id"
+    responses:
+      '204':
+        description: OK
+
+promotion-codes/{id}/enable:
+  post:
+    tags:
+      - Promotion Codes
+    parameters:
+      - $ref: "#/parameters/id"
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/PromotionCode.yaml'
+
+promotion-codes/{id}/disable:
+  post:
+    tags:
+      - Promotion Codes
+    parameters:
+      - $ref: "#/parameters/id"
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/PromotionCode.yaml'
+
+parameters:
+  id:
+    name: id
+    in: path
+    description: Promotion ID
+    required: true
+    schema:
+      type: integer

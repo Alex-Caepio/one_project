@@ -65,8 +65,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::delete('/promotions/{promotion}', [PromotionController::class, 'destroy']);
 
         Route::get('/promotion-codes', [PromotionCodeController::class, 'index']);
-        Route::put('/promotion-codes/{promotionCode}/update', [PromotionCodeController::class, 'update']);
         Route::post('/promotion-codes', [PromotionCodeController::class, 'store']);
+        Route::put('/promotion-codes/{promotionCode}/update', [PromotionCodeController::class, 'update']);
+        Route::post('/promotion-codes/{promotionCode}/enable', [PromotionController::class, 'enable']);
+        Route::post('/promotion-codes/{promotionCode}/disable', [PromotionController::class, 'disable']);
         Route::delete('/promotion-codes/{promotionCode}/destroy', [PromotionCodeController::class, 'destroy']);
 
         Route::get('/disciplines', [DisciplineController::class, 'index']);

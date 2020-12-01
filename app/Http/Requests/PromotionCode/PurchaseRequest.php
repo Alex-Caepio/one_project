@@ -42,9 +42,12 @@ class PurchaseRequest extends Request
             return true;
         }
 
-        if (!$promo = PromotionCode::where('name', $name)->first()) {
+        if (!$promo = PromotionCode::where('name', $name)->with('promotion')->first()) {
             $validator->errors()->add('promo_code', 'Promo code is invalid!');
+        }
 
+        if ($promo->status === PromotionCode::STATUS_DISABLED) {
+            $validator->errors()->add('promo_code', 'Promo code is disabled');
         }
 
         //initialise variables

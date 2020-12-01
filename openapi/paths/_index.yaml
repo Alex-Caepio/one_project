@@ -118,3 +118,16 @@
   $ref: "./AdminPromotion.yaml#/promotions"
 /admin/promotions/{id}:
   $ref: "./AdminPromotion.yaml#/promotions~1{id}"
+/admin/promotions/{id}/enable:
+  $ref: "./AdminPromotion.yaml#/promotions~1{id}~1enable"
+/admin/promotions/{id}/disable:
+  $ref: "./AdminPromotion.yaml#/promotions~1{id}~1disable"
+# PromotionsCodes
+/admin/promotion-codes:
+  $ref: "./AdminPromotionCode.yaml#/promotion-codes"
+/admin/promotion-codes/{id}:
+  $ref: "./AdminPromotionCode.yaml#/promotion-codes~1{id}"
+/admin/promotion-codes/{id}/enable:
+  $ref: "./AdminPromotionCode.yaml#/promotion-codes~1{id}~1enable"
+/admin/promotion-codes/{id}/disable:
+  $ref: "./AdminPromotionCode.yaml#/promotion-codes~1{id}~1disable"

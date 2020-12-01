@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Filters\PromotionFiltrator;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Promotion\EnableRequest;
 use App\Http\Requests\Request;
 use App\Models\Promotion;
 use App\Transformers\PromotionTransformer;
@@ -28,7 +29,7 @@ class PromotionController extends Controller {
 
         return response(fractal($promotions, new PromotionTransformer())->parseIncludes($includes)->toArray())
             ->withPaginationHeaders($paginator)->withFilters($request)
-            ->withCustomInfo(['spend_max_limit' => Promotion::max('spend_max')]);
+            ->withCustomInfo(['spend_max_limit' => (int)Promotion::max('spend_max')]);
 
     }
 
@@ -46,10 +47,10 @@ class PromotionController extends Controller {
 
     /**
      * @param \App\Models\Promotion $promotion
-     * @param \App\Http\Requests\Request $request
+     * @param \App\Http\Requests\Promotion\EnableRequest $request
      * @return mixed
      */
-    public function enable(Promotion $promotion, Request $request) {
+    public function enable(Promotion $promotion, EnableRequest $request) {
         $promotion->status = Promotion::STATUS_ACTIVE;
         $promotion->save();
         return response(fractal($promotion, new PromotionTransformer())->parseIncludes($request->getIncludes())
@@ -68,7 +69,6 @@ class PromotionController extends Controller {
         return response(fractal($promotion, new PromotionTransformer())->parseIncludes($request->getIncludes())
                                                                        ->toArray());
     }
-
 
     /**
      * @param \App\Models\Promotion $promotion

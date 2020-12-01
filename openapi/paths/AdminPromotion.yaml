@@ -140,6 +140,40 @@ promotions/{id}:
       '204':
         description: OK
 
+promotions/{id}/enable:
+  post:
+    tags:
+      - Promotion
+    parameters:
+      - $ref: "#/parameters/id"
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/Promotion.yaml'
+      '422':
+        description: Validation failed
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/422/PromotionStatus.yaml'
+
+promotions/{id}/disable:
+  post:
+    tags:
+      - Promotion
+    parameters:
+      - $ref: "#/parameters/id"
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/Promotion.yaml'
+
 parameters:
   id:
     name: id

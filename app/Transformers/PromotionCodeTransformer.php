@@ -26,7 +26,8 @@ class PromotionCodeTransformer extends Transformer {
             'uses_per_client' => $promotionCode->uses_per_client,
             'created_at'      => $promotionCode->created_at,
             'updated_at'      => $promotionCode->updated_at,
-            'deleted_at'      => $promotionCode->deleted_at
+            'deleted_at'      => $promotionCode->deleted_at,
+            'status'          => $promotionCode->status
         ];
     }
 
