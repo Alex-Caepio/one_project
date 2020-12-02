@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Http\Requests\Api\v2\Checkout\Interfaces\CreateScheduleInterface;
+use App\Http\Requests\Schedule\CreateScheduleInterface;
 use App\Http\Requests\Schedule\AppointmentScheduleRequest;
 use App\Http\Requests\Schedule\ClassAdHocScheduleRequest;
 use App\Http\Requests\Schedule\ClassScheduleRequest;

@@ -13,7 +13,7 @@ use App\Events\ServiceScheduleWentLive;
 use App\Transformers\ScheduleTransformer;
 use App\Actions\Promo\CalculatePromoPrice;
 use App\Http\Requests\PromotionCode\PurchaseRequest;
-use App\Http\Requests\Api\v2\Checkout\Interfaces\CreateScheduleInterface;
+use App\Http\Requests\Schedule\CreateScheduleInterface;
 use Carbon\Carbon;
 use Stripe\StripeClient;
 use Illuminate\Support\Facades\Auth;

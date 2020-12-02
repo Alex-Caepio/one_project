@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Api\v2\Checkout\Interfaces;
+namespace App\Http\Requests\Schedule;
 
 interface CreateScheduleInterface
 {
