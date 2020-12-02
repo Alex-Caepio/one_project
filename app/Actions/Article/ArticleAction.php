@@ -19,7 +19,7 @@ abstract class ArticleAction {
      * @param \App\Http\Requests\Articles\ArticleRequest $request
      */
     protected function saveArticle(Article $article, ArticleRequest $request) {
-        DB::transaction(function () use ($article, $request) {
+        DB::transaction(function() use ($article, $request) {
             $this->fillArticle($article, $request);
             $this->fillRelations($article, $request);
         });
@@ -89,8 +89,8 @@ abstract class ArticleAction {
      */
     private function collectKeywordModelsFromRequest(Request $request): array {
         $ids = [];
-        $keywords = array_unique($request->getArrayFromRequest('keywords'));
-        if (count($keywords)) {
+        if ($request->filled('keywords') && is_array($request->get('keywords'))) {
+            $keywords = array_unique($request->get('keywords'));
             foreach ($keywords as $keyword) {
                 $keyword = Keyword::firstOrCreate(['title' => strtoupper($keyword)]);
                 $ids[] = $keyword->id;
