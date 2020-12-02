@@ -28,10 +28,8 @@ class MainPageTest extends TestCase
     public function test_admin_can_view_main_page(): void
     {
         MainPage::factory()->count(3)->create();
-        $mainPage = MainPage::first();
 
-        $this->get("/admin/mainpage", $mainPage->toArray())
-            ->assertOk();
+        $this->get('/admin/mainpage')->assertOk();
     }
 
     /**
@@ -41,7 +39,7 @@ class MainPageTest extends TestCase
     {
         $mainPage = MainPage::factory()->make();
 
-        $this->put("/admin/mainpage", $mainPage->toArray())
+        $this->put('/admin/mainpage', $mainPage->toArray())
             ->assertOk();
     }
 
@@ -50,7 +48,7 @@ class MainPageTest extends TestCase
      */
     public function test_admin_can_update_main_page(): void
     {
-        $mainPage = MainPage::factory()->make();
+        $mainPage = MainPage::factory()->create();
         $mainPage->first();
 
         $featured_practitioners = User::factory()->count(4)->create();
@@ -60,7 +58,7 @@ class MainPageTest extends TestCase
 
         $response = $this->json('put','/admin/mainpage',
             [
-                'section_2_background' => 'section_2_background',
+                'section_2_background' => '121212',
                 'featured_practitioners' => $featured_practitioners->pluck('id'),
                 'featured_disciplines' => $featured_disciplines->pluck('id'),
                 'featured_services' => $featured_services->pluck('id'),

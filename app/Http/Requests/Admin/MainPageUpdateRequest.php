@@ -2,10 +2,9 @@
 
 namespace App\Http\Requests\Admin;
 
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\Request;
 
-class MainPageUpdateRequest extends FormRequest
+class MainPageUpdateRequest extends Request
 {
 
     /**
