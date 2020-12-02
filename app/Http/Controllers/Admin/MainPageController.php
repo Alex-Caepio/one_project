@@ -4,15 +4,20 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\Admin\MainPageUpdateRequest;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Request;
 use App\Models\MainPage;
 use App\Transformers\MainPageTransformer;
 
 
 class MainPageController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return fractal(MainPage::first(), new MainPageTransformer())->respond();
+        $includes = $request->getIncludes();
+
+        return fractal(MainPage::with($includes)->first(), new MainPageTransformer())
+            ->parseIncludes($includes)
+            ->respond();
     }
 
     public function update(MainPageUpdateRequest $request)
@@ -36,6 +41,13 @@ class MainPageController extends Controller
             $mainPage->featured_services()->sync($request->get('featured_services'));
         }
 
-        return fractal($mainPage->first(), new MainPageTransformer())->respond();
+        $includes = $request->getIncludes();
+
+        return fractal(
+            MainPage::with($includes)->first(),
+            new MainPageTransformer()
+        )
+            ->parseIncludes($includes)
+            ->respond();
     }
 }
