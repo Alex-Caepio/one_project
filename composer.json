@@ -16,6 +16,7 @@
         "laravel/framework": "^8.0",
         "laravel/sanctum": "^2.4",
         "laravel/tinker": "^2.0",
+        "maatwebsite/excel": "^3.1",
         "spatie/laravel-fractal": "^5.7",
         "stripe/stripe-php": "^7.43"
     },

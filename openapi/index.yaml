@@ -3832,6 +3832,20 @@ paths:
           schema:
             type: string
             example: active,disabled,complete,deleted
+        - name: promotion_id
+          in: query
+          description: The list of promotions ID
+          required: false
+          schema:
+            type: string
+            example: 1,2,3
+        - name: search
+          in: query
+          description: Search by Promo Name
+          required: false
+          schema:
+            type: string
+            example: ABCDG
       responses:
         "200":
           description: OK
@@ -3841,29 +3855,51 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/PromotionCode"
-  "/admin/promotion-codes/{id}":
+  /admin/promotion-codes/export:
     get:
+      tags:
+        - Promotion Codes
+      parameters:
+        - name: status
+          in: query
+          description: Status
+          required: false
+          schema:
+            type: string
+            example: active,disabled,complete,deleted
+        - name: promotion_id
+          in: query
+          description: The list of promotions ID
+          required: false
+          schema:
+            type: string
+            example: 1,2,3
+        - name: search
+          in: query
+          description: Search by Promo Name
+          required: false
+          schema:
+            type: string
+            example: ABCDG
+      responses:
+        "200":
+          description: File successfully generated
+          content:
+            application/vnd.ms-excel:
+              schema:
+                type: string
+                format: binary
+  "/admin/promotion-codes/{id}/destroy":
+    delete:
       tags:
         - Promotion Codes
       parameters:
         - name: id
           in: path
-          description: Promotion ID
+          description: Promotion Code ID
           required: true
           schema:
             type: integer
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/PromotionCode"
-    delete:
-      tags:
-        - Promotion Codes
-      parameters:
-        - $ref: "#/paths/~1admin~1promotion-codes~1%7Bid%7D/get/parameters/0"
       responses:
         "204":
           description: OK
@@ -3874,7 +3910,7 @@ paths:
       parameters:
         - name: id
           in: path
-          description: Promotion ID
+          description: Promotion Code ID
           required: true
           schema:
             type: integer
@@ -3892,7 +3928,7 @@ paths:
       parameters:
         - name: id
           in: path
-          description: Promotion ID
+          description: Promotion Code ID
           required: true
           schema:
             type: integer

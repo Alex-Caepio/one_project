@@ -52,6 +52,20 @@ promotion-codes:
         schema:
           type: string
           example: active,disabled,complete,deleted
+      - name: promotion_id
+        in: query
+        description: The list of promotions ID
+        required: false
+        schema:
+          type: string
+          example: 1,2,3
+      - name: search
+        in: query
+        description: Search by Promo Name
+        required: false
+        schema:
+          type: string
+          example: ABCDG
     responses:
       '200':
         description: OK
@@ -62,19 +76,42 @@ promotion-codes:
               items:
                 $ref: '../schemas/PromotionCode.yaml'
 
-promotion-codes/{id}:
+promotion-codes/export:
   get:
     tags:
       - Promotion Codes
     parameters:
-      - $ref: "#/parameters/id"
+      - name: status
+        in: query
+        description: Status
+        required: false
+        schema:
+          type: string
+          example: active,disabled,complete,deleted
+      - name: promotion_id
+        in: query
+        description: The list of promotions ID
+        required: false
+        schema:
+          type: string
+          example: 1,2,3
+      - name: search
+        in: query
+        description: Search by Promo Name
+        required: false
+        schema:
+          type: string
+          example: ABCDG
     responses:
       '200':
-        description: OK
+        description: File successfully generated
         content:
-          application/json:
+          application/vnd.ms-excel:
             schema:
-              $ref: '../schemas/PromotionCode.yaml'
+              type: string
+              format: binary
+
+promotion-codes/{id}/destroy:
   delete:
     tags:
       - Promotion Codes
@@ -116,7 +153,7 @@ parameters:
   id:
     name: id
     in: path
-    description: Promotion ID
+    description: Promotion Code ID
     required: true
     schema:
       type: integer

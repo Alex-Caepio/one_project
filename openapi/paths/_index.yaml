@@ -125,8 +125,10 @@
 # PromotionsCodes
 /admin/promotion-codes:
   $ref: "./AdminPromotionCode.yaml#/promotion-codes"
-/admin/promotion-codes/{id}:
-  $ref: "./AdminPromotionCode.yaml#/promotion-codes~1{id}"
+/admin/promotion-codes/export:
+  $ref: "./AdminPromotionCode.yaml#/promotion-codes~1export"
+/admin/promotion-codes/{id}/destroy:
+  $ref: "./AdminPromotionCode.yaml#/promotion-codes~1{id}~1destroy"
 /admin/promotion-codes/{id}/enable:
   $ref: "./AdminPromotionCode.yaml#/promotion-codes~1{id}~1enable"
 /admin/promotion-codes/{id}/disable:

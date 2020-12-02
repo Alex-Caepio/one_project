@@ -2,24 +2,36 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\PromocodeExport;
 use App\Filters\PromocodeFiltrator;
 use App\Http\Controllers\Controller;
 use App\Models\PromotionCode;
 use App\Transformers\PromotionCodeTransformer;
 use App\Http\Requests\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PromotionCodeController extends Controller {
     public function index(Request $request) {
-        $promotion = PromotionCode::query();
+        $promotionQuery = PromotionCode::query();
         $promotionFilter = new PromocodeFiltrator();
-        $promotionFilter->apply($promotion, $request);
+        $promotionFilter->apply($promotionQuery, $request);
 
         $includes = $request->getIncludes();
-        $paginator = $promotion->with($includes)->paginate($request->getLimit());
+        $paginator = $promotionQuery->with($includes)->paginate($request->getLimit());
 
         $promotions = $paginator->getCollection();
         return fractal($promotions, new PromotionCodeTransformer())->parseIncludes($request->getIncludes())->toArray();
     }
+
+
+    /**
+     * @param \App\Http\Requests\Request $request
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    public function export(Request $request) {
+        return Excel::download(new PromocodeExport($request), 'promocodes.xlsx');
+    }
+
 
     public function store(Request $request) {
         $data = $request->all();
