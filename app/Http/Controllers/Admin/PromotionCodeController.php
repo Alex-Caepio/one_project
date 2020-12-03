@@ -28,7 +28,8 @@ class PromotionCodeController extends Controller {
      * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
      */
     public function export(Request $request) {
-        return Excel::download(new PromocodeExport($request), 'promocodes.xlsx');
+        $extension = $request->get('type') && $request->get('type') === 'csv' ? 'csv' : 'xlsx';
+        return Excel::download(new PromocodeExport($request), 'promocodes.'.$extension);
     }
 
     public function store(Request $request) {
