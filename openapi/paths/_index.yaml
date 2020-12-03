@@ -43,6 +43,10 @@
   $ref: "./Service.yaml#/services"
 /services/{id}:
   $ref: "./Service.yaml#/services~1{id}"
+/services/{id}/publish:
+  $ref: "./Service.yaml#/services~1{id}~1publish"
+/services/{id}/unpublish:
+  $ref: "./Service.yaml#/services~1{id}~1publish"
 /services/practitioner:
   $ref: "./Service.yaml#/services~1practitioner"
 /services/practitioner/{id}:

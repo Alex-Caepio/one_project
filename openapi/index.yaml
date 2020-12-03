@@ -1850,6 +1850,26 @@ paths:
       responses:
         "204":
           description: OK
+  "/services/{id}/publish":
+    get:
+      tags:
+        - Service
+      parameters:
+        - name: id
+          in: path
+          description: Service ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Service"
+  "/services/{id}/unpublish":
+    $ref: "#/paths/~1services~1%7Bid%7D~1publish"
   /services/practitioner:
     get:
       tags:

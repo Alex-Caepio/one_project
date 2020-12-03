@@ -2,19 +2,18 @@
 
 namespace App\Http\Requests\Services;
 
+use App\Http\Requests\Request;
 use App\Models\Service;
-use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
-class StoreServiceRequest extends FormRequest
-{
+class StoreServiceRequest extends Request {
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
-    public function authorize()
-    {
-        return true;
+    public function authorize() {
+        return Auth::user()->isPractitioner() && (!$this->service || $this->service->user_id === Auth::id());
     }
 
     /**
@@ -22,33 +21,30 @@ class StoreServiceRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
-    {
+    public function rules() {
+        $isPublished = $this->getBoolFromRequest('is_published');
+        $url = $this->get('url') ?? to_url($this->get('name'));
+        $this->getInputSource()->set('url', $url);
+
+        if ($isPublished === true) {
+            return [
+                'title'           => 'required|string|min:5|max:120',
+                'description'     => 'required|string|min:5|max:3000',
+                'is_published'    => 'bool',
+                'introduction'    => 'required|string|min:5|max:200',
+                'url'             => 'required|url|unique:services,url' . ($this->service ? ',' . $this->service->id : ''),
+                'service_type_id' => 'required|exists:service_types,id',
+                'image_url'       => 'required|url',
+                'icon_url'        => 'required|url',
+            ];
+        }
         return [
-            'title'=>'min:5|max:200',
-            'description'=>'string|min:5',
-            'is_published'=>'boolean',
-            'introduction'=>'min:5',
-            'url'=> 'url',
+            'title'           => 'min:5|max:200',
+            'description'     => 'string|min:5',
+            'is_published'    => 'boolean',
+            'introduction'    => 'min:5',
+            'url'             => 'url',
             'service_type_id' => 'required|exists:service_types,id'
         ];
-    }
-
-    public function withValidator($validator): void
-    {
-        $validator->after(function ($validator) {
-            if ($validator->errors()->isNotEmpty()) {
-                return;
-            }
-            $url       = $this->get('url') ?? to_url($this->get('name'));
-            $fieldName = $this->get('url') ? 'url' : 'name';
-
-            if (Service::where('url', $url)->exists()) {
-                $validator->errors()->add(
-                    $fieldName,
-                    "The slug {$url} is not unique! Please, chose the different {$fieldName}."
-                );
-            }
-        });
     }
 }

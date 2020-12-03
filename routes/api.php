@@ -78,6 +78,8 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
         Route::get('services/practitioner/{service}', [ServiceController::class, 'practitionerServiceShow']);
         Route::post('services', [ServiceController::class, 'store']);
         Route::put('services/{service}', [ServiceController::class, 'update']);
+        Route::put('services/{service}/publish', [ServiceController::class, 'publish']);
+        Route::put('services/{service}/unpublish', [ServiceController::class, 'unpublish']);
         Route::delete('services/{service}', [ServiceController::class, 'destroy']);
     });
 

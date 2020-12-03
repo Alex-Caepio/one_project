@@ -1,20 +1,19 @@
 <?php
 
-namespace App\Http\Requests\Articles;
+namespace App\Http\Requests\Services;
 
 use App\Http\Requests\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
-
-class ArticleActionRequest extends Request {
+class ServiceOwnerRequest extends Request {
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
-    public function authorize(): bool {
-        $model = $this->route('article');
-        return $this->user()->isPractitioner() && $model->user_id === $this->user()->id;
+    public function authorize() {
+        return $this->service && $this->service->user_id === Auth::id();
     }
 
     /**
@@ -25,6 +24,4 @@ class ArticleActionRequest extends Request {
     public function rules() {
         return [];
     }
-
-
 }
