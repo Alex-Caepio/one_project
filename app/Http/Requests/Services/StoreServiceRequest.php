@@ -29,13 +29,13 @@ class StoreServiceRequest extends Request {
         if ($isPublished === true) {
             return [
                 'title'           => 'required|string|min:5|max:100',
-                'description'     => 'required|string|min:5|max:1000',
+                'description'     => 'string|min:5|max:1000',
                 'is_published'    => 'bool',
                 'introduction'    => 'required|string|min:5|max:500',
                 'url'             => 'required|url|unique:services,url' . ($this->service ? ',' . $this->service->id : ''),
                 'service_type_id' => 'required|exists:service_types,id',
-                'image_url'       => 'required|url',
-                'icon_url'        => 'required|url',
+                'image_url'       => 'url',
+                'icon_url'        => 'url',
             ];
         }
         return [
