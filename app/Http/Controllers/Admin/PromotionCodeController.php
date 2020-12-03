@@ -20,7 +20,9 @@ class PromotionCodeController extends Controller {
         $paginator = $promotionQuery->with($includes)->paginate($request->getLimit());
 
         $promotions = $paginator->getCollection();
-        return fractal($promotions, new PromotionCodeTransformer())->parseIncludes($request->getIncludes())->toArray();
+        return response(fractal($promotions, new PromotionCodeTransformer())->parseIncludes($request->getIncludes())
+                                                                            ->toArray())
+            ->withPaginationHeaders($paginator)->withFilters($request);
     }
 
     /**
@@ -29,7 +31,7 @@ class PromotionCodeController extends Controller {
      */
     public function export(Request $request) {
         $extension = $request->get('type') && $request->get('type') === 'csv' ? 'csv' : 'xlsx';
-        return Excel::download(new PromocodeExport($request), 'promocodes.'.$extension);
+        return Excel::download(new PromocodeExport($request), 'promocodes.' . $extension);
     }
 
     public function store(Request $request) {
