@@ -74,10 +74,6 @@ abstract class ServiceAction {
             $service->disciplines()->sync($request->get('disciplines'));
         }
 
-        if ($request->filled('articles')) {
-            $service->articles()->sync($request->get('articles'));
-        }
-
         $keywords = $this->collectKeywordModelsFromRequest($request);
         if (count($keywords)) {
             $service->keywords()->sync($keywords);
