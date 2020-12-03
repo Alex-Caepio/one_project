@@ -130,6 +130,7 @@ class ArticleTransformer extends Transformer {
     public function includeLastPublished(Article $article): ?Collection {
         return $this->collectionOrNull(Article::where('id', '<>', $article->id)
                                               ->where('user_id', $article->user_id)
+                                              ->with('user')
                                               ->published()
                                               ->orderBy('published_at', 'desc')
                                               ->limit(3)

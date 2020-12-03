@@ -28,10 +28,10 @@ class ServicePublishRequest extends Request {
 
     public function withValidator(Validator $validator) {
         $validator->setRules([
-                                 'title'           => 'required|min:5|max:200',
-                                 'description'     => 'required|string|min:5',
+                                 'title'           => 'required|min:5|max:100',
+                                 'description'     => 'required|string|min:5|max:1000',
                                  'is_published'    => 'boolean',
-                                 'introduction'    => 'required|min:5|max:200',
+                                 'introduction'    => 'required|min:5|max:500',
                                  'url'             => 'required|url|unique:services,url,' . $this->service->id,
                                  'image_url'       => 'required|url',
                                  'icon_url'        => 'required|url',
