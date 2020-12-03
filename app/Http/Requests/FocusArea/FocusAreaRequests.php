@@ -32,7 +32,7 @@ class FocusAreaRequests extends FormRequest
 
             'section_2_h2'              => 'nullable|max:300',
             'section_2_h3'              => 'nullable|max:300',
-            'section_2_background'      => 'nullable|min:6|max:6',
+            'section_2_background'      => 'nullable|min:6|max:7',
             'section_2_textarea'        => 'nullable|max:2000',
 
             'section_3_h2'              => 'nullable|max:300',
@@ -44,14 +44,14 @@ class FocusAreaRequests extends FormRequest
 
             'section_5_h2'              => 'nullable|max:300',
             'section_5_h3'              => 'nullable|max:300',
-            'section_5_background'      => 'nullable|min:6|max:6',
+            'section_5_background'      => 'nullable|min:6|max:7',
             'section_5_textarea'        => 'nullable|max:2000',
 
             'section_6_header_h2'       => 'nullable|max:300',
 
             'section_7_h2'              => 'nullable|max:300',
             'section_7_h3'              => 'nullable|max:300',
-            'section_7_background'      => 'nullable|min:6|max:6',
+            'section_7_background'      => 'nullable|min:6|max:7',
             'section_7_text'            => 'nullable|max:2000',
 
             'section_8_h2'              => 'nullable|max:300',
@@ -63,7 +63,7 @@ class FocusAreaRequests extends FormRequest
 
             'section_10_h2'             => 'nullable|max:300',
             'section_10_h3'             => 'nullable|max:300',
-            'section_10_background'     => 'nullable|min:6|max:6',
+            'section_10_background'     => 'nullable|min:6|max:7',
             'section_10_textarea'       => 'nullable|max:2000',
 
             'section_11_h2'             => 'nullable|max:300',

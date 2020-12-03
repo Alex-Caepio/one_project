@@ -35,7 +35,7 @@ class DisciplineStoreRequest extends Request
 
             'section_2_h2'              => 'nullable|max:300',
             'section_2_h3'              => 'nullable|max:300',
-            'section_2_background'      => 'nullable|min:6|max:6',
+            'section_2_background'      => 'nullable|min:6|max:7',
             'section_2_textarea'        => 'nullable|max:2000',
 
             'section_3_h2'              => 'nullable|max:300',
@@ -43,14 +43,14 @@ class DisciplineStoreRequest extends Request
 
             'section_4_h2'              => 'nullable|max:300',
             'section_4_h3'              => 'nullable|max:300',
-            'section_4_background'      => 'nullable|min:6|max:6',
+            'section_4_background'      => 'nullable|min:6|max:7',
             'section_4_textarea'        => 'nullable|max:2000',
 
             'section_5_header_h2'       => 'nullable|max:300',
 
             'section_6_h2'              => 'nullable|max:300',
             'section_6_h3'              => 'nullable|max:300',
-            'section_6_background'      => 'nullable|min:6|max:6',
+            'section_6_background'      => 'nullable|min:6|max:7',
             'section_6_textarea'        => 'nullable|max:2000',
 
             'section_7_media_url'       => 'nullable|url',
@@ -63,7 +63,7 @@ class DisciplineStoreRequest extends Request
 
             'section_9_h2'              => 'nullable|max:300',
             'section_9_h3'              => 'nullable|max:300',
-            'section_9_background'      => 'nullable|min:6|max:6',
+            'section_9_background'      => 'nullable|min:6|max:7',
             'section_9_textarea'        => 'nullable|max:2000',
 
             'section_10_h2'             => 'nullable|max:300',

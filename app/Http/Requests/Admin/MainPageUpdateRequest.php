@@ -29,13 +29,13 @@ class MainPageUpdateRequest extends Request
             'section_1_alt_text'                => 'nullable|max:150',
             'section_1_intro_text'              => 'nullable|max:150',
 
-            'section_2_background'              => 'nullable|min:6|max:6',
+            'section_2_background'              => 'nullable|min:6|max:7',
 
             'section_3_h1'                      => 'nullable|max:150',
             'section_3_h2'                      => 'nullable|max:300',
-            'section_3_background'              => 'nullable|min:6|max:6',
+            'section_3_background'              => 'nullable|min:6|max:7',
             'section_3_button_text'             => 'nullable|max:20',
-            'section_3_button_color'            => 'nullable|min:6|max:6',
+            'section_3_button_color'            => 'nullable|min:6|max:7',
             'section_3_button_url'              => 'nullable|url',
             'section_3_text'                    => 'nullable|max:2000',
             'section_3_target_blanc'            => 'nullable|boolean',
@@ -44,13 +44,13 @@ class MainPageUpdateRequest extends Request
 
             'section_5_h2'                      => 'nullable|max:150',
             'section_5_h3'                      => 'nullable|max:300',
-            'section_5_background'              => 'nullable|min:6|max:6',
+            'section_5_background'              => 'nullable|min:6|max:7',
             'section_5_text'                    => 'nullable|max:2000',
 
             'section_6_h1'                      => 'nullable|max:150',
             'section_6_h3'                      => 'nullable|max:300',
             'section_6_button_text'             => 'nullable|max:20',
-            'section_6_button_color'            => 'nullable|min:6|max:6',
+            'section_6_button_color'            => 'nullable|min:6|max:7',
             'section_6_button_url'              => 'nullable|url',
             'section_6_target_blanc'            => 'nullable|boolean',
             'section_6_text'                    => 'nullable|max:2000',
@@ -61,7 +61,7 @@ class MainPageUpdateRequest extends Request
 
             'section_8_h1'                      => 'nullable|max:150',
             'section_8_h3'                      => 'nullable|max:300',
-            'section_8_background'              => 'nullable|min:6|max:6',
+            'section_8_background'              => 'nullable|min:6|max:7',
             'section_8_text'                    => 'nullable|max:2000',
 
             'section_9_h2'                      => 'nullable|max:150',
@@ -77,7 +77,7 @@ class MainPageUpdateRequest extends Request
             'section_11_text'                   => 'nullable|max:2000',
             'section_11_button_text'            => 'nullable|max:20',
             'section_11_button_url'             => 'nullable|url',
-            'section_11_button_color'           => 'nullable|min:6|max:6',
+            'section_11_button_color'           => 'nullable|min:6|max:7',
             'section_11_target_blanc'           => 'nullable|boolean',
             'section_11_media_url'              => 'nullable|url',
             'section_11_alt_text'               => 'nullable|max:150',
