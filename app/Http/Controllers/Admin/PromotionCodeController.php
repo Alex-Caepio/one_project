@@ -23,7 +23,6 @@ class PromotionCodeController extends Controller {
         return fractal($promotions, new PromotionCodeTransformer())->parseIncludes($request->getIncludes())->toArray();
     }
 
-
     /**
      * @param \App\Http\Requests\Request $request
      * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
@@ -31,7 +30,6 @@ class PromotionCodeController extends Controller {
     public function export(Request $request) {
         return Excel::download(new PromocodeExport($request), 'promocodes.xlsx');
     }
-
 
     public function store(Request $request) {
         $data = $request->all();
@@ -51,5 +49,26 @@ class PromotionCodeController extends Controller {
         return fractal($promotionCode, new PromotionCodeTransformer())->respond();
     }
 
+    /**
+     * @param \App\Models\PromotionCode $promotionCode
+     * @param \App\Http\Requests\Request $request
+     * @return mixed
+     */
+    public function enable(PromotionCode $promotionCode, Request $request) {
+        $promotionCode->status = PromotionCode::STATUS_ACTIVE;
+        $promotionCode->save();
+        return response(fractal($promotionCode, new PromotionCodeTransformer())->toArray());
+    }
+
+    /**
+     * @param \App\Models\PromotionCode $promotionCode
+     * @param \App\Http\Requests\Request $request
+     * @return mixed
+     */
+    public function disable(PromotionCode $promotionCode, Request $request) {
+        $promotionCode->status = PromotionCode::STATUS_DISABLED;
+        $promotionCode->save();
+        return response(fractal($promotionCode, new PromotionCodeTransformer())->toArray());
+    }
 
 }
