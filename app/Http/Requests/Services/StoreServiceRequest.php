@@ -23,7 +23,7 @@ class StoreServiceRequest extends Request {
      */
     public function rules() {
         $isPublished = $this->getBoolFromRequest('is_published');
-        $url = $this->get('url') ?? to_url($this->get('name'));
+        $url = $this->get('url') ?? to_url($this->get('title'));
         $this->getInputSource()->set('url', $url);
 
         if ($isPublished === true) {

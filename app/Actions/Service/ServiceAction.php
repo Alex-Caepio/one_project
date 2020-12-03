@@ -29,7 +29,7 @@ abstract class ServiceAction {
      * @return \App\Models\Service
      */
     protected function fillService(Service $service, StoreServiceRequest $request): Service {
-        $url = $request->get('url') ?? to_url($request->get('name'));
+        $url = $request->get('url') ?? to_url($request->get('title'));
         $params = [
             'title'           => $request->get('title'),
             'description'     => $request->get('description'),
