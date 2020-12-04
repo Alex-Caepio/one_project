@@ -102,6 +102,13 @@ promotion-codes/export:
         schema:
           type: string
           example: ABCDG
+      - name: type
+        in: query
+        description: File Type (csv or xls)
+        required: true
+        schema:
+          type: string
+          example: csv
     responses:
       '200':
         description: File successfully generated

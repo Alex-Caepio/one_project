@@ -1729,6 +1729,94 @@ paths:
     post:
       tags:
         - Service
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+                - url
+                - introduction
+                - service_type_id
+              properties:
+                service_type_id:
+                  type: string
+                  nullable: false
+                  example: events
+                title:
+                  type: string
+                  example: Yoga practice
+                introduction:
+                  type: string
+                  nullable: true
+                  example: Yoga desc
+                description:
+                  type: string
+                  nullable: true
+                  example: Yoga loooooong description
+                url:
+                  type: string
+                  nullable: true
+                  example: yoga-practice
+                image_url:
+                  type: string
+                  nullable: true
+                  example: http://cdn.com/yoga-practice.png
+                icon_url:
+                  type: string
+                  nullable: true
+                  example: http://cdn.com/yoga-practice.png
+                is_published:
+                  type: boolean
+                  nullable: false
+                  example: true
+                focus_areas:
+                  type: array
+                  items:
+                    type: integer
+                  example:
+                    - 123
+                    - 231
+                    - 312
+                disciplines:
+                  type: array
+                  items:
+                    type: integer
+                  example:
+                    - 123
+                    - 231
+                    - 312
+                keywords:
+                  type: array
+                  items:
+                    type: string
+                  example:
+                    - test1
+                    - test2
+                    - test3
+                media_images:
+                  type: array
+                  items:
+                    type: object
+                  example:
+                    - url: http://cdn.com/yoga-practice.png
+                    - url: http://cdn.com/another-picture.png
+                media_videos:
+                  type: array
+                  items:
+                    type: object
+                  example:
+                    - url: http://cdn.com/yoga-practice.mov
+                    - url: http://cdn.com/another-picture.mov
+                media_files:
+                  type: array
+                  items:
+                    type: object
+                  example:
+                    - url: http://cdn.com/yoga-practice.pdf
+                    - url: http://cdn.com/another-picture.docx
       responses:
         "200":
           description: OK
@@ -1736,6 +1824,30 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Service"
+        "422":
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: The given data was invalid.
+                  errors:
+                    type: object
+                    example:
+                      title:
+                        - You have not filled in the field "Service title"
+                      url:
+                        - You have not filled in the field "Service url"
+                        - The url has already been taken.
+                      description:
+                        - You have not filled in the field "Service description"
+                      introduction:
+                        - You have not filled in the field "Service introduction"
+                      service_type_id:
+                        - You have not filled in the field "Service Type"
     get:
       tags:
         - Service
@@ -1835,6 +1947,12 @@ paths:
         - Service
       parameters:
         - $ref: "#/paths/~1services~1%7Bid%7D/get/parameters/0"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/paths/~1services/post/requestBody/content/application~1json/schema"
       responses:
         "200":
           description: OK
@@ -1842,6 +1960,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Service"
+        "422":
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1services/post/responses/422/content/application~1json/schema"
     delete:
       tags:
         - Service
@@ -3901,6 +4025,13 @@ paths:
           schema:
             type: string
             example: ABCDG
+        - name: type
+          in: query
+          description: File Type (csv or xls)
+          required: true
+          schema:
+            type: string
+            example: csv
       responses:
         "200":
           description: File successfully generated

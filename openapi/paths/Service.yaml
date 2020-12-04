@@ -2,13 +2,25 @@ services:
   post:
     tags:
       - Service
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "../schemas/forms/ServiceForm.yaml"
     responses:
       '200':
         description: OK
         content:
           application/json:
             schema:
-              $ref: '../schemas/Service.yaml'
+              $ref: "../schemas/Service.yaml"
+      '422':
+        description: Validation errors
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/422/ServiceUpdate.yaml"
   get:
     tags:
       - Service
@@ -70,7 +82,7 @@ services:
             schema:
               type: array
               items:
-                $ref: '../schemas/Service.yaml'
+                $ref: "../schemas/Service.yaml"
 services/practitioner:
   get:
     tags:
@@ -133,7 +145,7 @@ services/practitioner:
             schema:
               type: array
               items:
-                $ref: '../schemas/Service.yaml'
+                $ref: "../schemas/Service.yaml"
 
 services/{id}:
   get:
@@ -161,19 +173,31 @@ services/{id}:
         content:
           application/json:
             schema:
-              $ref: '../schemas/Service.yaml'
+              $ref: "../schemas/Service.yaml"
   put:
     tags:
       - Service
     parameters:
       - $ref: "#/parameters/id"
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "../schemas/forms/ServiceForm.yaml"
     responses:
       '200':
         description: OK
         content:
           application/json:
             schema:
-              $ref: '../schemas/Service.yaml'
+              $ref: "../schemas/Service.yaml"
+      '422':
+        description: Validation errors
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/422/ServiceUpdate.yaml"
   delete:
     tags:
       - Service
@@ -209,7 +233,7 @@ services/practitioner/{id}:
         content:
           application/json:
             schema:
-              $ref: '../schemas/Service.yaml'
+              $ref: "../schemas/Service.yaml"
 
 services/{id}/publish:
   get:
@@ -223,7 +247,7 @@ services/{id}/publish:
         content:
           application/json:
             schema:
-              $ref: '../schemas/Service.yaml'
+              $ref: "../schemas/Service.yaml"
 
 services/{id}/unpublish:
   get:
@@ -237,7 +261,7 @@ services/{id}/unpublish:
         content:
           application/json:
             schema:
-              $ref: '../schemas/Service.yaml'
+              $ref: "../schemas/Service.yaml"
 parameters:
   id:
     name: id
