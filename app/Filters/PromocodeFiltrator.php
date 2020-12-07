@@ -4,6 +4,7 @@
 namespace App\Filters;
 
 use App\Http\Requests\Request;
+use App\Models\PromotionCode;
 use Illuminate\Database\Eloquent\Builder;
 
 class PromocodeFiltrator {
@@ -27,6 +28,9 @@ class PromocodeFiltrator {
         $status = $request->getArrayFromRequest('status');
         if (count($status)) {
             $queryBuilder->whereIn('status', $status);
+            if (in_array(PromotionCode::STATUS_DELETED, $status, true)) {
+                $queryBuilder->withTrashed();
+            }
         }
 
         return $queryBuilder;

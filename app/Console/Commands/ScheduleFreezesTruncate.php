@@ -6,8 +6,7 @@ use App\Models\ScheduleFreeze;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 
-class ScheduleFreezesTruncate extends Command
-{
+class ScheduleFreezesTruncate extends Command {
     /**
      * The name and signature of the console command.
      *
@@ -22,23 +21,13 @@ class ScheduleFreezesTruncate extends Command
      */
     protected $description = 'Truncates too schedule freezes';
 
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
 
     /**
      * Execute the console command.
      *
      * @return int
      */
-    public function handle()
-    {
+    public function handle() {
         $artisanDays = $this->argument('days');
         $days = Carbon::now()->subDays($artisanDays);
         $count = ScheduleFreeze::where('freeze_at', '<', $days)->count();

@@ -36,6 +36,7 @@ class Promotion extends Model {
     public const STATUS_DISABLED = 'disabled';
     public const STATUS_COMPLETE = 'complete';
     public const STATUS_DELETED = 'deleted';
+    public const STATUS_EXPIRED = 'expired';
 
     public const APPLIED_HOST = 'host';
     public const APPLIED_BOTH = 'both';

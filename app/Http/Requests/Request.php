@@ -10,15 +10,29 @@ class Request extends FormRequest {
      *
      * @return array
      */
-    public function rules() {
+    public function rules(): array {
         return [];
     }
 
-    public function getIncludes() {
+    public function getIncludes(): array {
         $with = $this->header('X-with') ?? $this->query->get('with');
-
         return $with ? $this->getArrayValue($with, ',') : [];
     }
+
+    public function getIncludesWithTrashed(array $trashedModels): array {
+        $newIncludes = [];
+        foreach ($this->getIncludes() as $include) {
+            if (in_array($include, $trashedModels, true)) {
+                $newIncludes[$include] = static function($query) {
+                    $query->withTrashed();
+                };
+            } else {
+                $newIncludes[] = $include;
+            }
+        }
+        return $newIncludes;
+    }
+
 
     public function getLimit() {
         return (int)$this->query->get('limit') ?: (int)$this->header('X-limit') ?: config('api.pagination_limit_default');

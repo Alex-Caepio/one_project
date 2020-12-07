@@ -24,7 +24,7 @@ class ArticleController extends Controller {
         $articleFilter = new ArticleFiltrator();
         $articleFilter->apply($query, $request);
 
-        $includes = $request->getIncludes();
+        $includes = $request->getIncludesWithTrashed(['user']);
         $paginator = $query->with($includes)->paginate($request->getLimit());
 
         $article = $paginator->getCollection();

@@ -4,6 +4,7 @@
 namespace App\Filters;
 
 use App\Http\Requests\Request;
+use App\Models\Promotion;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -57,6 +58,9 @@ class PromotionFiltrator {
         $statuses = $request->getArrayFromRequest('status');
         if (count($statuses)) {
             $queryBuilder->whereIn('status', $statuses);
+            if (in_array(Promotion::STATUS_DELETED, $statuses, true)) {
+                $queryBuilder->withTrashed();
+            }
         }
 
 

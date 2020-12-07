@@ -84,11 +84,11 @@ class PurchaseRequest extends Request {
         }
 
         if (!count(array_intersect($promoDisciplines, $serviceDisciplines))) {
-            $validator->errors()->add('promo_code', "Promo code is invalid");
+            $validator->errors()->add('promo_code', "You are not allowed to use the promocode with this discipline");
         } elseif (!count(array_intersect($promoFocusAreas, $serviceFocusAreas))) {
-            $validator->errors()->add('promo_code', "Promo code is invalid");
+            $validator->errors()->add('promo_code', "You are not allowed to use the promocode with this focus area");
         } elseif (!in_array($promoServiceType, $serviceServiceTypes, true)) {
-            $validator->errors()->add('promo_code', "Promo code is invalid");
+            $validator->errors()->add('promo_code', "You are not allowed to use the promocode with this service type");
         }
     }
 }

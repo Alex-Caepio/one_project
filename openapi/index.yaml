@@ -1975,7 +1975,7 @@ paths:
         "204":
           description: OK
   "/services/{id}/publish":
-    get:
+    post:
       tags:
         - Service
       parameters:

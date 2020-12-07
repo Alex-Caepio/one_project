@@ -41,8 +41,6 @@ class PromotionCodeController extends Controller {
     }
 
     public function destroy(PromotionCode $promotionCode) {
-        $promotionCode->status = PromotionCode::STATUS_DELETED;
-        $promotionCode->save();
         $promotionCode->delete();
         return response(null, 204);
     }

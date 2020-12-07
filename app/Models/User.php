@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -173,6 +174,11 @@ class User extends Authenticatable implements MustVerifyEmail {
 
     public function promotions(): BelongsToMany {
         return $this->belongsToMany(Promotion::class, 'promotion_practitioner', 'practitioner_id', 'promotion_id');
+    }
+
+
+    public function freezes(): HasMany {
+        return $this->hasMany(ScheduleFreeze::class);
     }
 
 }

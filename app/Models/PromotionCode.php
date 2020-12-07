@@ -27,6 +27,7 @@ class PromotionCode extends Model {
     public const STATUS_COMPLETE = 'complete';
     public const STATUS_DELETED = 'deleted';
 
+
     public function users() {
         return $this->belongsToMany(User::class, 'user_promotion_code', 'user_id', 'promotion_code_id')
                     ->withTimeStamps();

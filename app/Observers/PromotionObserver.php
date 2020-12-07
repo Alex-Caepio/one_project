@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Models\Promotion;
 use App\Models\PromotionCode;
+use Carbon\Carbon;
 
 class PromotionObserver {
 
@@ -29,4 +30,5 @@ class PromotionObserver {
     public function deleted(Promotion $promotion): void {
         PromotionCode::where('promotion_id', $promotion->id)->delete();
     }
+
 }

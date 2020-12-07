@@ -236,7 +236,7 @@ services/practitioner/{id}:
               $ref: "../schemas/Service.yaml"
 
 services/{id}/publish:
-  get:
+  post:
     tags:
       - Service
     parameters:
@@ -250,7 +250,7 @@ services/{id}/publish:
               $ref: "../schemas/Service.yaml"
 
 services/{id}/unpublish:
-  get:
+  post:
     tags:
       - Service
     parameters:

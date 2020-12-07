@@ -5,6 +5,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Auth;
 
 class Schedule extends Model
@@ -92,5 +93,9 @@ class Schedule extends Model
     public function schedule_hidden_file()
     {
         return $this->hasMany(ScheduleHiddenFile::class);
+    }
+
+    public function freezes(): HasMany {
+        return $this->hasMany(ScheduleFreeze::class);
     }
 }

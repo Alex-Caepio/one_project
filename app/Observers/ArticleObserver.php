@@ -2,8 +2,11 @@
 
 namespace App\Observers;
 
+use App\Events\ArticlePublished;
+use App\Events\ArticleUnpublished;
 use App\Models\Article;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class ArticleObserver {
 
@@ -16,9 +19,9 @@ class ArticleObserver {
     public function saved(Article $article) {
         if ($article->isDirty('is_published')) {
             if (!$article->is_published) {
-                // @todo: Published email event
+                event(new ArticleUnpublished($article, Auth::user()));
             } else {
-               // @todo: Unpublished email event
+                event(new ArticlePublished($article, Auth::user()));
             }
         }
     }
