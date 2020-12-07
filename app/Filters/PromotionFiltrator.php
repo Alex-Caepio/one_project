@@ -61,6 +61,8 @@ class PromotionFiltrator {
             if (in_array(Promotion::STATUS_DELETED, $statuses, true)) {
                 $queryBuilder->withTrashed();
             }
+        } else {
+            $queryBuilder->withTrashed();
         }
 
 

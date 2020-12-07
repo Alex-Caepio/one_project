@@ -31,6 +31,8 @@ class PromocodeFiltrator {
             if (in_array(PromotionCode::STATUS_DELETED, $status, true)) {
                 $queryBuilder->withTrashed();
             }
+        } else {
+            $queryBuilder->withTrashed();
         }
 
         return $queryBuilder;
