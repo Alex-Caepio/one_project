@@ -1986,12 +1986,8 @@ paths:
           schema:
             type: integer
       responses:
-        "200":
+        "204":
           description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Service"
   "/services/{id}/unpublish":
     $ref: "#/paths/~1services~1%7Bid%7D~1publish"
   /services/practitioner:

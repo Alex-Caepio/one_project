@@ -242,12 +242,8 @@ services/{id}/publish:
     parameters:
       - $ref: "#/parameters/id"
     responses:
-      '200':
+      '204':
         description: OK
-        content:
-          application/json:
-            schema:
-              $ref: "../schemas/Service.yaml"
 
 services/{id}/unpublish:
   post:
@@ -256,12 +252,9 @@ services/{id}/unpublish:
     parameters:
       - $ref: "#/parameters/id"
     responses:
-      '200':
+      '204':
         description: OK
-        content:
-          application/json:
-            schema:
-              $ref: "../schemas/Service.yaml"
+
 parameters:
   id:
     name: id

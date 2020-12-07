@@ -60,7 +60,7 @@ class ServiceController extends Controller {
     public function unpublish(Service $service, ServiceOwnerRequest $request) {
         $service->is_published = false;
         $service->save();
-        return fractal($service, new ServiceTransformer())->respond();
+        return response(null, 204);
     }
 
     public function store(StoreServiceRequest $request) {
@@ -77,10 +77,8 @@ class ServiceController extends Controller {
         $service->is_published = true;
         $service->save();
         $service->fresh();
-
         event(new ServiceListingLive($service, $request->user()));
-
-        return fractal($service, new ServiceTransformer())->respond();
+        return response(null, 204);
     }
 
     public function storeFavorite(Service $service) {
