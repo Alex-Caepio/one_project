@@ -145,4 +145,7 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::get('/users', [UserController::class, 'search']);
 
     Route::get('/mainpage', [MainPageController::class, 'index']);
+
+    Route::get('/schedule-freezes', [ScheduleFreezesController::class, 'index']);
+
 });

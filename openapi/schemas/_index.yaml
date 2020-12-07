@@ -18,6 +18,8 @@ PromotionCode:
   $ref: "./PromotionCode.yaml"
 Schedule:
   $ref: "./Schedule.yaml"
+ScheduleFreeze:
+  $ref: "./ScheduleFreeze.yaml"
 Service:
   $ref: "./Service.yaml"
 ServiceType:
