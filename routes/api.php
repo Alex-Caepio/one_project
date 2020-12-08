@@ -48,6 +48,8 @@ Route::get('articles/{publicArticle}', [ArticleController::class, 'show'])->wher
 Route::get('services', [ServiceController::class, 'index']);
 Route::get('services/{publicService}', [ServiceController::class, 'show'])->where('publicService', '[0-9]+');
 
+Route::get('/mainpage', [MainPageController::class, 'index']);
+
 Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::get('auth/profile', [AuthController::class, 'profile']);
     Route::put('auth/profile', [AuthController::class, 'update']);
@@ -144,8 +146,5 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
 
     Route::get('/users', [UserController::class, 'search']);
 
-    Route::get('/mainpage', [MainPageController::class, 'index']);
-
     Route::get('/schedule-freezes', [ScheduleFreezesController::class, 'index']);
-
 });
