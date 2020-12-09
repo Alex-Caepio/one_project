@@ -424,9 +424,71 @@ components:
         stripe_id:
           type: integer
         price:
-          type: string
+          type: number
+          format: double
         service_types:
           type: string
+        image_url:
+          type: string
+        description:
+          type: string
+        is_free:
+          type: boolean
+        unlimited_bookings:
+          type: boolean
+        commission_on_sale:
+          type: number
+          format: double
+        schedules_per_service:
+          type: string
+          enum:
+            - One
+            - Unlimited
+        pricing_options_per_service:
+          type: string
+          enum:
+            - One
+            - Unlimited
+        list_paid_services:
+          type: boolean
+        list_free_services:
+          type: boolean
+        take_deposits_and_instalment:
+          type: boolean
+        contact_clients_with_booking:
+          type: boolean
+        market_to_clients:
+          type: string
+        client_reviews:
+          type: string
+        article_publishing:
+          type: integer
+        article_publishing_unlimited:
+          type: boolean
+        prioritised_business_profile_search:
+          type: boolean
+        prioritised_serivce_search:
+          type: boolean
+        busines_profile_page:
+          type: boolean
+        unique_web_address:
+          type: boolean
+        onboarding_support:
+          type: boolean
+        client_analytics:
+          type: boolean
+        service_analytics:
+          type: boolean
+        financial_analytics:
+          type: boolean
+        created_at:
+          type: string
+          nullable: true
+          format: date-time
+        updated_at:
+          type: string
+          nullable: true
+          format: date-time
     Promotion:
       type: object
       properties:
@@ -4176,3 +4238,154 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/PromotionCode"
+  /admin/plans:
+    post:
+      operationId: admin-create-plan
+      tags:
+        - Plan
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+                stripe_id:
+                  type: integer
+                price:
+                  type: number
+                  format: double
+                service_types:
+                  type: string
+                image_url:
+                  type: string
+                description:
+                  type: string
+                is_free:
+                  type: boolean
+                unlimited_bookings:
+                  type: boolean
+                commission_on_sale:
+                  type: number
+                  format: double
+                schedules_per_service:
+                  type: string
+                  enum:
+                    - One
+                    - Unlimited
+                pricing_options_per_service:
+                  type: string
+                  enum:
+                    - One
+                    - Unlimited
+                list_paid_services:
+                  type: boolean
+                list_free_services:
+                  type: boolean
+                take_deposits_and_instalment:
+                  type: boolean
+                contact_clients_with_booking:
+                  type: boolean
+                market_to_clients:
+                  type: string
+                client_reviews:
+                  type: string
+                article_publishing:
+                  type: integer
+                article_publishing_unlimited:
+                  type: boolean
+                prioritised_business_profile_search:
+                  type: boolean
+                prioritised_serivce_search:
+                  type: boolean
+                busines_profile_page:
+                  type: boolean
+                unique_web_address:
+                  type: boolean
+                onboarding_support:
+                  type: boolean
+                client_analytics:
+                  type: boolean
+                service_analytics:
+                  type: boolean
+                financial_analytics:
+                  type: boolean
+                created_at:
+                  type: string
+                  nullable: true
+                  format: date-time
+                updated_at:
+                  type: string
+                  nullable: true
+                  format: date-time
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Plan"
+    get:
+      operationId: admin-get-plans
+      tags:
+        - Plan
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Plan"
+  "/admin/plans/{id}/":
+    put:
+      operationId: admin-edit-plans
+      tags:
+        - Plan
+      parameters:
+        - name: id
+          in: path
+          description: Plan ID
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/paths/~1admin~1plans/post/requestBody/content/application~1json/schema"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Plan"
+    get:
+      operationId: admin-show-plans
+      tags:
+        - Plan
+      parameters:
+        - $ref: "#/paths/~1admin~1plans~1%7Bid%7D~1/put/parameters/0"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Plan"
+    delete:
+      operationId: admin-delete-plans
+      tags:
+        - Plan
+      parameters:
+        - $ref: "#/paths/~1admin~1plans~1%7Bid%7D~1/put/parameters/0"
+      responses:
+        "204":
+          description: OK

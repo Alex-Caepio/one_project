@@ -142,3 +142,7 @@
   $ref: "./AdminPromotionCode.yaml#/promotion-codes~1{id}~1enable"
 /admin/promotion-codes/{id}/disable:
   $ref: "./AdminPromotionCode.yaml#/promotion-codes~1{id}~1disable"
+/admin/plans:
+  $ref: "./AdminPlan.yaml#/plans"
+/admin/plans/{id}/:
+  $ref: "./AdminPlan.yaml#/plans~1{id}"
