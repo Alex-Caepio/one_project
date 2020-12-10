@@ -13,9 +13,6 @@ class FixPromotions extends Migration
      */
     public function up()
     {
-        Schema::table('promotions', static function(Blueprint $table) {
-            $table->enum('status', ['active', 'disabled', 'deleted', 'complete'])->nullable(false)->default('disabled');
-        });
         Schema::table('promotion_codes', static function(Blueprint $table) {
             $table->dropColumn('status');
         });
@@ -30,9 +27,6 @@ class FixPromotions extends Migration
     {
         Schema::table('promotion_codes', static function(Blueprint $table) {
             $table->enum('status', ['active', 'disabled', 'deleted', 'complete'])->nullable(false)->default('disabled');
-        });
-        Schema::table('promotions', static function(Blueprint $table) {
-            $table->dropColumn('status');
         });
     }
 }
