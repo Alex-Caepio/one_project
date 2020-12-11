@@ -20,9 +20,9 @@ class CreatePromocode {
      */
     public function execute(Request $request, Promotion $promotion): Collection {
         $result = new Collection();
-        if (count($request->get('promocode_names'))) {
+        if (is_array($request->get('promocode_names')) && count($request->get('promocode_names'))) {
             foreach (array_unique($request->get('promocode_names')) as $name) {
-                $result->push($this->createPromocode($name, $request, $promotion));
+                $result->push($this->createPromocode(Str::upper($name), $request, $promotion));
             }
         } else {
             for ($i = 0; $i < (int)$request->get('total_codes'); $i++) {

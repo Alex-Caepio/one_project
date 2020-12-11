@@ -1,12 +1,13 @@
 <?php
 
-namespace app\Http\Requests\Promotion;
+namespace App\Http\Requests\Promotion;
 
 
 use App\Http\Requests\Request;
 use App\Models\Promotion;
 use App\Models\PromotionCode;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 
@@ -46,16 +47,16 @@ class SavePromotionRequest extends Request {
 
     public function withValidator(Validator $validator) {
         $validator->after(function($validator) {
-            $filledPromocodes = array_unique($this->get('promocode_names'));
+            $filledPromocodes = array_unique($this->get('promocode_names', []));
             if (count($filledPromocodes)) {
                 if (count($filledPromocodes) !== (int)$this->get('total_codes')) {
                     $validator->errors()
                               ->add('promocode_names', 'Please, fill all of the requested count of promocodes');
                 }
-                $promoCodes = PromotionCode::whereIn('name', $filledPromocodes)->pluck('name');
+                $promoCodes = PromotionCode::whereIn('name', $filledPromocodes)->pluck('name')->toArray();
                 if (count($promoCodes)) {
                     $validator->errors()
-                              ->add('promocode_names', 'These codes are already in use: ' . implode(', ', $promoCodes));
+                              ->add('promocode_names', 'These codes are already in use: ' . (implode(', ', $promoCodes)));
                 }
             }
         });

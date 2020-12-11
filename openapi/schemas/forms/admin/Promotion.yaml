@@ -8,6 +8,8 @@ required:
 properties:
   name:
     type: string
+    nullable: false
+    example: Promotion Name Test
   valid_from:
     type: string
     nullable: true

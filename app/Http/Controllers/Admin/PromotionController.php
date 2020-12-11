@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
-use app\Actions\Promo\SavePromotion;
+use App\Actions\Promo\SavePromotion;
 use App\Filters\PromotionFiltrator;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Promotion\EnableRequest;
-use app\Http\Requests\Promotion\SavePromotionRequest;
+use App\Http\Requests\Promotion\SavePromotionRequest;
 use App\Http\Requests\Request;
 use App\Models\Promotion;
 use App\Transformers\PromotionTransformer;
@@ -83,7 +83,7 @@ class PromotionController extends Controller {
     }
 
     /**
-     * @param \app\Http\Requests\Promotion\SavePromotionRequest $request
+     * @param \App\Http\Requests\Promotion\SavePromotionRequest $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function store(SavePromotionRequest $request) {
