@@ -117,6 +117,28 @@ promotions:
               type: array
               items:
                 $ref: '../schemas/Promotion.yaml'
+  post:
+    tags:
+      - Promotion
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/forms/admin/Promotion.yaml'
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/Promotion.yaml'
+      '422':
+        description: Validation errors
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/422/PromotionSave.yaml'
 
 promotions/{id}:
   get:

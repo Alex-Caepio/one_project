@@ -60,6 +60,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/focus-areas/{focusArea}/icon', [FocusAreaController::class, 'icon']);
 
         Route::get('/promotions', [PromotionController::class, 'index']);
+        Route::post('/promotions', [PromotionController::class, 'store']);
         Route::get('/promotions/{promotion}', [PromotionController::class, 'show']);
         Route::post('/promotions/{promotion}/enable', [PromotionController::class, 'enable']);
         Route::post('/promotions/{promotion}/disable', [PromotionController::class, 'disable']);
