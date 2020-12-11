@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\BookingController;
 use App\Http\Controllers\Admin\MainPageController;
 use App\Http\Controllers\Admin\PlanController;
 use App\Http\Controllers\Admin\ClientController;
@@ -94,5 +95,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
         Route::get('/mainpage', [MainPageController::class, 'index']);
         Route::put('/mainpage', [MainPageController::class, 'update']);
+
+        Route::get('/bookings', [BookingController::class, 'index']);
     });
 });

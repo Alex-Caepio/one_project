@@ -3,13 +3,13 @@
 namespace Database\Factories;
 
 
-use App\Models\ScheduleAvailabilities;
+use App\Models\ScheduleAvailability;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class ScheduleAvailabilitiesFactory extends Factory
+class ScheduleAvailabilityFactory extends Factory
 {
 
-    protected $model = ScheduleAvailabilities::class;
+    protected $model = ScheduleAvailability::class;
 
     public function definition()
     {

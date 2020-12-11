@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\BookingController;
 use App\Http\Controllers\MainPageController;
+use App\Http\Controllers\ScheduleFreezesController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\StripeAccountController;
 use App\Http\Controllers\UserController;
@@ -117,7 +119,7 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::get('/services/{service}/schedules', [ScheduleController::class, 'index']);
     Route::put('/schedules/{schedule}/edit', [ScheduleController::class, 'update']);
     Route::post('/schedules/{schedule}/purchase', [ScheduleController::class, 'purchase']);
-    Route::get('/schedule/{schedule}/attendants', [ScheduleController::class, 'allUser']);
+    Route::get('/schedules/{schedule}/attendants', [ScheduleController::class, 'allUser']);
     Route::post('/schedules/{schedule}/freeze', [ScheduleController::class, 'freeze']);
     Route::get('/schedules/{schedule}/availabilities', [ScheduleController::class, 'availabilities']);
 
@@ -147,4 +149,7 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::get('/users', [UserController::class, 'search']);
 
     Route::get('/schedule-freezes', [ScheduleFreezesController::class, 'index']);
+
+    Route::get('/bookings', [BookingController::class, 'index']);
+    Route::post('/bookings/{booking}/reschedule', [BookingController::class, 'reschedule']);
 });

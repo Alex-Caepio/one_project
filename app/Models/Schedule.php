@@ -8,6 +8,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * Class Schedule
+ *
+ * @property int     id
+ * @property Service service
+ */
 class Schedule extends Model
 {
     use HasFactory;
@@ -32,6 +38,7 @@ class Schedule extends Model
         'notice_min_period',
         'buffer_time',
         'buffer_period',
+        'is_virtual'
     ];
 
     public function location()
@@ -57,7 +64,7 @@ class Schedule extends Model
     public function isSoldOut()
     {
         $time = Carbon::now()->subMinutes(15);
-        $purchased = ScheduleUser::where('schedule_id', $this->id)->count();
+        $purchased = Booking::where('schedule_id', $this->id)->count();
         $personalFreezed = ScheduleFreeze::where('schedule_id', $this->id)
             ->where('user_id', Auth::id())
             ->where('freeze_at', '>', $time->toDateTimeString())->count();
@@ -75,22 +82,22 @@ class Schedule extends Model
         return $this->morphMany(MediaFile::class, 'morphesTo', 'model_name', 'model_id');
     }
 
-    public function  schedule_availabilities()
+    public function schedule_availabilities()
     {
-        return $this->belongsTo(ScheduleAvailabilities::class);
+        return $this->hasMany(ScheduleAvailability::class);
     }
 
-    public function  schedule_unavailabilities()
+    public function schedule_unavailabilities()
     {
-        return $this->belongsTo(ScheduleUnavailabilities::class);
+        return $this->hasMany(ScheduleUnavailability::class);
     }
 
-    public function S()
+    public function schedule_files()
     {
         return $this->hasMany(ScheduleFile::class);
     }
 
-    public function schedule_hidden_file()
+    public function schedule_hidden_files()
     {
         return $this->hasMany(ScheduleHiddenFile::class);
     }

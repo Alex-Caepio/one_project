@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Actions\RescheduleRequest\RescheduleRequestStore;
 use App\Http\Requests\Request;
+use App\Http\Requests\Reschedule\RescheduleRequestRequest;
+use App\Models\Booking;
 use App\Models\RescheduleRequest;
 use App\Models\Schedule;
 use Illuminate\Support\Facades\Auth;
@@ -24,8 +26,12 @@ class RescheduleRequestController extends Controller
 
     public function accept(RescheduleRequest $rescheduleRequest)
     {
-        Auth::user()->schedules()->detach($rescheduleRequest->schedule_id);
-        Auth::user()->schedules()->attach($rescheduleRequest->new_schedule_id);
+        $booking = $rescheduleRequest->booking;
+        $booking->schedule_id = $rescheduleRequest->new_schedule_id;
+
+        $booking->update();
+
+        return response(null, 204);
     }
 
     public function decline(RescheduleRequest $rescheduleRequest)

@@ -2,19 +2,22 @@
 
 namespace Tests\Api;
 
+use App\Models\Booking;
 use App\Models\Discipline;
 use App\Models\FocusArea;
 use App\Models\Price;
 use App\Models\Promotion;
 use App\Models\PromotionCode;
 use App\Models\Schedule;
-use App\Models\ScheduleAvailabilities;
+use App\Models\ScheduleAvailability;
 use App\Models\ScheduleFile;
+use App\Models\ScheduleFreeze;
 use App\Models\ScheduleHiddenFile;
-use App\Models\ScheduleUnavailabilities;
+use App\Models\ScheduleUnavailability;
 use App\Models\Service;
 use App\Models\ServiceType;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
@@ -262,8 +265,8 @@ class ScheduleTest extends TestCase
     {
         $service = Service::factory()->create(['service_type_id' => 'appointment']);
         $schedule = Schedule::factory()->make();
-        $scheduleUnavailabilities = ScheduleUnavailabilities::factory()->count(2)->create();
-        $scheduleAvailabilities = ScheduleAvailabilities::factory()->count(2)->create();
+        $scheduleUnavailabilities = ScheduleUnavailability::factory()->count(2)->create();
+        $scheduleAvailabilities = ScheduleAvailability::factory()->count(2)->create();
         $price = Price::factory()->create();
 
         $response = $this->json('post', "api/services/{$service->id}/schedules", [
@@ -319,4 +322,207 @@ class ScheduleTest extends TestCase
         $schedule = Schedule::find($response->getOriginalContent()->id);
         self::assertCount(3, $schedule->schedule_hidden_files);
     }
+
+
+
+    public function test_appointment_purchase_success()
+    {
+        $service      = Service::factory()->create(['service_type_id' => 'appointment']);
+        $schedule     = Schedule::factory()->create(['service_id' => $service->id]);
+        $price        = Price::factory()->create(['schedule_id' => $schedule->id]);
+        $availability = ScheduleAvailability::factory()->create(
+            [
+                'schedule_id' => $schedule->id,
+                'days'        => 'everyday',
+                'start_time'  => '10:00',
+                'end_time'    => '18:00'
+            ]
+        );
+
+        $response = $this->json('post', "api/schedules/{$schedule->id}/purchase", [
+            'price_id'       => $price->id,
+            'availabilities' => [
+                [
+                    'availability_id' => $availability->id,
+                    'datetime_from'   => '2020-11-30 11:00:00',
+                ],
+                [
+                    'availability_id' => $availability->id,
+                    'datetime_from'   => '2020-11-30 13:00:00',
+                ]
+            ]
+        ]);
+
+        $response->assertOk();
+        $this->assertDatabaseCount('bookings', 2);
+    }
+
+    public function test_appointment_purchase_failure_due_unavailability()
+    {
+        $service      = Service::factory()->create(['service_type_id' => 'appointment']);
+        $schedule     = Schedule::factory()->create(['service_id' => $service->id]);
+        $price        = Price::factory()->create(['schedule_id' => $schedule->id]);
+        $availability = ScheduleAvailability::factory()->create(
+            [
+                'schedule_id' => $schedule->id,
+                'days'        => 'everyday',
+                'start_time'  => '10:00',
+                'end_time'    => '18:00'
+            ]
+        );
+        $unavailability = ScheduleUnavailability::factory()->create([
+            'schedule_id' => $schedule->id,
+            'start_date'  => '2020-11-30 15:00',
+            'end_date'    => '2020-11-30 17:00'
+        ]);
+
+        $response = $this->json('post', "api/schedules/{$schedule->id}/purchase", [
+            'price_id'       => $price->id,
+            'availabilities' => [
+                [
+                    'availability_id' => $availability->id,
+                    'datetime_from'   => '2020-11-30 16:00:00',
+                ]
+            ]
+        ]);
+        $response->status(422);
+        $this->assertDatabaseCount('bookings', 0);
+    }
+
+    public function test_appointment_purchase_failure()
+    {
+        $service      = Service::factory()->create(['service_type_id' => 'appointment']);
+        $schedule     = Schedule::factory()->create(['service_id' => $service->id]);
+        $price        = Price::factory()->create(['schedule_id' => $schedule->id]);
+        $availability = ScheduleAvailability::factory()->create(
+            [
+                'schedule_id' => $schedule->id,
+                'days'        => 'everyday',
+                'start_time'  => '10:00',
+                'end_time'    => '18:00'
+            ]
+        );
+
+        $response = $this->json('post', "api/schedules/{$schedule->id}/purchase", [
+            'price_id'       => $price->id,
+            'availabilities' => [
+                [
+                    'availability_id' => $availability->id,
+                    'datetime_from'   => '2020-11-30 11:00:00',
+                ],
+                [
+                    'availability_id' => $availability->id,
+                    'datetime_from'   => '2020-11-30 19:00:00',
+                ]
+            ]
+        ]);
+
+        $response->assertStatus(422);
+        $this->assertDatabaseCount('bookings', 0);
+    }
+
+       public function test_schedule_purchase_correct_price()
+       {
+           $service      = Service::factory()->create();
+           $schedule     = Schedule::factory()->create(['service_id' => $service->id]);
+           $price        = Price::factory()->create(['schedule_id' => $schedule->id]);
+           $booking = Booking::factory()->create([
+               'schedule_id' => $schedule->id,
+               'price_id'    => $price->id
+           ]);
+
+           $response = $this->json('post', "api/schedules/{$schedule->id}/purchase", $booking->toArray());
+
+           $response->assertStatus(422);
+           $this->assertDatabaseCount('bookings', 1);
+    }
+
+    public function test_schedule_purchase_wrong_price()
+    {
+        $service      = Service::factory()->create();
+        $schedule     = Schedule::factory()->create(['service_id' => $service->id]);
+        $price        = Price::factory()->create();
+        $booking = Booking::factory()->create([
+            'schedule_id' => $schedule->id,
+            'price_id'    => $price->id
+        ]);
+
+        $response = $this->json('post', "api/schedules/{$schedule->id}/purchase", $booking->toArray());
+
+        $response->assertStatus(422);
+        $this->assertDatabaseCount('bookings', 0);
+    }
+
+    public function test_schedule_purchase_correct_datetime_from()
+    {
+        $service      = Service::factory()->create(['service_type_id' => 'appointment']);
+        $schedule     = Schedule::factory()->create(['service_id' => $service->id]);
+        $availability = ScheduleAvailability::factory()->create(['schedule_id' => $schedule->id]);
+        $price        = Price::factory()->create([
+            'schedule_id' => $schedule->id,
+            'duration'    => 5
+        ]);
+
+        $response = $this->json('post', "api/schedules/{$schedule->id}/purchase", [
+            'price_id'       => $price->id,
+            'schedule_id'    => $schedule->id,
+            'availabilities' => [
+                'availability_id' => $availability->id,
+                'datetime_from'   => '2020-11-30 11:00:00'
+            ]
+        ]);
+        $response->assertOk();
+        $this->assertDatabaseHas('bookings', ['datetime_to' => '2020-11-30 11:05:00']);
+
+    }
+
+    public function test_schedule_is_sold_out()
+    {
+        $service      = Service::factory()->create();
+        $schedule     = Schedule::factory()->create([
+            'service_id' => $service->id,
+            'attendees'  => 1
+        ]);
+        $price        = Price::factory()->create();
+        $booking = Booking::factory()->create([
+            'schedule_id' => $schedule->id,
+            'price_id'    => $price->id
+        ]);
+
+        $response = $this->json('post', "api/schedules/{$schedule->id}/purchase", $booking->toArray());
+        $response->assertOk();
+
+        ScheduleFreeze::factory()->create([
+            'schedule_id' => $schedule->id,
+            'freeze_at'   => Carbon::now()
+        ]);
+
+        $response = $this->json('post', "api/schedules/{$schedule->id}/purchase", $booking->toArray());
+        $response->assertStatus(422)
+            ->assertJsonFragment(['schedule_id' => ['All quotes on the schedule are sold out']]);
+    }
+
+    public function test_sale_bought_schedule()
+    {
+        $service      = Service::factory()->create();
+        $price        = Price::factory()->create();
+        $schedule     = Schedule::factory()->create([
+            'service_id' => $service->id,
+            'attendees'  => 1
+        ]);
+
+        $this->json('post', "api/schedules/{$schedule->id}/purchase", [
+            'price_id'       => $price->id,
+            'schedule_id'    => $schedule->id
+        ])->assertOk();
+
+        $this->json('post', "api/schedules/{$schedule->id}/purchase", [
+            'price_id'       => $price->id,
+            'schedule_id'    => $schedule->id
+        ])
+            ->assertStatus(422)
+            ->assertJsonFragment(['schedule_id' => ['All quotes on the schedule are sold out']]);
+    }
 }
+
+
