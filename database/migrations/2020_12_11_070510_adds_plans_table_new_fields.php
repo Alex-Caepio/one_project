@@ -14,8 +14,8 @@ class AddsPlansTableNewFields extends Migration
     public function up()
     {
         Schema::table('plans', function (Blueprint $table) {
-            $table->boolean('market_to_clients')->nullable(false)->default(false);
-            $table->boolean('client_reviews')->nullable(false)->default(false);
+            $table->boolean('market_to_clients')->nullable(false)->default(false)->change();
+            $table->boolean('client_reviews')->nullable(false)->default(false)->change();
             $table->renameColumn('prioritised_serivce_search', 'prioritised_service_search');
             $table->renameColumn('busines_profile_page', 'business_profile_page');
         });
