@@ -25,9 +25,6 @@ properties:
   discount_value:
     type: number
     format: integer
-  service_type_id:
-    type: string
-    nullable: true
   applied_to:
     type: string
     nullable: true

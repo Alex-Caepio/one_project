@@ -45,6 +45,10 @@ class SavePromotion {
         if ($request->filled('practitioners')) {
             $promotion->practitioners()->sync($request->get('practitioners'));
         }
+
+        if ($request->filled('service_types')) {
+            $promotion->service_types()->sync($request->get('service_types'));
+        }
     }
 
 
@@ -61,7 +65,6 @@ class SavePromotion {
                                                                                                ->endOfDay() : null,
                                   'spend_min'       => $request->get('spend_min'),
                                   'spend_max'       => $request->get('spend_max'),
-                                  'service_type_id' => $request->get('service_type_id'),
                                   'status'          => Promotion::STATUS_ACTIVE,
                                   'discount_type'   => $request->get('discount_type'),
                                   'discount_value'  => $request->get('discount_value'),

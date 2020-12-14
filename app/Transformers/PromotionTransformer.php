@@ -16,7 +16,7 @@ class PromotionTransformer extends Transformer {
         'promotion_codes',
         'disciplines',
         'focus_areas',
-        'service_type',
+        'service_types',
         'practitioners'
     ];
 
@@ -35,7 +35,6 @@ class PromotionTransformer extends Transformer {
             'spend_max'       => $promotion->spend_max,
             'discount_type'   => $promotion->discount_type,
             'discount_value'  => $promotion->discount_value,
-            'service_type_id' => $promotion->service_type_id,
             'created_at'      => $this->dateTime($promotion->created_at),
             'updated_at'      => $this->dateTime($promotion->updated_at),
             'deleted_at'      => $this->dateTime($promotion->deleted_at),
@@ -70,10 +69,10 @@ class PromotionTransformer extends Transformer {
 
     /**
      * @param \App\Models\Promotion $promotion
-     * @return \League\Fractal\Resource\Item
+     * @return \League\Fractal\Resource\Collection|null
      */
-    public function includeServiceType(Promotion $promotion): ?Item {
-        return $this->itemOrNull($promotion->service_type, new ServiceTypeTransformer());
+    public function includeServiceTypes(Promotion $promotion): ?Collection {
+        return $this->collectionOrNull($promotion->service_types, new ServiceTypeTransformer());
     }
 
     /**

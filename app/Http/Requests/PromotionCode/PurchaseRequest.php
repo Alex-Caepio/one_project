@@ -51,7 +51,7 @@ class PurchaseRequest extends Request {
 
         $promoDisciplines = $promoCode->promotion->disciplines()->pluck('disciplines.id');
         $promoFocusAreas = $promoCode->promotion->focus_area()->pluck('focus_areas.id');
-        $promoServiceType = $promoCode->promotion->service_type_id;
+        $promoServiceTypes = $promoCode->promotion->service_types()->pluck('service_types.id');
 
         $service = $this->schedule->service;
 
@@ -83,11 +83,11 @@ class PurchaseRequest extends Request {
             $validator->errors()->add('promo_code', "Promo code has expired");
         }
 
-        if (!count(array_intersect($promoDisciplines, $serviceDisciplines))) {
+        if (count($promoDisciplines) && !count(array_intersect($promoDisciplines, $serviceDisciplines))) {
             $validator->errors()->add('promo_code', "You are not allowed to use the promocode with this discipline");
-        } elseif (!count(array_intersect($promoFocusAreas, $serviceFocusAreas))) {
+        } elseif (count($promoFocusAreas) && !count(array_intersect($promoFocusAreas, $serviceFocusAreas))) {
             $validator->errors()->add('promo_code', "You are not allowed to use the promocode with this focus area");
-        } elseif (!in_array($promoServiceType, $serviceServiceTypes, true)) {
+        } elseif (count($promoServiceTypes) && !count(array_intersect($promoServiceTypes, $serviceServiceTypes))) {
             $validator->errors()->add('promo_code', "You are not allowed to use the promocode with this service type");
         }
     }

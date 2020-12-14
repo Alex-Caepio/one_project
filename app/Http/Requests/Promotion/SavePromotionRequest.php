@@ -36,7 +36,6 @@ class SavePromotionRequest extends Request {
             'discount_value'  => 'required|numeric',
             'spend_min'       => 'numeric',
             'spend_max'       => 'numeric',
-            'service_type_id' => 'exists:service_types,id',
             'applied_to'      => ['required', Rule::in([Promotion::APPLIED_BOTH, Promotion::APPLIED_HOST])],
             'uses_per_client' => 'integer',
             'uses_per_code'   => 'integer',

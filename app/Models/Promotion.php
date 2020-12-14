@@ -55,8 +55,9 @@ class Promotion extends Model {
                     ->withTimeStamps();
     }
 
-    public function service_type() {
-        return $this->hasOne(ServiceType::class);
+    public function service_types() {
+        return $this->belongsToMany(ServiceType::class, 'promotion_service_type', 'promotion_id', 'service_type_id')
+                    ->withTimeStamps();
     }
 
     public function practitioners() {

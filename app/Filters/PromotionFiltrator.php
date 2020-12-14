@@ -22,14 +22,13 @@ class PromotionFiltrator {
                 $query->where('name', 'LIKE', $search)
                       ->orWhereHas('promotion_codes', function($userQuery) use ($search) {
                           $userQuery->where('name', 'LIKE', $search);
-                      })
-                      ->orWhere('service_type_id', 'LIKE', $search)
-                      ->orWhereHas('disciplines', function($userQuery) use ($search) {
-                          $userQuery->where('name', 'LIKE', $search);
-                      })->orWhereHas('practitioners', function($userQuery) use ($search) {
+                      })->orWhereHas('service_types', function($userQuery) use ($search) {
+                        $userQuery->where('name', 'LIKE', $search);
+                    })->orWhereHas('disciplines', function($userQuery) use ($search) {
+                        $userQuery->where('name', 'LIKE', $search);
+                    })->orWhereHas('practitioners', function($userQuery) use ($search) {
                         $userQuery->where('email', 'LIKE', $search);
                     });
-
             });
         }
 
@@ -52,7 +51,6 @@ class PromotionFiltrator {
                     $queryBuilder->where('discount_value', '<=', (int)$to);
                 }
             }
-
         }
 
         $statuses = $request->getArrayFromRequest('status');

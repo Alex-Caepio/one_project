@@ -517,9 +517,6 @@ components:
         discount_value:
           type: number
           format: integer
-        service_type_id:
-          type: string
-          nullable: true
         applied_to:
           type: string
           nullable: true
@@ -4037,10 +4034,6 @@ paths:
                   nullable: true
                   type: number
                   format: double
-                service_type_id:
-                  type: string
-                  nullable: true
-                  example: events
                 applied_to:
                   type: string
                   nullable: false
@@ -4089,6 +4082,14 @@ paths:
                     - 123
                     - 231
                     - 312
+                service_types:
+                  type: array
+                  items:
+                    type: string
+                  example:
+                    - events
+                    - workshop
+                    - whatever
       responses:
         "200":
           description: OK

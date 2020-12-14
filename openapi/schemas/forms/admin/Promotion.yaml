@@ -34,10 +34,6 @@ properties:
     nullable: true
     type: number
     format: double
-  service_type_id:
-    type: string
-    nullable: true
-    example: events
   applied_to:
     type: string
     nullable: false
@@ -74,3 +70,8 @@ properties:
     items:
       type: integer
     example: [123, 231, 312]
+  service_types:
+    type: array
+    items:
+      type: string
+    example: [events, workshop, whatever]
