@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Auth;
  * @property int    id
  * @property int    user_id
  * @property int    is_published
+ * @property int    service_type_id
  * @property string url
  * @property string title
  * @property string string
@@ -23,6 +24,7 @@ use Illuminate\Support\Facades\Auth;
  * @property Carbon created_at
  * @property Carbon updated_at
  * @property Carbon deleted_at
+ * @property ServiceType service_type
  */
 class Service extends Model
 {

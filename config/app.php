@@ -1,6 +1,19 @@
 <?php
 
 return [
+    /*
+    |--------------------------------------------------------------------------
+    | Custom variables
+    |--------------------------------------------------------------------------
+    |
+    | This value is the name of your application. This value is used when the
+    | framework needs to place the application's name in a notification or
+    | any other location as required by the application or its packages.
+    |
+    */
+    'platform_name' => env('PLATFORM_NAME', 'Oneness'),
+    'platform_email' => env('PLATFORM_EMAIL', 'hello@holistify.me'),
+
 
     /*
     |--------------------------------------------------------------------------
@@ -52,14 +65,16 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://localhost'),
-    'frontend_url' => env('FRONTEND_URL', 'http://localhost'),
-    'frontend_stripe_account_refresh' => env('FRONTEND_STRIPE_ACCOUNT_REFRESH', 'http://localhost'),
+    'url'                                   => env('APP_URL', 'http://localhost'),
+    'frontend_url'                          => env('FRONTEND_URL', 'http://localhost'),
+    'frontend_stripe_account_refresh'       => env('FRONTEND_STRIPE_ACCOUNT_REFRESH', 'http://localhost'),
     'frontend_stripe_account_redirect_back' => env('FRONTEND_STRIPE_ACCOUNT_REDIRECT_BACK', 'http://localhost'),
-    'frontend_password_reset_link' => env('PASSWORD_RESET_FRONTEND_LINK'),
-    'frontend_reset_password_form_url' => env('FRONTEND_URL_RESET_PASSWORD_FORM', 'http://localhost'),
-    'frontend_email_confirm_page' => env('FRONTEND_EMAIL_CONFIRM_PAGE', 'http://localhost'),
-    'asset_url' => env('ASSET_URL', null),
+    'frontend_password_reset_link'          => env('PASSWORD_RESET_FRONTEND_LINK'),
+    'frontend_reset_password_form_url'      => env('FRONTEND_URL_RESET_PASSWORD_FORM', 'http://localhost'),
+    'frontend_email_confirm_page'           => env('FRONTEND_EMAIL_CONFIRM_PAGE', 'http://localhost'),
+    'frontend_profile_link'                 => env('FRONTEND_PROFILE_LINK', 'http://localhost'),
+    'frontend_practitioner_services'        => env('FRONTEND_PRACTITIONER_SERVICES', 'http://localhost'),
+    'asset_url'                             => env('ASSET_URL', null),
 
     /*
     |--------------------------------------------------------------------------

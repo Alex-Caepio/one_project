@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Actions\Promo\SavePromotion;
 use App\Filters\PromotionFiltrator;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Promotion\EnableRequest;
+use App\Http\Requests\Promotion\SavePromotionRequest;
 use App\Http\Requests\Request;
 use App\Models\Promotion;
 use App\Transformers\PromotionTransformer;
@@ -79,5 +81,16 @@ class PromotionController extends Controller {
         $promotion->delete();
         return response(null, 204);
     }
+
+    /**
+     * @param \App\Http\Requests\Promotion\SavePromotionRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function store(SavePromotionRequest $request) {
+        $promotion = run_action(SavePromotion::class, $request);
+        return fractal($promotion, new PromotionTransformer())->respond();
+    }
+
+
 
 }

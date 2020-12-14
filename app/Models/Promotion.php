@@ -56,7 +56,7 @@ class Promotion extends Model {
     }
 
     public function service_type() {
-        return $this->belongsTo(ServiceType::class);
+        return $this->hasOne(ServiceType::class);
     }
 
     public function practitioners() {

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\BookingController;
 use App\Http\Controllers\Admin\MainPageController;
 use App\Http\Controllers\Admin\PlanController;
 use App\Http\Controllers\Admin\ClientController;
@@ -59,6 +60,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/focus-areas/{focusArea}/icon', [FocusAreaController::class, 'icon']);
 
         Route::get('/promotions', [PromotionController::class, 'index']);
+        Route::post('/promotions', [PromotionController::class, 'store']);
         Route::get('/promotions/{promotion}', [PromotionController::class, 'show']);
         Route::post('/promotions/{promotion}/enable', [PromotionController::class, 'enable']);
         Route::post('/promotions/{promotion}/disable', [PromotionController::class, 'disable']);
@@ -94,5 +96,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
         Route::get('/mainpage', [MainPageController::class, 'index']);
         Route::put('/mainpage', [MainPageController::class, 'update']);
+
+        Route::get('/bookings', [BookingController::class, 'index']);
     });
 });

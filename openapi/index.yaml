@@ -3993,6 +3993,135 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Promotion"
+    post:
+      tags:
+        - Promotion
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - discount_type
+                - discount_value
+                - applied_to
+                - total_codes
+              properties:
+                name:
+                  type: string
+                  nullable: false
+                  example: Promotion Name Test
+                valid_from:
+                  type: string
+                  nullable: true
+                  example: 2020-10-10
+                expiry_date:
+                  type: string
+                  nullable: true
+                  example: 2020-10-10
+                discount_type:
+                  nullable: false
+                  type: string
+                  example: percentage || fixed
+                discount_value:
+                  nullable: false
+                  type: number
+                  format: double
+                spend_min:
+                  nullable: true
+                  type: number
+                  format: double
+                spend_max:
+                  nullable: true
+                  type: number
+                  format: double
+                service_type_id:
+                  type: string
+                  nullable: true
+                  example: events
+                applied_to:
+                  type: string
+                  nullable: false
+                  example: host || both
+                uses_per_client:
+                  nullable: true
+                  type: number
+                  format: integer
+                uses_per_code:
+                  nullable: true
+                  type: number
+                  format: integer
+                total_codes:
+                  nullable: false
+                  type: number
+                  format: integer
+                promocode_names:
+                  type: array
+                  items:
+                    type: integer
+                  example:
+                    - code1
+                    - code2
+                    - code3
+                practitioners:
+                  type: array
+                  items:
+                    type: integer
+                  example:
+                    - 123
+                    - 231
+                    - 312
+                disciplines:
+                  type: array
+                  items:
+                    type: integer
+                  example:
+                    - 123
+                    - 231
+                    - 312
+                focus_areas:
+                  type: array
+                  items:
+                    type: integer
+                  example:
+                    - 123
+                    - 231
+                    - 312
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Promotion"
+        "422":
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: The given data was invalid.
+                  errors:
+                    type: object
+                    example:
+                      name:
+                        - You have not filled in the field "Promotion name"
+                      discount_type:
+                        - You have not filled in the field "Promotion discount
+                          type"
+                      discount_value:
+                        - You have not filled in the field "Promotion discount
+                          value"
+                      applied_to:
+                        - You have not filled in the field "Promotion applied to"
+                      total_codes:
+                        - You have not filled in the field "Promotion requested
+                          codes count"
   "/admin/promotions/{id}":
     get:
       tags:

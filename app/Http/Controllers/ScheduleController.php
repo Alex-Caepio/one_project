@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Schedule\PurchaseScheduleRequest;
+use App\Models\Booking;
+use App\Models\Price;
 use App\Models\Service;
 use App\Models\Schedule;
 use App\Models\ScheduleUser;
 use App\Models\PromotionCode;
 use App\Models\ScheduleFreeze;
 use App\Http\Requests\Request;
+use App\Models\UsedPromotionCode;
 use App\Transformers\UserTransformer;
 use App\Events\ServiceScheduleWentLive;
 use App\Transformers\ScheduleTransformer;
@@ -30,10 +34,10 @@ class ScheduleController extends Controller
 
     public function store(CreateScheduleInterface $request, Service $service)
     {
-        $data   = $request->all();
+        $data               = $request->all();
         $data['service_id'] = $service->id;
-        $schedule = Schedule::create($data);
-        $user = $request->user();
+        $schedule           = Schedule::create($data);
+        $user               = $request->user();
 
         if ($request->filled('media_files')) {
             $schedule->media_files()->createMany($request->get('media_files'));
@@ -48,11 +52,11 @@ class ScheduleController extends Controller
             $schedule->schedule_unavailabilities()->sync($request->get('schedule_unavailabilities'));
         }
 
-        if ($request->filled('schedule_file')) {
-            $schedule->schedule_file()->createMany($request->get('schedule_file'));
+        if ($request->filled('schedule_files')) {
+            $schedule->schedule_files()->createMany($request->get('schedule_files'));
         }
-        if ($request->filled('schedule_hidden_file')) {
-            $schedule->schedule_hidden_file()->createMany($request->get('schedule_hidden_file'));
+        if ($request->filled('schedule_hidden_files')) {
+            $schedule->schedule_hidden_files()->createMany($request->get('schedule_hidden_files'));
         }
 
         event(new ServiceScheduleWentLive($service, $user, $schedule));
@@ -60,7 +64,7 @@ class ScheduleController extends Controller
 
     public function update(CreateScheduleInterface $request, Service $service, Schedule $schedule)
     {
-        $data   = $request->all();
+        $data               = $request->all();
         $data['service_id'] = $service->id;
         $schedule->update($data);
         $user = $request->user();
@@ -82,13 +86,13 @@ class ScheduleController extends Controller
             $schedule->schedule_unavailabilities()->sync($request->get('schedule_unavailabilities'));
         }
 
-        if ($request->has('schedule_file')) {
-            $schedule->schedule_file()->delete();
-            $schedule->schedule_file()->createMany($request->get('schedule_file'));
+        if ($request->has('schedule_files')) {
+            $schedule->schedule_files()->delete();
+            $schedule->schedule_files()->createMany($request->get('schedule_files'));
         }
-        if ($request->has('schedule_hidden_file')) {
-            $schedule->schedule_hidden_file()->delete();
-            $schedule->schedule_hidden_file()->createMany($request->get('schedule_hidden_file'));
+        if ($request->has('schedule_hidden_files')) {
+            $schedule->schedule_hidden_files()->delete();
+            $schedule->schedule_hidden_files()->createMany($request->get('schedule_hidden_files'));
         }
 
         event(new ServiceScheduleWentLive($service, $user, $schedule));
@@ -112,7 +116,7 @@ class ScheduleController extends Controller
             ->where('user_id', Auth::id())->first();
 
         $time = Carbon::now();
-        if ($personalFreezed == null) {
+        if ($personalFreezed === null) {
             $freeze = new ScheduleFreeze();
             $freeze->forceFill([
                 'schedule_id' => $schedule->id,
@@ -129,16 +133,65 @@ class ScheduleController extends Controller
         return fractal($reschedule, new UserTransformer())->respond();
     }
 
-    public function purchase(Schedule $schedule, StripeClient $stripe, Request $request)
+    public function purchase(PurchaseScheduleRequest $request, Schedule $schedule)
     {
-        $name         = $request->get('promo_code');
-        $scheduleCost = $schedule->cost;
-        $user         = Auth::user();
-        $promo        = PromotionCode::where('name', $name)->first();
+        $price = $schedule->prices()->find($request->get('price_id'));
+        $cost  = $price->cost;
 
-        run_action(CalculatePromoPrice::class, $promo, $scheduleCost);
+        if ($request->has('promo_code')) {
+            $promo = PromotionCode::where('name', $request->get('promo_code'))->first();
+            $cost  = run_action(CalculatePromoPrice::class, $promo, $schedule->cost);
+        }
 
-        $user->getCommission();
+        if ($schedule->service->service_type_id == 'appointment') {
+            $availabilities = $request->get('availabilities');
+            foreach ($availabilities as $availability) {
+                $booking                  = new Booking();
+                $booking->user_id         = $request->user()->id;
+                $booking->price_id        = $request->get('price_id');
+                $booking->schedule_id     = $schedule->id;
+                $booking->availability_id = $availability['availability_id'];
+                $booking->datetime_from   = $availability['datetime_from'];
+                $datetimeTo               = (new Carbon($booking->datetime_from))->addMinutes($price->duration);
+                $booking->datetime_to     = $datetimeTo->format('Y-m-d H:i:s');
+                $booking->cost            = $cost;
+                $booking->save();
+            }
+        } else {
+            $booking              = new Booking();
+            $booking->user_id     = $request->user()->id;
+            $booking->price_id    = $request->get('price_id');
+            $booking->schedule_id = $schedule->id;
+            $booking->cost        = $cost;
+            $booking->save();
+        }
+        ScheduleFreeze::where('schedule_id', $schedule->id)
+            ->where('user_id', $request->user()->id)
+            ->delete();
+
+        if ($request->has('promo_code')) {
+            $userPromoCode = new UsedPromotionCode();
+            $userPromoCode->forceFill(
+                [
+                    'user_id'           => $request->user()->id,
+                    'schedule_id'       => $schedule->id,
+                    'promotion_code_id' => $promo->id,
+                ]
+            );
+            $userPromoCode->save();
+        }
+
+        return response(null, 200);
+
+
+//        $name         = $request->get('promo_code');
+//        $scheduleCost = $schedule->cost;
+//        $user         = Auth::user();
+//        $promo        = PromotionCode::where('name', $name)->first();
+//
+//        run_action(CalculatePromoPrice::class, $promo, $scheduleCost);
+//
+//        $user->getCommission();
 
 //                $userPromoCode = new UsedPromotionCode();
 //                $userPromoCode->forceFill(

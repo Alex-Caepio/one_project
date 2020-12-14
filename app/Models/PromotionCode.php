@@ -20,7 +20,7 @@ class PromotionCode extends Model {
 
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'status', 'uses_per_code', 'uses_per_client', 'promotion_id'];
 
     public const STATUS_ACTIVE = 'active';
     public const STATUS_DISABLED = 'disabled';

@@ -8,6 +8,8 @@ use App\Models\Plan;
 
 class PlanTransformer extends Transformer
 {
+    protected $availableIncludes = ['service_types'];
+
     public function transform(Plan $plan)
     {
         return [
@@ -41,7 +43,15 @@ class PlanTransformer extends Transformer
             'client_analytics'                      => $plan->client_analytics,
             'service_analytics'                     => $plan->service_analytics,
             'financial_analytics'                   => $plan->financial_analytics,
-
+            'schedules_per_service_unlimited'       => $plan->schedules_per_service_unlimited,
+            'pricing_options_per_service_unlimited' => $plan->pricing_options_per_service_unlimited,
+            'amount_bookings'                       => $plan->amount_bookings,
+            'discount_codes'                        => $plan->discount_codes,
         ];
+    }
+
+    public function includeServiceTypes(Plan $plan)
+    {
+        return $this->collectionOrNull($plan->service_types, new ServiceTypeTransformer());
     }
 }
