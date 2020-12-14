@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Filters;
 
 use Illuminate\Database\Eloquent\Builder;
@@ -26,7 +27,8 @@ class UserFiltrator {
         if ($request->filled('search')) {
             $search = '%' . $request->get('search') . '%';
             $queryBuilder->where(function($query) use ($search) {
-                $query->where('first_name', 'LIKE', $search)->orWhere('last_name', 'LIKE', $search)->orWhere('business_name', 'LIKE', $search);
+                $query->where('first_name', 'LIKE', $search)->orWhere('last_name', 'LIKE', $search)
+                      ->orWhere('email', 'LIKE', $search)->orWhere('business_name', 'LIKE', $search);
             });
         }
 

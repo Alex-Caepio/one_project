@@ -2334,7 +2334,7 @@ paths:
             example: true
         - name: search
           in: query
-          description: User first name, last name or business name
+          description: User first name, last name, email or business name
           required: false
           schema:
             type: string
@@ -3678,7 +3678,7 @@ paths:
             example: true
         - name: search
           in: query
-          description: User first name, last name or business name
+          description: User first name, last name, email or business name
           required: false
           schema:
             type: string
@@ -3809,7 +3809,7 @@ paths:
             example: true
         - name: search
           in: query
-          description: User first name, last name or business name
+          description: User first name, last name, email or business name
           required: false
           schema:
             type: string
