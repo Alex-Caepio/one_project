@@ -40,8 +40,8 @@ class PractitionerTest extends TestCase
         $authUser->favourite_practitioners()->attach($userId);
 
         $this->assertDatabaseHas('practitioner_favorites', [
-            'user_id' => $authUser->id,
-            'practitioner_id' => $userId->id
+            'user_id' => $userId->id ,
+            'practitioner_id' => $authUser->id
         ]);
     }
     public function test_delete_practitioner_favorite(): void

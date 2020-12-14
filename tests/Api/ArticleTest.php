@@ -6,6 +6,7 @@ use App\Models\Article;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
+use Illuminate\Foundation\Testing\Concerns\ImpersonatesUsers;
 
 class ArticleTest extends TestCase
 {
@@ -29,6 +30,10 @@ class ArticleTest extends TestCase
 
     public function test_can_create_article(): void
     {
+        //422 response with factory; 500 w/o factory;
+        $user = User::factory()->make();
+//        var_dump($this->user->id);die;
+
         $service = Article::factory()->make();
         $response = $this->json('post', '/api/articles', [
             'description' => $service->description,
@@ -36,6 +41,7 @@ class ArticleTest extends TestCase
             'is_published' => $service->is_published,
             'title' => $service->title,
             'user_id' => $this->user->id,
+//            'user_id' => $user->id,
             'url' => $service->url,
         ]);
         $response->assertOk();

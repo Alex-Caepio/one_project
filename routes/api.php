@@ -99,7 +99,7 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::get('locations', [LocationController::class, 'index']);
     Route::get('locations/list', [LocationController::class, 'list']);
 
-//    Route::get('practitioners', [PractitionerController::class, 'index']);
+    Route::get('practitioners', [PractitionerController::class, 'index']);
     Route::get('practitioners/list', [PractitionerController::class, 'list']);
 
     Route::post('/credit-cards', [CardStripeController::class, 'store']);

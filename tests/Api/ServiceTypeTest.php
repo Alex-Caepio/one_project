@@ -2,6 +2,7 @@
 
 namespace Tests\Api;
 
+use App\Models\User;
 use App\Models\ServiceType;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;

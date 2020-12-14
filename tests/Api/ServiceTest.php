@@ -33,10 +33,10 @@ class ServiceTest extends TestCase
 
     public function test_practitioner_can_create_service(): void
     {
-        $service = Service::factory()->make();
+        $service = Service::factory()->make(['user_id' => $this->user->id,'user_type' => 'practitioner']);
         $type    = ServiceType::factory()->create();
 
-        $response = $this->json('post', '/api/services', [
+        $response = $this->actingAs($this->user)->json('post', '/api/services', [
             'description'     => $service->description,
             'service_type_id' => $type->id,
             'introduction'    => $service->introduction,
@@ -51,10 +51,11 @@ class ServiceTest extends TestCase
 
     public function test_practitioner_can_create_service_with_image_media_links(): void
     {
+        $this->user->user_type = 'practitioner';
         /** @var Service $service */
-        $service = Service::factory()->make();
+        $service = Service::factory()->make(['user_id' => $this->user->id]);
 
-        $response = $this->json('post', '/api/services', [
+        $response = $this->actingAs($this->user)->json('post', '/api/services', [
             'url'          => $service->url,
             'title'        => $service->title,
             'user_id'      => $service->user_id,
@@ -72,15 +73,18 @@ class ServiceTest extends TestCase
 
     public function test_user_update_service(): void
     {
-        $service    = Service::factory()->create();
+        $this->user->user_type = 'client';
+
+        $service    = Service::factory()->create(['user_id' => $this->user->id]);
         $newService = Service::factory()->make();
         $payload    = [
             'title'        => $newService->title,
             'keyword_id'   => $newService->keyword_id,
-            'user_id'      => $newService->user_id,
+            'user_id'      => $this->user->id,
             'description'  => $newService->description,
             'is_published' => $newService->is_published,
             'introduction' => $newService->introduction,
+//            'service_type_id' => $newService->service_type_id,
             'url'          => $newService->url,
         ];
         $response   = $this->json('put', "/api/services/{$service->id}", $payload);
@@ -90,8 +94,10 @@ class ServiceTest extends TestCase
 
     public function test_practitioner_can_delete_service(): void
     {
-        $service  = Service::factory()->create();
-        $response = $this->json('delete', "/api/services/{$service->id}");
+//        $this->user->user_type = 'practitioner';
+
+        $service  = Service::factory()->create(['user_id' => $this->user->id]);
+        $response = $this->actingAs($this->user)->json('delete', "/api/services/{$service->id}");
 
         $response->assertStatus(204);
     }
@@ -111,10 +117,12 @@ class ServiceTest extends TestCase
 
     public function test_practitioner_can_update_service(): void
     {
-        $service    = Service::factory()->create();
+        $user = User::factory()->make(['user_type' => 'practitioner']);
+
+        $service    = Service::factory()->create(['user_id' => $user->id]);
         $newService = Service::factory()->make();
 
-        $response = $this->json('put', "/api/services/{$service->id}",
+        $response = $this->actingAs($user)->json('put', "/api/services/{$service->id}",
             [
                 'title' => $newService->title,
             ]);
