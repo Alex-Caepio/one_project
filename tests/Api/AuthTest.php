@@ -73,7 +73,6 @@ class AuthTest extends TestCase
         $response->assertOk();
         $this->assertTrue(
             Hash::check('newPassword1', $this->user->password),
-//            Hash::check('newPassword1', $user->password),
             'Password was not updated'
         );
 
