@@ -28,7 +28,7 @@ class SavePromotionRequest extends Request {
      */
     public function rules() {
         return [
-            'name'            => 'required|min:5|max:255|unique:promotions,name' .
+            'name'            => 'required|min:3|max:255|unique:promotions,name' .
                                  ($this->promotion ? ',' . $this->promotion->id : ''),
             'valid_from'      => 'date_format:Y-m-d',
             'expiry_date'     => 'date_format:Y-m-d',
