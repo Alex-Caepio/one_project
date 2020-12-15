@@ -37,7 +37,7 @@ class BookingTest extends TestCase
         $response = $this->actingAs($this->user)->json('get', "/api/bookings?status=completed");
         $response
             ->assertOk()
-        ->assertJson([['user_id' => $booking_past->user_id]]);
+        ->assertJson([['user_id' => $booking_past->user_id, 'id' => $booking_past->id]]);
 
         $booking_future = Booking::factory()->create([
             'cost' => '5',
@@ -48,7 +48,7 @@ class BookingTest extends TestCase
         $response = $this->actingAs($this->user)->json('get', "/api/bookings?status=upcoming");
         $response
             ->assertOk()
-            ->assertJson([['user_id' => $booking_future->user_id]]);
+            ->assertJson([['user_id' => $booking_future->user_id, 'id' => $booking_future->id]]);
 
         $booking_deleted = Booking::factory()->create([
             'cost' => '5',
@@ -59,6 +59,6 @@ class BookingTest extends TestCase
         $response = $this->actingAs($this->user)->json('get', "/api/bookings?status=canceled");
         $response
             ->assertOk()
-        ->assertJson([['user_id' => $booking_deleted->user_id]]);
+        ->assertJson([['user_id' => $booking_deleted->user_id, 'id' => $booking_deleted->id]]);
     }
 }
