@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Filters\BookingFilters;
 use App\Http\Requests\Reschedule\RescheduleRequestRequest;
 use App\Http\Requests\Request;
 use App\Models\Booking;
@@ -10,17 +11,20 @@ use App\Transformers\BookingTransformer;
 
 class BookingController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request,BookingFilters $filters)
     {
-        $paginator = Booking::where('user_id', $request->user()->id)->paginate($request->getLimit());
-        $booking   = $paginator->getCollection();
+        $Query = Booking::filter($filters)->where('user_id', $request->user()->id);
 
-        if ($request->hasOrderBy()) {
+        if ($request->hasOrderBy())
+        {
             $order = $request->getOrderBy();
-            $booking->orderBy($order['column'], $order['direction']);
+            $Query->orderBy($order['column'], $order['direction']);
         }
 
-        return response(fractal($booking, new BookingTransformer())
+        $paginator = $Query->paginate();
+        $booking   = $paginator->getCollection();
+
+        return response(fractal($booking,new BookingTransformer())
             ->parseIncludes($request->getIncludes()))
             ->withPaginationHeaders($paginator);
 
