@@ -105,4 +105,9 @@ class Schedule extends Model
     public function freezes(): HasMany {
         return $this->hasMany(ScheduleFreeze::class);
     }
+
+    public function rescheduleRequests()
+    {
+        return $this->hasMany(RescheduleRequest::class);
+    }
 }

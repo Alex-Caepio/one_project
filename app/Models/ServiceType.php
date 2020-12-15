@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class ServiceType extends Model {
     use HasFactory;
-
+    public $incrementing = false;
     protected $fillable = ['name'];
 
     public function plans() {

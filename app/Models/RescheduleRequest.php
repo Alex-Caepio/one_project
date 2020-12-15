@@ -34,4 +34,9 @@ class RescheduleRequest extends Model
     public function booking(){
         return $this->belongsTo(Booking::class);
     }
+
+    public function schedule()
+    {
+        return $this->belongsTo(Schedule::class);
+    }
 }

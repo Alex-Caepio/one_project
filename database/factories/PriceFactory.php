@@ -21,6 +21,7 @@ class PriceFactory extends Factory
             'available_till'    => $this->faker->date(),
             'min_purchase'      => $this->faker->randomDigit,
             'number_available'  => $this->faker->randomDigit,
+            'duration'          => 60
         ];
     }
 }

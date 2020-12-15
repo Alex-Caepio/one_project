@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\Schedule;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\Request;
 
-class CourceProgramScheduleRequest extends FormRequest
+class CourceProgramScheduleRequest extends Request implements CreateScheduleInterface
 {
     /**
      * Determine if the user is authorized to make this request.

@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\Schedule;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\Request;
 
-class ClassAdHocScheduleRequest extends FormRequest
+class ClassAdHocScheduleRequest extends Request implements CreateScheduleInterface
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -39,7 +39,6 @@ class ClassAdHocScheduleRequest extends FormRequest
             'prices.*.name'      => 'required',
             'prices.*.cost'      => 'required',
             'prices.*.is_free'   => 'required',
-            'repeat'             => 'required',
             'repeat_every'       => 'required_if:repeat,monthly',
             'repeat_period'      => 'required_if:repeat,monthly',
 

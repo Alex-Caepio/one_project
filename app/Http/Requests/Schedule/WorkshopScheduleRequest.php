@@ -2,10 +2,9 @@
 
 namespace App\Http\Requests\Schedule;
 
-use App\Models\Schedule;
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\Request;
 
-class WorkshopScheduleRequest extends FormRequest
+class WorkshopScheduleRequest extends Request implements CreateScheduleInterface
 {
     /**
      * Determine if the user is authorized to make this request.

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Schedule\PurchaseScheduleRequest;
 use App\Models\Booking;
 use App\Models\Price;
+use App\Models\RescheduleRequest;
 use App\Models\Service;
 use App\Models\Schedule;
 use App\Models\ScheduleUser;
@@ -46,12 +47,11 @@ class ScheduleController extends Controller
             $schedule->prices()->createMany($request->get('prices'));
         }
         if ($request->filled('schedule_availabilities')) {
-            $schedule->schedule_availabilities()->sync($request->get('schedule_availabilities'));
+            $schedule->schedule_availabilities()->createMany($request->get('schedule_availabilities'));
         }
         if ($request->filled('schedule_unavailabilities')) {
-            $schedule->schedule_unavailabilities()->sync($request->get('schedule_unavailabilities'));
+            $schedule->schedule_unavailabilities()->createMany($request->get('schedule_unavailabilities'));
         }
-
         if ($request->filled('schedule_files')) {
             $schedule->schedule_files()->createMany($request->get('schedule_files'));
         }
@@ -60,12 +60,34 @@ class ScheduleController extends Controller
         }
 
         event(new ServiceScheduleWentLive($service, $user, $schedule));
+
+        return fractal($schedule, new ScheduleTransformer())
+            ->parseIncludes($request->getIncludes())
+            ->toArray();
     }
 
-    public function update(CreateScheduleInterface $request, Service $service, Schedule $schedule)
+    public function update(Request $request, Service $service, Schedule $schedule)
     {
         $data               = $request->all();
-        $data['service_id'] = $service->id;
+
+        if ($data['location_id'] != $schedule->location_id || $data['start_date'] != $schedule->start_date) {
+            $bookingSchedules = Booking::where('schedule_id', $schedule->id)->get();
+            $schedule->rescheduleRequests()->delete();
+
+            $rescheduleRequests = [];
+            foreach ($bookingSchedules as $booking) {
+                $rescheduleRequests[] = [
+                    'user_id'           => $booking->user_id,
+                    'booking_id'        => $booking->id,
+                    'schedule_id'       => $booking->schedule_id,
+                    'new_schedule_id'   => $schedule->id,
+                    'new_datetime_from' => $data['start_date'] ?? $schedule->start_date,
+                    'created_at'        => Carbon::now()->format('Y-m-d H:i:s')
+                ];
+            }
+            RescheduleRequest::insert($rescheduleRequests);
+        }
+
         $schedule->update($data);
         $user = $request->user();
 
@@ -79,11 +101,11 @@ class ScheduleController extends Controller
         }
         if ($request->filled('schedule_availabilities')) {
             $schedule->schedule_availabilities()->delete();
-            $schedule->schedule_availabilities()->sync($request->get('schedule_availabilities'));
+            $schedule->schedule_availabilities()->createMany($request->get('schedule_availabilities'));
         }
         if ($request->filled('schedule_unavailabilities')) {
             $schedule->schedule_unavailabilities()->delete();
-            $schedule->schedule_unavailabilities()->sync($request->get('schedule_unavailabilities'));
+            $schedule->schedule_unavailabilities()->createMany($request->get('schedule_unavailabilities'));
         }
 
         if ($request->has('schedule_files')) {
@@ -96,6 +118,10 @@ class ScheduleController extends Controller
         }
 
         event(new ServiceScheduleWentLive($service, $user, $schedule));
+
+        return fractal($schedule, new ScheduleTransformer())
+            ->parseIncludes($request->getIncludes())
+            ->toArray();
     }
 
     public function availabilities(Schedule $schedule)

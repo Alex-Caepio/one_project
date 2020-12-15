@@ -64,7 +64,7 @@ class AppServiceProvider extends ServiceProvider
         User::observe(UserObserver::class);
 
         $this->app->bind(CreateScheduleInterface::class, function () {
-            if (request()->service->service_type['id'] == 'workshop') {
+            if (request()->service->service_type->id == 'workshop') {
                 return new WorkshopScheduleRequest();
             } else if (request()->service->service_type->id == 'econtent') {
                 return new EcontentScheduleRequest();
@@ -84,6 +84,8 @@ class AppServiceProvider extends ServiceProvider
                 return new TrainingProgramScheduleRequest();
             }  else if (request()->service->service_type->id == 'appointment') {
                 return new AppointmentScheduleRequest();
+            } else {
+                abort(500, 'You\'re trying to purchase unrecognized service type. Please contact site administrator for assistance');
             }
         });
     }

@@ -117,7 +117,7 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
 
     Route::post('/services/{service}/schedules', [ScheduleController::class, 'store']);
     Route::get('/services/{service}/schedules', [ScheduleController::class, 'index']);
-    Route::put('/schedules/{schedule}/edit', [ScheduleController::class, 'update']);
+    Route::put('/schedules/{schedule}', [ScheduleController::class, 'update']);
     Route::post('/schedules/{schedule}/purchase', [ScheduleController::class, 'purchase']);
     Route::get('/schedules/{schedule}/attendants', [ScheduleController::class, 'allUser']);
     Route::post('/schedules/{schedule}/freeze', [ScheduleController::class, 'freeze']);

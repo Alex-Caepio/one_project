@@ -21,6 +21,9 @@ class RescheduleRequestController extends Controller
 
     public function store(Schedule $schedule, Request $request)
     {
+        $user = Auth::id();
+        RescheduleRequest::where('schedule_id', $schedule->id)->where('user_id', $user)->delete();
+
         run_action(RescheduleRequestStore::class, $schedule, $request);
     }
 

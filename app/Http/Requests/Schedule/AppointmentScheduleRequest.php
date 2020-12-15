@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\Schedule;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\Request;
 
-class AppointmentScheduleRequest extends FormRequest
+class AppointmentScheduleRequest extends Request implements CreateScheduleInterface
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -34,14 +34,14 @@ class AppointmentScheduleRequest extends FormRequest
             'buffer_time'                   => 'required',
             'buffer_period'                 => 'required',
 
-            'availabilities.*.days'         => 'required_with:availabilities',
-            'availabilities.*.start_time'   => 'required_with:availabilities',
-            'availabilities.*.end_time'     => 'required_with:availabilities',
+            'schedule_availabilities.*.days'         => 'required_with:availabilities',
+            'schedule_availabilities.*.start_time'   => 'required_with:availabilities',
+            'schedule_availabilities.*.end_time'     => 'required_with:availabilities',
 
-            'unavailabilities.*.start_date' => 'required_with:unavailabilities',
-            'unavailabilities.*.end_date'   => 'required_with:unavailabilities',
+            'schedule_unavailabilities.*.start_date' => 'required_with:unavailabilities',
+            'schedule_unavailabilities.*.end_date'   => 'required_with:unavailabilities',
 
-            'availabilities'                => 'required',
+            'schedule_availabilities'                => 'required',
         ];
     }
 }

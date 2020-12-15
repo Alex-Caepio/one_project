@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\Schedule;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\Request;
 
-class ClassScheduleRequest extends FormRequest
+class ClassScheduleRequest extends Request implements CreateScheduleInterface
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -35,7 +35,6 @@ class ClassScheduleRequest extends FormRequest
             'attendees'          => 'required|integer',
             'url'                => 'required|string',
             'refund_terms'       => 'required',
-            'repeat'             => 'required',
             'prices'             => 'required',
             'prices.*.name'      => 'required',
             'prices.*.cost'      => 'required',
@@ -43,30 +42,5 @@ class ClassScheduleRequest extends FormRequest
             'repeat_every'       => 'required_if:repeat,monthly',
             'repeat_period'      => 'required_if:repeat,monthly',
         ];
-    }
-
-    public function withValidator($validator)
-    {
-        $validator->after(function ($validator) {
-            $schedule = $this->schedule;
-            if (!$schedule->prices()) {
-                $validator->errors()->add('price', "You have not filled in the field \"Schedule price\"");
-            }
-            if (!$schedule->prices()->name) {
-                $validator->errors()->add('name', "You have not filled in the field \"Name\"");
-            }
-            if (!$schedule->prices()->cost) {
-                $validator->errors()->add('cost', "You have not filled in the field \"Cost\"");
-            }
-            if (!$schedule->prices()->is_free) {
-                $validator->errors()->add('is_free', "You have not filled in the field \"Is free\"");
-            }
-            if($schedule->repeat === 'monthly') {
-                $validator->addRules([
-                    'repeat_every'  => 'required',
-                    'repeat_period' => 'required'
-                ]);
-            }
-        });
     }
 }

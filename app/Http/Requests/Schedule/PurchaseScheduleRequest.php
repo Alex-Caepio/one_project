@@ -2,13 +2,13 @@
 
 namespace App\Http\Requests\Schedule;
 
+use App\Http\Requests\Request;
 use App\Models\PromotionCode;
 use App\Models\ScheduleAvailability;
 use App\Models\ScheduleUnavailability;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class PurchaseScheduleRequest extends FormRequest
+class PurchaseScheduleRequest extends Request
 {
 
     /**
