@@ -83,7 +83,7 @@ class MainPageUpdateRequest extends Request
             'section_11_alt_text'               => 'nullable|max:150',
 
             'section_12_h2'                     => 'nullable|max:150',
-            'section_12_h3'                     => 'nullable|max:300',
+            'section_12_h3'                     => 'nullable|max:2000',
             'section_12_media_1_media_url'      => 'nullable|url',
             'section_12_media_1_url'            => 'nullable|url',
             'section_12_media_1_target_blanc'   => 'nullable|boolean',
