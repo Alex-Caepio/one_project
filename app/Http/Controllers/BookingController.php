@@ -13,17 +13,18 @@ class BookingController extends Controller
 {
     public function index(Request $request,BookingFilters $filters)
     {
-        $paginator = Booking::where('user_id', $request->user()->id)->paginate($request->getLimit());
-        $booking   = $paginator->getCollection();
+        $Query = Booking::filter($filters)->where('user_id', $request->user()->id);
 
-        if ($request->hasOrderBy()) {
+        if ($request->hasOrderBy())
+        {
             $order = $request->getOrderBy();
-            $booking->orderBy($order['column'], $order['direction']);
+            $Query->orderBy($order['column'], $order['direction']);
         }
 
-        $newFilter = Booking::filter($filters)->get();
+        $paginator = $Query->paginate();
+        $booking   = $paginator->getCollection();
 
-        return response(fractal($booking, $newFilter,new BookingTransformer())
+        return response(fractal($booking,new BookingTransformer())
             ->parseIncludes($request->getIncludes()))
             ->withPaginationHeaders($paginator);
 
