@@ -26,8 +26,8 @@ class MainPageUpdateRequest extends Request
     {
         return [
             'section_1_image_url'               => 'required|url',
-            'section_1_alt_text'                => 'required|max:150',
-            'section_1_intro_text'              => 'required|max:150',
+            'section_1_alt_text'                => 'required|max:150|min:3',
+            'section_1_intro_text'              => 'required|max:150|min:3',
 
             'section_2_background'              => 'nullable|min:6|max:7',
 
@@ -83,7 +83,7 @@ class MainPageUpdateRequest extends Request
             'section_11_alt_text'               => 'nullable|max:150',
 
             'section_12_h2'                     => 'nullable|max:150',
-            'section_12_h3'                     => 'nullable|max:2000',
+            'section_12_text'                   => 'nullable|max:2000',
             'section_12_media_1_media_url'      => 'nullable|url',
             'section_12_media_1_url'            => 'nullable|url',
             'section_12_media_1_target_blanc'   => 'nullable|boolean',

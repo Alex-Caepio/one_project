@@ -73,7 +73,7 @@ class MainPageFactory extends Factory
             'section_11_alt_text'             => Str::random(10),
 
             'section_12_h2'                   => Str::random(10),
-            'section_12_h3'                   => Str::random(10),
+            'section_12_text'                   => Str::random(10),
             'section_12_media_1_image_url'    => $this->faker->url,
             'section_12_media_1_url'          => $this->faker->url,
             'section_12_media_1_traget_blanc' => $this->faker->boolean,
