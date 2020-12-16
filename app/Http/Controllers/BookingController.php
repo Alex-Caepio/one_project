@@ -14,7 +14,7 @@ class BookingController extends Controller
     public function index(Request $request,BookingFilters $filters)
     {
         $Query = Booking::filter($filters)->where('user_id', $request->user()->id);
-
+//        var_dump( $Query->toSql());die;
         if ($request->hasOrderBy())
         {
             $order = $request->getOrderBy();
@@ -48,5 +48,4 @@ class BookingController extends Controller
 
         return response(null, 200);
     }
-
 }
