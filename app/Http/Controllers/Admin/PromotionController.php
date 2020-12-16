@@ -31,7 +31,7 @@ class PromotionController extends Controller {
 
         return response(fractal($promotions, new PromotionTransformer())->parseIncludes($includes)->toArray())
             ->withPaginationHeaders($paginator)->withFilters($request)
-            ->withCustomInfo(['spend_max_limit' => (int)Promotion::max('spend_max')]);
+            ->withCustomInfo(['spend_max_limit' => (int)Promotion::withTrashed()->max('spend_max')]);
 
     }
 

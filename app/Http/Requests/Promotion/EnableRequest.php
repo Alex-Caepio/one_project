@@ -32,10 +32,8 @@ class EnableRequest extends Request {
     }
 
     public function validatePromo(Validator $validator): void {
-        if (!empty($this->promotion->expiry_date)) {
-            if (Carbon::parse($this->promotion->expiry_date) <= Carbon::now()) {
-                $validator->errors()->add('promotion', 'Promotion is ended');
-            }
+        if (!empty($this->promotion->expiry_date) && Carbon::parse($this->promotion->expiry_date) <= Carbon::now()) {
+            $validator->errors()->add('promotion', 'Promotion is ended');
         }
     }
 }

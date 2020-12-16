@@ -23,7 +23,7 @@ class SavePromotion {
             $this->fillModel($request, $promotion);
             $promotion->save();
             $this->fillRelations($request, $promotion);
-            $promocodes = run_action(CreatePromocode::class, $request, $promotion);
+            run_action(CreatePromocode::class, $request, $promotion);
         });
         return $promotion;
     }

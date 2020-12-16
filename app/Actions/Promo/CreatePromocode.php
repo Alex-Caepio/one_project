@@ -22,14 +22,14 @@ class CreatePromocode {
         $result = new Collection();
         if (is_array($request->get('promocode_names')) && count($request->get('promocode_names'))) {
             foreach (array_unique($request->get('promocode_names')) as $name) {
-                $result->push($this->createPromocode(Str::upper($name), $request, $promotion));
+                $result->push($this->createPromotionCode(Str::upper($name), $request, $promotion));
             }
         } else {
             for ($i = 0; $i < (int)$request->get('total_codes'); $i++) {
                 do {
                     $code = Str::upper(Str::random(8));
                 } while (PromotionCode::where('name', $code)->exists());
-                $result->push($this->createPromocode($code, $request, $promotion));
+                $result->push($this->createPromotionCode($code, $request, $promotion));
             }
         }
         return $result;
@@ -42,7 +42,7 @@ class CreatePromocode {
      * @param \App\Models\Promotion $promotion
      * @return \App\Models\PromotionCode
      */
-    private function createPromocode(string $code, Request $request, Promotion $promotion): PromotionCode {
+    private function createPromotionCode(string $code, Request $request, Promotion $promotion): PromotionCode {
         return PromotionCode::create([
                                          'name'            => $code,
                                          'promotion_id'    => $promotion->id,

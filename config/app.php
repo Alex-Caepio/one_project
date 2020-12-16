@@ -74,6 +74,7 @@ return [
     'frontend_email_confirm_page'           => env('FRONTEND_EMAIL_CONFIRM_PAGE', 'http://localhost'),
     'frontend_profile_link'                 => env('FRONTEND_PROFILE_LINK', 'http://localhost'),
     'frontend_practitioner_services'        => env('FRONTEND_PRACTITIONER_SERVICES', 'http://localhost'),
+    'frontend_practitioner_articles'        => env('FRONTEND_PRACTITIONER_ARTICLES', 'http://localhost'),
     'asset_url'                             => env('ASSET_URL', null),
 
     /*
