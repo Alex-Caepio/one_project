@@ -26,8 +26,8 @@ class MainPageUpdateRequest extends Request
     {
         return [
             'section_1_image_url'               => 'required|url',
-            'section_1_alt_text'                => 'required|max:150',
-            'section_1_intro_text'              => 'required|max:150',
+            'section_1_alt_text'                => 'required|max:150|min:3',
+            'section_1_intro_text'              => 'required|max:150|min:3',
 
             'section_2_background'              => 'nullable|min:6|max:7',
 
