@@ -72,7 +72,7 @@ class MainPage extends Model
         'section_11_alt_text',
 
         'section_12_h2',
-        'section_12_h3',
+        'section_12_text',
         'section_12_media_1_image_url',
         'section_12_media_1_url',
         'section_12_media_1_target_blanc',
