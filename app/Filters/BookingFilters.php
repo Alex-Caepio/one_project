@@ -7,7 +7,7 @@ use Carbon\Carbon;
 
 class BookingFilters extends QueryFilter
 {
-    public function status($status)
+    public function status(string $status)
     {
         $status = strtolower($status);
 
@@ -43,5 +43,42 @@ class BookingFilters extends QueryFilter
     public function datetime_to($datetime_to)
     {
         return $this->builder->where('datetime_from', '<=', $datetime_to);
+    }
+
+    public function bookingReference(string $booking_reference)
+    {
+        return $this->builder->where('booking_reference', '=', $booking_reference);
+    }
+
+    public function serviceType(int $service_type_id)
+    {
+        return $this->builder->whereHas('schedule.service', function ($q) use($service_type_id)
+        {
+            $q->where('service_type_id', '=', $service_type_id);
+        });
+    }
+
+    public function isVirtual(string $is_virtual) // virtual
+    {
+        $is_virtual = strtolower($is_virtual);
+
+        if ($is_virtual == 'virtual')
+        {
+            return $this->builder->with('schedule', function ($q)
+            {
+                $q->where('is_virtual', '=', '1');
+            });
+        }
+        elseif ($is_virtual == 'physical')
+            {
+                return $this->builder->with('schedule', function ($q)
+                {
+                    $q->where('is_virtual', '=', '0');
+                });
+            }
+        elseif ($is_virtual == null)
+        {
+            return $this->builder->with('schedule');
+        }
     }
 }

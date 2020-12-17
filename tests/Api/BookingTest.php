@@ -7,6 +7,7 @@ use App\Models\Schedule;
 use App\Models\Service;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use phpDocumentor\Reflection\Location;
 use Tests\TestCase;
 
 class BookingTest extends TestCase
@@ -101,6 +102,71 @@ class BookingTest extends TestCase
         $response
             ->assertOk()
             ->assertJson([['user_id' => $booking->user_id, 'id' => $booking->id]]);
+    }
+
+    public function test_user_can_filter_booking_by_booking_reference()
+    {
+        $booking = Booking::factory()->create([
+            'cost' => '5',
+            'user_id'=>$this->user->id
+        ]);
+
+        $response = $this->actingAs($this->user)->json('get', "/api/bookings?booking_reference="
+            . $booking->booking_reference);
+        $response
+            ->assertOk()
+            ->assertJson([['user_id' => $booking->user_id, 'id' => $booking->id]]);
+    }
+
+    public function test_user_can_filter_booking_by_service_type()
+    {
+        $user = User::factory()->create(['account_type' => 'practitioner']);
+
+        $service = Service::factory()->create(['user_id' => $user->id]);
+
+        $schedule = Schedule::factory()->create(['service_id' => $service->id]);
+
+        $booking = Booking::factory()->create([
+            'cost' => '5',
+            'datetime_from' => '2020-9-5',
+            'user_id' => $this->user->id,
+            'schedule_id' => $schedule->id,
+        ]);
+
+        $response = $this->actingAs($this->user)->json(
+            'get', "/api/bookings?serviceType="
+            .$service->service_type_id)
+            ->assertOk()
+            ->assertJson([['user_id' => $booking->user_id, 'id' => $booking->id]]);
+    }
+
+    public function test_user_can_filter_booking_by_is_virtual()
+    {
+        $user = User::factory()->create(['account_type' => 'practitioner']);
+
+        $service = Service::factory()->create(['user_id' => $user->id]);
+
+        $schedule = Schedule::factory()->create(['service_id' => $service->id,'is_virtual' => 1]);
+
+        $booking = Booking::factory()->create([
+            'cost' => '5',
+            'datetime_from' => '2020-9-5',
+            'user_id' => $this->user->id,
+            'schedule_id' => $schedule->id,
+        ]);
+
+        $schedule_real = Schedule::factory()->create(['service_id' => $service->id,'is_virtual' => 0]);
+
+        $booking_real = Booking::factory()->create([
+            'cost' => '5',
+            'datetime_from' => '2020-9-5',
+            'user_id' => $this->user->id,
+            'schedule_id' => $schedule_real->id,
+        ]);
+
+        $response = $this->actingAs($this->user)->json('get', "/api/bookings?isVirtual=physical")
+            ->assertOk()
+            ->assertJson([['user_id' => $booking_real->user_id, 'id' => $booking_real->id]]);
     }
 
 }
