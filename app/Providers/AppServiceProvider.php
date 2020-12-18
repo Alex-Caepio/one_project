@@ -15,12 +15,14 @@ use App\Http\Requests\Schedule\RetreatScheduleRequest;
 use App\Http\Requests\Schedule\TrainingProgramScheduleRequest;
 use App\Http\Requests\Schedule\WorkshopScheduleRequest;
 use App\Models\Article;
+use App\Models\Booking;
 use App\Models\Discipline;
 use App\Models\Promotion;
 use App\Models\PromotionCode;
 use App\Models\Service;
 use App\Models\User;
 use App\Observers\ArticleObserver;
+use App\Observers\BookingObserver;
 use App\Observers\PromotionCodeObserver;
 use App\Observers\PromotionObserver;
 use App\Observers\UserObserver;
@@ -62,6 +64,7 @@ class AppServiceProvider extends ServiceProvider
         Promotion::observe(PromotionObserver::class);
         PromotionCode::observe(PromotionCodeObserver::class);
         User::observe(UserObserver::class);
+        Booking::observe(BookingObserver::class);
 
         $this->app->bind(CreateScheduleInterface::class, function () {
             if (request()->service->service_type->id == 'workshop') {

@@ -25,3 +25,10 @@ if (!function_exists('to_url')) {
         return  preg_replace("/[^a-zA-Z0-9-]+/", "", $kebab);
     }
 }
+
+
+if (!function_exists('unique_string')) {
+    function unique_string(int $length = 8): string {
+        return Str::upper(Str::substr(base_convert(sha1(uniqid(mt_rand(), true)), 16, 36), 0, $length));
+    }
+}

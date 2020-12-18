@@ -75,6 +75,7 @@ return [
     'frontend_profile_link'                 => env('FRONTEND_PROFILE_LINK', 'http://localhost'),
     'frontend_practitioner_services'        => env('FRONTEND_PRACTITIONER_SERVICES', 'http://localhost'),
     'frontend_practitioner_articles'        => env('FRONTEND_PRACTITIONER_ARTICLES', 'http://localhost'),
+    'frontend_booking_url'                  => env('FRONTEND_BOOKING_URL', 'http://localhost'),
     'asset_url'                             => env('ASSET_URL', null),
 
     /*
