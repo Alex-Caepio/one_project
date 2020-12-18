@@ -144,9 +144,8 @@ class BookingTest extends TestCase
     {
         $user = User::factory()->create(['account_type' => 'practitioner']);
 
-        $service = Service::factory()->create(['user_id' => $user->id]);
 
-        $schedule = Schedule::factory()->create(['service_id' => $service->id,'is_virtual' => 1]);
+        $schedule = Schedule::factory()->create(['is_virtual' => 1]);
 
         $booking = Booking::factory()->create([
             'cost' => '5',
@@ -155,7 +154,11 @@ class BookingTest extends TestCase
             'schedule_id' => $schedule->id,
         ]);
 
-        $schedule_real = Schedule::factory()->create(['service_id' => $service->id,'is_virtual' => 0]);
+        $response = $this->actingAs($this->user)->json('get', "/api/bookings?isVirtual=virtual")
+            ->assertOk()
+            ->assertJson([['user_id' => $booking->user_id, 'id' => $booking->id]]);
+
+        $schedule_real = Schedule::factory()->create(['is_virtual' => 0]);
 
         $booking_real = Booking::factory()->create([
             'cost' => '5',
@@ -168,5 +171,30 @@ class BookingTest extends TestCase
             ->assertOk()
             ->assertJson([['user_id' => $booking_real->user_id, 'id' => $booking_real->id]]);
     }
+
+//    public function test_user_can_filter_booking_by_payment_method()
+//    {
+//        $booking = Booking::factory()->create([
+//            'cost' => '5',
+//            'user_id'=>$this->user->id,
+//            'instalments_count' => '200'
+//        ]);
+//
+//        $response = $this->actingAs($this->user)->json('get', "/api/bookings?paymentMethod=deposit");
+//        $response
+//            ->assertOk()
+//            ->assertJson([['user_id' => $booking->user_id, 'id' => $booking->id]]);
+//
+//        $booking_single = Booking::factory()->create([
+//            'cost' => '5',
+//            'user_id'=>$this->user->id,
+//            'instalments_count' => '200'
+//        ]);
+//
+//        $response = $this->actingAs($this->user)->json('get', "/api/bookings?paymentMethod=singlepayment");
+//        $response
+//            ->assertOk()
+//            ->assertJson([['user_id' => $booking_single->user_id, 'id' => $booking_single->id]]);
+//    }
 
 }

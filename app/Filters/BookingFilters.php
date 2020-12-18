@@ -45,9 +45,9 @@ class BookingFilters extends QueryFilter
         return $this->builder->where('datetime_from', '<=', $datetime_to);
     }
 
-    public function bookingReference(string $booking_reference)
+    public function bookingReference(string $reference)
     {
-        return $this->builder->where('booking_reference', '=', $booking_reference);
+        return $this->builder->where('reference', '=', $reference);
     }
 
     public function serviceType(int $service_type_id)
@@ -58,20 +58,20 @@ class BookingFilters extends QueryFilter
         });
     }
 
-    public function isVirtual(string $is_virtual) // virtual
+    public function isVirtual(string $is_virtual)
     {
         $is_virtual = strtolower($is_virtual);
 
         if ($is_virtual == 'virtual')
         {
-            return $this->builder->with('schedule', function ($q)
+            return $this->builder->whereHas('schedule', function ($q) use ($is_virtual)
             {
                 $q->where('is_virtual', '=', '1');
             });
         }
         elseif ($is_virtual == 'physical')
             {
-                return $this->builder->with('schedule', function ($q)
+                return $this->builder->whereHas('schedule', function ($q) use ($is_virtual)
                 {
                     $q->where('is_virtual', '=', '0');
                 });
@@ -81,4 +81,18 @@ class BookingFilters extends QueryFilter
             return $this->builder->with('schedule');
         }
     }
+
+//    public function paymentMethod(string $payment)
+//    {
+//        $payment = strtolower($payment);
+//
+//        if ($payment == 'deposit')
+//        {
+//            return $this->builder->where('instalments_count', '!=', null);
+//        }
+//        elseif ($payment == 'singlepayment')
+//        {
+//            return $this->builder->where('instalments_count', '=', null);
+//        }
+//    }
 }
