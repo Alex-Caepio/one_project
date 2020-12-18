@@ -41,6 +41,6 @@ class Instalments extends Model
     }
     public function purchase()
     {
-        return $this->belongsTo(Purchases::class);
+        return $this->belongsTo(Purchase::class);
     }
 }

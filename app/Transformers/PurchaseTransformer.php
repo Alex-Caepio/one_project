@@ -3,9 +3,9 @@
 
 namespace App\Transformers;
 
-use App\Models\Purchases;
+use App\Models\Purchase;
 
-class PurchasesTransformer extends Transformer
+class PurchaseTransformer extends Transformer
 {
     protected $availableIncludes = [
         'schedule', 'user', 'price'
@@ -15,7 +15,7 @@ class PurchasesTransformer extends Transformer
      *
      * @return array
      */
-    public function transform(Purchases $purchases)
+    public function transform(Purchase $purchases)
     {
         return [
             'id'                => $purchases->id,
@@ -31,17 +31,17 @@ class PurchasesTransformer extends Transformer
         ];
     }
 
-    public function includeSchedules(Purchases $purchases)
+    public function includeSchedule(Purchase $purchases)
     {
-        return $this->collectionOrNull($purchases->schedule, new ScheduleTransformer());
+        return $this->itemOrNull($purchases->schedule, new ScheduleTransformer());
     }
 
-    public function includeUsers(Purchases $purchases)
+    public function includeUser(Purchase $purchases)
     {
         return $this->itemOrNull($purchases->user, new UserTransformer());
     }
 
-    public function includePrices(Purchases $purchases)
+    public function includePrice(Purchase $purchases)
     {
         return $this->itemOrNull($purchases->price, new PriceTransformer());
     }

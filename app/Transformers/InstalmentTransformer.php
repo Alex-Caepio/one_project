@@ -5,7 +5,7 @@ namespace App\Transformers;
 
 use App\Models\Instalments;
 
-class InstalmentsTransformer extends Transformer
+class InstalmentTransformer extends Transformer
 {
     protected $availableIncludes = [
         'schedule', 'user', 'price',
@@ -33,23 +33,23 @@ class InstalmentsTransformer extends Transformer
         ];
     }
 
-    public function includeSchedules(Instalments $instalments)
+    public function includeSchedule(Instalments $instalments)
     {
-        return $this->collectionOrNull($instalments->schedule, new ScheduleTransformer());
+        return $this->itemOrNull($instalments->schedule, new ScheduleTransformer());
     }
 
-    public function includeUsers(Instalments $instalments)
+    public function includeUser(Instalments $instalments)
     {
         return $this->itemOrNull($instalments->user, new UserTransformer());
     }
 
-    public function includePrices(Instalments $instalments)
+    public function includePrice(Instalments $instalments)
     {
         return $this->itemOrNull($instalments->price, new PriceTransformer());
     }
 
-    public function includePurchases(Instalments $instalments)
+    public function includePurchase(Instalments $instalments)
     {
-        return $this->itemOrNull($instalments->purchase, new PurchasesTransformer());
+        return $this->itemOrNull($instalments->purchase, new PurchaseTransformer());
     }
 }
