@@ -48,5 +48,4 @@ class BookingController extends Controller
 
         return response(null, 200);
     }
-
 }
