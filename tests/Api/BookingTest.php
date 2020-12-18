@@ -24,7 +24,7 @@ class BookingTest extends TestCase
 
     public function test_user_can_only_see_their_own_booking_list(): void
     {
-        Booking::factory()->count(5)->create(['cost' => '5']);
+        Booking::factory()->count(5)->create(['cost' => 5]);
 
         $response = $this->json('get', "/api/bookings");
         $response->assertOk();
@@ -33,7 +33,7 @@ class BookingTest extends TestCase
     public function test_user_can_filter_booking_by_status(): void
     {
         $booking_past = Booking::factory()->create([
-            'cost' => '5',
+            'cost' => 5,
             'datetime_from' => '2020-9-5',
             'user_id'=>$this->user->id
         ]);
@@ -44,7 +44,7 @@ class BookingTest extends TestCase
         ->assertJson([['user_id' => $booking_past->user_id, 'id' => $booking_past->id]]);
 
         $booking_future = Booking::factory()->create([
-            'cost' => '5',
+            'cost' => 5,
             'datetime_from' => '2020-12-31',
             'user_id'=>$this->user->id
         ]);
@@ -55,7 +55,7 @@ class BookingTest extends TestCase
             ->assertJson([['user_id' => $booking_future->user_id, 'id' => $booking_future->id]]);
 
         $booking_deleted = Booking::factory()->create([
-            'cost' => '5',
+            'cost' => 5,
             'deleted_at' => '2020-11-25',
             'user_id'=>$this->user->id
         ]);
@@ -75,7 +75,7 @@ class BookingTest extends TestCase
         $schedule = Schedule::factory()->create(['service_id' => $service->id]);
 
         $booking = Booking::factory()->create([
-            'cost' => '5',
+            'cost' => 5,
             'datetime_from' => '2020-9-5',
             'user_id' => $this->user->id,
             'schedule_id' => $schedule->id,
@@ -91,7 +91,7 @@ class BookingTest extends TestCase
     public function test_user_can_filter_booking_by_datetime(): void
     {
         $booking = Booking::factory()->create([
-            'cost' => '5',
+            'cost' => 5,
             'datetime_from' => '2020-9-5',
             'datetime_to' => '2020-10-11',
             'user_id'=>$this->user->id
@@ -107,12 +107,12 @@ class BookingTest extends TestCase
     public function test_user_can_filter_booking_by_booking_reference(): void
     {
         $booking = Booking::factory()->create([
-            'cost' => '5',
-            'user_id'=>$this->user->id
+            'cost' => 5,
+            'user_id' => $this->user->id,
         ]);
 
-        $response = $this->actingAs($this->user)->json('get', "/api/bookings?booking_reference="
-            . $booking->booking_reference);
+        $response = $this->actingAs($this->user)->json('get', "/api/bookings?bookingReference="
+            . $booking->reference);
         $response
             ->assertOk()
             ->assertJson([['user_id' => $booking->user_id, 'id' => $booking->id]]);
@@ -127,7 +127,7 @@ class BookingTest extends TestCase
         $schedule = Schedule::factory()->create(['service_id' => $service->id]);
 
         $booking = Booking::factory()->create([
-            'cost' => '5',
+            'cost' => 5,
             'datetime_from' => '2020-9-5',
             'user_id' => $this->user->id,
             'schedule_id' => $schedule->id,
@@ -148,7 +148,7 @@ class BookingTest extends TestCase
         $schedule = Schedule::factory()->create(['is_virtual' => 1]);
 
         $booking = Booking::factory()->create([
-            'cost' => '5',
+            'cost' => 5,
             'datetime_from' => '2020-9-5',
             'user_id' => $this->user->id,
             'schedule_id' => $schedule->id,
@@ -161,7 +161,7 @@ class BookingTest extends TestCase
         $schedule_real = Schedule::factory()->create(['is_virtual' => 0]);
 
         $booking_real = Booking::factory()->create([
-            'cost' => '5',
+            'cost' => 5,
             'datetime_from' => '2020-9-5',
             'user_id' => $this->user->id,
             'schedule_id' => $schedule_real->id,
@@ -180,7 +180,7 @@ class BookingTest extends TestCase
         $schedule = Schedule::factory()->create(['is_virtual' => 0]);
 
         $booking = Booking::factory()->create([
-            'cost' => '5',
+            'cost' => 5,
             'datetime_from' => '2020-9-5',
             'user_id' => $this->user->id,
             'schedule_id' => $schedule->id,
@@ -199,7 +199,7 @@ class BookingTest extends TestCase
         $schedule = Schedule::factory()->create(['is_virtual' => 0]);
 
         $booking = Booking::factory()->create([
-            'cost' => '5',
+            'cost' => 5,
             'datetime_from' => '2020-9-5',
             'user_id' => $this->user->id,
             'schedule_id' => $schedule->id,
@@ -213,7 +213,7 @@ class BookingTest extends TestCase
 //    public function test_user_can_filter_booking_by_payment_method():void
 //    {
 //        $booking = Booking::factory()->create([
-//            'cost' => '5',
+//            'cost' => 5,
 //            'user_id'=>$this->user->id,
 //            'instalments_count' => '200'
 //        ]);
@@ -224,7 +224,7 @@ class BookingTest extends TestCase
 //            ->assertJson([['user_id' => $booking->user_id, 'id' => $booking->id]]);
 //
 //        $booking_single = Booking::factory()->create([
-//            'cost' => '5',
+//            'cost' => 5,
 //            'user_id'=>$this->user->id,
 //            'instalments_count' => '200'
 //        ]);
