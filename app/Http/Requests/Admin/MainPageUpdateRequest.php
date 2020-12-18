@@ -25,7 +25,7 @@ class MainPageUpdateRequest extends Request
     public function rules()
     {
         return [
-            'section_1_image_url'               => 'required|url',
+            'section_1_image_url'               => 'nullable|url',
             'section_1_alt_text'                => 'required|max:150|min:3',
             'section_1_intro_text'              => 'required|max:150|min:3',
 

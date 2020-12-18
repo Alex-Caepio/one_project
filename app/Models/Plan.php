@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
+ * @property integer amount
+ * @property string name
  * @property float commission_on_sale
  */
 class Plan extends Model

@@ -42,6 +42,11 @@ class ServiceFiltrator {
         }
 
         $searchString = $request->get('search');
+
+        if($searchString){
+            $queryBuilder->where('title', 'like', "%{$searchString}%");
+        }
+
         $sortBy = $request->get('sortby');
         $queryBuilder->when($request->filled('sortby'), static function(Builder $query) use ($sortBy, $searchString) {
             switch ($sortBy) {

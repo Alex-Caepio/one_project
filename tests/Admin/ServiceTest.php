@@ -19,11 +19,24 @@ class ServiceTest extends TestCase
     }
     public function test_all_service(): void
     {
-        Service::factory()->count(2)->make();
-        $response = $this->json('get', "/admin/services");
+        Service::factory()->count(6)->create();
+        $response = $this->json('get', '/admin/services?search');
 
-        $response->assertOk();
+        $response->assertOk()->assertJsonCount(6);
     }
+
+    public function test_all_service_search(): void
+    {
+        Service::factory()->create(['title' => 'aaaaa']);
+        Service::factory()->create(['title' => 'bbbbb']);
+
+        $response = $this->json('get', '/admin/services?search=aaaaa');
+
+        $response->assertOk()
+            ->assertJsonCount(1)
+            ->assertJsonFragment(['title' => 'aaaaa']);
+    }
+
     public function test_store_service(): void
     {
         $service = Service::factory()->create();
