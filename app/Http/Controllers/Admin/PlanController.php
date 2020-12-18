@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\PlanStoreRequest;
 use App\Models\Plan;
 use App\Transformers\PlanTransformer;
 use App\Http\Requests\Request;
@@ -26,17 +27,17 @@ class PlanController extends Controller
             ->toArray();
     }
 
-    public function store(Request $request, StripeClient $stripe)
+    public function store(PlanStoreRequest $request, StripeClient $stripe)
     {
         $plan       = new Plan();
         $planStripe = $stripe->plans->create([
-            'amount'   => $request->get('amount'),
+            'amount'   => $request->get('is_free') ? 0 : $request->get('price'),
             'currency' => 'usd',
             'interval' => 'month',
             'product'  => ['name' => $request->get('name')],
         ]);
 
-        $data = $request->all();
+        $data              = $request->all();
         $data['stripe_id'] = $planStripe->id;
 
         $plan->fill($data);
