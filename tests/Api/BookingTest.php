@@ -66,7 +66,7 @@ class BookingTest extends TestCase
         ->assertJson([['user_id' => $booking_deleted->user_id, 'id' => $booking_deleted->id]]);
     }
 
-    public function test_user_can_filter_booking_by_practitioner()
+    public function test_user_can_filter_booking_by_practitioner(): void
     {
         $user = User::factory()->create(['account_type' => 'practitioner']);
 
@@ -88,7 +88,7 @@ class BookingTest extends TestCase
             ->assertJson([['user_id' => $booking->user_id, 'id' => $booking->id]]);
     }
 
-    public function test_user_can_filter_booking_by_datetime()
+    public function test_user_can_filter_booking_by_datetime(): void
     {
         $booking = Booking::factory()->create([
             'cost' => '5',
@@ -104,7 +104,7 @@ class BookingTest extends TestCase
             ->assertJson([['user_id' => $booking->user_id, 'id' => $booking->id]]);
     }
 
-    public function test_user_can_filter_booking_by_booking_reference()
+    public function test_user_can_filter_booking_by_booking_reference(): void
     {
         $booking = Booking::factory()->create([
             'cost' => '5',
@@ -118,7 +118,7 @@ class BookingTest extends TestCase
             ->assertJson([['user_id' => $booking->user_id, 'id' => $booking->id]]);
     }
 
-    public function test_user_can_filter_booking_by_service_type()
+    public function test_user_can_filter_booking_by_service_type(): void
     {
         $user = User::factory()->create(['account_type' => 'practitioner']);
 
@@ -140,7 +140,7 @@ class BookingTest extends TestCase
             ->assertJson([['user_id' => $booking->user_id, 'id' => $booking->id]]);
     }
 
-    public function test_user_can_filter_booking_by_is_virtual()
+    public function test_user_can_filter_booking_by_is_virtual(): void
     {
         $user = User::factory()->create(['account_type' => 'practitioner']);
 
@@ -172,7 +172,45 @@ class BookingTest extends TestCase
             ->assertJson([['user_id' => $booking_real->user_id, 'id' => $booking_real->id]]);
     }
 
-//    public function test_user_can_filter_booking_by_payment_method()
+    public function test_user_can_filter_booking_by_city(): void
+    {
+        $user = User::factory()->create(['account_type' => 'practitioner']);
+
+
+        $schedule = Schedule::factory()->create(['is_virtual' => 0]);
+
+        $booking = Booking::factory()->create([
+            'cost' => '5',
+            'datetime_from' => '2020-9-5',
+            'user_id' => $this->user->id,
+            'schedule_id' => $schedule->id,
+        ]);
+
+        $response = $this->actingAs($this->user)->json('get', "/api/bookings?city=".$schedule->city)
+            ->assertOk()
+            ->assertJson([['user_id' => $booking->user_id, 'id' => $booking->id]]);
+    }
+
+    public function test_user_can_filter_booking_by_country(): void
+    {
+        $user = User::factory()->create(['account_type' => 'practitioner']);
+
+
+        $schedule = Schedule::factory()->create(['is_virtual' => 0]);
+
+        $booking = Booking::factory()->create([
+            'cost' => '5',
+            'datetime_from' => '2020-9-5',
+            'user_id' => $this->user->id,
+            'schedule_id' => $schedule->id,
+        ]);
+
+        $response = $this->actingAs($this->user)->json('get', "/api/bookings?country=".$schedule->country)
+            ->assertOk()
+            ->assertJson([['user_id' => $booking->user_id, 'id' => $booking->id]]);
+    }
+
+//    public function test_user_can_filter_booking_by_payment_method():void
 //    {
 //        $booking = Booking::factory()->create([
 //            'cost' => '5',

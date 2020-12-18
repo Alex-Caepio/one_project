@@ -82,6 +82,26 @@ class BookingFilters extends QueryFilter
         }
     }
 
+    public function city(string $city)
+    {
+        $city = strtolower($city);
+
+            return $this->builder->whereHas('schedule', function ($q) use ($city)
+            {
+                $q->where('city', '=', $city);
+            });
+    }
+
+    public function country(string $country)
+    {
+        $country = strtolower($country);
+
+        return $this->builder->whereHas('schedule', function ($q) use ($country)
+        {
+            $q->where('country', '=', $country);
+        });
+    }
+
 //    public function paymentMethod(string $payment)
 //    {
 //        $payment = strtolower($payment);
