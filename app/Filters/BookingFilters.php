@@ -66,39 +66,31 @@ class BookingFilters extends QueryFilter
         {
             return $this->builder->whereHas('schedule', function ($q) use ($is_virtual)
             {
-                $q->where('is_virtual', '=', '1');
+                $q->where('is_virtual', '=', true);
             });
         }
         elseif ($is_virtual == 'physical')
-            {
-                return $this->builder->whereHas('schedule', function ($q) use ($is_virtual)
-                {
-                    $q->where('is_virtual', '=', '0');
-                });
-            }
-        elseif ($is_virtual == null)
         {
-            return $this->builder->with('schedule');
+            return $this->builder->whereHas('schedule', function ($q) use ($is_virtual)
+            {
+                $q->where('is_virtual', '!=', true);
+            });
         }
     }
 
     public function city(string $city)
     {
-        $city = strtolower($city);
-
             return $this->builder->whereHas('schedule', function ($q) use ($city)
             {
-                $q->where('city', '=', $city);
+                $q->where('city', '=', strtolower($city));
             });
     }
 
     public function country(string $country)
     {
-        $country = strtolower($country);
-
         return $this->builder->whereHas('schedule', function ($q) use ($country)
         {
-            $q->where('country', '=', $country);
+            $q->where('country', '=', strtolower($country));
         });
     }
 
