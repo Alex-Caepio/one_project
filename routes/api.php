@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\MainPageController;
+use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\ScheduleFreezesController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\StripeAccountController;
@@ -152,4 +153,6 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
 
     Route::get('/bookings', [BookingController::class, 'index']);
     Route::post('/bookings/{booking}/reschedule', [BookingController::class, 'reschedule']);
+
+    Route::get('/purchases', [PurchaseController::class, 'index']);
 });
