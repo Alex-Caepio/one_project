@@ -27,7 +27,7 @@ class CreatePromocode {
         } else {
             for ($i = 0; $i < (int)$request->get('total_codes'); $i++) {
                 do {
-                    $code = Str::upper(Str::random(8));
+                    $code = unique_string();
                 } while (PromotionCode::where('name', $code)->exists());
                 $result->push($this->createPromotionCode($code, $request, $promotion));
             }
