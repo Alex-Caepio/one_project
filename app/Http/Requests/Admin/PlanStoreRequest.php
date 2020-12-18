@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\Admin;
 
-use App\Models\FocusArea;
 use App\Http\Requests\Request;
 
 class PlanStoreRequest extends Request
@@ -25,8 +24,10 @@ class PlanStoreRequest extends Request
     public function rules()
     {
         return [
-            'name'   => 'required|max:200',
-            'price' => 'required_unless:is_free,true|integer'
+            'name'   => 'required|max:20',
+            'price' => 'required_unless:is_free,true|integer',
+            'description' => 'max:150',
+            'trial_months' => 'nullable|integer',
         ];
     }
 

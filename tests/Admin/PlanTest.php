@@ -43,28 +43,28 @@ class PlanTest extends TestCase
         $this->mockStripeStore();
 
         /* Admin can store a plan with a price */
-        $this->postJson(action(
-            [PlanController::class, 'store']),
+        $this->postJson(
+            action([PlanController::class, 'store']),
             [
-                'name'   => 'Test plan, just for testing',
+                'name'  => 'Test plan',
                 'price' => 20,
             ])
             ->assertOk();
 
         /* Admin can store a free plan without a price */
-        $this->postJson(action(
-            [PlanController::class, 'store']),
+        $this->postJson(
+            action([PlanController::class, 'store']),
             [
-                'name'   => 'Test plan, just for testing',
+                'name'    => 'Test plan',
                 'is_free' => true,
             ])
             ->assertOk();
 
         /* On storing a non-free plan price is required */
-        $this->postJson(action(
-            [PlanController::class, 'store']),
+        $this->postJson(
+            action([PlanController::class, 'store']),
             [
-                'name'   => 'Test plan, just for testing',
+                'name'    => 'Test plan',
                 'is_free' => false,
             ])
             ->assertStatus(422);
