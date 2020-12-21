@@ -3,6 +3,7 @@
 namespace Tests\Api;
 
 use App\Models\Booking;
+use App\Models\Instalment;
 use App\Models\Schedule;
 use App\Models\Service;
 use App\Models\User;
@@ -210,29 +211,43 @@ class BookingTest extends TestCase
             ->assertJson([['user_id' => $booking->user_id, 'id' => $booking->id]]);
     }
 
-//    public function test_user_can_filter_booking_by_payment_method():void
-//    {
-//        $booking = Booking::factory()->create([
-//            'cost' => 5,
-//            'user_id'=>$this->user->id,
-//            'instalments_count' => '200'
-//        ]);
-//
-//        $response = $this->actingAs($this->user)->json('get', "/api/bookings?paymentMethod=deposit");
-//        $response
-//            ->assertOk()
-//            ->assertJson([['user_id' => $booking->user_id, 'id' => $booking->id]]);
-//
-//        $booking_single = Booking::factory()->create([
-//            'cost' => 5,
-//            'user_id'=>$this->user->id,
-//            'instalments_count' => '200'
-//        ]);
-//
-//        $response = $this->actingAs($this->user)->json('get', "/api/bookings?paymentMethod=singlepayment");
-//        $response
-//            ->assertOk()
-//            ->assertJson([['user_id' => $booking_single->user_id, 'id' => $booking_single->id]]);
-//    }
+    public function test_user_can_filter_booking_by_payment_method():void
+    {
+        $schedule = Schedule::factory()->create();
+
+        Instalment::factory()->create([
+            'user_id'=>$this->user->id,
+            'is_paid' => 0,
+            'schedule_id' => $schedule->id]);
+
+        $booking = Booking::factory()->create([
+            'cost' => 5,
+            'user_id'=>$this->user->id,
+            'schedule_id' => $schedule->id,
+        ]);
+
+        $response = $this->actingAs($this->user)->json('get', "/api/bookings?paymentMethod=deposit");
+        $response
+            ->assertOk()
+            ->assertJson([['user_id' => $booking->user_id, 'id' => $booking->id]]);
+
+        $schedule_single = Schedule::factory()->create();
+
+        Instalment::factory()->create([
+            'user_id'=>$this->user->id,
+            'is_paid' => 0,
+            'schedule_id' => $schedule_single->id]);
+
+        $booking_single = Booking::factory()->create([
+            'cost' => 5,
+            'user_id'=>$this->user->id,
+            'schedule_id' => $schedule_single->id,
+        ]);
+
+        $response = $this->actingAs($this->user)->json('get', "/api/bookings?paymentMethod=singlepayment");
+        $response
+            ->assertOk()
+            ->assertJson([['user_id' => $booking_single->user_id, 'id' => $booking_single->id]]);
+    }
 
 }
