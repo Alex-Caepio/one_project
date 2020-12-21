@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Article;
+use App\Models\Promotion;
 use App\Models\Service;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
@@ -40,6 +41,10 @@ class RouteServiceProvider extends ServiceProvider {
             return Service::published()->where('id', (int)$value)->whereHas('user', function($query) {
                 $query->published();
             })->firstOrFail();
+        });
+
+        Route::bind('promotionWithTrashed', function($value) {
+            return Promotion::withTrashed()->where('id', (int)$value)->firstOrFail();
         });
 
         parent::boot();
