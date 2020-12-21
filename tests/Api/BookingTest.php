@@ -214,7 +214,7 @@ class BookingTest extends TestCase
     public function test_user_can_filter_booking_by_payment_method():void
     {
         $schedule = Schedule::factory()->create();
-
+        //failed to open stream: Success 218 line
         Instalment::factory()->create([
             'user_id'=>$this->user->id,
             'is_paid' => 0,

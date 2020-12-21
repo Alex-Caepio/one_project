@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Filters\PurchaseFilters;
 use Illuminate\Http\Request;
 use App\Models\Purchase;
 use App\Transformers\PurchaseTransformer;
