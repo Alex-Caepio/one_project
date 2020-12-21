@@ -18,7 +18,7 @@ class BookingFactory extends Factory
             'schedule_id'       => $this->faker->randomNumber(2),
             'price_id'          => $this->faker->randomNumber(1),
             'availability_id'   => $this->faker->randomNumber(6),
-            'purchases_id'      => $this->faker->randomNumber(6),
+            'purchase_id'       => $this->faker->randomNumber(6),
             'datetime_from'     => Carbon::tomorrow()->format('Y-m-d H:i:s'),
             'datetime_to'       => Carbon::tomorrow()->addHour()->format('Y-m-d H:i:s'),
             'cost'              => 100,
