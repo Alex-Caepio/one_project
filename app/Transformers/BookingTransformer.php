@@ -30,7 +30,7 @@ class BookingTransformer extends Transformer
             'promocode_id'      => $booking->promocode_id,
             'created_at'        => $booking->created_at,
             'updated_at'        => $booking->updated_at,
-            'purchases_id'      => $booking->purchases_id
+            'purchase_id'      => $booking->purchase_id
         ];
     }
 

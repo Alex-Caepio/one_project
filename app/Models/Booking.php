@@ -49,6 +49,11 @@ class Booking extends Model
         return $this->belongsTo(ScheduleAvailability::class);
     }
 
+    public function purchase()
+    {
+        return $this->belongsTo(Purchase::class);
+    }
+
     public function scopeFilter(Builder $builder, QueryFilter $filters)
     {
         return $filters->apply($builder);
