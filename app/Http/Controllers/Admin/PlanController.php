@@ -50,6 +50,8 @@ class PlanController extends Controller
     public function update(Request $request, Plan $plan)
     {
         $plan->update($request->all());
+        $plan->service_types()->sync($request->get('service_types'));
+
         return fractal($plan, new PlanTransformer())->respond();
     }
 

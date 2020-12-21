@@ -38,7 +38,7 @@ class PlanTransformer extends Transformer
             'article_publishing_unlimited'          => (bool)$plan->article_publishing_unlimited,
             'prioritised_business_profile_search'   => (bool)$plan->prioritised_business_profile_search,
             'prioritised_service_search'            => (bool)$plan->prioritised_service_search,
-            'business_profile_page'                  => (bool)$plan->business_profile_page,
+            'business_profile_page'                 => (bool)$plan->business_profile_page,
             'unique_web_address'                    => (bool)$plan->unique_web_address,
             'onboarding_support'                    => (bool)$plan->onboarding_support,
             'client_analytics'                      => (bool)$plan->client_analytics,
