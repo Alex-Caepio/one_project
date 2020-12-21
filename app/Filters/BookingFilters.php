@@ -94,17 +94,23 @@ class BookingFilters extends QueryFilter
         });
     }
 
-//    public function paymentMethod(string $payment)
-//    {
-//        $payment = strtolower($payment);
-//
-//        if ($payment == 'deposit')
-//        {
-//            return $this->builder->where('instalments_count', '!=', null);
-//        }
-//        elseif ($payment == 'singlepayment')
-//        {
-//            return $this->builder->where('instalments_count', '=', null);
-//        }
-//    }
+    public function paymentMethod(string $payment)
+    {
+        $payment = strtolower($payment);
+
+        if ($payment == 'deposit')
+        {
+            return $this->builder->whereHas('schedule.instalment', function ($q) use ($payment)
+            {
+                $q->where('is_paid', '=', 0);
+            });
+        }
+        elseif ($payment == 'singlepayment')
+        {
+            return $this->builder->whereHas('schedule.instalment', function ($q) use ($payment)
+            {
+                $q->where('is_paid', '=', 1);
+            });
+        }
+    }
 }
