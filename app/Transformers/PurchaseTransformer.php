@@ -28,6 +28,8 @@ class PurchaseTransformer extends Transformer
             'created_at'        => $purchases->created_at,
             'updated_at'        => $purchases->updated_at,
             'deleted_at'        => $purchases->deleted_at,
+            'is_deposit'        => $purchases->is_deposit,
+            'deposit_amount'    => $purchases->deposit_amount
         ];
     }
 

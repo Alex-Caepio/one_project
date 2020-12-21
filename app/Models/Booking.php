@@ -25,7 +25,8 @@ class Booking extends Model
         'cost',
         'promocode_id',
         'created_at',
-        'updated_at'
+        'updated_at',
+        'purchases_id'
     ];
 
     public function user()

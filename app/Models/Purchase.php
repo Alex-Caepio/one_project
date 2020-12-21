@@ -22,7 +22,9 @@ class Purchase extends Model
         'price',
         'created_at',
         'updated_at',
-        'deleted_at'
+        'deleted_at',
+        'is_deposit',
+        'deposit_amount'
     ];
 
     public function user()
