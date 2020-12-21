@@ -3,7 +3,7 @@
 
 namespace App\Transformers;
 
-use App\Models\Instalments;
+use App\Models\Instalment;
 
 class InstalmentTransformer extends Transformer
 {
@@ -16,7 +16,7 @@ class InstalmentTransformer extends Transformer
      *
      * @return array
      */
-    public function transform(Instalments $instalments)
+    public function transform(Instalment $instalments)
     {
         return [
             'id'                => $instalments->id,
@@ -33,22 +33,22 @@ class InstalmentTransformer extends Transformer
         ];
     }
 
-    public function includeSchedule(Instalments $instalments)
+    public function includeSchedule(Instalment $instalments)
     {
         return $this->itemOrNull($instalments->schedule, new ScheduleTransformer());
     }
 
-    public function includeUser(Instalments $instalments)
+    public function includeUser(Instalment $instalments)
     {
         return $this->itemOrNull($instalments->user, new UserTransformer());
     }
 
-    public function includePrice(Instalments $instalments)
+    public function includePrice(Instalment $instalments)
     {
         return $this->itemOrNull($instalments->price, new PriceTransformer());
     }
 
-    public function includePurchase(Instalments $instalments)
+    public function includePurchase(Instalment $instalments)
     {
         return $this->itemOrNull($instalments->purchase, new PurchaseTransformer());
     }

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Filters\QueryFilter;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -20,7 +22,9 @@ class Purchase extends Model
         'price',
         'created_at',
         'updated_at',
-        'deleted_at'
+        'deleted_at',
+        'is_deposit',
+        'deposit_amount'
     ];
 
     public function user()
@@ -36,5 +40,10 @@ class Purchase extends Model
     public function price()
     {
         return $this->belongsTo(Price::class);
+    }
+
+    public function scopeFilter(Builder $builder, QueryFilter $filters)
+    {
+        return $filters->apply($builder);
     }
 }

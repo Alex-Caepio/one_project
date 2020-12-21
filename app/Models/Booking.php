@@ -25,7 +25,8 @@ class Booking extends Model
         'cost',
         'promocode_id',
         'created_at',
-        'updated_at'
+        'updated_at',
+        'purchase_id'
     ];
 
     public function user()
@@ -46,6 +47,11 @@ class Booking extends Model
     public function schedule_availability()
     {
         return $this->belongsTo(ScheduleAvailability::class);
+    }
+
+    public function purchase()
+    {
+        return $this->belongsTo(Purchase::class);
     }
 
     public function scopeFilter(Builder $builder, QueryFilter $filters)

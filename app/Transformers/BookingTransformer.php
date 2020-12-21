@@ -8,7 +8,7 @@ class BookingTransformer extends Transformer
 {
     protected $availableIncludes = [
         'schedule', 'user', 'price',
-        'schedule_availability'
+        'schedule_availability', 'purchase'
     ];
     /**
      * A Fractal transformer.
@@ -30,6 +30,7 @@ class BookingTransformer extends Transformer
             'promocode_id'      => $booking->promocode_id,
             'created_at'        => $booking->created_at,
             'updated_at'        => $booking->updated_at,
+            'purchase_id'      => $booking->purchase_id
         ];
     }
 
@@ -51,5 +52,10 @@ class BookingTransformer extends Transformer
     public function includeScheduleAvailabilities(Booking $booking)
     {
         return $this->itemOrNull($booking->schedule_availability, new ScheduleAvailabilityTransformer());
+    }
+
+    public function includePurchases(Booking $booking)
+    {
+        return $this->itemOrNull($booking->purchase, new PurchaseTransformer());
     }
 }
