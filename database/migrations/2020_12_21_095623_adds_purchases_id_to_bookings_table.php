@@ -14,7 +14,7 @@ class AddsPurchasesIdToBookingsTable extends Migration
     public function up()
     {
         Schema::table('bookings', function (Blueprint $table) {
-            $table->unsignedInteger('purchases_id')->nullable();
+            $table->unsignedInteger('purchase_id')->nullable();
         });
     }
 
@@ -26,7 +26,7 @@ class AddsPurchasesIdToBookingsTable extends Migration
     public function down()
     {
         Schema::table('bookings', function (Blueprint $table) {
-            $table->dropColumn('purchases_id');
+            $table->dropColumn('purchase_id');
         });
     }
 }
