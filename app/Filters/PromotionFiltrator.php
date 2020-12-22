@@ -7,6 +7,7 @@ use App\Http\Requests\Request;
 use App\Models\Promotion;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Log;
 
 class PromotionFiltrator {
     /**
@@ -70,11 +71,11 @@ class PromotionFiltrator {
         }
 
         if ($request->filled('spend_min') && (int)$request->get('spend_min') > 0) {
-            $queryBuilder->where('spend_min', '>=', (float)$request->get('spend_min'));
+            $queryBuilder->where('spend_min', '>=', $request->get('spend_min'));
         }
 
         if ($request->filled('spend_max') && (int)$request->get('spend_max') > 0) {
-            $queryBuilder->where('spend_max', '=<', (float)$request->get('spend_max'));
+            $queryBuilder->where('spend_max', '<=', $request->get('spend_max'));
         }
 
         return $queryBuilder;
