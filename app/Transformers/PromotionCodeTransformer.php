@@ -35,7 +35,7 @@ class PromotionCodeTransformer extends Transformer {
      * @param \App\Models\PromotionCode $promotionCode
      * @return \League\Fractal\Resource\Item
      */
-    public function includePromotion(PromotionCode $promotionCode): Item {
+    public function includePromotion(PromotionCode $promotionCode): ?Item {
         return $this->itemOrNull($promotionCode->promotion, new PromotionTransformer());
     }
 
