@@ -43,7 +43,7 @@ class PromotionCodeTransformer extends Transformer {
      * @param \App\Models\PromotionCode $promotionCode
      * @return \League\Fractal\Resource\Collection|null
      */
-    public function includePractitioners(PromotionCode $promotionCode): ?Collection {
+    public function includeUsers(PromotionCode $promotionCode): ?Collection {
         return $this->collectionOrNull($promotionCode->users, new UserTransformer());
     }
 }
