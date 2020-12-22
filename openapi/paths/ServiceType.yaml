@@ -1,0 +1,22 @@
+service-types:
+  get:
+    tags:
+      - Service Type
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "../schemas/ServiceType.yaml"
+
+parameters:
+  id:
+    name: id
+    in: path
+    description: Service ID
+    required: true
+    schema:
+      type: integer

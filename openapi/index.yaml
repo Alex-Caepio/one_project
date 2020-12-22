@@ -662,9 +662,17 @@ components:
       type: object
       properties:
         id:
-          type: integer
+          type: string
         name:
           type: string
+        created_at:
+          type: string
+          nullable: true
+          format: date-time
+        updated_at:
+          type: string
+          nullable: true
+          format: date-time
     User:
       type: object
       properties:
@@ -2164,6 +2172,19 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Service"
+  /service-types:
+    get:
+      tags:
+        - Service Type
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ServiceType"
   /schedule-freezes:
     get:
       tags:

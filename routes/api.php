@@ -112,9 +112,7 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::get('/plans', [PlanController::class, 'index']);
     Route::post('/plans/{plan}/purchase', [PlanController::class, 'purchase']);
 
-    Route::post('/service_types', [ServiceTypeController::class, 'store']);
-    Route::get('/service_types', [ServiceTypeController::class, 'index']);
-    Route::get('/service_types/list', [ServiceTypeController::class, 'list']);
+    Route::get('/service-types', [ServiceTypeController::class, 'index']);
 
     Route::post('/services/{service}/schedules', [ScheduleController::class, 'store']);
     Route::get('/services/{service}/schedules', [ScheduleController::class, 'index']);
