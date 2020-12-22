@@ -14,7 +14,7 @@ use App\Models\ScheduleFreeze;
 use App\Http\Requests\Request;
 use App\Models\UsedPromotionCode;
 use App\Transformers\UserTransformer;
-use App\Events\ServiceScheduleWentLive;
+//use App\Events\ServiceScheduleLive;
 use App\Transformers\ScheduleTransformer;
 use App\Actions\Promo\CalculatePromoPrice;
 use App\Http\Requests\PromotionCode\PurchaseRequest;
@@ -59,7 +59,8 @@ class ScheduleController extends Controller
             $schedule->schedule_hidden_files()->createMany($request->get('schedule_hidden_files'));
         }
 
-        event(new ServiceScheduleWentLive($service, $user, $schedule));
+        // @todo fix with the new event
+        //event(new ServiceScheduleLive($service, $user, $schedule));
 
         return fractal($schedule, new ScheduleTransformer())
             ->parseIncludes($request->getIncludes())
@@ -135,11 +136,14 @@ class ScheduleController extends Controller
             RescheduleRequest::insert($rescheduleRequests);
         }
 
-        event(new ServiceScheduleWentLive($service, $request->user(), $schedule));
+        // @todo replace with the new event
+        // event(new ServiceScheduleLive($service, $user, $schedule));
+        // event(new ServiceScheduleWentLive($service, $request->user(), $schedule));
 
         return fractal($schedule, new ScheduleTransformer())
             ->parseIncludes($request->getIncludes())
             ->toArray();
+
     }
 
     public function availabilities(Schedule $schedule)
