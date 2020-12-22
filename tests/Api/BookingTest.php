@@ -5,6 +5,7 @@ namespace Tests\Api;
 use App\Models\Booking;
 use App\Models\Instalment;
 use App\Models\Purchase;
+use App\Models\RescheduleRequest;
 use App\Models\Schedule;
 use App\Models\Service;
 use App\Models\User;
@@ -246,5 +247,4 @@ class BookingTest extends TestCase
             ->assertOk()
             ->assertJson([['user_id' => $booking_single->user_id, 'id' => $booking_single->id]]);
     }
-
 }

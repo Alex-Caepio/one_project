@@ -57,7 +57,7 @@ class RescheduleRequestTest extends TestCase
     public function test_decline_reschedule_request()
     {
         $reschedule = RescheduleRequest::factory()->create();
-        $response   = $this->json('delete', "api/reschedule-requests/{$reschedule->id}/decline");
+        $response   = $this->json('post', "api/reschedule-requests/{$reschedule->id}/decline");
         $response->assertStatus(204);
     }
 

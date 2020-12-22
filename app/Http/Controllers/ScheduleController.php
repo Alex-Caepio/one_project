@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Schedule\CreateRescheduleRequestsOnScheduleUpdate;
 use App\Http\Requests\Schedule\PurchaseScheduleRequest;
 use App\Models\Booking;
 use App\Models\Price;
@@ -96,49 +97,9 @@ class ScheduleController extends Controller
             $schedule->schedule_hidden_files()->createMany($request->get('schedule_hidden_files'));
         }
 
-        /* The whole if block should be taken out to some other class */
-        if ($this->requiresReschedule($request, $schedule)) {
-            //should be moved to constant
-            $bookings = $schedule->service->service_type == 'appointment'
-                ? $schedule->getOutsiderBookings()
-                : Booking::where('schedule_id', $schedule->id)->get();
+        run_action(CreateRescheduleRequestsOnScheduleUpdate::class, $request, $schedule);
 
-            //In order to avoid duplicated reschedule request we have to delete all prevous first
-            $schedule->rescheduleRequests()->whereIn('booking_id', $bookings->pluck('id'))->delete();
-
-            $rescheduleRequests = [];
-            foreach ($bookings as $booking) {
-                $rescheduleRequests[] = [
-                    'user_id'         => $booking->user_id,
-                    'booking_id'      => $booking->id,
-                    'schedule_id'     => $booking->schedule_id,
-                    'new_schedule_id' => $schedule->id,
-                    'created_at'      => Carbon::now()->format('Y-m-d H:i:s')
-                ];
-            }
-
-            if ($this->locationHasChanged($request, $schedule)) {
-                foreach ($rescheduleRequests as $key => $reschedule) {
-                    $rescheduleRequests[$key]['old_location_displayed'] = $schedule->location_displayed;
-                    $rescheduleRequests[$key]['new_location_displayed'] = $request->get('location_displayed');
-                }
-            }
-
-            if ($this->dateHasChanged($request, $schedule)) {
-                foreach ($rescheduleRequests as $key => $reschedule) {
-                    $rescheduleRequests[$key]['old_start_date'] = $schedule->start_date;
-                    $rescheduleRequests[$key]['new_start_date'] = $request->get('start_date');
-                    $rescheduleRequests[$key]['old_end_date']   = $schedule->end_date;
-                    $rescheduleRequests[$key]['new_end_date']   = $request->get('end_date');
-                }
-            }
-
-            RescheduleRequest::insert($rescheduleRequests);
-        }
-
-        // @todo replace with the new event
-        // event(new ServiceScheduleLive($service, $user, $schedule));
-        // event(new ServiceScheduleWentLive($service, $request->user(), $schedule));
+        event(new ServiceScheduleWentLive($service, $request->user(), $schedule));
 
         return fractal($schedule, new ScheduleTransformer())
             ->parseIncludes($request->getIncludes())
