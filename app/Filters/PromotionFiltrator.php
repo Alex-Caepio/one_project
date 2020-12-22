@@ -33,11 +33,11 @@ class PromotionFiltrator {
         }
 
         if ($request->filled('valid_from')) {
-            $queryBuilder->where('valid_from', '>=', Carbon::parse($request->valid_from)->startOfDay());
+            $queryBuilder->whereRaw("DATE_FORMAT(`valid_from`, '%Y-%m-%d') = ?", $request->get('valid_from'));
         }
 
         if ($request->filled('expiry_date')) {
-            $queryBuilder->where('expiry_date', '<=', Carbon::parse($request->expiry_date)->endOfDay());
+            $queryBuilder->whereRaw("DATE_FORMAT(`expiry_date`, '%Y-%m-%d') = ?", $request->get('expiry_date'));
         }
 
         $discountType = $request->getArrayFromRequest('discount_type');
@@ -70,11 +70,11 @@ class PromotionFiltrator {
         }
 
         if ($request->filled('spend_min')) {
-            $queryBuilder->where('spend_min', '>=', (float)$request->get('spend_min'));
+            $queryBuilder->where('spend_min', '>=', $request->get('spend_min'));
         }
 
         if ($request->filled('spend_max')) {
-            $queryBuilder->where('spend_max', '<=', (float)$request->get('spend_max'));
+            $queryBuilder->where('spend_max', '<=', $request->get('spend_max'));
         }
 
         return $queryBuilder;
