@@ -4,6 +4,7 @@ namespace Tests\Api;
 
 use App\Models\Booking;
 use App\Models\Instalment;
+use App\Models\Purchase;
 use App\Models\Schedule;
 use App\Models\Service;
 use App\Models\User;
@@ -213,17 +214,15 @@ class BookingTest extends TestCase
 
     public function test_user_can_filter_booking_by_payment_method():void
     {
-        $schedule = Schedule::factory()->create();
-        //failed to open stream: Success 218 line
-        Instalment::factory()->create([
-            'user_id'=>$this->user->id,
-            'is_paid' => 0,
-            'schedule_id' => $schedule->id]);
+        $purchase_deposit = Purchase::factory()->create([
+            'user_id' => $this->user->id,
+            'is_deposit' => true,
+            ]);
 
         $booking = Booking::factory()->create([
             'cost' => 5,
-            'user_id'=>$this->user->id,
-            'schedule_id' => $schedule->id,
+            'user_id' => $this->user->id,
+            'purchase_id' => $purchase_deposit->id
         ]);
 
         $response = $this->actingAs($this->user)->json('get', "/api/bookings?paymentMethod=deposit");
@@ -231,17 +230,15 @@ class BookingTest extends TestCase
             ->assertOk()
             ->assertJson([['user_id' => $booking->user_id, 'id' => $booking->id]]);
 
-        $schedule_single = Schedule::factory()->create();
-
-        Instalment::factory()->create([
-            'user_id'=>$this->user->id,
-            'is_paid' => 0,
-            'schedule_id' => $schedule_single->id]);
+        $purchase_single = Purchase::factory()->create([
+            'user_id' => $this->user->id,
+            'is_deposit' => false,
+        ]);
 
         $booking_single = Booking::factory()->create([
             'cost' => 5,
             'user_id'=>$this->user->id,
-            'schedule_id' => $schedule_single->id,
+            'purchase_id' => $purchase_single->id,
         ]);
 
         $response = $this->actingAs($this->user)->json('get', "/api/bookings?paymentMethod=singlepayment");

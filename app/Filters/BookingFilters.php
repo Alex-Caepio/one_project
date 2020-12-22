@@ -100,16 +100,16 @@ class BookingFilters extends QueryFilter
 
         if ($payment == 'deposit')
         {
-            return $this->builder->whereHas('schedule.instalment', function ($q) use ($payment)
+            return $this->builder->whereHas('purchase', function ($q) use ($payment)
             {
-                $q->where('is_paid', '=', 0);
+                $q->where('is_deposit', '=', true);
             });
         }
         elseif ($payment == 'singlepayment')
         {
-            return $this->builder->whereHas('schedule.instalment', function ($q) use ($payment)
+            return $this->builder->whereHas('purchase', function ($q) use ($payment)
             {
-                $q->where('is_paid', '=', 1);
+                $q->where('is_deposit', '=', false);
             });
         }
     }
