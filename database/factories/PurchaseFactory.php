@@ -22,7 +22,6 @@ class PurchaseFactory extends Factory
             'price_original'    => $this->faker->randomFloat(),
             'created_at'        => $this->faker->date("Y-m-d H:i:s"),
             'updated_at'        => $this->faker->date("Y-m-d H:i:s"),
-            'deleted_at'        => $this->faker->date("Y-m-d H:i:s"),
             'is_deposit'        => $this->faker->boolean,
             'deposit_amount'    => $this->faker->randomFloat(),
         ];
