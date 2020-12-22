@@ -34,12 +34,12 @@ class SavePromotionRequest extends Request {
             'expiry_date'     => 'date_format:Y-m-d',
             'discount_type'   => ['required', Rule::in([Promotion::TYPE_FIXED, Promotion::TYPE_PERCENTAGE])],
             'discount_value'  => 'required|numeric',
-            'spend_min'       => 'numeric',
-            'spend_max'       => 'numeric',
+            'spend_min'       => 'numeric|min:0|max:10000',
+            'spend_max'       => 'numeric|min:0|max:10000',
             'applied_to'      => ['required', Rule::in([Promotion::APPLIED_BOTH, Promotion::APPLIED_HOST])],
             'uses_per_client' => 'integer',
             'uses_per_code'   => 'integer',
-            'total_codes'     => 'required|integer|min:1',
+            'total_codes'     => (!$this->promotion ? 'required|' : '') . 'integer|min:1',
             'promocode_names' => 'array'
         ];
     }
@@ -54,8 +54,8 @@ class SavePromotionRequest extends Request {
                 }
                 $promoCodes = PromotionCode::whereIn('name', $filledPromocodes)->pluck('name')->toArray();
                 if (count($promoCodes)) {
-                    $validator->errors()
-                              ->add('promocode_names', 'These codes are already in use: ' . (implode(', ', $promoCodes)));
+                    $validator->errors()->add('promocode_names',
+                                              'These codes are already in use: ' . (implode(', ', $promoCodes)));
                 }
             }
         });

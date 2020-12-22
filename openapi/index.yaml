@@ -4,9 +4,6 @@ info:
   title: ""
   description: ""
 servers:
-  # Added by API Auto Mocking Plugin
-  - description: SwaggerHub API Auto Mocking
-    url: https://virtserver.swaggerhub.com/cleverketchup/tom/1.0.0
   - description: The oneness movement API
     url: https://dev-oneness.andersenlab.dev/api/
 components:
@@ -4152,6 +4149,30 @@ paths:
       responses:
         "204":
           description: OK
+    put:
+      tags:
+        - Promotion
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/paths/~1admin~1promotions/post/requestBody/content/application~1json/s\
+                chema"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Promotion"
+        "422":
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1admin~1promotions/post/responses/422/content/application~1json\
+                  /schema"
   "/admin/promotions/{id}/enable":
     post:
       tags:

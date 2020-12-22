@@ -36,14 +36,14 @@ class PromotionController extends Controller {
     }
 
     /**
-     * @param \App\Models\Promotion $promotion
+     * @param \App\Models\Promotion $promotionWithTrashed
      * @param \App\Http\Requests\Request $request
      * @return mixed
      */
-    public function show(Promotion $promotion, Request $request) {
+    public function show(Promotion $promotionWithTrashed, Request $request) {
 
-        return response(fractal($promotion, new PromotionTransformer())->parseIncludes($request->getIncludes())
-                                                                       ->toArray());
+        return response(fractal($promotionWithTrashed, new PromotionTransformer())
+                            ->parseIncludes($request->getIncludes())->toArray());
 
     }
 
@@ -74,7 +74,7 @@ class PromotionController extends Controller {
 
     /**
      * @param \App\Models\Promotion $promotion
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     * @return \Illuminate\Http\Response
      * @throws \Exception
      */
     public function destroy(Promotion $promotion) {
@@ -91,6 +91,16 @@ class PromotionController extends Controller {
         return fractal($promotion, new PromotionTransformer())->respond();
     }
 
+
+    /**
+     * @param \App\Models\Promotion $promotion
+     * @param \App\Http\Requests\Promotion\SavePromotionRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function update(Promotion $promotion, SavePromotionRequest $request) {
+        $promotion = run_action(SavePromotion::class, $request, $promotion);
+        return fractal($promotion, new PromotionTransformer())->respond();
+    }
 
 
 }

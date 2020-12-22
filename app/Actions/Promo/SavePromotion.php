@@ -58,17 +58,17 @@ class SavePromotion {
      */
     private function fillModel(SavePromotionRequest $request, Promotion $promotion): void {
         $promotion->forceFill([
-                                  'name'            => $request->get('name'),
-                                  'valid_from'      => $request->filled('valid_from') ? Carbon::parse($request->get('valid_from'))
-                                                                                              ->startOfDay() : null,
-                                  'expiry_date'     => $request->filled('expiry_date') ? Carbon::parse($request->get('expiry_date'))
-                                                                                               ->endOfDay() : null,
-                                  'spend_min'       => $request->get('spend_min'),
-                                  'spend_max'       => $request->get('spend_max'),
-                                  'status'          => Promotion::STATUS_ACTIVE,
-                                  'discount_type'   => $request->get('discount_type'),
-                                  'discount_value'  => $request->get('discount_value'),
-                                  'applied_to'      => $request->get('applied_to')
+                                  'name'           => $request->get('name'),
+                                  'valid_from'     => $request->filled('valid_from') ? Carbon::parse($request->get('valid_from'))
+                                                                                             ->startOfDay() : null,
+                                  'expiry_date'    => $request->filled('expiry_date') ? Carbon::parse($request->get('expiry_date'))
+                                                                                              ->endOfDay() : null,
+                                  'spend_min'      => $request->get('spend_min'),
+                                  'spend_max'      => $request->get('spend_max'),
+                                  'status'         => Promotion::STATUS_ACTIVE,
+                                  'discount_type'  => $request->get('discount_type'),
+                                  'discount_value' => $request->get('discount_value'),
+                                  'applied_to'     => $request->get('applied_to')
                               ]);
     }
 

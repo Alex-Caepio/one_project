@@ -24,7 +24,7 @@ class CreatePromocode {
             foreach (array_unique($request->get('promocode_names')) as $name) {
                 $result->push($this->createPromotionCode(Str::upper($name), $request, $promotion));
             }
-        } else {
+        } elseif ($request->filled('total_codes')) {
             for ($i = 0; $i < (int)$request->get('total_codes'); $i++) {
                 do {
                     $code = unique_string();
