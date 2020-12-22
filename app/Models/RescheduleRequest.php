@@ -14,9 +14,14 @@ class RescheduleRequest extends Model
         'user_id',
         'new_schedule_id',
         'booking_id',
-        'new_datetime_from',
         'new_price_id',
-        'comment'
+        'comment',
+        'old_location_displayed',
+        'new_location_displayed',
+        'old_start_date',
+        'new_start_date',
+        'old_end_date',
+        'new_end_date'
     ];
 
     public function old_schedule(){
