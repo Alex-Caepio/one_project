@@ -52,7 +52,7 @@ class SavePromotionRequest extends Request {
                     $validator->errors()
                               ->add('promocode_names', 'Please, fill all of the requested count of promocodes');
                 }
-                $promoCodes = PromotionCode::whereIn('name', $filledPromocodes)->pluck('name')->toArray();
+                $promoCodes = PromotionCode::withTrashed()->whereIn('name', $filledPromocodes)->pluck('name')->toArray();
                 if (count($promoCodes)) {
                     $validator->errors()->add('promocode_names',
                                               'These codes are already in use: ' . (implode(', ', $promoCodes)));
