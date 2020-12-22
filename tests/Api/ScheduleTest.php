@@ -523,16 +523,26 @@ class ScheduleTest extends TestCase
 
     public function test_schedule_update_creates_reschedules()
     {
-        $service  = Service::factory()->create();
+        Event::fake();
+        $service = Service::factory()->create();
         $schedule = Schedule::factory()->create(['service_id' => $service->id, 'attendees' => 1]);
         $bookings = Booking::factory()->create(['schedule_id' => $schedule->id]);
 
-        $rescheduleRequest = RescheduleRequest::factory()->create(['booking_id' => $bookings->id, 'new_datetime_from' => '2020-01-01']);
+        $rescheduleRequest = RescheduleRequest::factory()->create([
+            'booking_id' => $bookings->id,
+            'schedule_id' => $schedule->id
+        ]);
 
-        $response = $this->json('put', "api/schedules/{$schedule->id}", ['location_id' => 12345]);
-        $response->assertOk();
-        //check that $rescheduleRequest has been deleted from database.
-        //check that new RescheduleRequest has been created
+        $this->json('put', "api/schedules/{$schedule->id}", [
+            'location_id' => 12345,
+            'location_displayed' => '123asd',
+        ])->assertOk();
+
+        $this->assertDeleted('reschedule_requests', ['id' => $rescheduleRequest->id]);
+        $this->assertDatabaseHas('reschedule_requests', [
+            'new_location_displayed' => '123asd',
+        ]);
+
     }
 }
 
