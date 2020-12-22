@@ -7,6 +7,7 @@ use App\Events\ArticleUnpublished;
 use App\Models\Article;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class ArticleObserver {
 
@@ -18,10 +19,14 @@ class ArticleObserver {
      */
     public function saved(Article $article) {
         if ($article->isDirty('is_published')) {
-            if (!$article->is_published) {
-                event(new ArticleUnpublished($article, Auth::user()));
-            } else {
-                event(new ArticlePublished($article, Auth::user()));
+            try {
+                if (!$article->is_published && !$article->wasRecentlyCreated) {
+                    event(new ArticleUnpublished($article, Auth::user()));
+                } elseif ($article->is_published) {
+                    event(new ArticlePublished($article, Auth::user()));
+                }
+            } catch (\Exception $e) {
+                Log::error(__METHOD__.': '.$e->getMessage().'-'.$e->getFile().':'.$e->getLine());
             }
         }
     }
