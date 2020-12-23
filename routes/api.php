@@ -53,6 +53,10 @@ Route::get('services/{publicService}', [ServiceController::class, 'show'])->wher
 
 Route::get('/mainpage', [MainPageController::class, 'index']);
 
+Route::get('/plans', [PlanController::class, 'index']);
+
+Route::get('/service-types', [ServiceTypeController::class, 'index']);
+
 Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::get('auth/profile', [AuthController::class, 'profile']);
     Route::put('auth/profile', [AuthController::class, 'update']);
@@ -108,11 +112,7 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::post('/credit-cards', [CardStripeController::class, 'store']);
     Route::get('/credit-cards', [CardStripeController::class, 'index']);
 
-
-    Route::get('/plans', [PlanController::class, 'index']);
     Route::post('/plans/{plan}/purchase', [PlanController::class, 'purchase']);
-
-    Route::get('/service-types', [ServiceTypeController::class, 'index']);
 
     Route::post('/services/{service}/schedules', [ScheduleController::class, 'store']);
     Route::get('/services/{service}/schedules', [ScheduleController::class, 'index']);
