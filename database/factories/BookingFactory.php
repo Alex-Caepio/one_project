@@ -23,6 +23,7 @@ class BookingFactory extends Factory
             'datetime_to'       => Carbon::tomorrow()->addHour()->format('Y-m-d H:i:s'),
             'cost'              => 100,
             'quantity'          => $this->faker->randomNumber(),
+            'reference'          => $this->faker->text(6),
             'created_at'        => $this->faker->date("Y-m-d H:i:s"),
             'updated_at'        => $this->faker->date("Y-m-d H:i:s"),
         ];

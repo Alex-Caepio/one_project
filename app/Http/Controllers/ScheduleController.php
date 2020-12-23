@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Schedule\CreateRescheduleRequestsOnScheduleUpdate;
 use App\Http\Requests\Schedule\PurchaseScheduleRequest;
 use App\Models\Booking;
 use App\Models\Price;
@@ -14,7 +15,7 @@ use App\Models\ScheduleFreeze;
 use App\Http\Requests\Request;
 use App\Models\UsedPromotionCode;
 use App\Transformers\UserTransformer;
-use App\Events\ServiceScheduleWentLive;
+//use App\Events\ServiceScheduleLive;
 use App\Transformers\ScheduleTransformer;
 use App\Actions\Promo\CalculatePromoPrice;
 use App\Http\Requests\PromotionCode\PurchaseRequest;
@@ -59,7 +60,8 @@ class ScheduleController extends Controller
             $schedule->schedule_hidden_files()->createMany($request->get('schedule_hidden_files'));
         }
 
-        event(new ServiceScheduleWentLive($service, $user, $schedule));
+        // @todo fix with the new event
+        //event(new ServiceScheduleLive($service, $user, $schedule));
 
         return fractal($schedule, new ScheduleTransformer())
             ->parseIncludes($request->getIncludes())
@@ -68,28 +70,7 @@ class ScheduleController extends Controller
 
     public function update(Request $request, Service $service, Schedule $schedule)
     {
-        $data               = $request->all();
-
-        if ($data['location_id'] != $schedule->location_id || $data['start_date'] != $schedule->start_date) {
-            $bookingSchedules = Booking::where('schedule_id', $schedule->id)->get();
-            $schedule->rescheduleRequests()->delete();
-
-            $rescheduleRequests = [];
-            foreach ($bookingSchedules as $booking) {
-                $rescheduleRequests[] = [
-                    'user_id'           => $booking->user_id,
-                    'booking_id'        => $booking->id,
-                    'schedule_id'       => $booking->schedule_id,
-                    'new_schedule_id'   => $schedule->id,
-                    'new_datetime_from' => $data['start_date'] ?? $schedule->start_date,
-                    'created_at'        => Carbon::now()->format('Y-m-d H:i:s')
-                ];
-            }
-            RescheduleRequest::insert($rescheduleRequests);
-        }
-
-        $schedule->update($data);
-        $user = $request->user();
+        $schedule->update($request->all());
 
         if ($request->has('media_files')) {
             $schedule->media_files()->delete();
@@ -107,7 +88,6 @@ class ScheduleController extends Controller
             $schedule->schedule_unavailabilities()->delete();
             $schedule->schedule_unavailabilities()->createMany($request->get('schedule_unavailabilities'));
         }
-
         if ($request->has('schedule_files')) {
             $schedule->schedule_files()->delete();
             $schedule->schedule_files()->createMany($request->get('schedule_files'));
@@ -117,11 +97,14 @@ class ScheduleController extends Controller
             $schedule->schedule_hidden_files()->createMany($request->get('schedule_hidden_files'));
         }
 
-        event(new ServiceScheduleWentLive($service, $user, $schedule));
+        run_action(CreateRescheduleRequestsOnScheduleUpdate::class, $request, $schedule);
+
+        event(new ServiceScheduleWentLive($service, $request->user(), $schedule));
 
         return fractal($schedule, new ScheduleTransformer())
             ->parseIncludes($request->getIncludes())
             ->toArray();
+
     }
 
     public function availabilities(Schedule $schedule)
@@ -248,5 +231,45 @@ class ScheduleController extends Controller
 
         return fractal($schedule, new ScheduleTransformer())->parseIncludes($request->getIncludes())
             ->toArray();
+    }
+
+    protected function requiresReschedule(Request $request, Schedule $schedule): bool
+    {
+        return $this->dateHasChanged($request, $schedule)
+            || $this->locationHasChanged($request, $schedule)
+            || $request->filled('schedule_unavailabilities')
+            || $request->filled('schedule_availabilities');
+    }
+
+    protected function dateHasChanged(Request $request, Schedule $schedule): bool
+    {
+        if ($request['start_date'] != $schedule->start_date) {
+            return true;
+        } else if ($request['end_date'] != $schedule->end_date) {
+            return true;
+        }
+
+        return false;
+    }
+
+    protected function locationHasChanged(Request $request, Schedule $schedule): bool
+    {
+        if ($request['location_id'] != $schedule->location_id) {
+            return true;
+        } else if ($request['venue'] != $schedule->venue) {
+            return true;
+        } else if ($request['city'] != $schedule->city) {
+            return true;
+        } else if ($request['country'] != $schedule->country) {
+            return true;
+        } else if ($request['post_code'] != $schedule->post_code) {
+            return true;
+        } else if ($request['location_displayed'] != $schedule->location_displayed) {
+            return true;
+        } else if ($request['is_virtual'] != $schedule->is_virtual) {
+            return true;
+        }
+
+        return false;
     }
 }

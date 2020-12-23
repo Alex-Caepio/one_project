@@ -18,19 +18,19 @@ class BookingTransformer extends Transformer
     public function transform(Booking $booking)
     {
         return [
-            'id'                => $booking->id,
-            'user_id'           => $booking->user_id,
-            'schedule_id'       => $booking->schedule_id,
-            'price_id'          => $booking->price_id,
-            'availability_id'   => $booking->availability_id,
-            'datetime_from'     => $booking->datetime_from,
-            'datetime_to'       => $booking->datetime_to,
-            'quantity'          => $booking->quantity,
-            'cost'              => $booking->cost,
-            'promocode_id'      => $booking->promocode_id,
-            'created_at'        => $booking->created_at,
-            'updated_at'        => $booking->updated_at,
-            'purchase_id'      => $booking->purchase_id
+            'id'              => $booking->id,
+            'user_id'         => $booking->user_id,
+            'schedule_id'     => $booking->schedule_id,
+            'price_id'        => $booking->price_id,
+            'availability_id' => $booking->availability_id,
+            'datetime_from'   => $booking->datetime_from,
+            'datetime_to'     => $booking->datetime_to,
+            'quantity'        => $booking->quantity,
+            'cost'            => $booking->cost,
+            'promocode_id'    => $booking->promocode_id,
+            'purchase_id'     => $booking->purchase_id,
+            'created_at'      => $booking->created_at,
+            'updated_at'      => $booking->updated_at,
         ];
     }
 

@@ -4,6 +4,7 @@ namespace Tests\Admin;
 
 use App\Http\Controllers\Admin\PlanController;
 use App\Models\Plan;
+use App\Models\ServiceType;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Mockery;
 use Stripe\Service\PlanService;
@@ -96,10 +97,15 @@ class PlanTest extends TestCase
     public function test_update_plan(): void
     {
         $plan     = Plan::factory()->create();
+        $serviceType = ServiceType::factory()->create();
         $response = $this->json('put', "admin/plans/{$plan->id}",
             [
                 'name' => $plan->name,
-            ]);
+                'service_types' => [$serviceType->id]
+            ]
+        );
+
+        $this->assertCount(1, $plan->service_types);
 
         $response->assertOk();
     }

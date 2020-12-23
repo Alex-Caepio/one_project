@@ -65,6 +65,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/promotions/{promotion}/enable', [PromotionController::class, 'enable']);
         Route::post('/promotions/{promotion}/disable', [PromotionController::class, 'disable']);
         Route::delete('/promotions/{promotion}', [PromotionController::class, 'destroy']);
+        Route::put('/promotions/{promotion}', [PromotionController::class, 'update']);
 
         Route::get('/promotion-codes', [PromotionCodeController::class, 'index']);
         Route::get('/promotion-codes/export', [PromotionCodeController::class, 'export']);
