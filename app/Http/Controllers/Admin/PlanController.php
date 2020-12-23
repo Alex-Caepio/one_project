@@ -30,11 +30,16 @@ class PlanController extends Controller
     public function store(PlanStoreRequest $request, StripeClient $stripe)
     {
         $plan       = new Plan();
-        $planStripe = $stripe->plans->create([
-            'amount'   => $request->get('is_free') ? 0 : $request->get('price'),
-            'currency' => 'usd',
-            'interval' => 'month',
-            'product'  => ['name' => $request->get('name')],
+
+        $product    = $stripe->products->create([
+            'name' => $request->name
+        ]);
+
+        $planStripe = $stripe->prices->create([
+            'unit_amount'   => $request->get('is_free') ? 0 : $request->get('price'),
+            'currency'  => 'usd',
+            'recurring' => ['interval' => 'month'],
+            'product'   => $product->id
         ]);
 
         $data              = $request->all();
@@ -47,11 +52,23 @@ class PlanController extends Controller
         return fractal($plan, new PlanTransformer())->respond();
     }
 
-    public function update(Request $request, Plan $plan)
+    public function update(Request $request, Plan $plan, StripeClient $stripe)
     {
-        $plan->update($request->all());
-        $plan->service_types()->sync($request->get('service_types'));
+        $price = $stripe->prices->retrieve($plan->stripe_id);
 
+        $data = $request->all();
+
+        $product_id = $price->product;
+
+        $stripe->products->update($product_id,[
+            [
+                'name' => $request->name
+            ]
+        ]);
+
+
+        $plan->service_types()->sync($request->get('service_types'));
+        $plan->update($data);
         return fractal($plan, new PlanTransformer())->respond();
     }
 
