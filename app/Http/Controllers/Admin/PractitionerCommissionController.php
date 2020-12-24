@@ -5,17 +5,24 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\PractitionerCommissionRequest;
 use App\Transformers\PractitionerCommissionTransformer;
-use Illuminate\Http\Request;
+use App\Http\Requests\Request;
 use App\Models\PractitionerCommission;
 
 class PractitionerCommissionController extends Controller
 {
     public function index(Request $request)
     {
-       $practitionerCommission = PractitionerCommission::all()->whereHas('user', 'account_type', 'practitioner')->get();
+        $practitionerCommission = PractitionerCommission::query();
+
+        $includes  = $request->getIncludes();
+        $paginator = $practitionerCommission->with($includes)
+            ->paginate($request->getLimit());
+
+        $practitionerCommission  = $paginator->getCollection();
 
         return fractal($practitionerCommission, new PractitionerCommissionTransformer())
-            ->parseIncludes($request->getIncludes());
+            ->parseIncludes($request->getIncludes())
+            ->withPaginationHeaders($paginator);
     }
 
     public function show(Request $request, PractitionerCommission $practitionerCommission)
