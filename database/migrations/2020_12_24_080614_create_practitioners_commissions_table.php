@@ -15,7 +15,7 @@ class CreatePractitionersCommissionsTable extends Migration
     {
         Schema::create('practitioners_commissions', function (Blueprint $table) {
             $table->id();
-            $table->unsignedInteger('practitioner_id');
+            $table->unsignedInteger('practitioner_id')->nullable(false);
             $table->double('rate')->nullable(false);
             $table->date('date_from')->nullable();
             $table->date('date_to')->nullable();
