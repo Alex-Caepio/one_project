@@ -23,19 +23,15 @@ class PromocodeExport implements FromCollection, ShouldAutoSize,WithHeadings {
         return [
             '#',
             'Code',
-            'Uses Per Client',
             'Uses Per Code',
-            'Promotion ID',
-            'Created Date',
-            'Updated Date',
-            'Deleted Date',
+            'Uses Per Customer',
             'Status',
         ];
     }
 
 
     public function collection(): Collection {
-        $promotionQuery = PromotionCode::query();
+        $promotionQuery = PromotionCode::query()->withTrashed()->select(['id', 'name', 'uses_per_code', 'uses_per_client', 'status']);
         $promotionFilter = new PromocodeFiltrator();
         $promotionFilter->apply($promotionQuery, $this->request);
         return $promotionQuery->get();

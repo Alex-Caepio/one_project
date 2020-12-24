@@ -52,6 +52,10 @@
 /services/practitioner/{id}:
   $ref: "./Service.yaml#/services~1practitioner~1{id}"
 
+#service types
+/service-types:
+  $ref: "./ServiceType.yaml#/service-types"
+
 #schedule freezes
 /schedule-freezes:
   $ref: "./ScheduleFreeze.yaml#/schedule-freezes"

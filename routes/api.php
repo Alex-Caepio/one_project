@@ -53,6 +53,10 @@ Route::get('services/{publicService}', [ServiceController::class, 'show'])->wher
 
 Route::get('/mainpage', [MainPageController::class, 'index']);
 
+Route::get('/plans', [PlanController::class, 'index']);
+
+Route::get('/service-types', [ServiceTypeController::class, 'index']);
+
 Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::get('auth/profile', [AuthController::class, 'profile']);
     Route::put('auth/profile', [AuthController::class, 'update']);
@@ -108,13 +112,7 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::post('/credit-cards', [CardStripeController::class, 'store']);
     Route::get('/credit-cards', [CardStripeController::class, 'index']);
 
-
-    Route::get('/plans', [PlanController::class, 'index']);
     Route::post('/plans/{plan}/purchase', [PlanController::class, 'purchase']);
-
-    Route::post('/service_types', [ServiceTypeController::class, 'store']);
-    Route::get('/service_types', [ServiceTypeController::class, 'index']);
-    Route::get('/service_types/list', [ServiceTypeController::class, 'list']);
 
     Route::post('/services/{service}/schedules', [ScheduleController::class, 'store']);
     Route::get('/services/{service}/schedules', [ScheduleController::class, 'index']);
@@ -127,7 +125,7 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::post('/schedules/{schedule}/reschedule', [RescheduleRequestController::class, 'store']);
     Route::get('/reschedule-requests', [RescheduleRequestController::class, 'index']);
     Route::post('reschedule-requests/{rescheduleRequest}/accept', [RescheduleRequestController::class, 'accept']);
-    Route::delete('reschedule-requests/{rescheduleRequest}/decline', [RescheduleRequestController::class, 'decline']);
+    Route::post('reschedule-requests/{rescheduleRequest}/decline', [RescheduleRequestController::class, 'decline']);
 
     Route::post('/schedules/{schedule}/promoсodes', [ScheduleController::class, 'promoCode']);
 
@@ -153,6 +151,7 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
 
     Route::get('/bookings', [BookingController::class, 'index']);
     Route::post('/bookings/{booking}/reschedule', [BookingController::class, 'reschedule']);
+    Route::post('/bookings/reschedule', [BookingController::class, 'allReschedule']);
 
     Route::get('/purchases', [PurchaseController::class, 'index']);
 });
