@@ -13,7 +13,7 @@ class CreatePractitionersCommissionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('practitioners_commissions', function (Blueprint $table) {
+        Schema::create('practitioner_commissions', function (Blueprint $table) {
             $table->id();
             $table->unsignedInteger('practitioner_id')->nullable(false);
             $table->double('rate')->nullable(false);
@@ -31,6 +31,6 @@ class CreatePractitionersCommissionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('practitioners_commissions');
+        Schema::dropIfExists('practitioner_commissions');
     }
 }
