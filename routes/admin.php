@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\PractitionerCommissionController;
 use App\Http\Controllers\Admin\BookingController;
 use App\Http\Controllers\Admin\MainPageController;
 use App\Http\Controllers\Admin\PlanController;
@@ -100,10 +101,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
         Route::get('/bookings', [BookingController::class, 'index']);
 
-        Route::get('/practitioner-commissions',[PractitionerCommissionControler::class,'index']);
-        Route::get('/practitioner-commissions/{practitioner-commission}',[PractitionerCommissionControler::class,'show']);
-        Route::post('/practitioner-commissions',[PractitionerCommissionControler::class,'store']);
-        Route::put('/practitioner-commissions/{practitioner-commission}',[PractitionerCommissionControler::class,'update']);
-        Route::delete('/practitioner-commissions/{practitioner-commission}',[PractitionerCommissionControler::class,'delete']);
+        Route::get('/practitioner-commissions',[PractitionerCommissionController::class,'index']);
+        Route::get('/practitioner-commissions/{practitioner-commission}',[PractitionerCommissionController::class,'show']);
+        Route::post('/practitioner-commissions',[PractitionerCommissionController::class,'store']);
+        Route::put('/practitioner-commissions/{practitioner-commission}',[PractitionerCommissionController::class,'update']);
+        Route::delete('/practitioner-commissions/{practitioner-commission}',[PractitionerCommissionController::class,'delete']);
     });
 });
