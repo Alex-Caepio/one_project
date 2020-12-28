@@ -13,11 +13,12 @@ class PlanController extends Controller
 {
     public function index(Request $request)
     {
-        $plans = Plan::with('service_types')->get();
+        $paginator = Plan::with('service_types')->paginate();
+        $plans = $paginator->getCollection();
 
-        return fractal($plans, new PlanTransformer())
-            ->parseIncludes($request->getIncludes())
-            ->toArray();
+        return response(fractal($plans, new PlanTransformer())
+            ->parseIncludes('service_types'))
+            ->withPaginationHeaders($paginator);
     }
 
     public function show(Plan $plan, Request $request)
