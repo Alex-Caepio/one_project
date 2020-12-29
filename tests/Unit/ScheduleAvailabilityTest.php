@@ -24,7 +24,7 @@ class ScheduleAvailabilityTest extends TestCase
     public function test_fitsDay_method_monday()
     {
         $availability       = new ScheduleAvailability();
-        $availability->days = 'monday';
+        $availability->days = 'Monday';
 
         $this->assertTrue($availability->fitsDay('2020-11-30'));  //Monday is the correct day
         $this->assertFalse($availability->fitsDay('2020-12-01')); //Tuesday is not correct day
@@ -33,7 +33,7 @@ class ScheduleAvailabilityTest extends TestCase
     public function test_fitsDay_method_tuesday()
     {
         $availability       = new ScheduleAvailability();
-        $availability->days = 'tuesday';
+        $availability->days = 'Tuesday';
 
         $this->assertTrue($availability->fitsDay('2020-12-01'));  //Tuesday is the correct day
         $this->assertFalse($availability->fitsDay('2020-12-02')); //Wednesday is not correct day
@@ -42,7 +42,7 @@ class ScheduleAvailabilityTest extends TestCase
     public function test_fitsDay_method_wednesday()
     {
         $availability       = new ScheduleAvailability();
-        $availability->days = 'wednesday';
+        $availability->days = 'Wednesday';
 
         $this->assertTrue($availability->fitsDay('2020-12-02'));  //Wednesday is the correct day
         $this->assertFalse($availability->fitsDay('2020-12-03')); //Thursday is not correct day
@@ -51,7 +51,7 @@ class ScheduleAvailabilityTest extends TestCase
     public function test_fitsDay_method_thursday()
     {
         $availability       = new ScheduleAvailability();
-        $availability->days = 'thursday';
+        $availability->days = 'Thursday';
 
         $this->assertTrue($availability->fitsDay('2020-12-03'));  //Thursday is the correct day
         $this->assertFalse($availability->fitsDay('2020-12-04')); //Friday is not correct day
@@ -60,7 +60,7 @@ class ScheduleAvailabilityTest extends TestCase
     public function test_fitsDay_method_friday()
     {
         $availability       = new ScheduleAvailability();
-        $availability->days = 'friday';
+        $availability->days = 'Friday';
 
         $this->assertTrue($availability->fitsDay('2020-12-04'));  //Friday is the correct day
         $this->assertFalse($availability->fitsDay('2020-12-05')); //Saturday is not correct day
@@ -69,7 +69,7 @@ class ScheduleAvailabilityTest extends TestCase
     public function test_fitsDay_method_saturday()
     {
         $availability       = new ScheduleAvailability();
-        $availability->days = 'saturday';
+        $availability->days = 'Saturday';
 
         $this->assertTrue($availability->fitsDay('2020-12-05'));  //Saturday is the correct day
         $this->assertFalse($availability->fitsDay('2020-12-06')); //Sunday is not correct day

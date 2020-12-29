@@ -20,8 +20,8 @@ class PractitionerCommissionController extends Controller
 
         $practitionerCommission  = $paginator->getCollection();
 
-        return fractal($practitionerCommission, new PractitionerCommissionTransformer())
-            ->parseIncludes($request->getIncludes())
+        return response(fractal($practitionerCommission, new PractitionerCommissionTransformer())
+            ->parseIncludes($request->getIncludes()))
             ->withPaginationHeaders($paginator);
     }
 

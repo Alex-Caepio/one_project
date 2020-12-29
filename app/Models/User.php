@@ -67,7 +67,13 @@ class User extends Authenticatable implements MustVerifyEmail {
         'timezone_id',
         'avatar_url',
         'background_url',
-        'termination_message'
+        'termination_message',
+        'business_country',
+        'business_city',
+        'business_postal_code',
+        'business_time_zone',
+        'business_vat',
+        'business_company_houses_id'
     ];
 
     /**

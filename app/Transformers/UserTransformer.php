@@ -49,6 +49,12 @@ class UserTransformer extends Transformer {
             'updated_at'                  => $this->dateTime($user->updated_at),
             'termination_message'         => $user->termination_message,
             'status'                      => $user->status,
+            'business_country'            => $user->business_country,
+            'business_city'               => $user->business_city,
+            'business_postal_code'        => $user->business_postal_code,
+            'business_time_zone'          => $user->business_time_zone,
+            'business_vat'                => $user->business_vat,
+            'business_company_houses_id'  => $user->business_company_houses_id
         ];
     }
 
