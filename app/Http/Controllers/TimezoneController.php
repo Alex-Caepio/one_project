@@ -11,7 +11,7 @@ class TimezoneController extends Controller
 {
     public function index(Request $request)
     {
-        $timezones = Timezone::with($request->getIncludes())->all();
+        $timezones = Timezone::with($request->getIncludes())->get();
 
         return
             fractal($timezones, new TimezoneTransformer())
