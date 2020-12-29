@@ -35,10 +35,11 @@ class ServiceTest extends TestCase
 
     public function test_practitioner_can_create_service(): void
     {
-        $service = Service::factory()->make(['user_id' => $this->user->id,'user_type' => 'practitioner']);
+        $user = User::factory()->create(['account_type' => 'practitioner']);
+        $service = Service::factory()->make(['user_id' => $user->id]);
         $type    = ServiceType::factory()->create();
 
-        $response = $this->actingAs($this->user)->json('post', '/api/services', [
+        $response = $this->actingAs($user)->json('post', '/api/services', [
             'description'     => $service->description,
             'service_type_id' => $type->id,
             'introduction'    => $service->introduction,
@@ -55,51 +56,54 @@ class ServiceTest extends TestCase
     {
         $this->user->user_type = 'practitioner';
         /** @var Service $service */
-        $service = Service::factory()->make(['user_id' => $this->user->id]);
+        $user = User::factory()->create(['account_type' => 'practitioner']);
+        $service_type = ServiceType::factory()->create();
+        $service = Service::factory()->make(['user_id' => $user->id, 'service_type_id' => $service_type->id]);
 
-        $response = $this->actingAs($this->user)->json('post', '/api/services', [
+        $response = $this->actingAs($user)->json('post', '/api/services', [
             'url'          => $service->url,
             'title'        => $service->title,
             'user_id'      => $service->user_id,
             'description'  => $service->description,
             'introduction' => $service->introduction,
             'is_published' => $service->is_published,
+            'service_type_id' => $service_type->id,
             'media_images' => [
                 ['url' => 'http://google.com'],
                 ['url' => 'http://google.com'],
             ]
         ]);
         $response->assertOk();
-        $this->assertCount(2, $service->media_images);
+        $this->assertCount(2, Service::first()->media_images);
     }
 
     public function test_user_update_service(): void
     {
-        $this->user->user_type = 'client';
-
-        $service    = Service::factory()->create(['user_id' => $this->user->id]);
+        $user = User::factory()->create(['account_type' => 'practitioner']);
+        $service_type = ServiceType::factory()->create();
+        $service    = Service::factory()->create(['user_id' => $user->id,'service_type_id' => $service_type->id]);
         $newService = Service::factory()->make();
         $payload    = [
             'title'        => $newService->title,
             'keyword_id'   => $newService->keyword_id,
-            'user_id'      => $this->user->id,
+            'user_id'      => $user->id,
             'description'  => $newService->description,
-            'is_published' => $newService->is_published,
+            'is_published' => true,
             'introduction' => $newService->introduction,
-//            'service_type_id' => $newService->service_type_id,
+            'service_type_id' => $service->service_type_id,
             'url'          => $newService->url,
         ];
-        $response   = $this->json('put', "/api/services/{$service->id}", $payload);
+        $response   = $this->actingAs($user)->json('put', "/api/services/{$service->id}", $payload);
 
         $response->assertOk();
     }
 
     public function test_practitioner_can_delete_service(): void
     {
-//        $this->user->user_type = 'practitioner';
+        $user = User::factory()->create(['account_type' => 'practitioner']);
 
-        $service  = Service::factory()->create(['user_id' => $this->user->id]);
-        $response = $this->actingAs($this->user)->json('delete', "/api/services/{$service->id}");
+        $service  = Service::factory()->create(['user_id' => $user->id]);
+        $response = $this->actingAs($user)->json('delete', "/api/services/{$service->id}");
 
         $response->assertStatus(204);
     }
@@ -119,14 +123,15 @@ class ServiceTest extends TestCase
 
     public function test_practitioner_can_update_service(): void
     {
-        $user = User::factory()->make(['user_type' => 'practitioner']);
-
-        $service    = Service::factory()->create(['user_id' => $user->id]);
+        $user = User::factory()->create(['account_type' => 'practitioner']);
+        $service_type = ServiceType::factory()->create();
+        $service    = Service::factory()->create(['user_id' => $user->id, 'service_type_id' => $service_type->id]);
         $newService = Service::factory()->make();
 
         $response = $this->actingAs($user)->json('put', "/api/services/{$service->id}",
             [
                 'title' => $newService->title,
+                'service_type_id' => $service_type->id
             ]);
 
         $response->assertOk()
@@ -137,67 +142,87 @@ class ServiceTest extends TestCase
 
     public function test_service_can_be_created_with_keyword()
     {
-        $service  = Service::factory()->create();
+        $user = User::factory()->create(['account_type' => 'practitioner']);
+        $service_type = ServiceType::factory()->create();
+        $service  = Service::factory()->make(['user_id' => $user->id, 'service_type_id' => $service_type->id]);
 
-        $response = $this->json('post', '/api/services', [
+        $response = $this->actingAs($user)->json('post', '/api/services', [
             'url'          => $service->url,
             'title'        => $service->title,
             'user_id'      => $service->user_id,
+            'service_type_id' => $service_type->id,
             'keywords'      => [
-                ['title' => 'Meditation'],
-                ['title' => 'Relaxation'],
+                'Meditation',
+                'Relaxation',
             ],
         ]);
 
         $response->assertOk();
-        $this->assertCount(2, $service->keywords);
+        $this->assertCount(2, Service::first()->keywords);
     }
 
     public function test_service_can_be_updated_with_keywords()
     {
-        $service    = Service::factory()->create();
+        $user = User::factory()->create(['account_type' => 'practitioner']);
+        $service_type = ServiceType::factory()->create();
+        $service    = Service::factory()->create(['user_id' => $user->id,'service_type_id' => $service_type->id]);
         $keyword    = Keyword::factory()->count(2)->create();
 
-        $response = $this->json('put', "/api/services/{$service->id}", [
+        $response = $this->actingAs($user)->json('put', "/api/services/{$service->id}", [
             'url'          => $service->url,
             'title'        => $service->title,
             'user_id'      => $service->user_id,
             'keyword_id'   => $keyword->pluck('id'),
+            'service_type_id' => $service_type->id
         ]);
 
         $response->assertOk();
-        $this->assertCount(2, $service->keywords);
+        $this->assertCount(2, Service::first()->keywords);
     }
 
     public function test_keyword_exist_and_has_relation()
     {
+        $user = User::factory()->create(['account_type' => 'practitioner']);
+        $service_type = ServiceType::factory()->create();
         $keyword    = Keyword::factory()->create();
         $service    = Service::factory()->create(
-            ['keyword_id'  => $keyword->id]
+            [
+                'user_id'     => $user->id,
+                'keyword_id'  => $keyword->id,
+                'service_type_id' => $service_type->id
+            ]
         );
 
-        $response = $this->json('post', '/api/services', [
+        $response = $this->actingAs($user)->json('post', '/api/services', [
             'url'          => $service->url,
             'title'        => $service->title,
             'user_id'      => $service->user_id,
+            'service_type_id' => $service_type->id
         ]);
 
         $response->assertOk();
-        $this->assertCount(1, $service->keywords);
+        $this->assertCount(1, Service::first()->keywords);
     }
 
     public function test_keywords_can_be_unrelated_from_service()
     {
-        $service    = Service::factory()->create(['keyword_id' => 1]);
+        $user = User::factory()->create(['account_type' => 'practitioner']);
+        $service_type = ServiceType::factory()->create();
+        $service    = Service::factory()->create([
+            'user_id' => $user->id,
+            'service_type_id' => $service_type->id,
+            'keyword_id' => 1
+        ]);
 
-        $response = $this->json('put', "/api/services/{$service->id}", [
+        $response = $this->actingAs($user)->json('put', "/api/services/{$service->id}", [
             'url'          => $service->url,
             'title'        => $service->title,
             'user_id'      => $service->user_id,
+            'service_type_id' => $service_type->id,
             'keywords'     => [],
         ]);
 
         $response->assertOk();
-        $this->assertCount(0, $service->keywords);
+        $this->assertCount(0, Service::first()->keywords);
     }
 }
