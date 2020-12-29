@@ -13,7 +13,7 @@ class StoreServiceRequest extends Request {
      * @return bool
      */
     public function authorize() {
-        return Auth::user()->isPractitioner() && (!$this->service || $this->service->user_id === Auth::id());
+        return Auth::user()->isPractitioner();
     }
 
     /**

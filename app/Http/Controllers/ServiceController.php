@@ -63,8 +63,34 @@ class ServiceController extends Controller {
         return response(null, 204);
     }
 
+
     public function store(StoreServiceRequest $request) {
-        $service = run_action(ServiceStore::class, $request);
+        $user = $request->user();
+        $data = $request->all();
+
+        $url = $data['url'] ?? to_url($data['name']);
+        $data['url'] = $url;
+
+        $service = $user->services()->create($data);
+
+        if ($request->has('keywords')) {
+            $keywords = collect();
+            foreach ($request->keywords as $keyword) {
+                $keywords[] = Keyword::firstOrCreate(['title' => $keyword], ['title' => $keyword]);
+            }
+            $service->keywords()->sync($keywords->pluck('id'));
+        }
+        if ($request->filled('media_images')) {
+            $service->media_images()->createMany($request->get('media_images'));
+        }
+        if ($request->filled('media_videos')) {
+            $service->media_videos()->createMany($request->get('media_videos'));
+        }
+        if ($request->filled('media_files')) {
+            $service->media_files()->createMany($request->get('media_files'));
+        }
+
+
         return fractal($service, new ServiceTransformer())->respond();
     }
 
