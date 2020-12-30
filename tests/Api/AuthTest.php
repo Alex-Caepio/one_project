@@ -46,6 +46,7 @@ class AuthTest extends TestCase
             'password'                => '12342_kLfasbfk',
             'account_type'            => 'client',
             'emails_holistify_update' => true,
+            'accepted_terms'          => true
         ];
 
         $response = $this->json('post', '/api/auth/register', $payload);

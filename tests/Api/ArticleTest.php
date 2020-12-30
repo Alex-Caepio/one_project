@@ -30,37 +30,37 @@ class ArticleTest extends TestCase
 
     public function test_can_create_article(): void
     {
-        //422 response with factory; 500 w/o factory;
-        $user = User::factory()->make();
-//        var_dump($this->user->id);die;
+        $user = User::factory()->create(['account_type' => 'practitioner']);
+        $article = Article::factory()->make();
 
-        $service = Article::factory()->make();
-        $response = $this->json('post', '/api/articles', [
-            'description' => $service->description,
-            'introduction' => $service->introduction,
-            'is_published' => $service->is_published,
-            'title' => $service->title,
-            'user_id' => $this->user->id,
-//            'user_id' => $user->id,
-            'url' => $service->url,
+        $response = $this->actingAs($user)->json('post', '/api/articles', [
+            'description' => $article->description,
+            'introduction' => $article->introduction,
+            'is_published' => $article->is_published,
+            'title' => $article->title,
+            'user_id' => $user->id,
+            'url' => $article->url,
         ]);
         $response->assertOk();
     }
 
     public function test_delete_article(): void
     {
-        $article = Article::factory()->create();
-        $response = $this->json('delete', "/api/articles/{$article->id}");
+        $user = User::factory()->create(['account_type' => 'practitioner']);
+        $article = Article::factory()->create(['user_id' => $user->id]);
+        $response = $this->actingAs($user)->json('delete', "/api/articles/{$article->id}");
 
         $response->assertStatus(204);
     }
 
     public function test_update_article(): void
     {
+        $user = User::factory()->create(['account_type' => 'practitioner']);
+
         $article = Article::factory()->create();
         $newArticle = Article::factory()->make();
 
-        $response = $this->json('put', "/api/articles/{$article->id}",
+        $response = $this->actingAs($user)->json('put', "/api/articles/{$article->id}",
             [
                 'title' => $newArticle->title,
             ]);
@@ -73,8 +73,9 @@ class ArticleTest extends TestCase
 
     public function test_show_article(): void
     {
-        $article = Article::factory()->create();
-        $response = $this->json('get', "api/articles/{$article->id}");
+        $user = User::factory()->create(['account_type' => 'practitioner']);
+        $article = Article::factory()->create(['user_id' => $user->id]);
+        $response = $this->actingAs($user)->json('get', "api/articles/practitioner/{$article->id}");
 
         $response
             ->assertOk();

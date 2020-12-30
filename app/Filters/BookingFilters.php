@@ -22,7 +22,7 @@ class BookingFilters extends QueryFilter
 
         if ($status == 'canceled')
         {
-            return $this->builder->whereNotNull('deleted_at');
+            return $this->builder->whereNotNull('deleted_at')->withTrashed();
         }
 
     }
