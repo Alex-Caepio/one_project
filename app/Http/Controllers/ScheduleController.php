@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\Actions\Schedule\CreateRescheduleRequestsOnScheduleUpdate;
 use App\Http\Requests\Schedule\PurchaseScheduleRequest;
 use App\Models\Booking;
-use App\Models\Price;
-use App\Models\RescheduleRequest;
 use App\Models\Service;
 use App\Models\Schedule;
 use App\Models\ScheduleUser;
@@ -34,7 +32,7 @@ class ScheduleController extends Controller
             ->toArray();
     }
 
-    public function store(CreateScheduleInterface $request, Service $service)
+    public function store(CreateScheduleInterface $request, Service $service, StripeClient $stripe)
     {
         $data               = $request->all();
         $data['service_id'] = $service->id;
@@ -45,7 +43,18 @@ class ScheduleController extends Controller
             $schedule->media_files()->createMany($request->get('media_files'));
         }
         if ($request->filled('prices')) {
-            $schedule->prices()->createMany($request->get('prices'));
+
+            $prices = $request->get('prices');
+            foreach  ($prices as $key => $price ){
+                $stripePrice = $stripe->prices->create([
+                    'unit_amount' => $prices[$key]['cost'],
+                    'currency' => $prices[$key]['name'],
+                    'product' => $service->stripe_id,
+                ]);
+
+                $prices[$key]['stripe_id'] = $stripePrice;
+            }
+            $schedule->prices()->createMany($prices);
         }
         if ($request->filled('schedule_availabilities')) {
             $schedule->schedule_availabilities()->createMany($request->get('schedule_availabilities'));
@@ -68,7 +77,7 @@ class ScheduleController extends Controller
             ->toArray();
     }
 
-    public function update(Request $request, Service $service, Schedule $schedule)
+    public function update(Request $request, Service $service, Schedule $schedule, StripeClient $stripe)
     {
         $schedule->update($request->all());
 
@@ -78,7 +87,18 @@ class ScheduleController extends Controller
         }
         if ($request->has('prices')) {
             $schedule->prices()->delete();
-            $schedule->prices()->createMany($request->get('prices'));
+
+            $prices = $request->get('prices');
+            foreach  ($prices as $key => $price ){
+                $stripePrice = $stripe->prices->create([
+                    'unit_amount' => $prices[$key]['cost'],
+                    'currency' => $prices[$key]['name'],
+                    'product' => $service->stripe_id,
+                ]);
+
+                $prices[$key]['stripe_id'] = $stripePrice;
+            }
+            $schedule->prices()->createMany($prices);
         }
         if ($request->filled('schedule_availabilities')) {
             $schedule->schedule_availabilities()->delete();
@@ -104,7 +124,6 @@ class ScheduleController extends Controller
         return fractal($schedule, new ScheduleTransformer())
             ->parseIncludes($request->getIncludes())
             ->toArray();
-
     }
 
     public function availabilities(Schedule $schedule)
@@ -142,7 +161,7 @@ class ScheduleController extends Controller
         return fractal($reschedule, new UserTransformer())->respond();
     }
 
-    public function purchase(PurchaseScheduleRequest $request, Schedule $schedule)
+    public function purchase(PurchaseScheduleRequest $request, Schedule $schedule, StripeClient $stripe)
     {
         $price = $schedule->prices()->find($request->get('price_id'));
         $cost  = $price->cost;
@@ -188,6 +207,17 @@ class ScheduleController extends Controller
                 ]
             );
             $userPromoCode->save();
+
+            $stripe->paymentIntents->create([
+                'amount' => $cost,
+                'currency' => $price->name,
+                'payment_method_types' => [$stripe->card],
+            ]);
+
+            $stripe->paymentIntents->confirm(
+                $stripe->getClientId(),
+                ['payment_method' => $stripe->card]
+            );
         }
 
         return response(null, 200);
@@ -231,45 +261,5 @@ class ScheduleController extends Controller
 
         return fractal($schedule, new ScheduleTransformer())->parseIncludes($request->getIncludes())
             ->toArray();
-    }
-
-    protected function requiresReschedule(Request $request, Schedule $schedule): bool
-    {
-        return $this->dateHasChanged($request, $schedule)
-            || $this->locationHasChanged($request, $schedule)
-            || $request->filled('schedule_unavailabilities')
-            || $request->filled('schedule_availabilities');
-    }
-
-    protected function dateHasChanged(Request $request, Schedule $schedule): bool
-    {
-        if ($request['start_date'] != $schedule->start_date) {
-            return true;
-        } else if ($request['end_date'] != $schedule->end_date) {
-            return true;
-        }
-
-        return false;
-    }
-
-    protected function locationHasChanged(Request $request, Schedule $schedule): bool
-    {
-        if ($request['location_id'] != $schedule->location_id) {
-            return true;
-        } else if ($request['venue'] != $schedule->venue) {
-            return true;
-        } else if ($request['city'] != $schedule->city) {
-            return true;
-        } else if ($request['country'] != $schedule->country) {
-            return true;
-        } else if ($request['post_code'] != $schedule->post_code) {
-            return true;
-        } else if ($request['location_displayed'] != $schedule->location_displayed) {
-            return true;
-        } else if ($request['is_virtual'] != $schedule->is_virtual) {
-            return true;
-        }
-
-        return false;
     }
 }

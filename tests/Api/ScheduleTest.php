@@ -544,6 +544,69 @@ class ScheduleTest extends TestCase
         ]);
 
     }
+
+    public function test_reschedule_is_created_on_availability_change()
+    {
+        Event::fake();
+        $service = Service::factory()->create();
+        $schedule = Schedule::factory()->create([
+            'service_id' => $service->id,
+            'attendees' => 1
+        ]);
+        ScheduleAvailability::factory()->create([
+            'schedule_id' => $schedule->id,
+            'days'        => 'monday',
+            'start_time'  => '10:00:00',
+            'end_time'    => '18:00:00',
+        ]);
+        Booking::factory()->create([
+            'schedule_id' => $schedule->id,
+            'datetime_from' => '2020-12-21 17:00:00'
+        ]);
+
+        $this->json('put', "api/schedules/$schedule->id", [
+            ['availabilities' =>
+                [
+                    'days'=>'monday',
+                    'start_time'=>'09:00:00',
+                    'end_time'=>'15:00:00'
+                ]
+            ]
+        ])->assertStatus(200);
+
+        $this->assertDatabaseCount('reschedule_requests', 1);
+    }
+
+    public function test_reschedule_is_created_on_unavailability_change()
+    {
+        Event::fake();
+        $service = Service::factory()->create();
+        $schedule = Schedule::factory()->create([
+            'service_id' => $service->id,
+            'attendees' => 1
+        ]);
+        ScheduleAvailability::factory()->create([
+            'schedule_id' => $schedule->id,
+            'days'        => 'monday',
+            'start_time'  => '10:00:00',
+            'end_time'    => '18:00:00',
+        ]);
+        Booking::factory()->create([
+            'schedule_id' => $schedule->id,
+            'datetime_from' => '2020-12-21 17:00:00'
+        ]);
+
+        $this->json('put', "api/schedules/$schedule->id", [
+            ['unavaulabilities' =>
+                [
+                    'start_date'=>'2020-12-21 10:00:00',
+                    'end_date'=>'2020-12-23 18:00:00'
+                ]
+            ]
+        ])->assertStatus(200);
+
+        $this->assertDatabaseCount('reschedule_requests', 1);
+    }
 }
 
 

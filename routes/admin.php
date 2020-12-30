@@ -41,6 +41,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/plans', [PlanController::class, 'index']);
         Route::post('/plans', [PlanController::class, 'store']);
         Route::get('/plans/{plan}', [PlanController::class, 'show']);
+        Route::put('/plans/{firstPlan}/swap-order/{secondPlan}', [PlanController::class, 'swapOrder']);
         Route::put('/plans/{plan}', [PlanController::class, 'update']);
         Route::delete('/plans/{plan}', [PlanController::class, 'destroy']);
 

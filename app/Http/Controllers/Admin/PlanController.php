@@ -13,11 +13,22 @@ class PlanController extends Controller
 {
     public function index(Request $request)
     {
-        $paginator = Plan::with('service_types')->paginate();
-        $plans = $paginator->getCollection();
+        $paginator = Plan::with('service_types')->paginate($request->getLimit());
+        $plans     = $paginator->getCollection();
 
-        return response(fractal($plans, new PlanTransformer())
-            ->parseIncludes('service_types'))
+        if ($request->hasSearch()) {
+            $search = $request->search();
+
+            $plans->where(
+                function ($query) use ($search) {
+                    $query->where('name', 'like', "%{$search}%")
+                        ->orWhere('introduction', 'like', "%{$search}%")
+                        ->orWhere('description', 'like', "%{$search}%");
+                }
+            );
+        }
+
+        return response(fractal($plans, new PlanTransformer())->parseIncludes($request->getIncludes()))
             ->withPaginationHeaders($paginator);
     }
 
@@ -78,4 +89,17 @@ class PlanController extends Controller
         $plan->delete();
         return response(null, 204);
     }
+
+    public function swapOrder(Plan $firstPlan, Plan $secondPlan)
+    {
+        $temp = $secondPlan->order;
+        $secondPlan->order = $firstPlan->order;
+        $firstPlan->order = $temp;
+
+        $firstPlan->save();
+        $secondPlan->save();
+
+        return response(200);
+    }
+
 }

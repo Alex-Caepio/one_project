@@ -117,4 +117,22 @@ class PlanTest extends TestCase
 
         $response->assertStatus(204);
     }
+
+    public function test_swap_order_plan(): void
+    {
+        $firstPlan = Plan::factory()->create(['order' => 15]);
+        $secondPlan = Plan::factory()->create(['order' => 6]);
+
+        $this->json('put', "/admin/plans/{$firstPlan->id}/swap-order/{$secondPlan->id}")
+            ->assertOk();
+
+        $this->assertDatabaseHas('plans',[
+            'id' => $firstPlan->id,
+            'order' => $secondPlan->order
+        ]);
+        $this->assertDatabaseHas('plans',[
+            'id' => $secondPlan->id,
+            'order' => $firstPlan->order
+        ]);
+    }
 }

@@ -16,6 +16,7 @@ use App\Http\Requests\Services\ServicePublishRequest;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
+use Stripe\StripeClient;
 
 class ServiceController extends Controller {
 
@@ -64,9 +65,13 @@ class ServiceController extends Controller {
     }
 
 
-    public function store(StoreServiceRequest $request) {
+    public function store(StoreServiceRequest $request, StripeClient $stripe) {
+        $stripeProduct = $stripe->products->create([
+            'name' => $request->title,
+        ]);
         $user = $request->user();
         $data = $request->all();
+        $data['stripe_id'] = $stripeProduct->id;
 
         $url = $data['url'] ?? to_url($data['name']);
         $data['url'] = $url;
@@ -89,7 +94,6 @@ class ServiceController extends Controller {
         if ($request->filled('media_files')) {
             $service->media_files()->createMany($request->get('media_files'));
         }
-
 
         return fractal($service, new ServiceTransformer())->respond();
     }

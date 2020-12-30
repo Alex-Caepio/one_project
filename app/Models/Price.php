@@ -16,7 +16,8 @@ class Price extends Model
         'is_free',
         'available_till',
         'min_purchase',
-        'number_available'
+        'number_available',
+        'stripe_id'
     ];
 
     public function schedule()

@@ -44,6 +44,7 @@ class ServiceTransformer extends Transformer
             'deleted_at'                  => $this->dateTime($service->deleted_at),
             'image_url'                   => $service->image_url,
             'icon_url'                    => $service->icon_url,
+            'stripe_id'                   => $service->stripe_id,
 
         ];
     }

@@ -28,7 +28,7 @@ class Plan extends Model
         'prioritised_business_profile_search', 'prioritised_serivce_search', 'busines_profile_page',
         'unique_web_address', 'onboarding_support', 'client_analytics', 'service_analytics', 'financial_analytics',
         'schedules_per_service_unlimited', 'pricing_options_per_service_unlimited',
-        'amount_bookings', 'discount_codes'
+        'amount_bookings', 'discount_codes', 'order'
     ];
 
     public function service_types(): BelongsToMany

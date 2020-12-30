@@ -47,6 +47,7 @@ class PlanTransformer extends Transformer
             'schedules_per_service_unlimited'       => (bool)$plan->schedules_per_service_unlimited,
             'amount_bookings'                       => $plan->amount_bookings,
             'discount_codes'                        => (bool)$plan->discount_codes,
+            'order'                                 => $plan->order
         ];
     }
 

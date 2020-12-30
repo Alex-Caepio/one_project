@@ -25,5 +25,4 @@ class PlanController extends Controller
 
         return response(null, 204);
     }
-
 }

@@ -35,7 +35,8 @@ class Service extends Model
         'description',
         'introduction',
         'url',
-        'service_type_id'
+        'service_type_id',
+        'stripe_id'
     ];
 
     public function media_images()
