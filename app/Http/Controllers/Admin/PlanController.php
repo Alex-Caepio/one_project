@@ -68,7 +68,7 @@ class PlanController extends Controller
     {
         $price = $stripe->prices->retrieve($plan->stripe_id);
 
-        $data = $request->all();
+        $data = $request->except(['stripe_id']);
 
         $product_id = $price->product;
 
