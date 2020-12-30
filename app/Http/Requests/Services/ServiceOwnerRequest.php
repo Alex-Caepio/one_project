@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Services;
 
 use App\Http\Requests\Request;
+use App\Models\Service;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
@@ -13,7 +14,8 @@ class ServiceOwnerRequest extends Request {
      * @return bool
      */
     public function authorize() {
-        return $this->service && $this->service->user_id === Auth::id();
+        $service = Service::find($this->service);
+        return $service && $service->user_id === Auth::id();
     }
 
     /**
