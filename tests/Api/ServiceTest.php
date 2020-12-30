@@ -91,7 +91,6 @@ class ServiceTest extends TestCase
             'is_published' => true,
             'introduction' => $newService->introduction,
             'service_type_id' => $service->service_type_id,
-            'url'          => $newService->url,
         ];
         $response   = $this->actingAs($user)->json('put', "/api/services/{$service->id}", $payload);
 
@@ -170,11 +169,11 @@ class ServiceTest extends TestCase
         $keyword    = Keyword::factory()->count(2)->create();
 
         $response = $this->actingAs($user)->json('put', "/api/services/{$service->id}", [
-            'url'          => $service->url,
             'title'        => $service->title,
             'user_id'      => $service->user_id,
             'keyword_id'   => $keyword->pluck('id'),
-            'service_type_id' => $service_type->id
+            'service_type_id' => $service_type->id,
+            'introduction' => $service->introduction
         ]);
 
         $response->assertOk();
@@ -195,10 +194,10 @@ class ServiceTest extends TestCase
         );
 
         $response = $this->actingAs($user)->json('post', '/api/services', [
-            'url'          => $service->url,
             'title'        => $service->title,
             'user_id'      => $service->user_id,
-            'service_type_id' => $service_type->id
+            'service_type_id' => $service_type->id,
+            'introduction' => $service->introduction
         ]);
 
         $response->assertOk();
@@ -216,10 +215,10 @@ class ServiceTest extends TestCase
         ]);
 
         $response = $this->actingAs($user)->json('put', "/api/services/{$service->id}", [
-            'url'          => $service->url,
             'title'        => $service->title,
             'user_id'      => $service->user_id,
             'service_type_id' => $service_type->id,
+            'introduction' => $service->introduction,
             'keywords'     => [],
         ]);
 
