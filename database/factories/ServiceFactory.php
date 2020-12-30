@@ -22,6 +22,7 @@ class ServiceFactory extends Factory
             'introduction'    => $this->faker->text,
             'url'             => $this->faker->url,
             'service_type_id' => $this->faker->randomNumber(2),
+            'stripe_id'       => $this->faker->word,
         ];
     }
 }

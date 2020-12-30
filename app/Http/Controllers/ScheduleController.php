@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Actions\Schedule\CreateRescheduleRequestsOnScheduleUpdate;
+use App\Events\ServiceScheduleWentLive;
 use App\Http\Requests\Schedule\PurchaseScheduleRequest;
 use App\Models\Booking;
 use App\Models\Service;

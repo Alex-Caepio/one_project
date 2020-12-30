@@ -72,6 +72,18 @@ class ScheduleTest extends TestCase
         $response->assertOk();
     }
 
+    public function test_update_schedule(): void
+    {
+        Event::fake();
+        $serviceType = ServiceType::factory()->create(['id' => 'training_program']);
+        $service     = Service::factory()->create(['service_type_id' => $serviceType->id]);
+        $schedule    = Schedule::factory()->create(['service_id' => $service->id]);
+        $response    = $this->json('put', "api/schedules/{$schedule->id}", [
+            'title' => '123'
+        ]);
+        $response->assertOk();
+    }
+
     public function test_all_user()
     {
         $schedule       = Schedule::factory()->create();
@@ -524,17 +536,17 @@ class ScheduleTest extends TestCase
     public function test_schedule_update_creates_reschedules()
     {
         Event::fake();
-        $service = Service::factory()->create();
+        $service  = Service::factory()->create();
         $schedule = Schedule::factory()->create(['service_id' => $service->id, 'attendees' => 1]);
         $bookings = Booking::factory()->create(['schedule_id' => $schedule->id]);
 
         $rescheduleRequest = RescheduleRequest::factory()->create([
-            'booking_id' => $bookings->id,
+            'booking_id'  => $bookings->id,
             'schedule_id' => $schedule->id
         ]);
 
         $this->json('put', "api/schedules/{$schedule->id}", [
-            'location_id' => 12345,
+            'location_id'        => 12345,
             'location_displayed' => '123asd',
         ])->assertOk();
 
@@ -548,10 +560,10 @@ class ScheduleTest extends TestCase
     public function test_reschedule_is_created_on_availability_change()
     {
         Event::fake();
-        $service = Service::factory()->create();
+        $service  = Service::factory()->create();
         $schedule = Schedule::factory()->create([
             'service_id' => $service->id,
-            'attendees' => 1
+            'attendees'  => 1
         ]);
         ScheduleAvailability::factory()->create([
             'schedule_id' => $schedule->id,
@@ -560,17 +572,17 @@ class ScheduleTest extends TestCase
             'end_time'    => '18:00:00',
         ]);
         Booking::factory()->create([
-            'schedule_id' => $schedule->id,
+            'schedule_id'   => $schedule->id,
             'datetime_from' => '2020-12-21 17:00:00'
         ]);
 
         $this->json('put', "api/schedules/$schedule->id", [
             ['availabilities' =>
-                [
-                    'days'=>'monday',
-                    'start_time'=>'09:00:00',
-                    'end_time'=>'15:00:00'
-                ]
+                 [
+                     'days'       => 'monday',
+                     'start_time' => '09:00:00',
+                     'end_time'   => '15:00:00'
+                 ]
             ]
         ])->assertStatus(200);
 
@@ -580,10 +592,10 @@ class ScheduleTest extends TestCase
     public function test_reschedule_is_created_on_unavailability_change()
     {
         Event::fake();
-        $service = Service::factory()->create();
+        $service  = Service::factory()->create();
         $schedule = Schedule::factory()->create([
             'service_id' => $service->id,
-            'attendees' => 1
+            'attendees'  => 1
         ]);
         ScheduleAvailability::factory()->create([
             'schedule_id' => $schedule->id,
@@ -592,16 +604,16 @@ class ScheduleTest extends TestCase
             'end_time'    => '18:00:00',
         ]);
         Booking::factory()->create([
-            'schedule_id' => $schedule->id,
+            'schedule_id'   => $schedule->id,
             'datetime_from' => '2020-12-21 17:00:00'
         ]);
 
         $this->json('put', "api/schedules/$schedule->id", [
             ['unavaulabilities' =>
-                [
-                    'start_date'=>'2020-12-21 10:00:00',
-                    'end_date'=>'2020-12-23 18:00:00'
-                ]
+                 [
+                     'start_date' => '2020-12-21 10:00:00',
+                     'end_date'   => '2020-12-23 18:00:00'
+                 ]
             ]
         ])->assertStatus(200);
 
