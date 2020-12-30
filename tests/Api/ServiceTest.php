@@ -131,7 +131,8 @@ class ServiceTest extends TestCase
         $response = $this->actingAs($user)->json('put', "/api/services/{$service->id}",
             [
                 'title' => $newService->title,
-                'service_type_id' => $service_type->id
+                'service_type_id' => $service_type->id,
+                'introduction' => $service->introduction
             ]);
 
         $response->assertOk()
