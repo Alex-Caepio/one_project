@@ -56,18 +56,7 @@ class PlanController extends Controller
 
         $data              = $request->all();
         $data['stripe_id'] = $planStripe->id;
-
-        $max_order         = Plan::max('order');
-
-        if(!$max_order or $max_order == 0)
-        {
-            $data['order'] = 1;
-        }
-            else
-                {
-                    $data['order'] = (++$max_order);
-                }
-
+        $data['order'] = Plan::max('order') + 1;
 
         $plan->fill($data);
         $plan->save();
