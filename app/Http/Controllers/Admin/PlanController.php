@@ -56,6 +56,7 @@ class PlanController extends Controller
 
         $data              = $request->all();
         $data['stripe_id'] = $planStripe->id;
+        $data['order'] = Plan::max('order') + 1;
 
         $plan->fill($data);
         $plan->save();
