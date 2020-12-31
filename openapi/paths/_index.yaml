@@ -89,6 +89,11 @@
 /timezones:
   $ref: "./Timezone.yaml#/timezones"
 
+#countries
+/countries:
+  $ref: "./Country.yaml#/countries"
+
+
 ## ADMIN ENDPOINTS
 /admin/profile:
   $ref: "./AdminProfile.yaml#/profile"

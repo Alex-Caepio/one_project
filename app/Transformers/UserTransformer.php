@@ -38,7 +38,7 @@ class UserTransformer extends Transformer {
             'business_introduction'       => $user->business_introduction,
             'date_of_birth'               => $user->date_of_birth,
             'mobile_number'               => $user->mobile_number,
-            'mobile_country_number_code'  => $user->mobile_country_number_code,
+            'business_phone_country_code' => $user->business_phone_country_code,
             'business_phone_number'       => $user->business_phone_number,
             'email_verified_at'           => $user->email_verified_at,
             'email'                       => $user->email,

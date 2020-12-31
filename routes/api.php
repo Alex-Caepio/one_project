@@ -141,7 +141,7 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::get('/messages', [MessageController::class, 'index']);
     Route::get('/messages/receiver/{user}', [MessageController::class, 'showByReceiver']);
 
-    Route::get('/countries', [CountryController::class, 'filter']);
+    Route::get('/countries', [CountryController::class, 'index']);
 
     Route::get('timezones', [TimezoneController::class, 'index']);
 

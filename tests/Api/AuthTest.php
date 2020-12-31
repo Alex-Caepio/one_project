@@ -35,7 +35,6 @@ class AuthTest extends TestCase
         $response->assertOk();
     }
 
-
     public function test_user_can_register_a_new_account(): void
     {
 

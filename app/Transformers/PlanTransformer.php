@@ -23,7 +23,7 @@ class PlanTransformer extends Transformer
             'unlimited_bookings'                    => (bool)$plan->unlimited_bookings,
             'commission_on_sale'                    => $plan->commission_on_sale,
             'schedules_per_service'                 => $plan->schedules_per_service,
-            'pricing_options_per_service'           => (bool)$plan->pricing_options_per_service,
+            'pricing_options_per_service'           => $plan->pricing_options_per_service,
             'pricing_options_per_service_unlimited' => (bool)$plan->pricing_options_per_service_unlimited,
             'list_paid_services'                    => (bool)$plan->list_paid_services,
             'list_free_services'                    => (bool)$plan->list_free_services,

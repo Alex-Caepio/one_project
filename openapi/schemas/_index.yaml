@@ -28,3 +28,5 @@ User:
   $ref: "./User.yaml"
 Mainpage:
   $ref: "./Mainpage.yaml"
+Country:
+  $ref: "./Country.yaml"

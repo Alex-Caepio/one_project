@@ -25,7 +25,7 @@ class PlanStoreRequest extends Request
     {
         return [
             'name'   => 'required|max:20',
-            'price' => 'required_unless:is_free,true|integer',
+            'price' => 'required_unless:is_free,true|nullable|integer',
             'description' => 'max:150',
             'trial_months' => 'nullable|integer',
         ];
