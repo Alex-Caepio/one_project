@@ -103,9 +103,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/bookings', [BookingController::class, 'index']);
 
         Route::get('/practitioner-commissions',[PractitionerCommissionController::class,'index']);
-        Route::get('/practitioner-commissions/{practitioner-commission}',[PractitionerCommissionController::class,'show']);
+        Route::get('/practitioner-commissions/{practitionerCommission}',[PractitionerCommissionController::class,'show']);
         Route::post('/practitioner-commissions',[PractitionerCommissionController::class,'store']);
-        Route::put('/practitioner-commissions/{practitioner-commission}',[PractitionerCommissionController::class,'update']);
-        Route::delete('/practitioner-commissions/{practitioner-commission}',[PractitionerCommissionController::class,'delete']);
+        Route::put('/practitioner-commissions/{practitionerCommission}',[PractitionerCommissionController::class,'update']);
+        Route::delete('/practitioner-commissions/{practitionerCommission}',[PractitionerCommissionController::class,'delete']);
     });
 });
