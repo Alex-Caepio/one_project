@@ -3,6 +3,7 @@
 namespace Tests\Admin;
 
 use App\Models\Service;
+use App\Models\ServiceType;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
@@ -40,6 +41,7 @@ class ServiceTest extends TestCase
     public function test_store_service(): void
     {
         $service = Service::factory()->create();
+        $service_type = ServiceType::factory()->create();
         $response = $this->json('post', '/admin/services', [
             'title' => $service->title,
             'description' => $service->description,
@@ -47,6 +49,7 @@ class ServiceTest extends TestCase
             'user_id' => $service->user_id,
             'is_published' => $service->is_published,
             'introduction' => $service->introduction,
+            'service_type_id' => $service_type->id,
             'url' => $service->url,
         ]);
         $response->assertOk($service);

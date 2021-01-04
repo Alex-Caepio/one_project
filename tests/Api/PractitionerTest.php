@@ -28,7 +28,7 @@ class PractitionerTest extends TestCase
     public function test_can_get_all_user_practitioner_list(): void
     {
         User::factory()->count(2)->create();
-        $response = $this->json('get', "/api/service_types/list");
+        $response = $this->json('get', "/api/service-types/");
         $response->assertOk();
     }
 
