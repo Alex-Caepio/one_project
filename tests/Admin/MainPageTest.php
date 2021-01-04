@@ -59,6 +59,8 @@ class MainPageTest extends TestCase
         $response = $this->json('put','/admin/mainpage',
             [
                 'section_2_background' => '121212',
+                'section_1_alt_text' => '12312313',
+                'section_1_intro_text' => '2121212',
                 'featured_practitioners' => $featured_practitioners->pluck('id'),
                 'featured_disciplines' => $featured_disciplines->pluck('id'),
                 'featured_services' => $featured_services->pluck('id'),
