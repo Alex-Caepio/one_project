@@ -4,6 +4,7 @@ namespace Tests\Admin;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
 class ClientTest extends TestCase
@@ -31,6 +32,7 @@ class ClientTest extends TestCase
 
     public function test_store_client(): void
     {
+        Event::fake();
         $user = User::factory()->make();
         $payload = ['first_name' => $user->first_name,
             'last_name' => $user->last_name,
