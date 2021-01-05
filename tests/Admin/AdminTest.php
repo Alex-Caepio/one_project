@@ -23,7 +23,7 @@ class AdminTest extends TestCase
     /**
      * @skip
      */
-    public function all_admin(): void
+    public function test_all_admin(): void
     {
         User::factory()->count(2)->create();
         $response = $this->json('get', "/admin/admins");
@@ -37,7 +37,7 @@ class AdminTest extends TestCase
     /**
      * @skip
      */
-    public function store_admin(): void
+    public function test_store_admin(): void
     {
         $user = User::factory()->make();
         $payload = ['first_name' => $user->first_name,
@@ -54,7 +54,7 @@ class AdminTest extends TestCase
     /**
      * @skip
      */
-    public function show_admin(): void
+    public function test_show_admin(): void
     {
         $response = $this->json('get', "/admin/admins/{$this->user->id}");
 
@@ -64,7 +64,7 @@ class AdminTest extends TestCase
     /**
      * @skip
      */
-    public function update_admin(): void
+    public function test_update_admin(): void
     {
         $user = User::factory()->create();
         $response = $this->json('put', "admin/profile",
@@ -82,7 +82,7 @@ class AdminTest extends TestCase
     /**
      * @skip
      */
-    public function get_profile_admin(): void
+    public function test_get_profile_admin(): void
     {
         $response = $this->json('get', "admin/profile");
         $response->assertOk();
@@ -91,7 +91,7 @@ class AdminTest extends TestCase
     /**
      * @skip
      */
-    public function delete_admin(): void
+    public function test_delete_admin(): void
     {
         $response = $this->json('delete', "/admin/admins/{$this->user->id}");
         $response->assertStatus(204);
