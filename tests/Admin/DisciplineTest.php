@@ -133,9 +133,6 @@ class DisciplineTest extends TestCase
         ])
             ->assertStatus(422)
             ->assertJsonFragment(['name' => ['The name has already been taken.']]);
-//            ->assertJsonFragment([
-//                'url' => ['The slug http://wholelottalove.com is not unique! Please, chose the different url.']
-//            ]);
 
         // 4. Check that generated url from name is unique
        $response = $this->json('post', '/admin/disciplines', ['name' => 'Heartbreaker']);
