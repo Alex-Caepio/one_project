@@ -12,7 +12,7 @@ class BookingController extends Controller
 {
     public function index(Request $request,BookingFilters $filters)
     {
-        $Query = Booking::filter($filters)->where('user_id', $request->user()->id);
+        $Query = Booking::filter($filters);
 
         if ($request->hasOrderBy())
         {
