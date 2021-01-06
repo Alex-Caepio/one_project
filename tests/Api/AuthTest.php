@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
@@ -37,7 +38,7 @@ class AuthTest extends TestCase
 
     public function test_user_can_register_a_new_account(): void
     {
-
+        Event::fake();
         $payload = [
             'first_name'              => 'John',
             'last_name'               => 'Doe',
@@ -61,13 +62,13 @@ class AuthTest extends TestCase
 
     public function test_user_can_update_his_password(): void
     {
-        $user = User::factory()->make();
-
+        Event::fake();
+        $user = User::factory()->create();
         // 1. User provided correct current password and a new password
-        $response = $this->actingAs($user)->json('put', "/api/auth/profile",
+        $response = $this->actingAs($this->user)->json('put', "/api/auth/profile",
             [
                 'token' => $user->token,
-                'current_password' => $user->password,
+                'current_password' => 'test',
                 'password'         => 'newPassword1',
             ]);
         $response->assertOk();

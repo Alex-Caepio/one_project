@@ -41,6 +41,7 @@ class PlanTest extends TestCase
      */
     public function test_admin_can_create_plan(): void
     {
+
         $this->mockStripeStore();
 
         /* Admin can store a plan with a price */
@@ -105,9 +106,9 @@ class PlanTest extends TestCase
             ]
         );
 
-        $this->assertCount(1, $plan->service_types);
-
         $response->assertOk();
+
+        $this->assertCount(1, $plan->service_types);
     }
 
     public function test_delete_plan(): void

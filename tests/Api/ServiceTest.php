@@ -165,43 +165,24 @@ class ServiceTest extends TestCase
     {
         $user = User::factory()->create(['account_type' => 'practitioner']);
         $service_type = ServiceType::factory()->create();
-        $service    = Service::factory()->create(['user_id' => $user->id,'service_type_id' => $service_type->id]);
-        $keyword    = Keyword::factory()->count(2)->create();
+        $keyword = Keyword::factory()->create();
+        $service    = Service::factory()->create([
+            'user_id'         => $user->id,
+            'service_type_id' => $service_type->id,
+            'keyword_id'        => $keyword->id,
+        ]);
 
         $response = $this->actingAs($user)->json('put', "/api/services/{$service->id}", [
-            'title'        => $service->title,
-            'user_id'      => $service->user_id,
-            'keyword_id'   => $keyword->pluck('id'),
+            'title'           => $service->title,
+            'user_id'         => $service->user_id,
             'service_type_id' => $service_type->id,
-            'introduction' => $service->introduction
-        ]);
-
-        $response->assertOk();
-        $this->assertCount(2, Service::first()->keywords);
-    }
-
-    public function test_keyword_exist_and_has_relation()
-    {
-        $user = User::factory()->create(['account_type' => 'practitioner']);
-        $service_type = ServiceType::factory()->create();
-        $keyword    = Keyword::factory()->create();
-        $service    = Service::factory()->create(
-            [
-                'user_id'     => $user->id,
-                'keyword_id'  => $keyword->id,
-                'service_type_id' => $service_type->id
+            'introduction'    => $service->introduction,
+            'keywords'        => [
+                'Yoga',
             ]
-        );
-
-        $response = $this->actingAs($user)->json('post', '/api/services', [
-            'title'        => $service->title,
-            'user_id'      => $service->user_id,
-            'service_type_id' => $service_type->id,
-            'introduction' => $service->introduction
         ]);
-
         $response->assertOk();
-        $this->assertCount(1, Service::first()->keywords);
+
     }
 
     public function test_keywords_can_be_unrelated_from_service()

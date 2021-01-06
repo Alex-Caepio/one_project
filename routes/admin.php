@@ -22,7 +22,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/practitioners', [PractitionerController::class, 'store']);
         Route::get('/practitioners/{practitioner}', [PractitionerController::class, 'show']);
         Route::put('/practitioners/{practitioner}', [PractitionerController::class, 'update']);
-        Route::post('/practitioners/{practitioner}/delete', [PractitionerController::class, 'destroy']);
+        Route::delete('/practitioners/{practitioner}/delete', [PractitionerController::class, 'destroy']);
         Route::post('/practitioners/{practitioner}/unpublish', [PractitionerController::class, 'unpublish']);
         Route::post('/practitioners/{practitioner}/publish', [PractitionerController::class, 'publish']);
 
@@ -30,7 +30,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/clients', [ClientController::class, 'store']);
         Route::get('/clients/{client}', [ClientController::class, 'show']);
         Route::put('/clients/{client}', [ClientController::class, 'update']);
-        Route::post('/clients/{client}/delete', [ClientController::class, 'destroy']);
+        Route::delete('/clients/{client}/delete', [ClientController::class, 'destroy']);
 
         Route::get('/services', [ServiceController::class, 'index']);
         Route::post('/services', [ServiceController::class, 'store']);
@@ -103,9 +103,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/bookings', [BookingController::class, 'index']);
 
         Route::get('/practitioner-commissions',[PractitionerCommissionController::class,'index']);
-        Route::get('/practitioner-commissions/{practitioner-commission}',[PractitionerCommissionController::class,'show']);
+        Route::get('/practitioner-commissions/{practitionerCommission}',[PractitionerCommissionController::class,'show']);
         Route::post('/practitioner-commissions',[PractitionerCommissionController::class,'store']);
-        Route::put('/practitioner-commissions/{practitioner-commission}',[PractitionerCommissionController::class,'update']);
-        Route::delete('/practitioner-commissions/{practitioner-commission}',[PractitionerCommissionController::class,'delete']);
+        Route::put('/practitioner-commissions/{practitionerCommission}',[PractitionerCommissionController::class,'update']);
+        Route::delete('/practitioner-commissions/{practitionerCommission}',[PractitionerCommissionController::class,'delete']);
     });
 });

@@ -30,7 +30,7 @@ class ArticleTest extends TestCase
 
     public function test_can_create_article(): void
     {
-        $user = User::factory()->create(['account_type' => 'practitioner']);
+        $user = User::factory()->create(['account_type' => 'practitioner', 'is_published' => true]);
         $article = Article::factory()->make();
 
         $response = $this->actingAs($user)->json('post', '/api/articles', [

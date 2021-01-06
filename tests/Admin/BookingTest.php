@@ -21,7 +21,7 @@ class BookingTest extends TestCase
     public function test_user_can_see_booking_list(): void
     {
         Booking::factory()->count(2)->create();
-        $response = $this->json('get', "/api/bookings-all");
+        $response = $this->json('get', "/api/bookings");
         $response
             ->assertOk();
     }

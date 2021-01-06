@@ -4,6 +4,7 @@ namespace Tests\Admin;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
 class ClientTest extends TestCase
@@ -31,13 +32,15 @@ class ClientTest extends TestCase
 
     public function test_store_client(): void
     {
+        Event::fake();
         $user = User::factory()->make();
         $payload = ['first_name' => $user->first_name,
             'last_name' => $user->last_name,
             'is_admin' => true,
             'email' => $user->email,
             'password' => $user->password,
-            'account_type' => 'client'];
+            'account_type' => 'client',
+            ];
         $response = $this->json('post', '/admin/clients', $payload);
 
         $response->assertOk();
@@ -68,7 +71,9 @@ class ClientTest extends TestCase
     public function test_delete_client(): void
     {
         $client = User::factory()->create(['account_type' => 'client']);
-        $response = $this->json('delete', "/admin/clients/{$client->id}");
+        $response = $this->actingAs($this->user)->json('delete', "/admin/clients/{$client->id}/delete",[
+            'message' => 'deleted should be at least 10 symbols'
+        ]);
 
         $response->assertStatus(204);
     }
