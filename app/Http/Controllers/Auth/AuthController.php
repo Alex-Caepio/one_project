@@ -103,7 +103,7 @@ class AuthController extends Controller
             ->where('email', $request->email)
             ->firstOrFail();
 
-        $user->email_verified_at = now();
+        $user->forceFill(['email_verified_at' => now(), 'status' => User::STATUS_ACTIVE]);
         $user->save();
 
         $user->withAccessToken($user->createToken('access-token'));

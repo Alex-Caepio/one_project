@@ -14,15 +14,4 @@ class ServiceTypeController extends Controller
         $serviceType = ServiceType::all();
         return fractal($serviceType, new ServiceTypeTransformer())->respond();
     }
-
-    public function store(Request $request)
-    {
-        run_action(ServiceTypeStore::class, $request);
-    }
-
-    public function list()
-    {
-        $serviceTypeList = ServiceType::query();
-        return $serviceTypeList->pluck('name', 'id');
-    }
 }

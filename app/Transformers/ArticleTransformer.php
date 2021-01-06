@@ -3,7 +3,6 @@
 
 namespace App\Transformers;
 
-
 use App\Models\Article;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
@@ -13,12 +12,22 @@ use League\Fractal\Resource\Item;
  *
  * @package App\Transformers
  */
-class ArticleTransformer extends Transformer
-{
+class ArticleTransformer extends Transformer {
     /**
      * @var string[]
      */
-    protected $availableIncludes = ['user', 'disciplines', 'favourite_articles', 'media_images', 'media_videos', 'media_files'];
+    protected $availableIncludes = [
+        'user',
+        'disciplines',
+        'favourite_articles',
+        'media_images',
+        'media_videos',
+        'media_files',
+        'focus_areas',
+        'keywords',
+        'services',
+        'last_published'
+    ];
 
     /**
      * @param \App\Models\Article $article
@@ -37,6 +46,7 @@ class ArticleTransformer extends Transformer
             'created_at'   => $this->dateTime($article->created_at),
             'updated_at'   => $this->dateTime($article->updated_at),
             'deleted_at'   => $this->dateTime($article->deleted_at),
+            'published_at' => $this->dateTime($article->published_at),
         ];
     }
 
@@ -44,8 +54,7 @@ class ArticleTransformer extends Transformer
      * @param \App\Models\Article $article
      * @return \League\Fractal\Resource\Item|null
      */
-    public function includeUser(Article $article): ?Item
-    {
+    public function includeUser(Article $article): ?Item {
         return $this->itemOrNull($article->user, new UserTransformer());
     }
 
@@ -53,8 +62,7 @@ class ArticleTransformer extends Transformer
      * @param \App\Models\Article $article
      * @return \League\Fractal\Resource\Collection|null
      */
-    public function includeDiscipline(Article $article): ?Collection
-    {
+    public function includeDisciplines(Article $article): ?Collection {
         return $this->collectionOrNull($article->disciplines, new DisciplineTransformer());
     }
 
@@ -62,8 +70,7 @@ class ArticleTransformer extends Transformer
      * @param \App\Models\Article $article
      * @return \League\Fractal\Resource\Collection|null
      */
-    public function includeFavouriteArticles(Article $article): ?Collection
-    {
+    public function includeFavouriteArticles(Article $article): ?Collection {
         return $this->collectionOrNull($article->favourite_articles, new ArticleTransformer());
     }
 
@@ -71,8 +78,7 @@ class ArticleTransformer extends Transformer
      * @param \App\Models\Article $article
      * @return \League\Fractal\Resource\Collection|null
      */
-    public function includeMediaImages(Article $article): ?Collection
-    {
+    public function includeMediaImages(Article $article): ?Collection {
         return $this->collectionOrNull($article->media_images, new MediaImageTransformer());
     }
 
@@ -80,8 +86,7 @@ class ArticleTransformer extends Transformer
      * @param \App\Models\Article $article
      * @return \League\Fractal\Resource\Collection|null
      */
-    public function includeMediaVideos(Article $article): ?Collection
-    {
+    public function includeMediaVideos(Article $article): ?Collection {
         return $this->collectionOrNull($article->media_videos, new MediaVideoTransformer());
     }
 
@@ -89,8 +94,46 @@ class ArticleTransformer extends Transformer
      * @param \App\Models\Article $article
      * @return \League\Fractal\Resource\Collection|null
      */
-    public function includeMediaFiles(Article $article): ?Collection
-    {
+    public function includeMediaFiles(Article $article): ?Collection {
         return $this->collectionOrNull($article->media_files, new MediaFileTransformer());
+    }
+
+    /**
+     * @param \App\Models\Article $article
+     * @return \League\Fractal\Resource\Collection|null
+     */
+    public function includeFocusAreas(Article $article): ?Collection {
+        return $this->collectionOrNull($article->focus_areas, new FocusAreaTransformer());
+    }
+
+    /**
+     * @param \App\Models\Article $article
+     * @return \League\Fractal\Resource\Collection|null
+     */
+    public function includeKeywords(Article $article): ?Collection {
+        return $this->collectionOrNull($article->keywords, new KeywordTransformer());
+    }
+
+    /**
+     * @param \App\Models\Article $article
+     * @return \League\Fractal\Resource\Collection|null
+     */
+    public function includeServices(Article $article): ?Collection {
+        return $this->collectionOrNull($article->services, new ServiceTransformer());
+    }
+
+
+    /**
+     * @param \App\Models\Article $article
+     * @return \League\Fractal\Resource\Collection|null
+     */
+    public function includeLastPublished(Article $article): ?Collection {
+        return $this->collectionOrNull(Article::where('id', '<>', $article->id)
+                                              ->where('user_id', $article->user_id)
+                                              ->with('user')
+                                              ->published()
+                                              ->orderBy('published_at', 'desc')
+                                              ->limit(3)
+                                              ->get(), new self());
     }
 }

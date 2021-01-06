@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
@@ -27,27 +28,29 @@ class AuthTest extends TestCase
 
     public function test_user_publish(): void
     {
-        $response = $this->json('post', 'api/auth/profile/publish', [
+        $user = User::factory()->make();
+
+        $response = $this->actingAs($user)->json('post', 'api/auth/profile/publish', [
             'is_published' => true
         ]);
         $response->assertOk();
     }
 
-
     public function test_user_can_register_a_new_account(): void
     {
-        $user    = User::factory()->make();
+        Event::fake();
         $payload = [
-            'first_name'              => $user->first_name,
-            'last_name'               => $user->last_name,
-            'email'                   => $user->email,
-            'password'                => $user->password,
+            'first_name'              => 'John',
+            'last_name'               => 'Doe',
+            'email'                   => 'test12@test.com',
+            'password'                => '12342_kLfasbfk',
             'account_type'            => 'client',
-            'accepted_terms'          => true,
             'emails_holistify_update' => true,
+            'accepted_terms'          => true
         ];
 
         $response = $this->json('post', '/api/auth/register', $payload);
+
         $response->assertOk();
     }
 
@@ -59,9 +62,12 @@ class AuthTest extends TestCase
 
     public function test_user_can_update_his_password(): void
     {
+        Event::fake();
+        $user = User::factory()->create();
         // 1. User provided correct current password and a new password
-        $response = $this->json('put', "/api/auth/profile",
+        $response = $this->actingAs($this->user)->json('put', "/api/auth/profile",
             [
+                'token' => $user->token,
                 'current_password' => 'test',
                 'password'         => 'newPassword1',
             ]);
@@ -97,6 +103,8 @@ class AuthTest extends TestCase
 
     public function test_user_update_password_logic(): void
     {
+        $newUser = User::factory()->make();
+
         $response = $this->json('put', "/api/auth/profile",
             [
                 'first_name' => $newUser->first_name,

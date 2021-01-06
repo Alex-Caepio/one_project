@@ -28,7 +28,7 @@ class PractitionerTest extends TestCase
     public function test_can_get_all_user_practitioner_list(): void
     {
         User::factory()->count(2)->create();
-        $response = $this->json('get', "/api/service_types/list");
+        $response = $this->json('get', "/api/service-types/");
         $response->assertOk();
     }
 
@@ -40,8 +40,8 @@ class PractitionerTest extends TestCase
         $authUser->favourite_practitioners()->attach($userId);
 
         $this->assertDatabaseHas('practitioner_favorites', [
-            'user_id' => $authUser->id,
-            'practitioner_id' => $userId->id
+            'user_id' => $userId->id ,
+            'practitioner_id' => $authUser->id
         ]);
     }
     public function test_delete_practitioner_favorite(): void

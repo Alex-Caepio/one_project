@@ -8,19 +8,57 @@ use App\Models\Schedule;
 
 class ScheduleTransformer extends Transformer
 {
-    protected $availableIncludes = ['location', 'prices', 'service', 'users'];
+    protected $availableIncludes = [
+        'location', 'prices', 'service', 'users', 'media_files',
+        'schedule_availabilities', 'schedule_unavailabilities',
+        'schedule_files', 'schedule_hidden_files'
+    ];
 
     public function transform(Schedule $schedule)
     {
         return [
-            'id' => $schedule->id,
-            'title' => $schedule->title,
-            'service_id' => $schedule->service_id,
-            'start_date' => $schedule->start_date,
-            'end_date' => $schedule->end_date,
-            'cost' => $schedule->cost,
-            'created_at' => $schedule->created_at,
-            'updated_at' => $schedule->updated_at,
+            'id'                            => $schedule->id,
+            'title'                         => $schedule->title,
+            'location_id'                   => $schedule->location_id,
+            'service_id'                    => $schedule->service_id,
+            'start_date'                    => $schedule->start_date,
+            'end_date'                      => $schedule->end_date,
+            'attendees'                     => $schedule->attendees,
+            'cost'                          => $schedule->cost,
+            'comments'                      => $schedule->comments,
+            'venue'                         => $schedule->venue,
+            'city'                          => $schedule->city,
+            'country'                       => $schedule->country,
+            'post_code'                     => $schedule->post_code,
+            'location_displayed'            => $schedule->location_displayed,
+            'meals_breakfast'               => $schedule->meals_breakfast,
+            'meals_lunch'                   => $schedule->meals_lunch,
+            'meals_dinner'                  => $schedule->meals_dinner,
+            'meals_alcoholic_beverages'     => $schedule->meals_alcoholic_beverages,
+            'meals_dietry_accomodated'      => $schedule->meals_dietry_accomodated,
+            'refund_terms'                  => $schedule->refund_terms,
+            'deposit_accepted'              => $schedule->deposit_accepted,
+            'deposit_amount'                => $schedule->deposit_amount,
+            'deposit_instalments'           => $schedule->deposit_instalments,
+            'deposit_instalment_frequency'  => $schedule->deposit_instalment_frequency,
+            'deposit_final_date'            => $schedule->deposit_final_date,
+            'booking_message'               => $schedule->booking_message,
+            'url'                           => $schedule->url,
+            'book_full_series'              => $schedule->book_full_series,
+            'accomodation'                  => $schedule->accomodation,
+            'accomodation_details'          => $schedule->accomodation_details,
+            'travel'                        => $schedule->travel,
+            'travel_details'                => $schedule->travel_details,
+            'repeat'                        => $schedule->repeat,
+            'repeat_every'                  => $schedule->repeat_every,
+            'repeat_period'                 => $schedule->repeat_period,
+            'notice_min_time'               => $schedule->notice_min_time,
+            'notice_min_period'             => $schedule->notice_min_period,
+            'buffer_time'                   => $schedule->buffer_time,
+            'buffer_period'                 => $schedule->bubuffer_periodfbuffer_periodfer_period,
+            'is_virtual'                    => $schedule->is_virtual,
+            'created_at'                    => $schedule->created_at,
+            'updated_at'                    => $schedule->updated_at,
         ];
     }
 
@@ -42,5 +80,29 @@ class ScheduleTransformer extends Transformer
     public function includeUsers(Schedule $schedule)
     {
         return $this->collectionOrNull($schedule->users, new UserTransformer());
+    }
+
+    public function includeMediaFiles(Schedule $schedule)
+    {
+        return $this->collectionOrNull($schedule->media_files, new MediaFileTransformer());
+    }
+
+    public function includeScheduleAvailability(Schedule $schedule)
+    {
+        return $this->collectionOrNull($schedule->schedule_availabilities, new ScheduleAvailabilityTransformer());
+    }
+
+    public function includeScheduleUnavailability(Schedule $schedule)
+    {
+        return $this->collectionOrNull($schedule->schedule_unavailabilities, new ScheduleUnavailabilityTransformer());
+    }
+
+    public function includeScheduleFile(Schedule $schedule)
+    {
+        return $this->collectionOrNull($schedule->schedule_files, new ScheduleFileTransformer());
+    }
+    public function includeScheduleHiddenFile(Schedule $schedule)
+    {
+        return $this->collectionOrNull($schedule->schedule_hidden_files, new ScheduleHiddenFileTransformer());
     }
 }

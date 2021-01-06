@@ -1,0 +1,77 @@
+type: object
+required:
+  - name
+  - discount_type
+  - discount_value
+  - applied_to
+  - total_codes
+properties:
+  name:
+    type: string
+    nullable: false
+    example: Promotion Name Test
+  valid_from:
+    type: string
+    nullable: true
+    example: 2020-10-10
+  expiry_date:
+    type: string
+    nullable: true
+    example: 2020-10-10
+  discount_type:
+    nullable: false
+    type: string
+    example: percentage || fixed
+  discount_value:
+    nullable: false
+    type: number
+    format: double
+  spend_min:
+    nullable: true
+    type: number
+    format: double
+  spend_max:
+    nullable: true
+    type: number
+    format: double
+  applied_to:
+    type: string
+    nullable: false
+    example: host || both
+  uses_per_client:
+    nullable: true
+    type: number
+    format: integer
+  uses_per_code:
+    nullable: true
+    type: number
+    format: integer
+  total_codes:
+    nullable: false
+    type: number
+    format: integer
+  promocode_names:
+    type: array
+    items:
+      type: integer
+    example: [code1, code2, code3]
+  practitioners:
+    type: array
+    items:
+      type: integer
+    example: [123, 231, 312]
+  disciplines:
+    type: array
+    items:
+      type: integer
+    example: [123, 231, 312]
+  focus_areas:
+    type: array
+    items:
+      type: integer
+    example: [123, 231, 312]
+  service_types:
+    type: array
+    items:
+      type: string
+    example: [events, workshop, whatever]

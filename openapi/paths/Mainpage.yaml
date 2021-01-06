@@ -1,0 +1,28 @@
+mainpage:
+  get:
+    tags:
+      - Main Page
+    parameters:
+      - name: with
+        in: query
+        description: Include additional objects in response
+        required: false
+        schema:
+          type: string
+          example: featured_focus_areas,featured_disciplines,featured_practitioners,featured_services
+      - name: x-with
+        in: header
+        description: Include additional objects in response
+        required: false
+        schema:
+          type: integer
+          example: featured_focus_areas,featured_disciplines,featured_practitioners,featured_services
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../schemas/Mainpage.yaml'

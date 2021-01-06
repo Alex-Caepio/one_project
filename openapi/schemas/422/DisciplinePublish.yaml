@@ -10,3 +10,5 @@ properties:
         - You have not filled in the field "Discipline name"
       url:
         - You have not filled in the field "Discipline url"
+      icon_url:
+        - You have not filled in the field "Icon url"

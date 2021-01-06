@@ -59,7 +59,7 @@ disciplines:
         description: Include additional objects in response
         required: false
         schema:
-          type: integer
+          type: string
           example: featured_practitioners,featured_services,media_images,media_videos,media_files
     responses:
       '200':

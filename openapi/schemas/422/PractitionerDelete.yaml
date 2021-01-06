@@ -1,0 +1,12 @@
+type: object
+properties:
+  message:
+    type: string
+    example: The given data was invalid.
+  errors:
+    type: object
+    example:
+      message:
+        - Message field may not be greater than 1000 characters.
+        - Message field may not be less than 10 characters.
+        - Message field may is required.

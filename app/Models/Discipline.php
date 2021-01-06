@@ -37,13 +37,13 @@ class Discipline extends Model
 
     public function featured_practitioners(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'featured_practitioners', 'discipline_id', 'user_id')
+        return $this->belongsToMany(User::class, 'discipline_featured_practitioner', 'discipline_id', 'user_id')
             ->withTimeStamps();
     }
 
     public function featured_services(): BelongsToMany
     {
-        return $this->belongsToMany(Service::class, 'featured_services', 'discipline_id', 'service_id')
+        return $this->belongsToMany(Service::class, 'discipline_featured_service', 'discipline_id', 'service_id')
             ->withTimeStamps();
     }
 
@@ -110,5 +110,34 @@ class Discipline extends Model
         return $this->where('id', $value)
             ->orWhere('url', $value)
             ->firstOrFail();
+    }
+
+    public function featured_at_focus_area()
+    {
+        return $this->belongsToMany(FocusArea::class, 'focus_area_featured_discipline', 'discipline_id', 'focus_area_id');
+    }
+
+    public function featured_focus_areas()
+    {
+        return $this->belongsToMany(FocusArea::class, 'discipline_featured_focus_area', 'discipline_id', 'focus_area_id');
+    }
+
+    public function featured_articles()
+    {
+        return $this->belongsToMany(Article::class, 'discipline_featured_articles', 'discipline_id', 'article_id');
+    }
+
+    public function featured_main_pages(): BelongsToMany
+    {
+        return $this->belongsToMany(MainPage::class, 'main_page_featured_discipline', 'discipline_id', 'main_page_id');
+    }
+
+    public function featured_disciplines()
+    {
+        return $this->belongsToMany(FocusArea::class, 'focus_area_featured_discipline', 'focus_area_id', 'discipline_id');
+    }
+
+    public function promotions(): BelongsToMany {
+        return $this->belongsToMany(Promotion::class, 'promotion_discipline', 'discipline_id', 'promotion_id');
     }
 }

@@ -2,18 +2,19 @@
 
 namespace App\Http\Requests\Articles;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\Request;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
-class ArticleRequest extends FormRequest
-{
+class ArticleRequest extends Request {
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
-    public function authorize()
-    {
-        return true;
+    public function authorize(): bool {
+        return Auth::user()->isPractitioner();
     }
 
     /**
@@ -21,16 +22,39 @@ class ArticleRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
-    {
+    public function rules(): array {
+        $isPublished = $this->getBoolFromRequest('is_published');
+        if ($isPublished === true) {
+            return [
+                'title'        => 'required|string|min:5|max:120',
+                'description'  => 'required|string|min:5|max:3000',
+                'is_published' => 'bool',
+                'introduction' => 'required|string|min:5|max:200',
+                'url'          => 'required|url|unique:articles,url' . ($this->article ? ',' . $this->article->id : ''),
+                'image_url'    => 'url'
+            ];
+        }
         return [
-            'title'        => 'min:5',
-            'description'  => 'min:5',
-            'user_id'      => 'exists:App\Models\User,id',
-            'is_published' => 'boolean',
-            'introduction' => 'min:5',
+            'title'        => 'string|min:5|max:120',
+            'description'  => 'string|min:5|max:3000',
+            'is_published' => 'bool',
+            'introduction' => 'string|min:5|max:200',
             'url'          => 'url',
             'image_url'    => 'url'
         ];
+
     }
+
+
+    public function withValidator(Validator $validator) {
+        $validator->after(function($validator) {
+            $isPublished = $this->getBoolFromRequest('is_published');
+            if (!Auth::user()->is_published && $isPublished) {
+                $validator->errors()->add('name',
+                                          "Article not Published. Please publish your Business Profile before publishing the Article");
+            }
+        });
+    }
+
+
 }

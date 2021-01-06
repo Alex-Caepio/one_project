@@ -9,7 +9,14 @@ use App\Models\FocusAreaImage;
 
 class FocusAreaTransformer extends Transformer
 {
-    protected $availableIncludes = ['services', 'articles', 'practitioners', 'disciplines', 'focus_area_images', 'focus_area_videos'];
+    protected $availableIncludes = [
+        'services', 'articles', 'practitioners',
+        'disciplines', 'focus_area_images', 'focus_area_videos',
+        'featured_practitioners', 'featured_disciplines',
+        'featured_articles', 'featured_services',
+        'featured_focus_areas', 'media_images',
+        'media_videos', 'media_files',
+    ];
 
     public function transform(FocusArea $focusArea)
     {
@@ -21,6 +28,7 @@ class FocusAreaTransformer extends Transformer
             'url'                       => $focusArea->url,
             'banner_url'                => $focusArea->banner_url,
             'icon_url'                  => $focusArea->icon_url,
+            'is_published'              => (bool)$focusArea->is_published,
 
             'section_2_h2'              => $focusArea->section_2_h2,
             'section_2_h3'              => $focusArea->section_2_h3,
@@ -103,4 +111,43 @@ class FocusAreaTransformer extends Transformer
         return $this->collectionOrNull($focusArea->focus_area_videos, new FocusAreaVideoTransformer());
     }
 
+    public function includeFeaturedPractitioners(FocusArea $focusArea)
+    {
+        return $this->collectionOrNull($focusArea->featured_practitioners, new UserTransformer());
+    }
+
+    public function includeFeaturedDisciplines(FocusArea $focusArea)
+    {
+        return $this->collectionOrNull($focusArea->featured_disciplines, new DisciplineTransformer());
+    }
+
+    public function includeFeaturedArticles(FocusArea $focusArea)
+    {
+        return $this->collectionOrNull($focusArea->featured_articles, new ArticleTransformer());
+    }
+
+    public function includeFeaturedServices(FocusArea $focusArea)
+    {
+        return $this->collectionOrNull($focusArea->featured_services, new ServiceTransformer());
+    }
+
+   public function includeFeaturedFocusAreas(FocusArea $focusArea)
+   {
+       return $this->collectionOrNull($focusArea->featured_focus_areas, new FocusAreaTransformer());
+   }
+
+    public function includeMediaImages(FocusArea $focusArea)
+    {
+        return $this->collectionOrNull($focusArea->media_images, new MediaImageTransformer());
+    }
+
+    public function includeMediaVideos(FocusArea $focusArea)
+    {
+        return $this->collectionOrNull($focusArea->media_videos, new MediaVideoTransformer());
+    }
+
+    public function includeMediaFiles(FocusArea $focusArea)
+    {
+        return $this->collectionOrNull($focusArea->media_files, new MediaFileTransformer());
+    }
 }

@@ -24,6 +24,15 @@ class ScheduleFactory extends Factory
             'venue'              => $this->faker->city,
             'city'               => $this->faker->city,
             'country'            => $this->faker->country,
+            'url'                => $this->faker->url,
+            'location_displayed' => $this->faker->address,
+            'refund_terms'       => 20,
+            'is_virtual'         => false,
+            'post_code'          => $this->faker->postcode,
+            'buffer_period'      => 'mins',
+            'buffer_time'        => 60,
+            'notice_min_period'  => 'mins',
+            'notice_min_time'    => 60,
         ];
     }
 }

@@ -2,10 +2,15 @@
 
 namespace App\Http\Requests\Schedule;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\Request;
+use App\Models\PromotionCode;
+use App\Models\ScheduleAvailability;
+use App\Models\ScheduleUnavailability;
+use Illuminate\Validation\Rule;
 
-class PurchaseScheduleRequest extends FormRequest
+class PurchaseScheduleRequest extends Request
 {
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -23,21 +28,101 @@ class PurchaseScheduleRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'title' => 'string|min:5',
-            'promo_code' => 'string|min:5',
-            'service_id' => 'integer',
-            'location_id' => 'integer',
-            'start_date' => 'date',
-            'end_date' => 'date',
-            'attendees' => 'integer',
-            'cost' => 'integer',
-            'comments' => 'string',
-            'venue' => 'string',
-            'city' => 'string',
-            'country' => 'string',
-            'location_displayed' => 'string',
+        $idValue = $this->schedule->prices->pluck('id');
 
+        $rules = [
+            'price_id' => 'required|exists:prices,id', Rule::in($idValue),
         ];
+
+        if ($this->schedule->service->service_type_id == 'appointment') {
+            $availabilityRules = [
+                'availabilities.*.availability_id' => 'required_with:availabilities',
+                'availabilities.*.datetime_from'   => 'required_with:availabilities',
+            ];
+
+            $rules = array_merge($rules, $availabilityRules);
+        }
+        return $rules;
+    }
+
+    public function withValidator($validator): void
+    {
+        $validator->after(function ($validator) {
+            $schedule = $this->schedule;
+            $priceId = $this->price_id;
+
+            if ($this->has('availabilities')) {
+                $this->validateAvailabilities($validator);
+            }
+            if($this->has('promo_code')){
+                if(!PromotionCode::where('name', $this->promo_code)->exists()){
+                    $validator->errors()->add('promo_code', 'Promotion code does not exist');
+                }
+            }
+
+            if ($schedule->attendees && $schedule->isSoldOut()) {
+                $validator->errors()->add('schedule_id', 'All quotes on the schedule are sold out');
+            }
+
+            if(!$schedule->prices()->where('id', $priceId)->exists())
+            {
+                $validator->errors()->add('price_id', 'Price does not belong to the schedule');
+            }
+        });
+    }
+
+    protected function validateAvailabilities($validator): void
+    {
+        $availabilitiesRequest  = $this->get('availabilities');
+        $availabilitiesDatabase = $this->schedule->schedule_availabilities;
+        $unavailabilities = $this->schedule->schedule_unavailabilities;
+
+        if (!$availabilitiesDatabase) {
+            return;
+        }
+
+        foreach ($availabilitiesRequest as $key => $availabilityRequest) {
+
+            if($this->withinUnavailabilities($availabilityRequest['datetime_from'], $unavailabilities)){
+                $validator->errors()->add(
+                    "availabilities.$key.datetime_from",
+                    'That date marked as unavailable by practitioner'
+                );
+            }
+
+            if (!$this->fits($availabilityRequest['datetime_from'], $availabilitiesDatabase)) {
+                $validator->errors()->add(
+                    "availabilities.$key.datetime_from",
+                    'No available time slot for selected appointment'
+                );
+            }
+        }
+    }
+
+    protected function withinUnavailabilities($datetime, $unavailabilities): bool
+    {
+        if(!$unavailabilities){
+            return false;
+        }
+
+        foreach ($unavailabilities as $unavailability) {
+
+            /** @var ScheduleUnavailability $unavailability */
+            if ($unavailability->fits($datetime)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    protected function fits($datetime, $availabilities)
+    {
+        foreach ($availabilities as $availability) {
+            /** @var ScheduleAvailability $availability */
+            if ($availability->fits($datetime)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -103,29 +103,42 @@ class DisciplineTest extends TestCase
             ->assertJsonFragment(['url' => 'stairway-to-heaven']);
 
         // 2. Check that url field get advantage over name
-        $this->json('post', '/admin/disciplines', [
+       $response =  $this->json('post', '/admin/disciplines', [
             'name' => 'Heartbreaker',
-            'url'  => 'whole-lotta-love',
-        ])
-            ->assertOk()
-            ->assertJsonFragment(['url' => 'whole-lotta-love']);
+            'url'  => 'http://wholelottalove.com',
+        ]);
+       $response->assertOk()
+            ->assertJsonFragment(['url' => 'http://wholelottalove.com']);
 
         // 3. Check that same url or name can not be saved twice
         $this->json('post', '/admin/disciplines', [
             'name' => 'Heartbreaker',
-            'url'  => 'whole-lotta-love',
         ])
-            ->assertStatus(422);
-        // ->assertJsonFragment([
-        // 'url' => ['The slug whole-lotta-love is not unique! Please, chose the different url.']
-        // ])
-        // ->assertJsonFragment(['name' => ['The name has already been taken.']]);
+            ->assertStatus(422)
+            ->assertJsonFragment(['name' => ['The name has already been taken.']]);
 
-        // 4. Check that generated url from name is unique
-        $this->json('post', '/admin/disciplines', ['name' => 'Whole lotta love'])
+        $this->json('post', '/admin/disciplines', [
+            'name' => 'Moby Dick',
+            'url'  => 'http://wholelottalove.com',
+        ])
             ->assertStatus(422)
             ->assertJsonFragment([
-                'name' => ['The slug whole-lotta-love is not unique! Please, chose the different name.']
+                'url' => ['The slug http://wholelottalove.com is not unique! Please, chose the different url.']
+            ])
+            ->assertJsonMissing(['name' => ['The name has already been taken.']]);
+
+        $this->json('post', '/admin/disciplines', [
+            'name' => 'Heartbreaker',
+            'url'  => 'http://wholelottalove.com',
+        ])
+            ->assertStatus(422)
+            ->assertJsonFragment(['name' => ['The name has already been taken.']]);
+
+        // 4. Check that generated url from name is unique
+       $response = $this->json('post', '/admin/disciplines', ['name' => 'Heartbreaker']);
+       $response->assertStatus(422)
+            ->assertJsonFragment([
+                'name' => ['The name has already been taken.']
             ]);
     }
 

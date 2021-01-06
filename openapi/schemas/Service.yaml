@@ -31,3 +31,24 @@ properties:
   url:
     type: string
     nullable: true
+  service_type_id:
+    type: string
+    nullable: true
+  created_at:
+    type: string
+    nullable: true
+    format: date-time
+  updated_at:
+    type: string
+    nullable: true
+    format: date-time
+  deleted_at:
+    type: string
+    nullable: true
+    format: date-time
+  image_url:
+    type: string
+    nullable: true
+  icon_url:
+    type: string
+    nullable: true

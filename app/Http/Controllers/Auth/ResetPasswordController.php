@@ -82,10 +82,13 @@ class ResetPasswordController extends Controller
 
     public function verifyToken(Request $request)
     {
-        $token        = $request->token;
-        $validToken   = DB::table('password_resets')->where('token', $token)->first();
-        $createdToken = Carbon::parse($validToken->created_at)->addHours(48);
-        if ($createdToken > Carbon::now()) {
+        $validToken = DB::table('password_resets')->where('token', $request->token)->first();
+        if (!$validToken) {
+            return response(null, 422);
+        }
+
+        $expiresAd = Carbon::parse($validToken->created_at)->addHours(48);
+        if ($expiresAd > Carbon::now()) {
             return response(null, 200);
         }
 

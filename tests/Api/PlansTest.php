@@ -57,6 +57,4 @@ class PlansTest extends TestCase
         $this->instance(StripeClient::class, $stripe);
     }
 
-
-
 }

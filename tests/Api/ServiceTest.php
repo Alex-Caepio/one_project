@@ -2,14 +2,17 @@
 
 namespace Tests\Api;
 
-use App\Models\Service;
 use App\Models\User;
+use App\Models\Service;
+use App\Models\Keyword;
+use App\Models\ServiceType;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Tests\TestCase;
 
 class ServiceTest extends TestCase
 {
-    use DatabaseTransactions;
+    use DatabaseTransactions, WithoutMiddleWare;
 
     public function setUp(): void
     {
@@ -32,62 +35,74 @@ class ServiceTest extends TestCase
 
     public function test_practitioner_can_create_service(): void
     {
-        $service = Service::factory()->make();
+        $user = User::factory()->create(['account_type' => 'practitioner']);
+        $service = Service::factory()->make(['user_id' => $user->id]);
+        $type    = ServiceType::factory()->create();
 
-        $response = $this->json('post', '/api/services', [
-            'description'  => $service->description,
-            'introduction' => $service->introduction,
-            'is_published' => $service->is_published,
-            'title'        => $service->title,
-            'user_id'      => $service->user_id,
-            'url'          => $service->url,
+        $response = $this->actingAs($user)->json('post', '/api/services', [
+            'description'     => $service->description,
+            'service_type_id' => $type->id,
+            'introduction'    => $service->introduction,
+            'is_published'    => $service->is_published,
+            'title'           => $service->title,
+            'user_id'         => $service->user_id,
+            'url'             => $service->url,
+            'keywords'        => ['waka']
         ]);
         $response->assertOk();
     }
 
     public function test_practitioner_can_create_service_with_image_media_links(): void
     {
+        $this->user->user_type = 'practitioner';
         /** @var Service $service */
-        $service = Service::factory()->make();
+        $user = User::factory()->create(['account_type' => 'practitioner']);
+        $service_type = ServiceType::factory()->create();
+        $service = Service::factory()->make(['user_id' => $user->id, 'service_type_id' => $service_type->id]);
 
-        $response = $this->json('post', '/api/services', [
+        $response = $this->actingAs($user)->json('post', '/api/services', [
             'url'          => $service->url,
             'title'        => $service->title,
             'user_id'      => $service->user_id,
             'description'  => $service->description,
             'introduction' => $service->introduction,
             'is_published' => $service->is_published,
+            'service_type_id' => $service_type->id,
             'media_images' => [
                 ['url' => 'http://google.com'],
                 ['url' => 'http://google.com'],
             ]
         ]);
         $response->assertOk();
-        $this->assertCount(2, $service->mediaImages);
+        $this->assertCount(2, Service::first()->media_images);
     }
 
     public function test_user_update_service(): void
     {
-        $service    = Service::factory()->create();
+        $user = User::factory()->create(['account_type' => 'practitioner']);
+        $service_type = ServiceType::factory()->create();
+        $service    = Service::factory()->create(['user_id' => $user->id,'service_type_id' => $service_type->id]);
         $newService = Service::factory()->make();
         $payload    = [
             'title'        => $newService->title,
             'keyword_id'   => $newService->keyword_id,
-            'user_id'      => $newService->user_id,
+            'user_id'      => $user->id,
             'description'  => $newService->description,
-            'is_published' => $newService->is_published,
+            'is_published' => true,
             'introduction' => $newService->introduction,
-            'url'          => $newService->url,
+            'service_type_id' => $service->service_type_id,
         ];
-        $response   = $this->json('put', "/api/services/{$service->id}", $payload);
+        $response   = $this->actingAs($user)->json('put', "/api/services/{$service->id}", $payload);
 
         $response->assertOk();
     }
 
     public function test_practitioner_can_delete_service(): void
     {
-        $service  = Service::factory()->create();
-        $response = $this->json('delete', "/api/services/{$service->id}");
+        $user = User::factory()->create(['account_type' => 'practitioner']);
+
+        $service  = Service::factory()->create(['user_id' => $user->id]);
+        $response = $this->actingAs($user)->json('delete', "/api/services/{$service->id}");
 
         $response->assertStatus(204);
     }
@@ -107,17 +122,88 @@ class ServiceTest extends TestCase
 
     public function test_practitioner_can_update_service(): void
     {
-        $service    = Service::factory()->create();
+        $user = User::factory()->create(['account_type' => 'practitioner']);
+        $service_type = ServiceType::factory()->create();
+        $service    = Service::factory()->create(['user_id' => $user->id, 'service_type_id' => $service_type->id]);
         $newService = Service::factory()->make();
 
-        $response = $this->json('put', "/api/services/{$service->id}",
+        $response = $this->actingAs($user)->json('put', "/api/services/{$service->id}",
             [
                 'title' => $newService->title,
+                'service_type_id' => $service_type->id,
+                'introduction' => $service->introduction
             ]);
 
         $response->assertOk()
             ->assertJson([
                 'title' => $newService->title,
             ]);
+    }
+
+    public function test_service_can_be_created_with_keyword()
+    {
+        $user = User::factory()->create(['account_type' => 'practitioner']);
+        $service_type = ServiceType::factory()->create();
+        $service  = Service::factory()->make(['user_id' => $user->id, 'service_type_id' => $service_type->id]);
+
+        $response = $this->actingAs($user)->json('post', '/api/services', [
+            'url'          => $service->url,
+            'title'        => $service->title,
+            'user_id'      => $service->user_id,
+            'service_type_id' => $service_type->id,
+            'keywords'      => [
+                'Meditation',
+                'Relaxation',
+            ],
+        ]);
+
+        $response->assertOk();
+        $this->assertCount(2, Service::first()->keywords);
+    }
+
+    public function test_service_can_be_updated_with_keywords()
+    {
+        $user = User::factory()->create(['account_type' => 'practitioner']);
+        $service_type = ServiceType::factory()->create();
+        $keyword = Keyword::factory()->create();
+        $service    = Service::factory()->create([
+            'user_id'         => $user->id,
+            'service_type_id' => $service_type->id,
+            'keyword_id'        => $keyword->id,
+        ]);
+
+        $response = $this->actingAs($user)->json('put', "/api/services/{$service->id}", [
+            'title'           => $service->title,
+            'user_id'         => $service->user_id,
+            'service_type_id' => $service_type->id,
+            'introduction'    => $service->introduction,
+            'keywords'        => [
+                'Yoga',
+            ]
+        ]);
+        $response->assertOk();
+
+    }
+
+    public function test_keywords_can_be_unrelated_from_service()
+    {
+        $user = User::factory()->create(['account_type' => 'practitioner']);
+        $service_type = ServiceType::factory()->create();
+        $service    = Service::factory()->create([
+            'user_id' => $user->id,
+            'service_type_id' => $service_type->id,
+            'keyword_id' => 1
+        ]);
+
+        $response = $this->actingAs($user)->json('put', "/api/services/{$service->id}", [
+            'title'        => $service->title,
+            'user_id'      => $service->user_id,
+            'service_type_id' => $service_type->id,
+            'introduction' => $service->introduction,
+            'keywords'     => [],
+        ]);
+
+        $response->assertOk();
+        $this->assertCount(0, Service::first()->keywords);
     }
 }

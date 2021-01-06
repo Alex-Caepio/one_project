@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Scopes\PublishedScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 
@@ -20,8 +21,12 @@ class Article extends Model {
         'image_url'
     ];
 
+    protected $casts = [
+        'is_published' => 'boolean',
+    ];
+
     public function disciplines() {
-        return $this->belongsToMany(Discipline::class, 'discipline_practitioner', 'discipline_id', 'practitioner_id')
+        return $this->belongsToMany(Discipline::class, 'discipline_article', 'article_id', 'discipline_id')
                     ->published()
                     ->withTimeStamps();
     }
@@ -31,7 +36,7 @@ class Article extends Model {
     }
 
     public function favourite_articles() {
-        return $this->belongsToMany(Article::class);
+        return $this->belongsToMany(__CLASS__);
     }
 
     /**
@@ -55,4 +60,28 @@ class Article extends Model {
         return $this->morphMany(MediaFile::class, 'morphesTo', 'model_name', 'model_id');
     }
 
+    public function featured_focus_area()
+    {
+        return $this->belongsToMany(FocusArea::class, 'focus_area_featured_focus_area', 'discipline_id', 'focus_area_id');
+    }
+
+    public function featured_at_disciplines(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Discipline::class, 'discipline_feature_articles', 'article_id', 'discipline_id');
+    }
+    public function featured_articles() {
+        return $this->belongsToMany(FocusArea::class, 'focus_area_featured_article', 'focus_area_id', 'article_id');
+    }
+
+    public function focus_areas(): BelongsToMany {
+        return $this->belongsToMany(FocusArea::class, 'focus_area_article', 'article_id', 'focus_area_id')->withTimeStamps();
+    }
+
+    public function keywords(): BelongsToMany {
+        return $this->belongsToMany(Keyword::class)->withTimeStamps();
+    }
+
+    public function services(): BelongsToMany {
+        return $this->belongsToMany(Service::class)->withTimeStamps();
+    }
 }

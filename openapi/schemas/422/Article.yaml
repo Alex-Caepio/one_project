@@ -1,0 +1,17 @@
+type: object
+properties:
+  message:
+    type: string
+    example: The given data was invalid.
+  errors:
+    type: object
+    example:
+      title:
+        - You have not filled in the field "Article title"
+      url:
+        - You have not filled in the field "Article url"
+        - The url has already been taken.
+      description:
+        - You have not filled in the field "Article description"
+      introduction:
+        - You have not filled in the field "Article introduction"

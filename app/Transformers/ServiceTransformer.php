@@ -4,27 +4,48 @@
 namespace App\Transformers;
 
 use App\Models\Service;
+use League\Fractal\Resource\Collection;
 
 class ServiceTransformer extends Transformer
 {
-    protected $availableIncludes = ['user', 'keywords', 'disciplines', 'focus_areas', 'location', 'schedules', 'favourite_services', 'service_types'];
+
+    protected $availableIncludes = [
+        'user',
+        'keywords',
+        'disciplines',
+        'focus_areas',
+        'location',
+        'schedules',
+        'favourite_services',
+        'service_type',
+        'articles',
+        'media_images',
+        'media_files',
+        'media_videos',
+        'last_published'
+    ];
 
     public function transform(Service $service)
     {
         return [
-            'id' => $service->id,
-            'title' => $service->title,
-            'description' => $service->description,
-            'type' => $service->type,
-            'locations' => $service->locations,
-            'basic_location' => $service->basic_location,
+            'id'                          => $service->id,
+            'title'                       => $service->title,
+            'description'                 => $service->description,
+            'locations'                   => $service->locations,
+            'basic_location'              => $service->basic_location,
             'deposit_instalment_payments' => $service->deposit_instalment_payments,
-            'user_id' => $service->user_id,
-            'is_published' => (bool) $service->is_published,
-            'introduction' => $service->introduction,
-            'url' => $service->url,
-            'created_at' => $service->created_at,
-            'updated_at' => $service->updated_at,
+            'user_id'                     => $service->user_id,
+            'is_published'                => (bool)$service->is_published,
+            'introduction'                => $service->introduction,
+            'url'                         => $service->url,
+            'service_type_id'             => $service->service_type_id,
+            'created_at'                  => $this->dateTime($service->created_at),
+            'updated_at'                  => $this->dateTime($service->updated_at),
+            'deleted_at'                  => $this->dateTime($service->deleted_at),
+            'image_url'                   => $service->image_url,
+            'icon_url'                    => $service->icon_url,
+            'stripe_id'                   => $service->stripe_id,
+
         ];
     }
 
@@ -65,6 +86,52 @@ class ServiceTransformer extends Transformer
 
     public function includeServiceType(Service $service)
     {
-        return $this->collectionOrNull($service->service_types, new ServiceTypeTransformer());
+        return $this->itemOrNull($service->service_type, new ServiceTypeTransformer());
     }
+
+    public function includeArticles(Service $service)
+    {
+        return $this->collectionOrNull($service->articles, new ArticleTransformer());
+    }
+
+    /**
+     * @param \App\Models\Service $service
+     * @return \League\Fractal\Resource\Collection|null
+     */
+    public function includeMediaImages(Service $service): ?Collection
+    {
+        return $this->collectionOrNull($service->media_images, new MediaImageTransformer());
+    }
+
+    /**
+     * @param \App\Models\Service $service
+     * @return \League\Fractal\Resource\Collection|null
+     */
+    public function includeMediaVideos(Service $service): ?Collection
+    {
+        return $this->collectionOrNull($service->media_videos, new MediaVideoTransformer());
+    }
+
+    /**
+     * @param \App\Models\Service $service
+     * @return \League\Fractal\Resource\Collection|null
+     */
+    public function includeMediaFiles(Service $service): ?Collection
+    {
+        return $this->collectionOrNull($service->media_files, new MediaFileTransformer());
+    }
+
+    /**
+     * @param \App\Models\Service $service
+     * @return \League\Fractal\Resource\Collection|null
+     */
+    public function includeLastPublished(Service $service): ?Collection
+    {
+        return $this->collectionOrNull(Service::where('id', '<>', $service->id)
+            ->published()
+            ->orderBy('updated_at', 'desc')
+            ->limit(3)
+            ->get(), new self());
+    }
+
 }

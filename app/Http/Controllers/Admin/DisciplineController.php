@@ -64,6 +64,14 @@ class DisciplineController extends Controller
         if ($request->filled('related_disciplines')) {
             $discipline->related_disciplines()->sync($request->get('related_disciplines'));
         }
+        if ($request->filled('featured_focus_areas')) {
+            $discipline->featured_focus_areas()->sync($request->get('featured_focus_areas'));
+        }
+        if ($request->filled('featured_articles')) {
+            $discipline->featured_articles()->sync($request->get('featured_articles'));
+        }
+
+
         if ($request->filled('media_images')) {
             $discipline->media_images()->createMany($request->get('media_images'));
         }
@@ -105,6 +113,13 @@ class DisciplineController extends Controller
         if ($request->filled('related_disciplines')) {
             $discipline->related_disciplines()->sync($request->get('related_disciplines'));
         }
+        if ($request->filled('featured_at_focus_area')) {
+            $discipline->featured_focus_area()->sync($request->get('featured_focus_area'));
+        }
+        if ($request->filled('featured_articles')) {
+            $discipline->featured_articles()->sync($request->get('featured_articles'));
+        }
+
         if ($request->has('media_images')) {
             $discipline->media_images()->delete();
             $discipline->media_images()->createMany($request->get('media_images'));
@@ -126,7 +141,6 @@ class DisciplineController extends Controller
     public function unpublish(Discipline $discipline)
     {
         $discipline->forceFill([
-
             'is_published' => false,
         ]);
         $discipline->update();

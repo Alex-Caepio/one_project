@@ -19,8 +19,12 @@
 #articels
 /articles:
   $ref: "./Article.yaml#/articles"
+/articles/practitioner:
+  $ref: "./Article.yaml#/articles~1practitioner"
 /articles/{id}:
   $ref: "./Article.yaml#/articles~1{id}"
+/articles/practitioner/{id}:
+  $ref: "./Article.yaml#/articles~1practitioner~1{id}"
 
 #disciplines
 /focus-areas:
@@ -39,6 +43,23 @@
   $ref: "./Service.yaml#/services"
 /services/{id}:
   $ref: "./Service.yaml#/services~1{id}"
+/services/{id}/publish:
+  $ref: "./Service.yaml#/services~1{id}~1publish"
+/services/{id}/unpublish:
+  $ref: "./Service.yaml#/services~1{id}~1publish"
+/services/practitioner:
+  $ref: "./Service.yaml#/services~1practitioner"
+/services/practitioner/{id}:
+  $ref: "./Service.yaml#/services~1practitioner~1{id}"
+
+#service types
+/service-types:
+  $ref: "./ServiceType.yaml#/service-types"
+
+#schedule freezes
+/schedule-freezes:
+  $ref: "./ScheduleFreeze.yaml#/schedule-freezes"
+
 
 #practitioners
 /practitoners:
@@ -52,16 +73,85 @@
 /plans/{id}/purchase:
   $ref: "./Plan.yaml#/plans~1{plan}~1purchase"
 
+#users
+/users:
+  $ref: "./User.yaml#/users"
+
+/mainpage:
+  $ref: "./Mainpage.yaml#/mainpage"
+
+#stripe
+/stripe/link:
+  $ref: "./Stripe.yaml#/stripe~1link"
+/stripe/account:
+  $ref: "./Stripe.yaml#/stripe~1account"
+
+/timezones:
+  $ref: "./Timezone.yaml#/timezones"
+
+#countries
+/countries:
+  $ref: "./Country.yaml#/countries"
+
+
 ## ADMIN ENDPOINTS
 /admin/profile:
   $ref: "./AdminProfile.yaml#/profile"
-/admin/disciplines:
-  $ref: "./AdminDiscipline.yaml#/disciplines"
 /admin/articles:
   $ref: "./AdminArticle.yaml#/articles"
+/admin/articles/{id}:
+  $ref: "./AdminArticle.yaml#/articles~1{id}"
+/admin/articles/{id}/publish:
+  $ref: "./AdminArticle.yaml#/articles~1{id}~1publish"
+/admin/articles/{id}/unpublish:
+  $ref: "./AdminArticle.yaml#/articles~1{id}~1unpublish"
+/admin/focus-areas:
+  $ref: "./AdminFocusArea.yaml#/focus-areas"
+/admin/focus-areas/{id}:
+  $ref: "./AdminFocusArea.yaml#/focus-areas~1{id}"
+/admin/focus-areas/{id}/publish:
+  $ref: "./AdminFocusArea.yaml#/focus-areas~1{id}~1publish"
+/admin/focus-areas/{id}/unpublish:
+  $ref: "./AdminFocusArea.yaml#/focus-areas~1{id}~1unpublish"
+/admin/disciplines:
+  $ref: "./AdminDiscipline.yaml#/disciplines"
 /admin/disciplines/{id}:
   $ref: "./AdminDiscipline.yaml#/disciplines~1{id}"
 /admin/disciplines/{id}/publish:
   $ref: "./AdminDiscipline.yaml#/disciplines~1{id}~1publish"
 /admin/disciplines/{id}/unpublish:
   $ref: "./AdminDiscipline.yaml#/disciplines~1{id}~1unpublish"
+/admin/mainpage:
+  $ref: "./AdminMainpage.yaml#/mainpage"
+/admin/clients:
+  $ref: "./AdminClient.yaml#/clients"
+/admin/clients/{id}/delete:
+  $ref: "./AdminClient.yaml#/clients~1{id}~1delete"
+/admin/practitioners:
+  $ref: "./AdminPractitioner.yaml#/practitioners"
+/admin/practitioners/{id}/delete:
+  $ref: "./AdminPractitioner.yaml#/practitioners~1{id}~1delete"
+# Promotions
+/admin/promotions:
+  $ref: "./AdminPromotion.yaml#/promotions"
+/admin/promotions/{id}:
+  $ref: "./AdminPromotion.yaml#/promotions~1{id}"
+/admin/promotions/{id}/enable:
+  $ref: "./AdminPromotion.yaml#/promotions~1{id}~1enable"
+/admin/promotions/{id}/disable:
+  $ref: "./AdminPromotion.yaml#/promotions~1{id}~1disable"
+# PromotionsCodes
+/admin/promotion-codes:
+  $ref: "./AdminPromotionCode.yaml#/promotion-codes"
+/admin/promotion-codes/export:
+  $ref: "./AdminPromotionCode.yaml#/promotion-codes~1export"
+/admin/promotion-codes/{id}/destroy:
+  $ref: "./AdminPromotionCode.yaml#/promotion-codes~1{id}~1destroy"
+/admin/promotion-codes/{id}/enable:
+  $ref: "./AdminPromotionCode.yaml#/promotion-codes~1{id}~1enable"
+/admin/promotion-codes/{id}/disable:
+  $ref: "./AdminPromotionCode.yaml#/promotion-codes~1{id}~1disable"
+/admin/plans:
+  $ref: "./AdminPlan.yaml#/plans"
+/admin/plans/{id}/:
+  $ref: "./AdminPlan.yaml#/plans~1{id}"

@@ -1,12 +1,14 @@
 <?php
 
+
 namespace App\Http\Requests\Services;
 
+
 use App\Models\Service;
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\Request;
 use Illuminate\Support\Facades\Auth;
 
-class UpdateServiceRequest extends FormRequest
+class UpdateServiceRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -15,10 +17,7 @@ class UpdateServiceRequest extends FormRequest
      */
     public function authorize()
     {
-        $serviceId = $this->route('service');
-
-        return Service::where('id', $serviceId)
-            ->where('user_id', Auth::id())->exists();
+        return Auth::user()->isPractitioner();
     }
 
     /**
@@ -28,12 +27,25 @@ class UpdateServiceRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'title'=>'min:5|max:200',
-            'description'=>'string|min:5',
-            'is_published'=>'boolean',
-            'introduction'=>'min:5',
-            'url'=> 'url'
-        ];
+        $service = Service::find($this->service);
+        $isPublished = $this->getBoolFromRequest('is_published');
+        $url = $this->get('url') ?? to_url($this->get('title'));
+        $this->getInputSource()->set('url', $url);
+
+
+            return [
+                'title' => 'required|string|min:5|max:100',
+                'description' => 'string|min:5|max:1000',
+                'is_published' => 'bool',
+                'introduction' => 'required|string|min:5|max:500',
+                'url' => 'required|url|unique:services,url' . $service ? ',' . $service->id : '',
+                'service_type_id' => 'required|exists:service_types,id',
+                'image_url' => 'url',
+                'icon_url' => 'url',
+            ];
+
+
     }
+
+
 }

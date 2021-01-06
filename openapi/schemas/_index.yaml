@@ -12,13 +12,21 @@ Location:
   $ref: "./Location.yaml"
 Plan:
   $ref: "./Plan.yaml"
+Promotion:
+  $ref: "./Promotion.yaml"
 PromotionCode:
   $ref: "./PromotionCode.yaml"
 Schedule:
   $ref: "./Schedule.yaml"
+ScheduleFreeze:
+  $ref: "./ScheduleFreeze.yaml"
 Service:
   $ref: "./Service.yaml"
 ServiceType:
   $ref: "./ServiceType.yaml"
 User:
   $ref: "./User.yaml"
+Mainpage:
+  $ref: "./Mainpage.yaml"
+Country:
+  $ref: "./Country.yaml"

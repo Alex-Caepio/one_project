@@ -5,6 +5,7 @@ namespace Tests\Admin;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
@@ -22,12 +23,12 @@ class ProfileTest extends TestCase
 
     public function test_update_profile(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->make();
         $response = $this->json('put', 'admin/profile',
             [
                 'first_name' => $user->first_name,
                 'last_name' => $user->last_name,
-                'email' => 'gasgjasdj@adshas.com',
+                'email' => $user->email,
             ]);
 
         $response->assertOk();
@@ -35,6 +36,7 @@ class ProfileTest extends TestCase
 
     public function test_admin_can_update_his_password(): void
     {
+        Event::fake();
         // 1. User provided correct current password and a new password
         $response = $this->json('put', 'admin/profile',
             [

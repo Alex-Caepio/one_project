@@ -2,16 +2,78 @@ services:
   post:
     tags:
       - Service
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "../schemas/forms/ServiceForm.yaml"
     responses:
       '200':
         description: OK
         content:
           application/json:
             schema:
-              $ref: '../schemas/Service.yaml'
+              $ref: "../schemas/Service.yaml"
+      '422':
+        description: Validation errors
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/422/ServiceUpdate.yaml"
   get:
     tags:
       - Service
+    parameters:
+      - name: page
+        in: query
+        description: Pagination page results
+        required: false
+        schema:
+          type: integer
+          example: 2
+      - name: limit
+        in: query
+        description: Results per page
+        required: false
+        schema:
+          type: integer
+          example: 10
+      - name: x-page
+        in: header
+        description: Pagination page results
+        required: false
+        schema:
+          type: integer
+          example: 2
+      - name: x-limit
+        in: header
+        description: Results per page
+        required: false
+        schema:
+          type: integer
+          example: 10
+      - name: with
+        in: query
+        description: Include additional objects in response
+        required: false
+        schema:
+          type: string
+          example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles,media_images,media_videos,media_files
+      - name: x-with
+        in: header
+        description: Include additional objects in response
+        required: false
+        schema:
+          type: string
+          example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles,media_images,media_videos,media_files
+      - name: service_type
+        in: query
+        description: Include service types
+        required: false
+        schema:
+          type: string
+          example: workshop,events,retreat,appointment,cources
     responses:
       '200':
         description: OK
@@ -20,7 +82,70 @@ services:
             schema:
               type: array
               items:
-                $ref: '../schemas/Service.yaml'
+                $ref: "../schemas/Service.yaml"
+services/practitioner:
+  get:
+    tags:
+      - Service
+    parameters:
+      - name: page
+        in: query
+        description: Pagination page results
+        required: false
+        schema:
+          type: integer
+          example: 2
+      - name: limit
+        in: query
+        description: Results per page
+        required: false
+        schema:
+          type: integer
+          example: 10
+      - name: x-page
+        in: header
+        description: Pagination page results
+        required: false
+        schema:
+          type: integer
+          example: 2
+      - name: x-limit
+        in: header
+        description: Results per page
+        required: false
+        schema:
+          type: integer
+          example: 10
+      - name: with
+        in: query
+        description: Include additional objects in response
+        required: false
+        schema:
+          type: string
+          example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles,media_images,media_videos,media_files
+      - name: x-with
+        in: header
+        description: Include additional objects in response
+        required: false
+        schema:
+          type: string
+          example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles,media_images,media_videos,media_files
+      - name: service_type
+        in: query
+        description: Include service types
+        required: false
+        schema:
+          type: string
+          example: workshop,events,retreat,appointment,cources
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "../schemas/Service.yaml"
 
 services/{id}:
   get:
@@ -28,26 +153,100 @@ services/{id}:
       - Service
     parameters:
       - $ref: "#/parameters/id"
+      - name: with
+        in: query
+        description: Include additional objects in response
+        required: false
+        schema:
+          type: string
+          example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles,media_images,media_videos,media_files,last_published
+      - name: x-with
+        in: header
+        description: Include additional objects in response
+        required: false
+        schema:
+          type: string
+          example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles,media_images,media_videos,media_files,last_published
     responses:
       '200':
         description: OK
         content:
           application/json:
             schema:
-              $ref: '../schemas/Service.yaml'
+              $ref: "../schemas/Service.yaml"
   put:
     tags:
       - Service
     parameters:
       - $ref: "#/parameters/id"
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "../schemas/forms/ServiceForm.yaml"
     responses:
       '200':
         description: OK
         content:
           application/json:
             schema:
-              $ref: '../schemas/Service.yaml'
+              $ref: "../schemas/Service.yaml"
+      '422':
+        description: Validation errors
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/422/ServiceUpdate.yaml"
   delete:
+    tags:
+      - Service
+    parameters:
+      - $ref: "#/parameters/id"
+    responses:
+      '204':
+        description: OK
+
+services/practitioner/{id}:
+  get:
+    tags:
+      - Service
+    parameters:
+      - $ref: "#/parameters/id"
+      - name: with
+        in: query
+        description: Include additional objects in response
+        required: false
+        schema:
+          type: string
+          example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles,media_images,media_videos,media_files,last_published
+      - name: x-with
+        in: header
+        description: Include additional objects in response
+        required: false
+        schema:
+          type: string
+          example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles,media_images,media_videos,media_files,last_published
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/Service.yaml"
+
+services/{id}/publish:
+  post:
+    tags:
+      - Service
+    parameters:
+      - $ref: "#/parameters/id"
+    responses:
+      '204':
+        description: OK
+
+services/{id}/unpublish:
+  post:
     tags:
       - Service
     parameters:

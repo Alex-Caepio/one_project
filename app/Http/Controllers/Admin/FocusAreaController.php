@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\FocusAreaPublishRequest;
 use App\Http\Requests\Admin\FocusAreaStoreRequest;
 use App\Http\Requests\Image\IconRequests;
 use App\Http\Requests\Image\ImageRequests;
@@ -56,9 +57,36 @@ class FocusAreaController extends Controller
         $data['url'] = $url;
         $focusArea   = FocusArea::create($data);
 
+        if ($request->filled('featured_practitioners')) {
+            $focusArea->featured_practitioners()->sync($request->get('featured_practitioners'));
+        }
+        if ($request->filled('featured_disciplines')) {
+            $focusArea->featured_disciplines()->sync($request->get('featured_disciplines'));
+        }
+        if ($request->filled('featured_articles')) {
+            $focusArea->featured_articles()->sync($request->get('featured_articles'));
+        }
+        if ($request->filled('featured_services')) {
+            $focusArea->featured_services()->sync($request->get('featured_services'));
+        }
+        if ($request->filled('featured_focus_areas')) {
+            $focusArea->featured_focus_areas()->sync($request->get('featured_focus_areas'));
+        }
+
+        if ($request->filled('media_images')) {
+            $focusArea->media_images()->createMany($request->get('media_images'));
+        }
+        if ($request->filled('media_videos')) {
+            $focusArea->media_videos()->createMany($request->get('media_videos'));
+        }
+        if ($request->filled('media_files')) {
+            $focusArea->media_files()->createMany($request->get('media_files'));
+        }
+
         $focusArea->practitioners()->attach($request->get('users'));
         $focusArea->services()->attach($request->get('services'));
         $focusArea->articles()->attach($request->get('articles'));
+        $focusArea->disciplines()->attach($request->get('disciplines'));
 
         return fractal($focusArea, new FocusAreaTransformer())
             ->parseIncludes($request->getIncludes())
@@ -67,8 +95,9 @@ class FocusAreaController extends Controller
 
     public function show(FocusArea $focusArea, Request $request)
     {
-        return fractal($focusArea, new FocusAreaTransformer())->parseIncludes($request->getIncludes())
-            ->toArray();
+        return fractal($focusArea, new FocusAreaTransformer())
+            ->parseIncludes($request->getIncludes())
+            ->respond();
     }
 
     public function update(FocusAreaStoreRequest $request, FocusArea $focusArea)
@@ -79,6 +108,23 @@ class FocusAreaController extends Controller
 
         $focusArea->update($data);
 
+        if ($request->filled('featured_practitioners')) {
+            $focusArea->featured_practitioners()->sync($request->get('featured_practitioners'));
+        }
+        if ($request->filled('featured_disciplines')) {
+            $focusArea->featured_disciplines()->sync($request->get('featured_disciplines'));
+        }
+        if ($request->filled('featured_articles')) {
+            $focusArea->featured_articles()->sync($request->get('featured_articles'));
+        }
+        if ($request->filled('featured_services')) {
+            $focusArea->featured_services()->sync($request->get('featured_services'));
+        }
+        if ($request->filled('featured_focus_areas')) {
+            $focusArea->featured_focus_areas()->sync($request->get('featured_focus_areas'));
+        }
+
+
         if ($request->filled('practitioners')) {
             $focusArea->practitioners()->sync($request->get('users'));
         }
@@ -87,6 +133,22 @@ class FocusAreaController extends Controller
         }
         if ($request->filled('articles')) {
             $focusArea->articles()->sync($request->get('articles'));
+        }
+        if ($request->filled('disciplines')) {
+            $focusArea->disciplines()->sync($request->get('disciplines'));
+        }
+
+        if ($request->has('media_images')) {
+            $focusArea->media_images()->delete();
+            $focusArea->media_images()->createMany($request->get('media_images'));
+        }
+        if ($request->has('media_videos')) {
+            $focusArea->media_videos()->delete();
+            $focusArea->media_videos()->createMany($request->get('media_videos'));
+        }
+        if ($request->has('media_files')) {
+            $focusArea->media_files()->delete();
+            $focusArea->media_files()->createMany($request->get('media_files'));
         }
 
         return fractal($focusArea, new FocusAreaTransformer())
@@ -141,4 +203,24 @@ class FocusAreaController extends Controller
        $request->file('icon')->move($path, $fileName);
    }
 
+    public function unpublish(FocusArea $focusArea)
+    {
+        $focusArea->forceFill([
+
+            'is_published' => false,
+        ]);
+        $focusArea->update();
+
+        return response(null, 204);
+    }
+
+    public function publish(FocusArea $focusArea, FocusAreaPublishRequest $request)
+    {
+        $focusArea->forceFill([
+            'is_published' => true,
+        ]);
+        $focusArea->update();
+
+        return response(null, 204);
+    }
 }

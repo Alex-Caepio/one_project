@@ -2,6 +2,10 @@
 
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\BookingController;
+use App\Http\Controllers\MainPageController;
+use App\Http\Controllers\PurchaseController;
+use App\Http\Controllers\ScheduleFreezesController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\StripeAccountController;
 use App\Http\Controllers\UserController;
@@ -41,6 +45,17 @@ Route::post('auth/verify-forgot-password-token', [ResetPasswordController::class
 Route::post('auth/forgot-password-claim', [ResetPasswordController::class, 'claimReset'])
     ->name('claim-reset');
 
+/* Public Routes For Services And Articles */
+Route::get('articles', [ArticleController::class, 'index']);
+Route::get('articles/{publicArticle}', [ArticleController::class, 'show'])->where('publicArticle', '[0-9]+');
+Route::get('services', [ServiceController::class, 'index']);
+Route::get('services/{publicService}', [ServiceController::class, 'show'])->where('publicService', '[0-9]+');
+
+Route::get('/mainpage', [MainPageController::class, 'index']);
+
+Route::get('/plans', [PlanController::class, 'index']);
+
+Route::get('/service-types', [ServiceTypeController::class, 'index']);
 
 Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::get('auth/profile', [AuthController::class, 'profile']);
@@ -61,28 +76,25 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::delete('practitioners/{practitioner}/favourite', [PractitionerController::class, 'deleteFavorite']);
     Route::get('/practitioners/favourites', [UserController::class, 'practitionerFavorites']);
 
-    Route::get('/services', [ServiceController::class, 'index']);
-    Route::post('/services', [ServiceController::class, 'store']);
-    Route::get('/services/{service}', [ServiceController::class, 'show']);
-    Route::put('/services/{service}', [ServiceController::class, 'update']);
-    Route::delete('/services/{service}', [ServiceController::class, 'destroy']);
+    Route::middleware(['practitioner'])->group(function () {
+        Route::get('articles/practitioner', [ArticleController::class, 'practitionerArticleList']);
+        Route::get('articles/practitioner/{article}', [ArticleController::class, 'practitionerArticleShow']);
+        Route::post('articles', [ArticleController::class, 'store']);
+        Route::put('articles/{article}', [ArticleController::class, 'edit']);
+        Route::delete('articles/{article}', [ArticleController::class, 'destroy']);
 
-    /*
-     * ARTICLES START
-     */
-    Route::post('articles/{article}/favourite', [ArticleController::class, 'storeFavorite']);
-    Route::delete('articles/{article}/favourite', [ArticleController::class, 'deleteFavorite']);
+        Route::get('services/practitioner', [ServiceController::class, 'practitionerServiceList']);
+        Route::get('services/practitioner/{service}', [ServiceController::class, 'practitionerServiceShow']);
+        Route::post('services', [ServiceController::class, 'store']);
+        Route::put('services/{service}', [ServiceController::class, 'update']);
+        Route::post('services/{service}/publish', [ServiceController::class, 'publish']);
+        Route::post('services/{service}/unpublish', [ServiceController::class, 'unpublish']);
+        Route::delete('services/{service}', [ServiceController::class, 'destroy']);
+    });
+
+    Route::post('/articles/{article}/favourite', [ArticleController::class, 'storeFavorite']);
+    Route::delete('/articles/{article}/favourite', [ArticleController::class, 'deleteFavorite']);
     Route::get('/articles/favourites', [UserController::class, 'articleFavorites']);
-    Route::get('/articles', [ArticleController::class, 'index']);
-    Route::post('/articles', [ArticleController::class, 'store']);
-    Route::get('/articles/{article}', [ArticleController::class, 'show']);
-    Route::put('/articles/{article}', [ArticleController::class, 'edit']);
-    Route::delete('/articles/{article}', [ArticleController::class, 'destroy']);
-    /*
-     * ARTICLES END
-     */
-
-
 
     Route::get('disciplines', [DisciplineController::class, 'index']);
     Route::get('disciplines/{discipline}', [DisciplineController::class, 'show']);
@@ -100,25 +112,20 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::post('/credit-cards', [CardStripeController::class, 'store']);
     Route::get('/credit-cards', [CardStripeController::class, 'index']);
 
-
-    Route::get('/plans', [PlanController::class, 'index']);
     Route::post('/plans/{plan}/purchase', [PlanController::class, 'purchase']);
-
-    Route::post('/service_types', [ServiceTypeController::class, 'store']);
-    Route::get('/service_types', [ServiceTypeController::class, 'index']);
-    Route::get('/service_types/list', [ServiceTypeController::class, 'list']);
 
     Route::post('/services/{service}/schedules', [ScheduleController::class, 'store']);
     Route::get('/services/{service}/schedules', [ScheduleController::class, 'index']);
+    Route::put('/schedules/{schedule}', [ScheduleController::class, 'update']);
     Route::post('/schedules/{schedule}/purchase', [ScheduleController::class, 'purchase']);
-    Route::get('/schedule/{schedule}/attendants', [ScheduleController::class, 'allUser']);
+    Route::get('/schedules/{schedule}/attendants', [ScheduleController::class, 'allUser']);
     Route::post('/schedules/{schedule}/freeze', [ScheduleController::class, 'freeze']);
     Route::get('/schedules/{schedule}/availabilities', [ScheduleController::class, 'availabilities']);
 
     Route::post('/schedules/{schedule}/reschedule', [RescheduleRequestController::class, 'store']);
     Route::get('/reschedule-requests', [RescheduleRequestController::class, 'index']);
     Route::post('reschedule-requests/{rescheduleRequest}/accept', [RescheduleRequestController::class, 'accept']);
-    Route::delete('reschedule-requests/{rescheduleRequest}/decline', [RescheduleRequestController::class, 'decline']);
+    Route::post('reschedule-requests/{rescheduleRequest}/decline', [RescheduleRequestController::class, 'decline']);
 
     Route::post('/schedules/{schedule}/promoсodes', [ScheduleController::class, 'promoCode']);
 
@@ -134,7 +141,17 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::get('/messages', [MessageController::class, 'index']);
     Route::get('/messages/receiver/{user}', [MessageController::class, 'showByReceiver']);
 
-    Route::get('/countries', [CountryController::class, 'filter']);
+    Route::get('/countries', [CountryController::class, 'index']);
 
     Route::get('timezones', [TimezoneController::class, 'index']);
+
+    Route::get('/users', [UserController::class, 'search']);
+
+    Route::get('/schedule-freezes', [ScheduleFreezesController::class, 'index']);
+
+    Route::get('/bookings', [BookingController::class, 'index']);
+    Route::post('/bookings/{booking}/reschedule', [BookingController::class, 'reschedule']);
+    Route::post('/bookings/reschedule', [BookingController::class, 'allReschedule']);
+
+    Route::get('/purchases', [PurchaseController::class, 'index']);
 });

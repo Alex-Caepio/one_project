@@ -28,6 +28,12 @@ class UserFactory extends Factory
             'business_email' => $this->faker->sentence(),
             'business_introduction' => $this->faker->sentence(),
             'timezone_id' => $this->faker->randomDigit,
+            'business_country' => $this->faker->sentence(),
+            'business_city' => $this->faker->sentence(),
+            'business_postal_code' => $this->faker->sentence(),
+            'business_time_zone' => $this->faker->sentence(),
+            'business_vat' => $this->faker->sentence(),
+            'business_company_houses_id' => $this->faker->sentence()
         ];
     }
 }

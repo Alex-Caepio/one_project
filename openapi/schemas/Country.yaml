@@ -1,0 +1,33 @@
+type: object
+properties:
+  id:
+    type: integer
+
+  iso:
+    type: string
+
+  iso3:
+    type: string
+
+  name:
+    type: string
+
+  nicename:
+    type: string
+
+  numcode:
+    type: string
+
+  phonecode:
+    type: string
+
+  created_at:
+    type: string
+    nullable: true
+    format: date-time
+
+  updated_at:
+    type: string
+    nullable: true
+    format: date-time
+

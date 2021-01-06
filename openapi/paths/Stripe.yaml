@@ -1,0 +1,25 @@
+stripe/link:
+  get:
+    operationId: get-stripe-link
+    tags:
+      - Stripe
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../schemas/StripeLink.yaml'
+
+stripe/account:
+  get:
+    operationId: get-stripe-account
+    tags:
+      - Stripe
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:

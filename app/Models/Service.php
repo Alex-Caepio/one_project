@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Auth;
  * @property int    id
  * @property int    user_id
  * @property int    is_published
+ * @property int    service_type_id
  * @property string url
  * @property string title
  * @property string string
@@ -23,6 +24,7 @@ use Illuminate\Support\Facades\Auth;
  * @property Carbon created_at
  * @property Carbon updated_at
  * @property Carbon deleted_at
+ * @property ServiceType service_type
  */
 class Service extends Model
 {
@@ -32,7 +34,9 @@ class Service extends Model
         'title',
         'description',
         'introduction',
-        'url'
+        'url',
+        'service_type_id',
+        'stripe_id'
     ];
 
     public function media_images()
@@ -82,19 +86,30 @@ class Service extends Model
 
     public function favourite_services()
     {
-        return $this->belongsToMany(Service::class);
+        return $this->belongsToMany(__CLASS__);
     }
 
-    public function service_types()
+    public function service_type()
     {
-        return $this->belongsToMany(ServiceType::class, 'service_type_service', 'service_id', 'service_type_id')->withTimeStamps();
+        return $this->belongsTo(ServiceType::class);
     }
 
-    public function favorite()
+    public function featured_focus_area()
     {
-        return (bool)Favorite::where('user_id', Auth::id())
-            ->where('service_id', $this->id)
-            ->first();
+        return $this->belongsToMany(FocusArea::class, 'focus_area_featured_service', 'service_id', 'focus_area_id');
     }
 
+    public function featured_main_pages(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(MainPage::class, 'main_page_featured_service', 'service_id', 'main_page_id');
+    }
+
+    public function featured_services()
+    {
+        return $this->belongsToMany(FocusArea::class, 'focus_area_featured_service', 'focus_area_id', 'service_id');
+    }
+
+    public function articles() {
+        return $this->belongsToMany(Article::class)->published();
+    }
 }

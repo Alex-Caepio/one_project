@@ -1,0 +1,166 @@
+promotion-codes:
+  get:
+    tags:
+      - Promotion Codes
+    parameters:
+      - name: page
+        in: query
+        description: Pagination page results
+        required: false
+        schema:
+          type: integer
+          example: 2
+      - name: limit
+        in: query
+        description: Results per page
+        required: false
+        schema:
+          type: integer
+          example: 10
+      - name: x-page
+        in: header
+        description: Pagination page results
+        required: false
+        schema:
+          type: integer
+          example: 2
+      - name: x-limit
+        in: header
+        description: Results per page
+        required: false
+        schema:
+          type: integer
+          example: 10
+      - name: with
+        in: query
+        description: Include additional objects in response
+        required: false
+        schema:
+          type: string
+          example: promotion,users
+      - name: x-with
+        in: header
+        description: Include additional objects in response
+        required: false
+        schema:
+          type: string
+          example: promotion,users
+      - name: status
+        in: query
+        description: Status
+        required: false
+        schema:
+          type: string
+          example: active,disabled,complete,deleted
+      - name: promotion_id
+        in: query
+        description: The list of promotions ID
+        required: false
+        schema:
+          type: string
+          example: 1,2,3
+      - name: search
+        in: query
+        description: Search by Promo Name
+        required: false
+        schema:
+          type: string
+          example: ABCDG
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../schemas/PromotionCode.yaml'
+
+promotion-codes/export:
+  get:
+    tags:
+      - Promotion Codes
+    parameters:
+      - name: status
+        in: query
+        description: Status
+        required: false
+        schema:
+          type: string
+          example: active,disabled,complete,deleted
+      - name: promotion_id
+        in: query
+        description: The list of promotions ID
+        required: false
+        schema:
+          type: string
+          example: 1,2,3
+      - name: search
+        in: query
+        description: Search by Promo Name
+        required: false
+        schema:
+          type: string
+          example: ABCDG
+      - name: type
+        in: query
+        description: File Type (csv or xls)
+        required: true
+        schema:
+          type: string
+          example: csv
+    responses:
+      '200':
+        description: File successfully generated
+        content:
+          application/vnd.ms-excel:
+            schema:
+              type: string
+              format: binary
+
+promotion-codes/{id}/destroy:
+  delete:
+    tags:
+      - Promotion Codes
+    parameters:
+      - $ref: "#/parameters/id"
+    responses:
+      '204':
+        description: OK
+
+promotion-codes/{id}/enable:
+  post:
+    tags:
+      - Promotion Codes
+    parameters:
+      - $ref: "#/parameters/id"
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/PromotionCode.yaml'
+
+promotion-codes/{id}/disable:
+  post:
+    tags:
+      - Promotion Codes
+    parameters:
+      - $ref: "#/parameters/id"
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/PromotionCode.yaml'
+
+parameters:
+  id:
+    name: id
+    in: path
+    description: Promotion Code ID
+    required: true
+    schema:
+      type: integer
