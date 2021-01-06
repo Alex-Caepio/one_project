@@ -4,6 +4,7 @@
 namespace App\Transformers;
 
 use App\Models\Purchase;
+use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
 
 class PurchaseTransformer extends Transformer {
@@ -12,7 +13,8 @@ class PurchaseTransformer extends Transformer {
         'user',
         'price',
         'service',
-        'promocode'
+        'promocode',
+        'instalments'
     ];
 
     /**
@@ -60,4 +62,7 @@ class PurchaseTransformer extends Transformer {
         return $this->itemOrNull($purchase->promocode, new PromotionCodeTransformer());
     }
 
+    public function includeInstalments(Purchase $purchase): ?Collection {
+        return $this->collectionOrNull($purchase->instalments, new InstalmentTransformer());
+    }
 }
