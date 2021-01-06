@@ -36,6 +36,8 @@ class PractitionerTest extends TestCase
             'last_name' => $user->last_name,
             'is_admin' => true,
             'email' => $user->email,
+            'accepted_terms' => true,
+            'emails_holistify_update' => true,
             'password' => $user->password,
             'account_type' => 'client'];
         $response = $this->json('post', "/admin/practitioners", $payload);
@@ -68,7 +70,9 @@ class PractitionerTest extends TestCase
     public function test_delete_practitioner(): void
     {
         $practitioner = User::factory()->create(['account_type' => 'practitioner']);
-        $response = $this->json('delete', "/admin/practitioners/{$practitioner->id}");
+        $response = $this->json('delete', "/admin/practitioners/{$practitioner->id}/delete",[
+            'message' => '12345asfabj,sdkb'
+        ]);
 
         $response->assertStatus(204);
     }

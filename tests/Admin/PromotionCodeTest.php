@@ -26,7 +26,7 @@ class PromotionCodeTest extends TestCase
     }
     public function test_store_promotion(): void
     {
-        $promotion = PromotionCode::factory()->create();
+        $promotion = PromotionCode::factory()->make();
         $response = $this->json('post', '/admin/promotion-codes', [
             'name' => $promotion->name,
             'uses_per_client' => $promotion->uses_per_client,

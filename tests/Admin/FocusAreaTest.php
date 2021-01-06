@@ -95,7 +95,7 @@ class FocusAreaTest extends TestCase
     {
         $focusArea = FocusArea::factory()->create();
 
-        $response = $this->json('delete', "admin/focus-areas/$focusArea->id/destroy");
+        $response = $this->json('delete', "admin/focus-areas/$focusArea->id/");
         $focusArea->services()->delete();
         $focusArea->articles()->delete();
         $focusArea->disciplines()->delete();
@@ -149,7 +149,7 @@ class FocusAreaTest extends TestCase
         $featured_services = Service::factory()->count(4)->create();
         $featured_focus_areas = FocusArea::factory()->count(4)->create();
 
-        $response = $this->json('put', "admin/focus-areas/{$focusArea->id}/update",
+        $response = $this->json('put', "admin/focus-areas/{$focusArea->id}/",
             [
                 'name' => 'new name',
                 'url' => 'http://google.com',

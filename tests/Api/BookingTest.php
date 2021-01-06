@@ -48,7 +48,7 @@ class BookingTest extends TestCase
 
         $booking_future = Booking::factory()->create([
             'cost' => 5,
-            'datetime_from' => '2020-12-31',
+            'datetime_from' => '2022-12-31',
             'user_id'=>$this->user->id
         ]);
 

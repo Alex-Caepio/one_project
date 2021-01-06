@@ -21,7 +21,7 @@ class StripeAccountTest extends TestCase
     public function test_getting_users_stripe_account(): void
     {
         ServiceType::factory()->count(2)->create();
-        $response = $this->json('get', "/api/service_types");
+        $response = $this->json('get', "/api/service-types");
         $response
             ->assertOk()
             ->assertJsonStructure([
@@ -32,7 +32,7 @@ class StripeAccountTest extends TestCase
     public function test_getting_users_stripe_onboard_link(): void
     {
         ServiceType::factory()->count(2)->create();
-        $response = $this->json('get', "/api/service_types");
+        $response = $this->json('get', "/api/service-types");
         $response
             ->assertOk()
             ->assertJsonStructure([
