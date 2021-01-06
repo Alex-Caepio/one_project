@@ -30,7 +30,7 @@ class Promotion extends Model {
     use HasFactory, SoftDeletes;
 
     public const TYPE_PERCENTAGE = 'percentage';
-    public const TYPE_FIXED = 'fixed';
+    public const TYPE_FIXED = 'monetary';
 
     public const STATUS_ACTIVE = 'active';
     public const STATUS_DISABLED = 'disabled';
