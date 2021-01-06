@@ -5,6 +5,7 @@ namespace App\Observers;
 use App\Models\Promotion;
 use App\Models\PromotionCode;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class PromotionObserver {
 
@@ -28,6 +29,7 @@ class PromotionObserver {
      * @return void
      */
     public function deleted(Promotion $promotion): void {
+        PromotionCode::where('promotion_id', $promotion->id)->update(['status' => PromotionCode::STATUS_DELETED]);
         PromotionCode::where('promotion_id', $promotion->id)->delete();
     }
 
