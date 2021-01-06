@@ -28,7 +28,7 @@ class SavePromotionRequest extends Request {
      */
     public function rules() {
         return [
-            'name'            => 'required|min:3|max:255|unique:promotions,name' .
+            'name'            => 'required|min:3|max:80|unique:promotions,name' .
                                  ($this->promotion ? ',' . $this->promotion->id : ''),
             'valid_from'      => 'date_format:Y-m-d',
             'expiry_date'     => 'date_format:Y-m-d',
@@ -46,13 +46,26 @@ class SavePromotionRequest extends Request {
 
     public function withValidator(Validator $validator) {
         $validator->after(function($validator) {
+            
+            $spendMax = $this->get('spend_max', 0);
+            $spendMin = $this->get('spend_min', 0);
+            if ($spendMax > 0 && $spendMin > $spendMax) {
+                $validator->errors()->add('spend_max', 'The value must be greater than spend min');
+            }
+
+            if ($this->get('discount_type') === Promotion::TYPE_PERCENTAGE && $this->get('discount_value') > 100) {
+                $validator->errors()
+                          ->add('discount_value', 'For percentage discount max value can be lower or equal 100');
+            }
+
             $filledPromocodes = array_unique($this->get('promocode_names', []));
             if (count($filledPromocodes)) {
                 if (count($filledPromocodes) !== (int)$this->get('total_codes')) {
                     $validator->errors()
                               ->add('promocode_names', 'Please, fill all of the requested count of promocodes');
                 }
-                $promoCodes = PromotionCode::withTrashed()->whereIn('name', $filledPromocodes)->pluck('name')->toArray();
+                $promoCodes =
+                    PromotionCode::withTrashed()->whereIn('name', $filledPromocodes)->pluck('name')->toArray();
                 if (count($promoCodes)) {
                     $validator->errors()->add('promocode_names',
                                               'These codes are already in use: ' . (implode(', ', $promoCodes)));

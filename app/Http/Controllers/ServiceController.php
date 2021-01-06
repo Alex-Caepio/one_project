@@ -54,7 +54,7 @@ class ServiceController extends Controller {
         return fractal($service, new ServiceTransformer())->parseIncludes($request->getIncludes())->respond();
     }
 
-    public function destroy(ServiceOwnerRequest $request, Service $service) {
+    public function destroy(Service $service, ServiceOwnerRequest $request) {
         $service->delete();
         return response(null, 204);
     }

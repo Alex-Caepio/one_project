@@ -14,8 +14,7 @@ class ServiceOwnerRequest extends Request {
      * @return bool
      */
     public function authorize() {
-        $service = Service::find($this->service);
-        return $service && $service->user_id === Auth::id();
+        return $this->service->user_id === Auth::id();
     }
 
     /**
