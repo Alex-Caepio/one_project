@@ -71,7 +71,7 @@ class ClientTest extends TestCase
     public function test_delete_client(): void
     {
         $client = User::factory()->create(['account_type' => 'client']);
-        $response = $this->actingAs($this->user)->json('delete', "/admin/clients/{$client->id}",[
+        $response = $this->actingAs($this->user)->json('delete', "/admin/clients/{$client->id}/delete",[
             'message' => 'deleted should be at least 10 symbols'
         ]);
 
