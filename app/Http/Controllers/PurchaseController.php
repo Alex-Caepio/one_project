@@ -3,28 +3,42 @@
 namespace App\Http\Controllers;
 
 use App\Filters\PurchaseFilters;
-use Illuminate\Http\Request;
+use App\Http\Requests\Request;
 use App\Models\Purchase;
 use App\Transformers\PurchaseTransformer;
+use Illuminate\Http\Response;
 
-class PurchaseController extends Controller
-{
-    public function index(Request $request,PurchaseFilters $filters)
-    {
-        $Query = Purchase::filter($filters)->where('user_id', $request->user()->id);
+class PurchaseController extends Controller {
 
-        if ($request->hasOrderBy())
-        {
-            $order = $request->getOrderBy();
-            $Query->orderBy($order['column'], $order['direction']);
-        }
+    /**
+     * @param \App\Http\Requests\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function index(Request $request): Response {
+        $query = Purchase::query();
 
-        $paginator = $Query->paginate();
-        $purchases   = $paginator->getCollection();
+        $purchaseFilter = new PurchaseFilters();
+        $purchaseFilter->apply($query, $request);
 
-        return response(fractal($purchases,new PurchaseTransformer())
-            ->parseIncludes($request->getIncludes()))
-            ->withPaginationHeaders($paginator);
+        $includes = $request->getIncludes();
+        $paginator = $query->with($includes)->paginate($request->getLimit());
+
+        return response(fractal($paginator->getCollection(),
+                                new PurchaseTransformer())->parseIncludes($request->getIncludes()))->withPaginationHeaders($paginator);
 
     }
+
+
+    /**
+     * Make Payment
+     */
+    public function create() {
+
+    }
+
+
+
+
+
+
 }
