@@ -37,4 +37,8 @@ class PromotionCode extends Model {
         return $this->belongsTo(Promotion::class);
     }
 
+    public function purchases() {
+        return $this->hasMany(Purchase::class);
+    }
+
 }
