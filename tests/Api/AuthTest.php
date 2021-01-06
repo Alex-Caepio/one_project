@@ -62,13 +62,13 @@ class AuthTest extends TestCase
 
     public function test_user_can_update_his_password(): void
     {
+        Event::fake();
         $user = User::factory()->create();
-        $pass = Hash::make($user->password);
         // 1. User provided correct current password and a new password
-        $response = $this->actingAs($user)->json('put', "/api/auth/profile",
+        $response = $this->actingAs($this->user)->json('put', "/api/auth/profile",
             [
                 'token' => $user->token,
-                'current_password' => $user->password,
+                'current_password' => 'test',
                 'password'         => 'newPassword1',
             ]);
         $response->assertOk();
