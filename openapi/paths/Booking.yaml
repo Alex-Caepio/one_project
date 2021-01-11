@@ -3,6 +3,7 @@ bookings:
     operation-Id: get-bookings
     tags:
       - Booking
+    parameters:
       - name: page
           in: query
           description: Pagination page results
