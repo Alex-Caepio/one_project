@@ -21,7 +21,7 @@ class PractitionerTest extends TestCase
     public function test_all_practitioner(): void
     {
         User::factory()->count(2)->create(['account_type' => 'practitioner']);
-        $response = $this->json('get', "/admin/practitioners");
+        $response = $this->actingAs($this->user)->json('get', "/admin/practitioners");
 
         $response
             ->assertOk()->assertJsonStructure([
@@ -40,37 +40,41 @@ class PractitionerTest extends TestCase
             'emails_holistify_update' => true,
             'password' => $user->password,
             'account_type' => 'client'];
-        $response = $this->json('post', "/admin/practitioners", $payload);
+        $response = $this->actingAs($this->user)->json('post', "/admin/practitioners", $payload);
 
         $response->assertOk();
     }
 
     public function test_show_practitioner(): void
     {
-        $practitioner = User::factory()->make(['account_type' => 'practitioner']);
-        $response = $this->json('get', "/admin/practitioners/{$practitioner->id}");
+        $practitioner = User::factory()->create(['account_type' => 'practitioner']);
+        $response = $this->actingAs($this->user)->json('get', "/admin/practitioners/{$practitioner->id}");
 
-        $response->assertOk();
+        $response->assertOk()->assertJson(['id' => $practitioner->id]);
+
     }
 
     public function test_update_practitioner(): void
     {
         $practitioner = User::factory()->create(['account_type' => 'practitioner']);
-        $response = $this->json('put', "admin/practitioners/{$practitioner->id}",
+        $practitioner2 = User::factory()->make(['account_type' => 'practitioner']);
+
+        $response = $this->actingAs($this->user)->json('put', "admin/practitioners/{$practitioner->id}",
             [
-                'first_name' => $practitioner->first_name,
-                'last_name' => $practitioner->last_name,
+                'first_name' => $practitioner2->first_name,
+                'last_name' => $practitioner2->last_name,
                 'email' => $practitioner->email,
                 'password' => $practitioner->password,
             ]);
 
-        $response->assertOk();
+        $response->assertOk()
+            ->assertJson(['id' => $practitioner->id,'first_name' => $practitioner2->first_name]);
     }
 
     public function test_delete_practitioner(): void
     {
         $practitioner = User::factory()->create(['account_type' => 'practitioner']);
-        $response = $this->json('post', "/admin/practitioners/{$practitioner->id}/delete",[
+        $response = $this->actingAs($this->user)->json('post', "/admin/practitioners/{$practitioner->id}/delete",[
             'message' => '12345asfabj,sdkb'
         ]);
 

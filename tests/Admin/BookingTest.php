@@ -22,18 +22,18 @@ class BookingTest extends TestCase
     public function test_user_can_see_booking_list(): void
     {
         $user = User::factory()->create();
-        Booking::factory()->count(2)->create(['user_id' => $user->id]);
+        $booking = Booking::factory()->create(['user_id' => $user->id]);
         $response = $this->actingAs($user)->json('get', '/api/bookings');
         $response
-            ->assertOk();
+            ->assertOk()->assertJson([['id' => $booking->id]]);
     }
 
     public function test_admin_can_see_booking_list(): void
     {
-        Booking::factory()->count(2)->create();
+        $booking = Booking::factory()->create();
         $response = $this->actingAs($this->user)->json('get', '/admin/bookings');
         $response
-            ->assertOk();
+            ->assertOk()->assertJson([['id' => $booking->id]]);
     }
 
 }
