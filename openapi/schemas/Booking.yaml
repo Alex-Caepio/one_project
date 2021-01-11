@@ -22,7 +22,6 @@ properties:
   created_at:
     type: string
     format: date-time
-
   updated_at:
     type: string
     format: date-time
@@ -31,7 +30,6 @@ properties:
     format: double
   promocode_id:
     type: integer
-    nulluble : true
   reference:
     type: string
   purchase_id:

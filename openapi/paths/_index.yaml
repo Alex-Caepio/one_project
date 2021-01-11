@@ -93,6 +93,10 @@
 /countries:
   $ref: "./Country.yaml#/countries"
 
+#bookings
+/bookings:
+  $ref: "./Booking.yaml#/bookings"
+
 
 ## ADMIN ENDPOINTS
 /admin/profile:
