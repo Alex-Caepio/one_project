@@ -68,7 +68,7 @@ properties:
   prioritised_business_profile_search:
     type: boolean
     nullable : true
-  prioritised_serivce_search:
+  prioritised_service_search:
     type: boolean
     nullable : true
   busines_profile_page:
