@@ -33,4 +33,20 @@ class FocusAreaTest extends TestCase
 
         $response->assertOk();
     }
+
+    public function test_focus_area_index_image(): void
+    {
+        $focusArea = FocusArea::factory()->create();
+
+        $response = $this->json('get',"api/focus-areas/{$focusArea->id}/images");
+        $response->assertOk();
+    }
+
+    public function test_focus_area_index_video(): void
+    {
+        $focusArea = FocusArea::factory()->create();
+
+        $response = $this->json('get',"api/focus-areas/{$focusArea->id}/videos");
+        $response->assertOk();
+    }
 }

@@ -15,11 +15,12 @@ class PromotionFactory extends Factory
     {
 
         return [
+            'name' => $this->faker->sentence,
             'valid_from' => '2020-2-3',
             'expiry_date' => '2020-12-3',
 //            'discipline_id' => $this->faker->randomNumber(2),
-            'service_type_id' => $this->faker->randomNumber(2),
-            'focus_area_id' => $this->faker->randomNumber(2),
+//            'service_type_id' => $this->faker->randomNumber(2),
+//            'focus_area_id' => $this->faker->randomNumber(2),
         ];
     }
 }
