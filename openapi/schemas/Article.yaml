@@ -5,25 +5,25 @@ properties:
 
   title:
     type: string
-
+    nullable : true
   description:
     type: string
-
+  nullable : true
   user_id:
     type: integer
-
+    nullable : true
   is_published:
     type: boolean
-
+    nullable : true
   introduction:
     type: string
-
+    nullable : true
   url:
     type: string
-
+    nullable : true
   image_url:
     type: string
-
+    nullable : true
   created_at:
     type: string
     nullable: true
