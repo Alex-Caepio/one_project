@@ -12,15 +12,15 @@ class BookingController extends Controller
 {
     public function index(Request $request,BookingFilters $filters)
     {
-        $Query = Booking::filter($filters);
+        $query = Booking::filter($filters);
 
         if ($request->hasOrderBy())
         {
             $order = $request->getOrderBy();
-            $Query->orderBy($order['column'], $order['direction']);
+            $query->orderBy($order['column'], $order['direction']);
         }
 
-        $paginator = $Query->paginate();
+        $paginator = $query->paginate();
         $booking   = $paginator->getCollection();
 
         return response(fractal($booking, new BookingTransformer())

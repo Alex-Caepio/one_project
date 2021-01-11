@@ -23,7 +23,7 @@ class BookingTest extends TestCase
     {
         $user = User::factory()->create();
         Booking::factory()->count(2)->create(['user_id' => $user->id]);
-        $response = $this->actingAs($user)->json('get', "/api/bookings");
+        $response = $this->actingAs($user)->json('get', '/api/bookings');
         $response
             ->assertOk();
     }
@@ -31,7 +31,7 @@ class BookingTest extends TestCase
     public function test_admin_can_see_booking_list(): void
     {
         Booking::factory()->count(2)->create();
-        $response = $this->actingAs($this->user)->json('get', "/admin/bookings");
+        $response = $this->actingAs($this->user)->json('get', '/admin/bookings');
         $response
             ->assertOk();
     }

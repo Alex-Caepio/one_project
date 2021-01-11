@@ -22,7 +22,7 @@ class ScheduleFreezesTest extends TestCase
     public function test_can_get_all_ScheduleFreezes(): void
     {
         ScheduleFreeze::factory()->create();
-        $response = $this->json('get', "/api/schedule-freezes");
+        $response = $this->json('get', '/api/schedule-freezes');
 
         $response->assertOk();
     }

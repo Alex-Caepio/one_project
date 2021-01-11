@@ -70,7 +70,7 @@ class PractitionerTest extends TestCase
     public function test_delete_practitioner(): void
     {
         $practitioner = User::factory()->create(['account_type' => 'practitioner']);
-        $response = $this->json('delete', "/admin/practitioners/{$practitioner->id}/delete",[
+        $response = $this->json('post', "/admin/practitioners/{$practitioner->id}/delete",[
             'message' => '12345asfabj,sdkb'
         ]);
 
