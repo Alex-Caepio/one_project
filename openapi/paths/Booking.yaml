@@ -1,7 +1,7 @@
 bookings:
   get:
       tags:
-      - Booking
+       - Booking
       responses:
         '200':
           description: OK
@@ -12,9 +12,8 @@ bookings:
                 items:
                   $ref: '../schemas/Booking.yaml'
 
-bookings/{booking}/reschedule:
+bookings/{id}/reschedule:
   post:
-    operationId: reschedule-booking
     tags:
       - Booking
     parameters:
@@ -25,32 +24,33 @@ bookings/{booking}/reschedule:
         content:
           application/json:
             schema:
-              $ref: '../schemas/Booking.yaml'
-    '422':
-      description: Validation errors
-      content:
-        application/json:
-          schema:
-            $ref: '../schemas/422/Booking.yaml'
-bookings/reschedule:
-  post:
-    tags:
-      - Booking
-    parameters:
-        - $ref: "#/parameters/id"
-    responses:
-      '200':
-        description: OK
+              type: array
+              items:
+                $ref: '../schemas/Booking.yaml'
+      '422':
+        description: Validation errors
         content:
           application/json:
             schema:
-              $ref: '../schemas/Booking.yaml'
-    '422':
-      description: Validation errors
-      content:
-        application/json:
-          schema:
-            $ref: '../schemas/422/Booking.yaml'
+              $ref: '../schemas/422/Booking.yaml'
+
+bookings/reschedule:
+  post:
+      tags:
+        - Booking
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                  $ref: '../schemas/Booking.yaml'
+        '422':
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/422/Booking.yaml'
 
 parameters:
   id:

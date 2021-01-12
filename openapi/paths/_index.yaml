@@ -96,7 +96,10 @@
 #bookings
 /bookings:
   $ref: "./Booking.yaml#/bookings"
-
+bookings/{id}/reschedule:
+  $ref: "./Booking.yaml#/bookings~1{id}~1reschedule"
+/bookings/reschedule:
+  $ref: "./Booking.yaml#/bookings~1reschedule"
 
 ## ADMIN ENDPOINTS
 /admin/profile:
