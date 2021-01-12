@@ -20,7 +20,7 @@ class PromotionCodeTest extends TestCase
     public function test_all_promotion(): void
     {
         PromotionCode::factory()->count(2)->create();
-        $response = $this->json('get', "/admin/promotion-codes");
+        $response = $this->json('get', '/admin/promotion-codes');
 
         $response->assertOk();
     }

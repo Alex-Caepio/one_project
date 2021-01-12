@@ -3,3 +3,6 @@ properties:
   url:
     type: string
     example: 'http://cdn.com/yoga-practice.mp4'
+  preview:
+    type: string
+    example: 'http://cdn.com/yoga-practice.jpg'

@@ -61,6 +61,13 @@ disciplines:
         schema:
           type: string
           example: featured_practitioners,featured_services,media_images,media_videos,media_files
+      - name: is_published
+        in: query
+        description: Published flag
+        required: false
+        schema:
+          type: boolean
+          example: false
     responses:
       '200':
         description: OK
