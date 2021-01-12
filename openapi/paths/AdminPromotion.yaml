@@ -164,6 +164,8 @@ promotions/{id}:
   put:
     tags:
       - Promotion
+    parameters:
+      - $ref: "#/parameters/id"
     requestBody:
       required: true
       content:
