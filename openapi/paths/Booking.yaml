@@ -45,12 +45,6 @@ bookings/reschedule:
             application/json:
               schema:
                   $ref: '../schemas/Booking.yaml'
-        '422':
-          description: Validation errors
-          content:
-            application/json:
-              schema:
-                $ref: '../schemas/422/Booking.yaml'
 
 parameters:
   id:
