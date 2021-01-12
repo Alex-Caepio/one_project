@@ -619,9 +619,110 @@ components:
           type: string
           format: date-time
           nullable: true
-        cost:
-          type: number
-          format: double
+        attendees:
+          type: integer
+          nullable: true
+        comments:
+          type: string
+          nullable: true
+        venue:
+          type: string
+          nullable: true
+        city:
+          type: string
+          nullable: true
+        country:
+          type: string
+          nullable: true
+        post_code:
+          type: string
+          nullable: true
+        location_displayed:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          nullable: true
+          format: date-time
+        updated_at:
+          type: string
+          nullable: true
+          format: date-time
+        meals_breakfast:
+          type: boolean
+        meals_lunch:
+          type: boolean
+        meals_dinner:
+          type: boolean
+        meals_alcoholic_beverages:
+          type: boolean
+        meals_dietry_accomodated:
+          type: boolean
+        refund_terms:
+          type: integer
+          nullable: true
+        booking_message:
+          type: string
+          nullable: true
+        is_virtual:
+          type: boolean
+          nullable: true
+        url:
+          type: string
+          nullable: true
+        book_full_series:
+          type: boolean
+          nullable: true
+        accomodation:
+          type: string
+          example:
+            - included
+            - optional
+            - no
+          nullable: true
+        accomodation_details:
+          type: string
+          nullable: true
+        travel:
+          type: string
+          example:
+            - included
+            - optional
+            - no
+          nullable: true
+        travel_details:
+          type: string
+          nullable: true
+        notice_min_time:
+          type: integer
+          nullable: true
+        notice_min_period:
+          type: string
+          example:
+            - mins
+            - hours
+            - days
+          nullable: true
+        buffer_time:
+          type: integer
+          nullable: true
+        buffer_period:
+          type: string
+          example:
+            - daily
+            - weekly
+            - monthly
+          nullable: true
+        repeat_every:
+          type: integer
+          nullable: true
+        repeat_period:
+          type: string
+          example:
+            - day
+            - week
+            - month
+          nullable: true
     ScheduleFreeze:
       type: object
       properties:
@@ -2733,13 +2834,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Booking"
-        "422":
-          description: Validation errors
-          content:
-            application/json:
-              schema:
-                $ref: "#/paths/bookings~1%7Bid%7D~1reschedule/post/responses/422/content/applic\
-                  ation~1json/schema"
   /keywords:
     get:
       tags:
@@ -2815,6 +2909,371 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Keyword"
+  /locations:
+    get:
+      tags:
+        - Location
+      parameters:
+        - name: page
+          in: query
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: limit
+          in: query
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: x-page
+          in: header
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: x-limit
+          in: header
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: search
+          in: query
+          description: Search by title
+          required: false
+          schema:
+            type: string
+            example: TimeSquare
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Location"
+  /locations/list:
+    get:
+      tags:
+        - Location
+      parameters:
+        - name: page
+          in: query
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: limit
+          in: query
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: x-page
+          in: header
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: x-limit
+          in: header
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: search
+          in: query
+          description: Search by title
+          required: false
+          schema:
+            type: string
+            example: TimeSquare
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties:
+                    id:
+                      type: integer
+                    title:
+                      type: string
+  "/services/{serviceid}/schedules":
+    post:
+      tags:
+        - Schedules
+      parameters:
+        - name: serviceid
+          in: path
+          description: Service ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Schedule"
+    get:
+      tags:
+        - Schedules
+      parameters:
+        - $ref: "#/paths/~1services~1%7Bserviceid%7D~1schedules/post/parameters/0"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Schedule"
+  "/schedules/{id}":
+    put:
+      tags:
+        - Schedules
+      parameters:
+        - name: id
+          in: path
+          description: Schedule ID
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                title:
+                  type: string
+                service_id:
+                  type: integer
+                start_date:
+                  type: string
+                  format: date-time
+                  nullable: true
+                end_date:
+                  type: string
+                  format: date-time
+                  nullable: true
+                attendees:
+                  type: integer
+                  nullable: true
+                comments:
+                  type: string
+                  nullable: true
+                venue:
+                  type: string
+                  nullable: true
+                city:
+                  type: string
+                  nullable: true
+                country:
+                  type: string
+                  nullable: true
+                post_code:
+                  type: string
+                  nullable: true
+                location_displayed:
+                  type: string
+                  nullable: true
+                created_at:
+                  type: string
+                  nullable: true
+                  format: date-time
+                updated_at:
+                  type: string
+                  nullable: true
+                  format: date-time
+                meals_breakfast:
+                  type: boolean
+                meals_lunch:
+                  type: boolean
+                meals_dinner:
+                  type: boolean
+                meals_alcoholic_beverages:
+                  type: boolean
+                meals_dietry_accomodated:
+                  type: boolean
+                refund_terms:
+                  type: integer
+                  nullable: true
+                booking_message:
+                  type: string
+                  nullable: true
+                is_virtual:
+                  type: boolean
+                  nullable: true
+                url:
+                  type: string
+                  nullable: true
+                book_full_series:
+                  type: boolean
+                  nullable: true
+                accomodation:
+                  type: string
+                  example:
+                    - included
+                    - optional
+                    - no
+                  nullable: true
+                accomodation_details:
+                  type: string
+                  nullable: true
+                travel:
+                  type: string
+                  example:
+                    - included
+                    - optional
+                    - no
+                  nullable: true
+                travel_details:
+                  type: string
+                  nullable: true
+                notice_min_time:
+                  type: integer
+                  nullable: true
+                notice_min_period:
+                  type: string
+                  example:
+                    - mins
+                    - hours
+                    - days
+                  nullable: true
+                buffer_time:
+                  type: integer
+                  nullable: true
+                buffer_period:
+                  type: string
+                  example:
+                    - daily
+                    - weekly
+                    - monthly
+                  nullable: true
+                repeat_every:
+                  type: integer
+                  nullable: true
+                repeat_period:
+                  type: string
+                  example:
+                    - day
+                    - week
+                    - month
+                  nullable: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Schedule"
+  "/schedules/{id}/purchase":
+    post:
+      tags:
+        - Schedules
+      parameters:
+        - name: id
+          in: path
+          description: Schedule ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Schedule"
+  "/schedules/{id}/attendants":
+    get:
+      tags:
+        - Schedules
+      parameters:
+        - name: id
+          in: path
+          description: Schedule ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+  "/schedules/{id}/freeze":
+    post:
+      tags:
+        - Schedules
+      parameters:
+        - name: id
+          in: path
+          description: Schedule ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Schedule"
+  "/schedules/{id}/availabilities":
+    get:
+      tags:
+        - Schedules
+      parameters:
+        - name: id
+          in: path
+          description: Schedule ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  example:
+                    - amount_total
+                    - amount_left
+                    - amount_bought
+                    - amount_freezed
   /admin/profile:
     get:
       operationId: get-profile
