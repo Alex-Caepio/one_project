@@ -18,7 +18,7 @@ class MediaVideo extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['url'];
+    protected $fillable = ['url', 'preview'];
 
     public function morphesTo()
     {
