@@ -34,18 +34,25 @@ components:
           type: integer
         title:
           type: string
+          nullable: true
         description:
           type: string
+        nullable: true
         user_id:
           type: integer
+          nullable: true
         is_published:
           type: boolean
+          nullable: true
         introduction:
           type: string
+          nullable: true
         url:
           type: string
+          nullable: true
         image_url:
           type: string
+          nullable: true
         created_at:
           type: string
           nullable: true
@@ -421,66 +428,98 @@ components:
           type: integer
         name:
           type: string
+          nullable: true
         stripe_id:
           type: integer
+          nullable: true
         price:
           type: number
           format: double
+          nullable: true
         service_types:
           type: string
         image_url:
           type: string
+          nullable: true
         description:
           type: string
+          nullable: true
         is_free:
           type: boolean
+          nullable: true
         unlimited_bookings:
           type: boolean
+          nullable: true
+        amount_bookings:
+          type: integer
+          nullable: true
         commission_on_sale:
           type: number
           format: double
+          nullable: true
         schedules_per_service:
-          type: string
-          enum:
-            - One
-            - Unlimited
+          type: integer
+          nullable: true
+        schedules_per_service_unlimited:
+          type: boolean
         pricing_options_per_service:
-          type: string
-          enum:
-            - One
-            - Unlimited
+          type: integer
+          nullable: true
+        pricing_options_per_service_unlimited:
+          type: boolean
         list_paid_services:
           type: boolean
+          nullable: true
         list_free_services:
           type: boolean
+          nullable: true
         take_deposits_and_instalment:
           type: boolean
+          nullable: true
         contact_clients_with_booking:
           type: boolean
+          nullable: true
         market_to_clients:
           type: string
         client_reviews:
           type: string
         article_publishing:
           type: integer
+          nullable: true
         article_publishing_unlimited:
           type: boolean
+          nullable: true
         prioritised_business_profile_search:
           type: boolean
-        prioritised_serivce_search:
+          nullable: true
+        prioritised_service_search:
           type: boolean
+          nullable: true
         busines_profile_page:
           type: boolean
+          nullable: true
         unique_web_address:
           type: boolean
+          nullable: true
         onboarding_support:
           type: boolean
+          nullable: true
         client_analytics:
           type: boolean
+          nullable: true
         service_analytics:
           type: boolean
+          nullable: true
         financial_analytics:
           type: boolean
+          nullable: true
+        discount_codes:
+          type: boolean
+        trial_month:
+          type: integer
+          nullable: true
+        order:
+          type: integer
         created_at:
           type: string
           nullable: true
@@ -688,7 +727,22 @@ components:
         account_type:
           type: string
           example: practitioner
+        avatar_url:
+          type: string
+          example: example.com/avatar.png
+        background_url:
+          type: string
+          example: example.com/background.png
         business_address:
+          type: string
+          nullable: true
+        business_company_houses_id:
+          type: string
+          nullable: true
+        business_country:
+          type: string
+          nullable: true
+        business_city:
           type: string
           nullable: true
         business_email:
@@ -701,6 +755,15 @@ components:
           type: string
           nullable: true
         business_phone_number:
+          type: string
+          nullable: true
+        business_postal_code:
+          type: string
+          nullable: true
+        business_time_zone:
+          type: string
+          nullable: true
+        business_vat:
           type: string
           nullable: true
         date_of_birth:
@@ -731,6 +794,9 @@ components:
         first_name:
           type: string
           example: John
+        gender:
+          type: string
+          example: female
         last_name:
           type: string
           example: Doe
@@ -741,18 +807,37 @@ components:
           type: boolean
           nullable: true
           example: false
+        is_suspended:
+          type: boolean
+          example: true
         mobile_number:
           type: string
           nullable: true
+        mobile_country_number_code:
+          type: string
+          nullable: true
+        plan_id:
+          type: integer
+          nullable: true
+        plan_until:
+          type: string
+          nullable: true
+          format: date-time
         public_link:
           type: string
           nullable: true
           example: example.com/users/johndoe
-        stripe_id:
+        stripe_customer_id:
           type: string
           example: cus_HpyQPawZU9Nw16
+          nullable: true
+        stripe_account_id:
+          type: string
+          example: cus_HpyQPawZU9Nw16
+          nullable: true
         timezone_id:
           type: integer
+          nullable: true
           example: 98
         termination_message:
           type: string
@@ -761,6 +846,14 @@ components:
         status:
           type: string
           example: registered,active,suspended,closed
+        created_at:
+          type: string
+          nullable: true
+          format: date-time
+        updated_at:
+          type: string
+          nullable: true
+          format: date-time
     Mainpage:
       type: object
       properties:
@@ -989,12 +1082,14 @@ components:
           type: string
         iso3:
           type: string
+          nullable: true
         name:
           type: string
         nicename:
           type: string
         numcode:
           type: string
+          nullable: true
         phonecode:
           type: string
         created_at:
@@ -3323,6 +3418,13 @@ paths:
           schema:
             type: string
             example: featured_practitioners,featured_services,media_images,media_videos,media_files
+        - name: is_published
+          in: query
+          description: Published flag
+          required: false
+          schema:
+            type: boolean
+            example: false
       responses:
         "200":
           description: OK
