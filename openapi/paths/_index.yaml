@@ -93,6 +93,38 @@
 /countries:
   $ref: "./Country.yaml#/countries"
 
+#bookings
+/bookings:
+  $ref: "./Booking.yaml#/bookings"
+bookings/{id}/reschedule:
+  $ref: "./Booking.yaml#/bookings~1{id}~1reschedule"
+/bookings/reschedule:
+  $ref: "./Booking.yaml#/bookings~1reschedule"
+#keywords
+/keywords:
+  $ref: "./Keyword.yaml#/keywords"
+/keywords/list:
+  $ref: "./Keyword.yaml#/keywords~1list"
+/keywords/filter:
+  $ref: "./Keyword.yaml#/keywords~1filter"
+#locations
+/locations:
+  $ref: "./Location.yaml#/locations"
+/locations/list:
+  $ref: "./Location.yaml#/locations~1list"
+#schedules
+/services/{serviceid}/schedules:
+  $ref: "./Schedules.yaml#/services~1{serviceid}~1schedules"
+/schedules/{id}:
+  $ref: "./Schedules.yaml#/schedules~1{id}"
+/schedules/{id}/purchase:
+  $ref: "./Schedules.yaml#/schedules~1{id}~1purchase"
+/schedules/{id}/attendants:
+  $ref: "./Schedules.yaml#/schedules~1{id}~1attendants"
+/schedules/{id}/freeze:
+  $ref: "./Schedules.yaml#/schedules~1{id}~1freeze"
+/schedules/{id}/availabilities:
+  $ref: "./Schedules.yaml#/schedules~1{id}~1availabilities"
 
 ## ADMIN ENDPOINTS
 /admin/profile:

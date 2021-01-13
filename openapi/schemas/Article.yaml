@@ -8,7 +8,7 @@ properties:
     nullable : true
   description:
     type: string
-  nullable : true
+    nullable : true
   user_id:
     type: integer
     nullable : true
