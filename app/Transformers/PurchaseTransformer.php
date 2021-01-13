@@ -38,7 +38,8 @@ class PurchaseTransformer extends Transformer {
             'updated_at'     => $this->dateTime($purchase->updated_at),
             'deleted_at'     => $this->dateTime($purchase->deleted_at),
             'is_deposit'     => $purchase->is_deposit,
-            'deposit_amount' => $purchase->deposit_amount
+            'deposit_amount' => $purchase->deposit_amount,
+            'stripe_id'      => $purchase->stripe_id
         ];
     }
 

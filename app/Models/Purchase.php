@@ -27,7 +27,8 @@ class Purchase extends Model {
         'updated_at',
         'deleted_at',
         'is_deposit',
-        'deposit_amount'
+        'deposit_amount',
+        'stripe_id'
     ];
 
     public function user(): BelongsTo {

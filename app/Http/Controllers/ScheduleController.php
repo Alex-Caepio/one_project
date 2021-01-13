@@ -4,20 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Actions\Schedule\CreateRescheduleRequestsOnScheduleUpdate;
 use App\Events\ServiceScheduleWentLive;
-use App\Http\Requests\Schedule\PurchaseScheduleRequest;
-use App\Models\Booking;
 use App\Models\Service;
 use App\Models\Schedule;
 use App\Models\ScheduleUser;
-use App\Models\PromotionCode;
 use App\Models\ScheduleFreeze;
 use App\Http\Requests\Request;
-use App\Models\UsedPromotionCode;
 use App\Transformers\UserTransformer;
 //use App\Events\ServiceScheduleLive;
 use App\Transformers\ScheduleTransformer;
-use App\Actions\Promo\CalculatePromoPrice;
-use App\Http\Requests\PromotionCode\PurchaseRequest;
 use App\Http\Requests\Schedule\CreateScheduleInterface;
 use Carbon\Carbon;
 use Stripe\StripeClient;
@@ -162,105 +156,4 @@ class ScheduleController extends Controller
         return fractal($reschedule, new UserTransformer())->respond();
     }
 
-    public function purchase(PurchaseScheduleRequest $request, Schedule $schedule, StripeClient $stripe)
-    {
-        $price = $schedule->prices()->find($request->get('price_id'));
-        $cost  = $price->cost;
-
-        if ($request->has('promo_code')) {
-            $promo = PromotionCode::where('name', $request->get('promo_code'))->first();
-            $cost  = run_action(CalculatePromoPrice::class, $promo, $schedule->cost);
-        }
-
-        if ($schedule->service->service_type_id == 'appointment') {
-            $availabilities = $request->get('availabilities');
-            foreach ($availabilities as $availability) {
-                $booking                  = new Booking();
-                $booking->user_id         = $request->user()->id;
-                $booking->price_id        = $request->get('price_id');
-                $booking->schedule_id     = $schedule->id;
-                $booking->availability_id = $availability['availability_id'];
-                $booking->datetime_from   = $availability['datetime_from'];
-                $datetimeTo               = (new Carbon($booking->datetime_from))->addMinutes($price->duration);
-                $booking->datetime_to     = $datetimeTo->format('Y-m-d H:i:s');
-                $booking->cost            = $cost;
-                $booking->save();
-            }
-        } else {
-            $booking              = new Booking();
-            $booking->user_id     = $request->user()->id;
-            $booking->price_id    = $request->get('price_id');
-            $booking->schedule_id = $schedule->id;
-            $booking->cost        = $cost;
-            $booking->save();
-        }
-        ScheduleFreeze::where('schedule_id', $schedule->id)
-            ->where('user_id', $request->user()->id)
-            ->delete();
-
-        if ($request->has('promo_code')) {
-            $userPromoCode = new UsedPromotionCode();
-            $userPromoCode->forceFill(
-                [
-                    'user_id'           => $request->user()->id,
-                    'schedule_id'       => $schedule->id,
-                    'promotion_code_id' => $promo->id,
-                ]
-            );
-            $userPromoCode->save();
-
-            $stripe->paymentIntents->create([
-                'amount' => $cost,
-                'currency' => $price->name,
-                'payment_method_types' => [$stripe->card],
-            ]);
-
-            $stripe->paymentIntents->confirm(
-                $stripe->getClientId(),
-                ['payment_method' => $stripe->card]
-            );
-        }
-
-        return response(null, 200);
-
-
-//        $name         = $request->get('promo_code');
-//        $scheduleCost = $schedule->cost;
-//        $user         = Auth::user();
-//        $promo        = PromotionCode::where('name', $name)->first();
-//
-//        run_action(CalculatePromoPrice::class, $promo, $scheduleCost);
-//
-//        $user->getCommission();
-
-//                $userPromoCode = new UsedPromotionCode();
-//                $userPromoCode->forceFill(
-//                    [
-//                        'user_id' => $user,
-//                        'schedule_id' => $schedule->id,
-//                        'promotion_code_id' => $promo->id,
-//                    ]
-//                );
-//                $userPromoCode->save();
-//        if ($schedule->isSoldOut()){
-//            $stripe->charges->create([
-//                'amount' => $newSchedule,
-//                'currency' => 'usd',
-//                'customer' => $user->stripe_id,
-//                'description' => 'My First Test Charge (created for API docs)',
-//            ]);
-//            $schedule->users()->save($user);
-//        }
-    }
-
-    public function promoCode(Schedule $schedule, PurchaseRequest $request)
-    {
-        $name         = $request->get('promo_code');
-        $scheduleCost = $schedule->cost;
-        $promo        = PromotionCode::where('name', $name)->first();
-        run_action(CalculatePromoPrice::class, $promo, $scheduleCost);
-
-        return fractal($schedule, new ScheduleTransformer())->parseIncludes($request->getIncludes())
-            ->toArray();
-    }
 }
