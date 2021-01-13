@@ -206,4 +206,26 @@ class ServiceTest extends TestCase
         $response->assertOk();
         $this->assertCount(0, Service::first()->keywords);
     }
+
+    public function test_practitioner_can_see_unpublished_service()
+    {
+        $user = User::factory()->create(['account_type' => 'practitioner']);
+        $user2 = User::factory()->create(['account_type' => 'practitioner']);
+        $service_type = ServiceType::factory()->create();
+        $service    = Service::factory()->create([
+            'user_id' => $user->id,
+            'service_type_id' => $service_type->id,
+            'is_published' => false
+        ]);
+        $service2    = Service::factory()->create([
+            'user_id' => $user2->id,
+            'service_type_id' => $service_type->id,
+            'is_published' => false
+        ]);
+
+
+        $response = $this->actingAs($user)->json('get', "/api/services/practitioner");
+        $response->assertOk()->assertJson([['id' => $service->id]]);
+        $response->assertJsonMissing([['id' => $service2->id]]);
+    }
 }
