@@ -13,8 +13,8 @@ class PriceTransformer extends Transformer
     {
         return [
             'id'                => $price->id,
-            'cost'              => $price->title,
-            'schedule_id'       => $price->service_id,
+            'cost'              => $price->cost,
+            'schedule_id'       => $price->schedule_id,
             'name'              => $price->name,
             'is_free'           => $price->is_free,
             'available_till'    => $price->available_till,

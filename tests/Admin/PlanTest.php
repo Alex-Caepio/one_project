@@ -25,8 +25,8 @@ class PlanTest extends TestCase
 
     public function test_all_plan(): void
     {
-        Plan::factory()->count(2)->create();
-        $response = $this->json('get', "/admin/plans");
+        Plan::factory()->count(10)->create();
+        $response = $this->json('get', '/admin/plans');
 
         $response
             ->assertOk()->assertJsonStructure([
@@ -41,9 +41,6 @@ class PlanTest extends TestCase
      */
     public function test_admin_can_create_plan(): void
     {
-
-        $this->mockStripeStore();
-
         /* Admin can store a plan with a price */
         $this->postJson(
             action([PlanController::class, 'store']),

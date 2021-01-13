@@ -1,0 +1,59 @@
+bookings:
+  get:
+      tags:
+       - Booking
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '../schemas/Booking.yaml'
+
+bookings/{id}/reschedule:
+  post:
+    tags:
+      - Booking
+    parameters:
+      - $ref: "#/parameters/id"
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../schemas/Booking.yaml'
+      '422':
+        description: Validation errors
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/422/Booking.yaml'
+
+bookings/reschedule:
+  post:
+      tags:
+        - Booking
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                  $ref: '../schemas/Booking.yaml'
+
+parameters:
+  id:
+    name: id
+    in: path
+    description: Booking ID
+    required: true
+    schema:
+      type: integer
+
+
+

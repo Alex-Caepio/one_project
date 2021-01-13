@@ -30,3 +30,5 @@ Mainpage:
   $ref: "./Mainpage.yaml"
 Country:
   $ref: "./Country.yaml"
+Booking:
+  $ref: "./Booking.yaml"

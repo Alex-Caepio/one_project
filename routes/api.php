@@ -4,8 +4,10 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\MainPageController;
+use App\Http\Controllers\PriceController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\ScheduleFreezesController;
+use App\Http\Controllers\SchedulePriceController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\StripeAccountController;
 use App\Http\Controllers\UserController;
@@ -80,7 +82,7 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
         Route::get('articles/practitioner', [ArticleController::class, 'practitionerArticleList']);
         Route::get('articles/practitioner/{article}', [ArticleController::class, 'practitionerArticleShow']);
         Route::post('articles', [ArticleController::class, 'store']);
-        Route::put('articles/{article}', [ArticleController::class, 'edit']);
+        Route::put('articles/{article}', [ArticleController::class, 'update']);
         Route::delete('articles/{article}', [ArticleController::class, 'destroy']);
 
         Route::get('services/practitioner', [ServiceController::class, 'practitionerServiceList']);
@@ -121,6 +123,10 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::get('/schedules/{schedule}/attendants', [ScheduleController::class, 'allUser']);
     Route::post('/schedules/{schedule}/freeze', [ScheduleController::class, 'freeze']);
     Route::get('/schedules/{schedule}/availabilities', [ScheduleController::class, 'availabilities']);
+    Route::post('/schedules/{schedule}/price', [SchedulePriceController::class, 'store']);
+
+    Route::put('/price/{price}', [PriceController::class, 'update']);
+    Route::delete('/price/{price}', [PriceController::class, 'destroy']);
 
     Route::post('/schedules/{schedule}/reschedule', [RescheduleRequestController::class, 'store']);
     Route::get('/reschedule-requests', [RescheduleRequestController::class, 'index']);

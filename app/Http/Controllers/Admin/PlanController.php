@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\PlanStoreRequest;
+use App\Http\Requests\Admin\PlanUpdateRequest;
 use App\Models\Plan;
 use App\Transformers\PlanTransformer;
 use App\Http\Requests\Request;
@@ -13,20 +14,22 @@ class PlanController extends Controller
 {
     public function index(Request $request)
     {
-        $paginator = Plan::with('service_types')->paginate($request->getLimit());
-        $plans     = $paginator->getCollection();
+        $query = Plan::query();
 
         if ($request->hasSearch()) {
             $search = $request->search();
 
-            $plans->where(
+            $query->where(
                 function ($query) use ($search) {
-                    $query->where('name', 'like', "%{$search}%")
-                        ->orWhere('introduction', 'like', "%{$search}%")
-                        ->orWhere('description', 'like', "%{$search}%");
+                    $query->where('name', 'like', "%{$search}%");
                 }
             );
         }
+
+        $includes = $request->getIncludes();
+        $includes[] = 'service_types';
+        $paginator = $query->with($includes)->paginate($request->getLimit());
+        $plans     = $paginator->getCollection();
 
         return response(fractal($plans, new PlanTransformer())->parseIncludes($request->getIncludes()))
             ->withPaginationHeaders($paginator);
@@ -65,7 +68,7 @@ class PlanController extends Controller
         return fractal($plan, new PlanTransformer())->respond();
     }
 
-    public function update(Request $request, Plan $plan, StripeClient $stripe)
+    public function update(PlanUpdateRequest $request, Plan $plan, StripeClient $stripe)
     {
         $price = $stripe->prices->retrieve($plan->stripe_id);
 
