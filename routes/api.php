@@ -49,9 +49,11 @@ Route::post('auth/forgot-password-claim', [ResetPasswordController::class, 'clai
 
 /* Public Routes For Services And Articles */
 Route::get('articles', [ArticleController::class, 'index']);
-Route::get('articles/{publicArticle}', [ArticleController::class, 'show'])->where('publicArticle', '[0-9]+');
+Route::get('articles/{publicArticle}', [ArticleController::class, 'show'])
+    ->where('publicArticle', '[0-9]+');
 Route::get('services', [ServiceController::class, 'index']);
-Route::get('services/{publicService}', [ServiceController::class, 'show'])->where('publicService', '[0-9]+');
+Route::get('services/{publicService}', [ServiceController::class, 'show'])
+    ->where('publicService', '([0-9]+)|(\w+\-?\w+?){1,}');
 
 Route::get('/mainpage', [MainPageController::class, 'index']);
 
