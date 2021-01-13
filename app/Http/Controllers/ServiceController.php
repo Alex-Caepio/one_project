@@ -67,39 +67,13 @@ class ServiceController extends Controller {
 
 
     public function store(StoreServiceRequest $request, StripeClient $stripe) {
-        $stripeProduct = $stripe->products->create([
-            'name' => $request->title,
-        ]);
-        $user = $request->user();
-        $data = $request->all();
-        $data['stripe_id'] = $stripeProduct->id;
-
-        $url = $data['url'] ?? to_url($data['name']);
-        $data['url'] = $url;
-
-        $service = $user->services()->create($data);
-
-        if ($request->has('keywords')) {
-            $keywords = collect();
-            foreach ($request->keywords as $keyword) {
-                $keywords[] = Keyword::firstOrCreate(['title' => $keyword], ['title' => $keyword]);
-            }
-            $service->keywords()->sync($keywords->pluck('id'));
-        }
-        if ($request->filled('media_images')) {
-            $service->media_images()->createMany($request->get('media_images'));
-        }
-        if ($request->filled('media_videos')) {
-            $service->media_videos()->createMany($request->get('media_videos'));
-        }
-        if ($request->filled('media_files')) {
-            $service->media_files()->createMany($request->get('media_files'));
-        }
+        $stripeProduct = $stripe->products->create(['name' => $request->title,]);
+        $service = run_action(ServiceStore::class, $request, $stripeProduct);
 
         return fractal($service, new ServiceTransformer())->respond();
     }
 
-    public function update(UpdateServiceRequest $request,Service $service) {
+    public function update(UpdateServiceRequest $request, Service $service) {
         $service = run_action(ServiceUpdate::class, $request, $service);
         return fractal($service, new ServiceTransformer())->respond();
     }
