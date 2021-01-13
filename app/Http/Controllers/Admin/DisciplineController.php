@@ -34,6 +34,11 @@ class DisciplineController extends Controller
             );
         }
 
+        $isPublished = $request->getBoolFromRequest('is_published');
+        if ($isPublished !== null) {
+            $query->where('is_published', $isPublished);
+        }
+
         $includes  = $request->getIncludes();
         $paginator = $query->with($includes)
             ->paginate($request->getLimit());

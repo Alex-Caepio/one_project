@@ -59,11 +59,12 @@ class SavePromotion {
     private function fillModel(SavePromotionRequest $request, Promotion $promotion): void {
         $promotion->forceFill([
                                   'name'           => $request->get('name'),
-                                  'valid_from'     => $request->filled('valid_from') ? Carbon::parse($request->get('valid_from'))
-                                                                                             ->startOfDay() : Carbon::now()
-                                                                                                                    ->startOfDay(),
-                                  'expiry_date'    => $request->filled('expiry_date') ? Carbon::parse($request->get('expiry_date'))
-                                                                                              ->endOfDay() : null,
+                                  'valid_from'     => $request->filled('valid_from')
+                                      ? Carbon::parse($request->get('valid_from'))->startOfDay()
+                                      : Carbon::now()->startOfDay(),
+                                  'expiry_date'    => $request->filled('expiry_date')
+                                      ? Carbon::parse($request->get('expiry_date'))->endOfDay()
+                                      : Carbon::now()->endOfDay(),
                                   'spend_min'      => $request->get('spend_min'),
                                   'spend_max'      => $request->get('spend_max'),
                                   'status'         => Promotion::STATUS_ACTIVE,
