@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Actions\Schedule\CreateRescheduleRequestsOnScheduleUpdate;
+use App\Actions\Schedule\HandlePricesUpdate;
 use App\Events\ServiceScheduleWentLive;
 use App\Http\Requests\Schedule\PurchaseScheduleRequest;
 use App\Models\Booking;
@@ -49,11 +50,11 @@ class ScheduleController extends Controller
             foreach  ($prices as $key => $price ){
                 $stripePrice = $stripe->prices->create([
                     'unit_amount' => $prices[$key]['cost'],
-                    'currency' => $prices[$key]['name'],
+                    'currency' => 'usd',
                     'product' => $service->stripe_id,
                 ]);
 
-                $prices[$key]['stripe_id'] = $stripePrice;
+                $prices[$key]['stripe_id'] = $stripePrice->id;
             }
             $schedule->prices()->createMany($prices);
         }
@@ -78,7 +79,7 @@ class ScheduleController extends Controller
             ->toArray();
     }
 
-    public function update(Request $request, Service $service, Schedule $schedule, StripeClient $stripe)
+    public function update(Request $request, Schedule $schedule, StripeClient $stripe)
     {
         $schedule->update($request->all());
 
@@ -87,19 +88,7 @@ class ScheduleController extends Controller
             $schedule->media_files()->createMany($request->get('media_files'));
         }
         if ($request->has('prices')) {
-            $schedule->prices()->delete();
-
-            $prices = $request->get('prices');
-            foreach  ($prices as $key => $price ){
-                $stripePrice = $stripe->prices->create([
-                    'unit_amount' => $prices[$key]['cost'],
-                    'currency' => $prices[$key]['name'],
-                    'product' => $service->stripe_id,
-                ]);
-
-                $prices[$key]['stripe_id'] = $stripePrice;
-            }
-            $schedule->prices()->createMany($prices);
+            run_action(HandlePricesUpdate::class, $request->get('prices'), $schedule);
         }
         if ($request->filled('schedule_availabilities')) {
             $schedule->schedule_availabilities()->delete();
@@ -120,7 +109,7 @@ class ScheduleController extends Controller
 
         run_action(CreateRescheduleRequestsOnScheduleUpdate::class, $request, $schedule);
 
-        event(new ServiceScheduleWentLive($service, $request->user(), $schedule));
+        event(new ServiceScheduleWentLive($schedule->service, $request->user(), $schedule));
 
         return fractal($schedule, new ScheduleTransformer())
             ->parseIncludes($request->getIncludes())

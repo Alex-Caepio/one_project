@@ -41,9 +41,6 @@ class PlanTest extends TestCase
      */
     public function test_admin_can_create_plan(): void
     {
-
-        $this->mockStripeStore();
-
         /* Admin can store a plan with a price */
         $this->postJson(
             action([PlanController::class, 'store']),
