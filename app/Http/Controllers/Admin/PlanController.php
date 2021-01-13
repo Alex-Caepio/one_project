@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\PlanStoreRequest;
+use App\Http\Requests\Admin\PlanUpdateRequest;
 use App\Models\Plan;
 use App\Transformers\PlanTransformer;
 use App\Http\Requests\Request;
@@ -67,7 +68,7 @@ class PlanController extends Controller
         return fractal($plan, new PlanTransformer())->respond();
     }
 
-    public function update(Request $request, Plan $plan, StripeClient $stripe)
+    public function update(PlanUpdateRequest $request, Plan $plan, StripeClient $stripe)
     {
         $price = $stripe->prices->retrieve($plan->stripe_id);
 
