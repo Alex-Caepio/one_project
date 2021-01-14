@@ -49,9 +49,10 @@ Route::post('auth/forgot-password-claim', [ResetPasswordController::class, 'clai
 
 /* Public Routes For Services And Articles */
 Route::get('articles', [ArticleController::class, 'index']);
-Route::get('articles/{publicArticle}', [ArticleController::class, 'show'])->where('publicArticle', '[0-9]+');
+Route::get('articles/{publicArticle}', [ArticleController::class, 'show'])
+    ->where('publicArticle', '[0-9]+');
 Route::get('services', [ServiceController::class, 'index']);
-Route::get('services/{publicService}', [ServiceController::class, 'show'])->where('publicService', '[0-9]+');
+Route::get('services/{publicService}', [ServiceController::class, 'show']);
 
 Route::get('/mainpage', [MainPageController::class, 'index']);
 
@@ -82,7 +83,7 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
         Route::get('articles/practitioner', [ArticleController::class, 'practitionerArticleList']);
         Route::get('articles/practitioner/{article}', [ArticleController::class, 'practitionerArticleShow']);
         Route::post('articles', [ArticleController::class, 'store']);
-        Route::put('articles/{article}', [ArticleController::class, 'edit']);
+        Route::put('articles/{article}', [ArticleController::class, 'update']);
         Route::delete('articles/{article}', [ArticleController::class, 'destroy']);
 
         Route::get('services/practitioner', [ServiceController::class, 'practitionerServiceList']);

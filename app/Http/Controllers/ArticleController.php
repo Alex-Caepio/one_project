@@ -47,7 +47,7 @@ class ArticleController extends Controller {
      * @param \App\Models\Article $article
      * @return \Illuminate\Http\JsonResponse
      */
-    public function edit(ArticleRequest $request, Article $article) {
+    public function update(ArticleRequest $request, Article $article) {
         $article = run_action(ArticleUpdate::class, $request, $article);
         return fractal($article, new ArticleTransformer())->respond();
     }
