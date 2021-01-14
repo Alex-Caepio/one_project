@@ -16,14 +16,15 @@ class WelcomeVerification
         $emailVerification = CustomEmail::where('name', 'Welcome Verification')
             ->where('user_type', $user->account_type)
             ->first();
+        if ($emailVerification) {
+            $body = $emailVerification->text;
+            $emailVariables = new EmailVariables($event);
+            $bodyReplaced = $emailVariables->replace($body);
 
-        $body           = $emailVerification->text;
-        $emailVariables = new EmailVariables($event);
-        $bodyReplaced   = $emailVariables->replace($body);
-
-        Mail::html($bodyReplaced, function ($message) use ($user) {
-            $message->to($user->email);
-        });
+            Mail::html($bodyReplaced, function($message) use ($user) {
+                $message->to($user->email);
+            });
+        }
     }
 
 

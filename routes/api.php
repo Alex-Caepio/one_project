@@ -134,7 +134,7 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::post('reschedule-requests/{rescheduleRequest}/decline', [RescheduleRequestController::class, 'decline']);
 
     /* Payments */
-    Route::post('/schedules/{schedule}/promoсode', [PurchaseController::class, 'promocode']);
+    Route::post('/schedules/{schedule}/promoсode', [PurchaseController::class, 'validatePromocode']);
     Route::post('/schedules/{schedule}/purchase', [PurchaseController::class, 'purchase']);
     /* Payments */
 

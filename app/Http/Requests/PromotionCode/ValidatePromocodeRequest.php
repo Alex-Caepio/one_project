@@ -6,7 +6,7 @@ use App\Models\Promotion;
 use App\Models\PromotionCode;
 use App\Http\Requests\Request;
 
-class PurchaseRequest extends Request {
+class ValidatePromocodeRequest extends Request {
     /**
      * Determine if the user is authorized to make this request.
      *

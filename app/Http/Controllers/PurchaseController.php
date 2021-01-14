@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Actions\Promo\CalculatePromoPrice;
 use App\Filters\PurchaseFilters;
-use App\Http\Requests\PromotionCode\PurchaseRequest;
+use App\Http\Requests\PromotionCode\ValidatePromocodeRequest;
 use App\Http\Requests\Request;
 use App\Http\Requests\Schedule\PurchaseScheduleRequest;
 use App\Models\Booking;
@@ -115,7 +115,7 @@ class PurchaseController extends Controller {
 //        }
     }
 
-    public function promocode(Schedule $schedule, PurchaseRequest $request) {
+    public function validatePromocode(Schedule $schedule, ValidatePromocodeRequest $request) {
         $name = $request->get('promo_code');
         $scheduleCost = $schedule->cost;
         $promo = PromotionCode::where('name', $name)->first();
