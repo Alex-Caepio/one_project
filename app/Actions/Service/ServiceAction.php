@@ -2,20 +2,19 @@
 
 namespace App\Actions\Service;
 
-use App\Http\Requests\Request;
-use App\Http\Requests\Services\UpdateServiceRequest;
 use App\Models\Keyword;
 use App\Models\Service;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 abstract class ServiceAction {
 
     /**
      * @param \App\Models\Service $service
-     * @param \App\Http\Requests\Services\UpdateServiceRequest $request
+     * @param \App\Http\Requests\Request $request
      */
-    protected function saveService(Service $service, UpdateServiceRequest $request) {
+    protected function saveService(Service $service, Request $request) {
         DB::transaction(function() use ($service, $request) {
             $this->fillService($service, $request);
             $this->fillRelations($service, $request);
@@ -25,10 +24,10 @@ abstract class ServiceAction {
 
     /**
      * @param \App\Models\Service $service
-     * @param \App\Http\Requests\Services\UpdateServiceRequest $request
+     * @param \App\Http\Requests\Request $request
      * @return \App\Models\Service
      */
-    protected function fillService(Service $service, UpdateServiceRequest $request): Service {
+    protected function fillService(Service $service, Request $request): Service {
         $url = $request->get('url') ?? to_url($request->get('title'));
         $params = [
             'title'           => $request->get('title'),
@@ -48,9 +47,9 @@ abstract class ServiceAction {
 
     /**
      * @param \App\Models\Service $service
-     * @param \App\Http\Requests\Services\UpdateServiceRequest $request
+     * @param \App\Http\Requests\Request $request
      */
-    protected function fillRelations(Service $service, UpdateServiceRequest $request): void {
+    protected function fillRelations(Service $service, Request $request): void {
         if ($request->has('media_images')) {
             $service->media_images()->delete();
             $service->media_images()->createMany($request->get('media_images'));
@@ -75,7 +74,7 @@ abstract class ServiceAction {
         }
 
         $keywords = $this->collectKeywordModelsFromRequest($request);
-        if (count($keywords)) {
+        if ($request->filled('keywords')) {
             $service->keywords()->sync($keywords);
         }
 

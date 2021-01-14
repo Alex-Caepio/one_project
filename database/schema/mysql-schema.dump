@@ -1270,6 +1270,8 @@ CREATE TABLE `users` (
   `business_time_zone` char(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `business_vat` char(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `business_company_houses_id` char(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `mobile_country_code` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `business_phone_country_code` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `users_email_unique` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
