@@ -8,11 +8,12 @@ use App\Models\Keyword;
 use App\Models\ServiceType;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
+use Stripe\StripeClient;
 use Tests\TestCase;
 
 class ServiceTest extends TestCase
 {
-    use DatabaseTransactions, WithoutMiddleWare;
+    use DatabaseTransactions;
 
     public function setUp(): void
     {
@@ -24,10 +25,11 @@ class ServiceTest extends TestCase
 
     public function test_user_can_see_services_list(): void
     {
-        Service::factory()->count(2)->create();
+        Service::factory()->count(10)->create(['is_published' => true]);
         $response = $this->json('get', "/api/services");
         $response
             ->assertOk()
+            ->assertJsonCount(10)
             ->assertJsonStructure([
                 ['id', 'title'],
             ]);
@@ -77,26 +79,6 @@ class ServiceTest extends TestCase
         $this->assertCount(2, Service::first()->media_images);
     }
 
-    public function test_user_update_service(): void
-    {
-        $user = User::factory()->create(['account_type' => 'practitioner']);
-        $service_type = ServiceType::factory()->create();
-        $service    = Service::factory()->create(['user_id' => $user->id,'service_type_id' => $service_type->id]);
-        $newService = Service::factory()->make();
-        $payload    = [
-            'title'        => $newService->title,
-            'keyword_id'   => $newService->keyword_id,
-            'user_id'      => $user->id,
-            'description'  => $newService->description,
-            'is_published' => true,
-            'introduction' => $newService->introduction,
-            'service_type_id' => $service->service_type_id,
-        ];
-        $response   = $this->actingAs($user)->json('put', "/api/services/{$service->id}", $payload);
-
-        $response->assertOk();
-    }
-
     public function test_practitioner_can_delete_service(): void
     {
         $user = User::factory()->create(['account_type' => 'practitioner']);
@@ -124,7 +106,12 @@ class ServiceTest extends TestCase
     {
         $user = User::factory()->create(['account_type' => 'practitioner']);
         $service_type = ServiceType::factory()->create();
-        $service    = Service::factory()->create(['user_id' => $user->id, 'service_type_id' => $service_type->id]);
+        $stripeProduct = $this->creteStripeProduct();
+        $service       = Service::factory()->create([
+            'user_id'         => $user->id,
+            'service_type_id' => $service_type->id,
+            'stripe_id'       => $stripeProduct->id
+        ]);;
         $newService = Service::factory()->make();
 
         $response = $this->actingAs($user)->json('put', "/api/services/{$service->id}",
@@ -246,5 +233,11 @@ class ServiceTest extends TestCase
 
         $response = $this->json('get', "/api/services/{$service->url}");
         $response->assertOk();
+    }
+
+    protected function creteStripeProduct()
+    {
+        $client = app()->make(StripeClient::class);
+        return $client->products->create(['name' => 'Test product @' . now()->toDateTimeString()]);
     }
 }

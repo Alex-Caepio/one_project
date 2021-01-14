@@ -44,6 +44,12 @@ class RouteServiceProvider extends ServiceProvider {
             })->firstOrFail();
         });
 
+        Route::bind('service', function($value) {
+            return Service::where('id', $value)
+                ->orWhere('url', '$value')
+                ->firstOrFail();
+        });
+
         Route::bind('promotionWithTrashed', function($value) {
             return Promotion::withTrashed()->where('id', (int)$value)->firstOrFail();
         });
