@@ -1,18 +1,16 @@
 <?php
-
-
 namespace App\Actions\Promo;
 
+use App\Models\Promotion;
+use App\Models\PromotionCode;
 
 class CalculatePromoPrice
 {
-    public function execute($promo, $scheduleCost)
-    {
+    public function execute(PromotionCode $promo, $scheduleCost) {
         $promotion = $promo->promotion;
-        $isPercentage = $promotion->discount_type == 'percentage';
         $promoValue = $promotion->discount_value;
 
-        return $isPercentage
+        return $promotion->discount_type === Promotion::TYPE_PERCENTAGE
             ? $scheduleCost - ($scheduleCost * ($promoValue / 100))
             : $scheduleCost - $promoValue;
     }

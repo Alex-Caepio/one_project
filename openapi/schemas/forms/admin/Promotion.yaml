@@ -21,7 +21,7 @@ properties:
   discount_type:
     nullable: false
     type: string
-    example: percentage || fixed
+    example: percentage || monetary
   discount_value:
     nullable: false
     type: number

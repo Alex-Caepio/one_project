@@ -19,12 +19,14 @@ use App\Models\Booking;
 use App\Models\Discipline;
 use App\Models\Promotion;
 use App\Models\PromotionCode;
+use App\Models\Purchase;
 use App\Models\Service;
 use App\Models\User;
 use App\Observers\ArticleObserver;
 use App\Observers\BookingObserver;
 use App\Observers\PromotionCodeObserver;
 use App\Observers\PromotionObserver;
+use App\Observers\PurchaseObserver;
 use App\Observers\UserObserver;
 use App\ScarryClass;
 use App\FakeStripeClient;
@@ -65,6 +67,7 @@ class AppServiceProvider extends ServiceProvider
         PromotionCode::observe(PromotionCodeObserver::class);
         User::observe(UserObserver::class);
         Booking::observe(BookingObserver::class);
+        Purchase::observe(PurchaseObserver::class);
 
         $this->app->bind(CreateScheduleInterface::class, function () {
             if (request()->service->service_type->id == 'workshop') {

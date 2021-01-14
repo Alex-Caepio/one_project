@@ -4775,7 +4775,7 @@ paths:
             example: 2020-01-01
         - name: discount_type
           in: query
-          description: Discount Type(percentage or fixed)
+          description: Discount Type(percentage or monetary)
           required: false
           schema:
             type: string
@@ -4855,7 +4855,7 @@ paths:
                 discount_type:
                   nullable: false
                   type: string
-                  example: percentage || fixed
+                  example: percentage || monetary
                 discount_value:
                   nullable: false
                   type: number
