@@ -115,12 +115,12 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::post('/credit-cards', [CardStripeController::class, 'store']);
     Route::get('/credit-cards', [CardStripeController::class, 'index']);
 
+    Route::get('/plans', [PlanController::class, 'index']);
     Route::post('/plans/{plan}/purchase', [PlanController::class, 'purchase']);
 
     Route::post('/services/{service}/schedules', [ScheduleController::class, 'store']);
     Route::get('/services/{service}/schedules', [ScheduleController::class, 'index']);
     Route::put('/schedules/{schedule}', [ScheduleController::class, 'update']);
-    Route::post('/schedules/{schedule}/purchase', [ScheduleController::class, 'purchase']);
     Route::get('/schedules/{schedule}/attendants', [ScheduleController::class, 'allUser']);
     Route::post('/schedules/{schedule}/freeze', [ScheduleController::class, 'freeze']);
     Route::get('/schedules/{schedule}/availabilities', [ScheduleController::class, 'availabilities']);
@@ -134,7 +134,11 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::post('reschedule-requests/{rescheduleRequest}/accept', [RescheduleRequestController::class, 'accept']);
     Route::post('reschedule-requests/{rescheduleRequest}/decline', [RescheduleRequestController::class, 'decline']);
 
-    Route::post('/schedules/{schedule}/promoсodes', [ScheduleController::class, 'promoCode']);
+    /* Payments */
+    Route::post('/schedules/{schedule}/promoсode', [PurchaseController::class, 'validatePromocode']);
+    Route::post('/schedules/{schedule}/purchase', [PurchaseController::class, 'purchase']);
+    /* Payments */
+
 
     Route::get('/disciplines/{discipline}/images', [DisciplineController::class, 'indexImage']);
     Route::get('/disciplines/{discipline}/videos', [DisciplineController::class, 'indexVideo']);

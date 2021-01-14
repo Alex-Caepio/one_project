@@ -187,18 +187,15 @@ class User extends Authenticatable implements MustVerifyEmail {
         return $this->hasMany(ScheduleFreeze::class);
     }
 
-    public function bookings()
-    {
+    public function bookings(): HasMany {
         return $this->hasMany(Booking::class);
     }
 
-    public function purchases()
-    {
+    public function purchases(): HasMany {
         return $this->hasMany(Purchase::class);
     }
 
-    public function instalments()
-    {
+    public function instalments(): HasMany {
         return $this->hasMany(Instalment::class);
     }
 }

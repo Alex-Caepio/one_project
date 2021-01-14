@@ -68,7 +68,7 @@ promotions:
           example: 2020-01-01
       - name: discount_type
         in: query
-        description: Discount Type(percentage or fixed)
+        description: Discount Type(percentage or monetary)
         required: false
         schema:
           type: string

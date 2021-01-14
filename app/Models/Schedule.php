@@ -92,8 +92,9 @@ class Schedule extends Model
             ->where('freeze_at', '>', $time->toDateTimeString())->count();
         if (isset($personalFreezed)) {
             return (bool)$this->attendees <= $purchased + $freezed - $personalFreezed;
-        } else
+        } else {
             return (bool)$this->attendees <= $purchased + $freezed;
+        }
 
     }
 
@@ -219,8 +220,11 @@ class Schedule extends Model
         return  $this->bookings()->whereNotIn('id', $q->pluck('id'))->get();
     }
 
-    public function bookings(): HasMany
-    {
+    public function bookings(): HasMany {
         return $this->hasMany(Booking::class);
+    }
+
+    public function purchases(): HasMany {
+        return $this->hasMany(Purchase::class);
     }
 }
