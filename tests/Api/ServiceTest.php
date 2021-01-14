@@ -206,4 +206,45 @@ class ServiceTest extends TestCase
         $response->assertOk();
         $this->assertCount(0, Service::first()->keywords);
     }
+
+    public function test_practitioner_can_see_unpublished_service()
+    {
+        $user = User::factory()->create(['account_type' => 'practitioner']);
+        $user2 = User::factory()->create(['account_type' => 'practitioner']);
+        $service_type = ServiceType::factory()->create();
+        $service    = Service::factory()->create([
+            'user_id' => $user->id,
+            'service_type_id' => $service_type->id,
+            'is_published' => false
+        ]);
+        $service2    = Service::factory()->create([
+            'user_id' => $user2->id,
+            'service_type_id' => $service_type->id,
+            'is_published' => false
+        ]);
+
+
+        $response = $this->actingAs($user)->json('get', '/api/services/practitioner');
+        $response->assertOk()->assertJson([['id' => $service->id]]);
+        $response->assertJsonMissing([['id' => $service2->id]]);
+    }
+
+    public function test_user_can_see_public_service_by_url_and_id()
+    {
+        $user = User::factory()->create(['account_type' => 'practitioner']);
+        $service_type = ServiceType::factory()->create();
+        $service    = Service::factory()->create([
+            'user_id' => $user->id,
+            'service_type_id' => $service_type->id,
+            'keyword_id' => 1,
+            'title' => 'best service',
+            'url' => 'best-service'
+        ]);
+
+        $response = $this->json('get', "/api/services/{$service->id}");
+        $response->assertOk();
+
+        $response = $this->json('get', "/api/services/{$service->url}");
+        $response->assertOk();
+    }
 }
