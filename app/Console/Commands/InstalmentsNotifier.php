@@ -32,19 +32,15 @@ class InstalmentsNotifier extends Command {
     public function handle(): void {
         $paymentDate = Carbon::now()->addDays(7);
         $installments =
-            Instalment::whereRaw("DATE_FORMAT(`payment_date`, '%Y-%m-%d') = ?", $paymentDate->format('Y-m-d'))->with([
-                                                                                                                         'user',
-                                                                                                                         'purchase',
-                                                                                                                         'purchase.schedule',
-                                                                                                                         'purchase.service',
-                                                                                                                         'purchase.service.user',
-                                                                                                                     ])
+            Instalment::whereRaw("DATE_FORMAT(`payment_date`, '%Y-%m-%d') = ?", $paymentDate->format('Y-m-d'))
+                      ->with(['user','purchase','purchase.schedule','purchase.service','purchase.service.user'])
                       ->get();
         Log::info('Found future installments' . count($installments));
         foreach ($installments as $installment) {
-            $userPaymentSchedules = Instalment::where('user_id', $installment->user_id)->where('payment_date', '>',
-                                                                                               $paymentDate->startOfDay()
-                                                                                                           ->format('Y-m-d H:i:s'))
+            $userPaymentSchedules = Instalment::where('user_id', $installment->user_id)
+                                              ->where('payment_date',
+                                                      '>',
+                                                      $paymentDate->startOfDay()->format('Y-m-d H:i:s'))
                                               ->get();
             event(new InstalmentPaymentReminder($installment, $userPaymentSchedules));
         }

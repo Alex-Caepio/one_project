@@ -51,7 +51,8 @@ class ServiceFiltrator {
         $queryBuilder->when($request->filled('sortby'), static function(Builder $query) use ($sortBy, $searchString) {
             switch ($sortBy) {
                 case 'schedule':
-                    $query->selectRaw('*, DATEDIFF(start_date, now()) as dif')->join('schedules', 'services.id', '=', 'schedules.service_id')
+                    $query->selectRaw('*, DATEDIFF(start_date, now()) as dif')
+                          ->join('schedules', 'services.id', '=', 'schedules.service_id')
                           ->orderByRaw('ABS(dif)');
                     break;
                 case 'service-introduction':

@@ -31,7 +31,9 @@ class PromocodeExport implements FromCollection, ShouldAutoSize,WithHeadings {
 
 
     public function collection(): Collection {
-        $promotionQuery = PromotionCode::query()->withTrashed()->select(['id', 'name', 'uses_per_code', 'uses_per_client', 'status']);
+        $promotionQuery = PromotionCode::query()
+                                       ->withTrashed()
+                                       ->select(['id', 'name', 'uses_per_code', 'uses_per_client', 'status']);
         $promotionFilter = new PromocodeFiltrator();
         $promotionFilter->apply($promotionQuery, $this->request);
         return $promotionQuery->get();
