@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\Actions\Service\ServiceStore;
 use App\Actions\Service\ServiceUpdate;
 use App\Http\Requests\Services\ServiceOwnerRequest;
-use App\Http\Requests\Services\UpdateServiceRequest;
-use App\Models\Keyword;
 use App\Models\Service;
 use App\Http\Requests\Request;
 use App\Filters\ServiceFiltrator;
@@ -73,7 +71,7 @@ class ServiceController extends Controller {
         return fractal($service, new ServiceTransformer())->respond();
     }
 
-    public function update(UpdateServiceRequest $request, Service $service) {
+    public function update(StoreServiceRequest $request, Service $service) {
         $service = run_action(ServiceUpdate::class, $request, $service);
         return fractal($service, new ServiceTransformer())->respond();
     }
