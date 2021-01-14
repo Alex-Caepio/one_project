@@ -6,6 +6,10 @@ properties:
     type: string
   service_id:
     type: integer
+    nullable: true
+  location_id:
+    type: integer
+    nullable: true
   start_date:
     type: string
     format: date-time

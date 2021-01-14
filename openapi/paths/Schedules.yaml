@@ -65,6 +65,22 @@ schedules/{id}/purchase:
               items:
                 $ref: '../schemas/Schedule.yaml'
 
+schedules/{id}/promocode:
+  post:
+    tags:
+      - Schedules
+    parameters:
+      - $ref: "#/parameters/id"
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../schemas/Schedule.yaml'
+
 schedules/{id}/attendants:
   get:
     tags:
