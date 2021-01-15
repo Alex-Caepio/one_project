@@ -50,8 +50,6 @@ class UserRequest extends FormRequest
             'password'                    => 'required|max:45',
             'avatar_url'                  => 'min:5',
             'background_url'              => 'min:5',
-
-
         ];
     }
 
