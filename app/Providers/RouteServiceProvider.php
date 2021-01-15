@@ -32,7 +32,10 @@ class RouteServiceProvider extends ServiceProvider {
      */
     public function boot() {
         Route::bind('publicArticle', function($value) {
-            return Article::published()->where('id', (int)$value)->whereHas('user', function($query) {
+            return Article::published()
+                ->where('id', (int)$value)
+                ->orWhere('url', (string)$value)
+                ->whereHas('user', function($query) {
                 $query->published();
             })->firstOrFail();
         });
