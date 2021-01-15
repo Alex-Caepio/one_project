@@ -9,4 +9,7 @@ images:
         content:
           application/json:
             schema:
-              $ref: '../schemas/Image.yaml'
+              properties:
+                url:
+                  type: string
+                  example: https://s3.amazonaws.com/bucketname/foldername/imagename.jpg

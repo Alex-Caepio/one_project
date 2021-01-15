@@ -130,7 +130,7 @@ bookings/{id}/reschedule:
   $ref: "./Purchase.yaml#/purchases"
 #images
 /images:
-  $ref: "./Image.yaml#/Images"
+  $ref: "./Image.yaml#/images"
 
 ## ADMIN ENDPOINTS
 /admin/profile:
