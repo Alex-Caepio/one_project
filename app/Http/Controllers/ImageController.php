@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Image;
 use App\Http\Requests\Image\ImageUploadRequest;
-use App\Transformers\ImageTransformer;
 use Illuminate\Support\Facades\Storage;
 
 class ImageController extends Controller
@@ -25,6 +24,7 @@ class ImageController extends Controller
             'path' => $path
         ]);
         $image = $this->image->create($request->only('path', 'title', 'size'));
-        return fractal($image, new ImageTransformer())->respond();
+
+        return $image->getUrlAtribute($ImageStorage);
     }
 }
