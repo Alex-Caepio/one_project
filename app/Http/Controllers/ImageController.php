@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Image;
 use App\Http\Requests\Image\ImageUploadRequest;
+use App\Transformers\ImageTransformer;
 use Illuminate\Support\Facades\Storage;
 
 class ImageController extends Controller
@@ -23,7 +24,7 @@ class ImageController extends Controller
             'size' => $request->file->getClientSize(),
             'path' => $path
         ]);
-        $this->image->create($request->only('path', 'title', 'size'));
-        return back()->with('success', 'Image Successfully Saved');
+        $image = $this->image->create($request->only('path', 'title', 'size'));
+        return fractal($image, new ImageTransformer())->respond();
     }
 }
