@@ -33,6 +33,7 @@ class ScheduleFactory extends Factory
             'buffer_time'        => 60,
             'notice_min_period'  => 'mins',
             'notice_min_time'    => 60,
+            'cost'               => $this->faker->randomNumber(2),
         ];
     }
 }

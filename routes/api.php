@@ -165,4 +165,6 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::post('/bookings/reschedule', [BookingController::class, 'allReschedule']);
 
     Route::get('/purchases', [PurchaseController::class, 'index']);
+
+    Route::post('/upload', 'ImageController@upload');
 });

@@ -56,7 +56,7 @@ class PurchaseController extends Controller {
         $purchase->service_id = $schedule->service->id;
         $purchase->price_id = $price->id;
         $purchase->user_id = Auth::id();
-        $purchase->promocode->id = $promo instanceof PromotionCode ? $promo->id : null;
+        $purchase->promocode_id = $promo instanceof PromotionCode ? $promo->id : null;
         $purchase->price_original = $price->cost;
         $purchase->price = $cost;
         $purchase->is_deposit = false;
@@ -115,7 +115,7 @@ class PurchaseController extends Controller {
 //        }
     }
 
-    public function validatePromocode(Schedule $schedule, ValidatePromocodeRequest $request) {
+    public function validatePromocode(ValidatePromocodeRequest $request, Schedule $schedule) {
         $name = $request->get('promo_code');
         $scheduleCost = $schedule->cost;
         $promo = PromotionCode::where('name', $name)->first();

@@ -135,7 +135,11 @@ class ScheduleTest extends TestCase
     {
         $stripeProduct  = $this->creteStripeProduct();
         $schedule    = Schedule::factory()->create();
-        $promotion   = Promotion::factory()->create();
+        $old_cost    = $schedule->cost;
+        $promotion   = Promotion::factory()->create([
+            'status' => 'active',
+            'expiry_date' => ''
+        ]);
         $service     = Service::factory()->create(['id' => $schedule->service_id, 'stripe_id' => $stripeProduct->id]);
         $discipline  = Discipline::factory()->create();
         $serviceType = ServiceType::factory()->create();
@@ -144,9 +148,9 @@ class ScheduleTest extends TestCase
         $service->service_type()->associate($serviceType);
         $service->focus_areas()->attach($focusArea);
         $promoCode = PromotionCode::factory()->create(['promotion_id' => $promotion->id]);
-
-        $response = $this->json('post', "api/schedules/{$schedule->id}/promoсodes", ['promo_code' => $promoCode->name]);
+        $response = $this->json('post', "api/schedules/{$schedule->id}/promoсode", ['promo_code' => $promoCode->name]);
         $response->assertOk();
+        $this->assertFalse($old_cost == $schedule->cost);
     }
 
     public function test_validate_request_class_ad_hoc_schedule(): void
