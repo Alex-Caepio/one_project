@@ -32,7 +32,7 @@ class Discipline extends Model
 
     protected $fillable = [
         'name', 'url', 'icon_url', 'banner_url',
-        'introduction', 'description'
+        'introduction', 'description', 'is_published'
     ];
 
     public function featured_practitioners(): BelongsToMany
