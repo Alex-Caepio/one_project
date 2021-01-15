@@ -8,12 +8,6 @@ use Illuminate\Support\Facades\Storage;
 
 class ImageController extends Controller
 {
-    private $image;
-    public function __construct(Image $image)
-    {
-        $this->image = $image;
-    }
-
     public function upload(ImageUploadRequest $request)
     {
         $ImageStorage = config('image.image_storage');

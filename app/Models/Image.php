@@ -23,10 +23,6 @@ class Image extends Model
         });
     }
 
-    public function getUrlAttribute($ImageStorage)
-    {
-        return Storage::disk($ImageStorage)->url($this->path);
-    }
     public function getUploadedTimeAttribute()
     {
         return $this->created_at->diffForHumans();
