@@ -39,7 +39,8 @@ class PlanController extends Controller
 
         $user             = Auth::user();
         $user->plan_id    = $subscription->id;
-        $user->plan_until = Carbon::createFromTimestamp($subscription->current_period_end);;
+        $user->plan_until = Carbon::createFromTimestamp($subscription->current_period_end);
+        $user->plan_from  = Carbon::now();
         $user->save();
 
         event(new SubscriptionConfirmationPaid($user));
