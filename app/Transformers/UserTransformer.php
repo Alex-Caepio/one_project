@@ -14,7 +14,8 @@ class UserTransformer extends Transformer {
         'promotion_codes',
         'favourite_services',
         'favourite_articles',
-        'favourite_practitioners'
+        'favourite_practitioners',
+        'plan'
     ];
 
     public function transform(User $user) {
@@ -56,7 +57,9 @@ class UserTransformer extends Transformer {
             'business_postal_code'        => $user->business_postal_code,
             'business_time_zone'          => $user->business_time_zone,
             'business_vat'                => $user->business_vat,
-            'business_company_houses_id'  => $user->business_company_houses_id
+            'business_company_houses_id'  => $user->business_company_houses_id,
+            'plan_from'                   => $user->plan_from,
+            'plan_until'                  => $user->plan_until,
         ];
     }
 
@@ -95,4 +98,9 @@ class UserTransformer extends Transformer {
     public function includeFavouritePractitioners(User $user) {
         return $this->collectionOrNull($user->favourite_practitioners, new DisciplineTransformer());
     }
+
+    public function includePlan(User $user) {
+        return $this->itemOrNull($user->plan, new PlanTransformer());
+    }
+
 }

@@ -108,6 +108,10 @@ properties:
     type: string
     nullable: true
     format: date-time
+  plan_from:
+    type: string
+    nullable: true
+    format: date-time
   public_link:
     type: string
     nullable: true
