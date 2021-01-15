@@ -2,8 +2,6 @@
 
 namespace App\Http\Requests\PromotionCode;
 
-use App\Models\Promotion;
-use App\Models\PromotionCode;
 use App\Http\Requests\Request;
 
 class ValidatePromocodeRequest extends Request {

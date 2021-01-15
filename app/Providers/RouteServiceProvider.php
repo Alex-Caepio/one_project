@@ -49,7 +49,7 @@ class RouteServiceProvider extends ServiceProvider {
 
         Route::bind('service', function($value) {
             return Service::where('id', $value)
-                ->orWhere('url', '$value')
+                ->orWhere('url', $value)
                 ->firstOrFail();
         });
 

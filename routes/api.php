@@ -26,6 +26,7 @@ use App\Http\Controllers\FocusAreaController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\TimezoneController;
+use App\Http\Controllers\ImageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -165,4 +166,6 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::post('/bookings/reschedule', [BookingController::class, 'allReschedule']);
 
     Route::get('/purchases', [PurchaseController::class, 'index']);
+
+    Route::post('/upload', [ImageController::class, 'upload']);
 });
