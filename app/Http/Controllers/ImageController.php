@@ -20,11 +20,11 @@ class ImageController extends Controller
 
         $path = Storage::disk($ImageStorage)->put('/tmp', $request->file);
         $request->merge([
-            'size' => $request->file->getClientSize(),
+            'size' => $request->file('file')->getSize(),
             'path' => $path
         ]);
-        $image = $this->image->create($request->only('path', 'title', 'size'));
+        $image = Image::create($request->only('path', 'title', 'size'));
 
-        return $image->getUrlAtribute($ImageStorage);
+         return $image->url;
     }
 }
