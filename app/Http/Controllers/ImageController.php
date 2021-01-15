@@ -18,7 +18,7 @@ class ImageController extends Controller
     {
         $ImageStorage = config('image.image_storage');
 
-        $path = Storage::disk($ImageStorage)->put('images/originals', $request->file);
+        $path = Storage::disk($ImageStorage)->put('/tmp', $request->file);
         $request->merge([
             'size' => $request->file->getClientSize(),
             'path' => $path
