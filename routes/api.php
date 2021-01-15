@@ -167,5 +167,5 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
 
     Route::get('/purchases', [PurchaseController::class, 'index']);
 
-    Route::post('/upload', [ImageController::class, 'upload']);
+    Route::post('/images', [ImageController::class, 'upload']);
 });

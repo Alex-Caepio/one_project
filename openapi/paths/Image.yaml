@@ -1,0 +1,12 @@
+images:
+  post:
+    operationId: upload-image
+    tags:
+      - Image
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/Image.yaml'
