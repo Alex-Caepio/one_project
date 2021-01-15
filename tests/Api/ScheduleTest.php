@@ -144,8 +144,7 @@ class ScheduleTest extends TestCase
         $service->service_type()->associate($serviceType);
         $service->focus_areas()->attach($focusArea);
         $promoCode = PromotionCode::factory()->create(['promotion_id' => $promotion->id]);
-
-        $response = $this->json('post', "api/schedules/{$schedule->id}/promoсodes", ['promo_code' => $promoCode->name]);
+        $response = $this->json('post', "api/schedules/{$schedule->id}/promoсode", ['promo_code' => $promoCode->name]);
         $response->assertOk();
     }
 
