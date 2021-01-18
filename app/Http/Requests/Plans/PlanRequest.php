@@ -15,7 +15,7 @@ class PlanRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -28,8 +28,9 @@ class PlanRequest extends FormRequest
         return [];
     }
 
-    public function withValidator($validator, StripeClient $stripe)
+    public function withValidator($validator)
     {
+        $stripe = app()->make(StripeClient::class);
         $payment_method = $stripe->paymentMethods->retrieve(
             $this->payment_method_id,
             []
@@ -42,5 +43,4 @@ class PlanRequest extends FormRequest
             $validator->errors()->add('payment_method_id', 'The card does not belong to the user.');
         }
     }
-
 }

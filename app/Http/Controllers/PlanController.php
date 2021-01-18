@@ -23,25 +23,31 @@ class PlanController extends Controller
 
     public function purchase(Plan $plan, StripeClient $stripe, PlanRequest $request)
     {
-        $stripe_id = Auth::user()->stripe_customer_id;
-        $plan_id   = Auth::user()->plan_id;
-        if (!empty($plan_id)) {
-            $stripe->subscriptions->cancel($plan_id, []);
-        }
-
-        $subscription = $stripe->subscriptions->create([
-            'default_payment_method' => $request->payment_method_id,
-            'customer'               => $stripe_id,
-            'items'                  => [
-                ['plan' => $plan->stripe_id],
-            ],
-        ]);
-
         $user             = Auth::user();
-        $user->plan_id    = $subscription->id;
-        $user->plan_until = Carbon::createFromTimestamp($subscription->current_period_end);
-        $user->plan_from  = Carbon::now();
-        $user->save();
+
+        try {
+            $subscription = $stripe->subscriptions->create([
+                'default_payment_method' => $request->payment_method_id,
+                'customer'               => $user->stripe_customer_id,
+                'items'                  => [
+                    ['price' => $plan->stripe_id],
+                ],
+            ]);
+
+            if ($subscription->id) {
+                if (!empty($user->plan_id)) {
+                    $stripe->subscriptions->cancel($user->plan_id, []);
+                }
+                $user->plan_id = $subscription->id;
+            }
+
+            $user->plan_until = Carbon::createFromTimestamp($subscription->current_period_end);;
+            $user->plan_from  = Carbon::now();
+            $user->save();
+
+        } catch (\Stripe\Exception\ApiErrorException $e) {
+            return response()->json(['payment_method_id' => 'could not process that payment method'], 422);
+        }
 
         event(new SubscriptionConfirmationPaid($user));
 
