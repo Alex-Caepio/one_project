@@ -26,8 +26,8 @@ class UpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'first_name'                  => 'required|max:255|string',
-            'last_name'                   => 'required|max:255|string',
+            'first_name'                  => 'sometimes|required|max:255|string',
+            'last_name'                   => 'sometimes|required|max:255|string',
             'about_me'                    => 'max:10000',
             'emails_holistify_update'     => 'bool',
             'emails_practitioner_offers'  => 'bool',
@@ -35,9 +35,9 @@ class UpdateRequest extends FormRequest
             'email_forvard_clients'       => 'bool',
             'email_forvard_support'       => 'bool',
             'about_my_busines'            => 'max:10000',
-            'business_name'               => 'required|max:255|gt:2',
+            'business_name'               => 'sometimes|required|max:255|min:2',
             'business_address'            => 'max:255',
-            'business_email'              => 'required|max:255|email',
+            'business_email'              => 'sometimes|required|max:255|email',
             'public_link'                 => 'max:255|url',
             'business_introduction'       => 'max:255',
             'gender'                      => 'string',
