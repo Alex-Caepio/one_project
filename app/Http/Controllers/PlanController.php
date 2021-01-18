@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\SubscriptionConfirmationPaid;
+use App\Http\Requests\Plans\PlanRequest;
 use App\Models\Plan;
 use App\Http\Requests\Request;
 use App\Transformers\PlanTransformer;
@@ -20,45 +21,33 @@ class PlanController extends Controller
             ->toArray();
     }
 
-    public function purchase(Plan $plan, StripeClient $stripe)
+    public function purchase(Plan $plan, StripeClient $stripe, PlanRequest $request)
     {
-        $stripe_id = Auth::user()->stripe_customer_id;
-        $plan_id = Auth::user()->plan_id;
-        if (!empty($plan_id)) {
-            $stripe->subscriptions->cancel(
-                $plan_id,
-                []
-            );
-        }
+        $user             = Auth::user();
 
-        $card = $stripe->customers->allSources(
-            $stripe_id,
-            ['object' => 'card', 'limit' => 1]
-        );
-
-        if ($card->data[0]->id != null) {
-
+        try {
             $subscription = $stripe->subscriptions->create([
-                'customer' => $stripe_id,
-                'items' => [
-                    ['plan' => $plan->stripe_id],
-                ],
-                'default_payment_method' => $card->data[0]->id,
-            ]);
-        }  else {
-            $subscription = $stripe->subscriptions->create([
-                'customer' => $stripe_id,
-                'items' => [
-                    ['plan' => $plan->stripe_id],
+                'default_payment_method' => $request->payment_method_id,
+                'customer'               => $user->stripe_customer_id,
+                'items'                  => [
+                    ['price' => $plan->stripe_id],
                 ],
             ]);
-        }
 
-        $plan_id = Auth::user();
-        $plan_id->plan_id = $subscription->id;
-        $unixTimestamp = Carbon::createFromTimestamp($subscription->current_period_end);
-        $plan_id->plan_until = $unixTimestamp;
-        $user =  $plan_id->save();
+            if ($subscription->id) {
+                if (!empty($user->plan_id)) {
+                    $stripe->subscriptions->cancel($user->plan_id, []);
+                }
+                $user->plan_id = $subscription->id;
+            }
+
+            $user->plan_until = Carbon::createFromTimestamp($subscription->current_period_end);;
+            $user->plan_from  = Carbon::now();
+            $user->save();
+
+        } catch (\Stripe\Exception\ApiErrorException $e) {
+            return response()->json(['payment_method_id' => 'could not process that payment method'], 422);
+        }
 
         event(new SubscriptionConfirmationPaid($user));
 

@@ -36,7 +36,7 @@ class UserRequest extends FormRequest
             'email_forvard_clients'       => 'bool',
             'email_forvard_support'       => 'bool',
             'about_my_busines'            => 'max:10000',
-            'busines_name'                => 'required|max:255',
+            'busines_name'                => 'required|max:255|gt:2',
             'busines_address'             => 'required|max:255',
             'busines_email'               => 'required|max:255|email',
             'public_link'                 => 'required|max:255|url',
@@ -50,6 +50,8 @@ class UserRequest extends FormRequest
             'password'                    => 'required|max:45',
             'avatar_url'                  => 'min:5',
             'background_url'              => 'min:5',
+
+
         ];
     }
 

@@ -26,10 +26,36 @@ class UpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'current_password'        => 'required_with:password',
-            'password'                => 'max:20|min:8|regex:/(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]/',
-            'first_name'              => 'string|min:2|max:30',
-            'last_name'               => 'string|min:2|max:30',
+            'first_name'                  => 'sometimes|required|max:255|string',
+            'last_name'                   => 'sometimes|required|max:255|string',
+            'about_me'                    => 'max:10000',
+            'emails_holistify_update'     => 'bool',
+            'emails_practitioner_offers'  => 'bool',
+            'email_forvard_practitioners' => 'bool',
+            'email_forvard_clients'       => 'bool',
+            'email_forvard_support'       => 'bool',
+            'about_my_busines'            => 'max:10000',
+            'business_name'               => 'sometimes|required|max:255|min:2',
+            'business_address'            => 'max:255',
+            'business_email'              => 'sometimes|required|max:255|email',
+            'public_link'                 => 'max:255|url',
+            'business_introduction'       => 'max:255',
+            'gender'                      => 'string',
+            'date_of_birth'               => 'date',
+            'mobile_number'               => 'max:255',
+            'business_phone_number'       => 'max:255',
+            'email'                       => 'sometimes|required|email|unique',
+            'email_verified_at'           => 'date_format:Y-m-d H:i:s',
+            'password'                    => 'max:45',
+            'avatar_url'                  => 'min:5',
+            'background_url'              => 'min:5',
+
+            'current_password'            => 'required_with:password',
+            'password'                    => 'max:20|min:8|regex:/(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]/',
+            'first_name'                  => 'string|min:2|max:30',
+            'last_name'                   => 'string|min:2|max:30',
+            'mobile_country_code'         => 'exists:countries,id|integer|required_with:mobile_number',
+            'business_phone_country_code' => 'exists:countries,id|integer|required_with:busines_phone_number',
         ];
     }
 
