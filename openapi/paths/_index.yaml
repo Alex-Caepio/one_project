@@ -125,6 +125,12 @@ bookings/{id}/reschedule:
   $ref: "./Schedules.yaml#/schedules~1{id}~1freeze"
 /schedules/{id}/availabilities:
   $ref: "./Schedules.yaml#/schedules~1{id}~1availabilities"
+#purchases
+/purchases:
+  $ref: "./Purchase.yaml#/purchases"
+#images
+/images:
+  $ref: "./Image.yaml#/images"
 
 ## ADMIN ENDPOINTS
 /admin/profile:

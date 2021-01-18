@@ -2,29 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Image;
 use App\Http\Requests\Image\ImageUploadRequest;
 use Illuminate\Support\Facades\Storage;
 
 class ImageController extends Controller
 {
-    private $image;
-    public function __construct(Image $image)
-    {
-        $this->image = $image;
-    }
-
     public function upload(ImageUploadRequest $request)
     {
-        $ImageStorage = config('image.image_storage');
+        $image = Storage::disk(config('image.image_storage'))->put('tmp/', $request->file);
 
-        $path = Storage::disk($ImageStorage)->put('/tmp', $request->file);
-        $request->merge([
-            'size' => $request->file->getClientSize(),
-            'path' => $path
-        ]);
-        $image = $this->image->create($request->only('path', 'title', 'size'));
+        $url = Storage::url($image);
 
-        return $image->getUrlAtribute($ImageStorage);
+        return response()->json(['url' => $url]);
     }
 }
