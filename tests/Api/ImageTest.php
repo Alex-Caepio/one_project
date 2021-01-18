@@ -28,9 +28,7 @@ class ImageTest extends TestCase
             'title' => 'kek',
             'file'  => $file = UploadedFile::fake()->image('photo1.jpg'),
         ]);
-        $title=$file->hashName();
-        $response->assertOk();
-        $this->assertDatabaseHas('images',['path' =>'tmp/'.$title]);
+        $response->assertOk()->assertJsonStructure(['url']);
     }
 }
 

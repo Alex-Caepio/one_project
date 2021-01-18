@@ -10,15 +10,12 @@ class ImageController extends Controller
 {
     public function upload(ImageUploadRequest $request)
     {
-        $ImageStorage = config('image.image_storage');
+        Storage::disk(config('image.image_storage'))->put('tmp/', $request->file);
 
-        $path = Storage::disk($ImageStorage)->put('/tmp', $request->file);
-        $request->merge([
-            'size' => $request->file('file')->getSize(),
-            'path' => $path
-        ]);
-        $image = Image::create($request->only('path', 'title', 'size'));
+        config('image.image_storage') == 'local' ?
+            $url = Storage::path($request->file) :
+            $url = Storage::url($request->file);
 
-         return $image->url;
+        return response()->json(['url' => $url]);
     }
 }
