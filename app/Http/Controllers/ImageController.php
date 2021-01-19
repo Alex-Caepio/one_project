@@ -9,9 +9,10 @@ class ImageController extends Controller
 {
     public function upload(ImageUploadRequest $request)
     {
-        $image = Storage::disk(config('image.image_storage'))->put('tmp/', $request->file);
-
-        $url = Storage::url($image);
+        $image = Storage::disk(config('image.image_storage'))->put('tmp', $request->file);
+        $url= config('image.image_storage') != 'public'
+            ? Storage::url($image)
+            : env('APP_URL') . Storage::url($image);
 
         return response()->json(['url' => $url]);
     }
