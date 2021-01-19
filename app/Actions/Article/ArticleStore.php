@@ -18,8 +18,8 @@ class ArticleStore extends ArticleAction {
 
         if ($request->filled('image_url'))
         {
-            $image = Storage::move('tmp/' . basename($request->image_url), "/images/artcles/{$article->id}/media_images/"
-                . basename($request->image_url));
+            $image = Storage::disk(config('image.image_storage'))
+                ->put("/images/artcles/{$article->id}/media_images/", file_get_contents($request->image_url));
             $request->image_url = Storage::url($image);
         }
 
