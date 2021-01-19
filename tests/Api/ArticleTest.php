@@ -5,6 +5,8 @@ namespace Tests\Api;
 use App\Models\Article;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\Concerns\ImpersonatesUsers;
 
@@ -100,5 +102,28 @@ class ArticleTest extends TestCase
         $authUser = User::factory()->create();
         $authUser->favourite_articles()->attach($article);
         $response->assertStatus(204);
+    }
+
+    public function test_can_create_article_with_media_images(): void
+    {
+        $user = User::factory()->create(['account_type' => 'practitioner', 'is_published' => true]);
+        $article = Article::factory()->make();
+        Storage::fake('local');
+        $response = $this->json('post', 'api/images', [
+            'title' => 'kek',
+            'file'  => $file = UploadedFile::fake()->image('photo1.jpg'),
+        ]);
+        $response->assertOk()->assertJsonStructure(['url']);
+
+        $response = $this->actingAs($user)->json('post', '/api/articles', [
+            'description' => $article->description,
+            'introduction' => $article->introduction,
+            'is_published' => $article->is_published,
+            'title' => $article->title,
+            'user_id' => $user->id,
+            'url' => $article->url,
+            'image_url' => env('APP_URL').'/storage/tmp/yUm0etQaFcP8AnSlps88LYPfNx7x8TvMEZ0V1QGm.jpg'
+        ]);
+        $response->assertOk();
     }
 }

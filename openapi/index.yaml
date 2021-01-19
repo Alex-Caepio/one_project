@@ -237,6 +237,9 @@ components:
               url:
                 type: string
                 example: http://cdn.com/yoga-practice.mp4
+              preview:
+                type: string
+                example: http://cdn.com/yoga-practice.jpg
         media_files:
           type: array
           items:
@@ -611,6 +614,10 @@ components:
           type: string
         service_id:
           type: integer
+          nullable: true
+        location_id:
+          type: integer
+          nullable: true
         start_date:
           type: string
           format: date-time
@@ -3274,6 +3281,113 @@ paths:
                     - amount_left
                     - amount_bought
                     - amount_freezed
+  /purchases:
+    get:
+      tags:
+        - Purchase
+      parameters:
+        - name: page
+          in: query
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: limit
+          in: query
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: x-page
+          in: header
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: x-limit
+          in: header
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: with
+          in: query
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: user,schedule,price
+        - name: x-with
+          in: header
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: user,schedule,price
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    schedule_id:
+                      type: integer
+                    price_id:
+                      type: integer
+                    user_id:
+                      type: integer
+                    promocode:
+                      type: string
+                      nullable: true
+                    price_original:
+                      type: number
+                      format: double
+                    price:
+                      type: number
+                      format: double
+                    created_at:
+                      type: string
+                      nullable: true
+                      format: date-time
+                    updated_at:
+                      type: string
+                      nullable: true
+                      format: date-time
+                    deleted_at:
+                      type: string
+                      nullable: true
+                      format: date-time
+                    is_deposit:
+                      type: boolean
+                    deposit_amount:
+                      type: number
+                      format: double
+                      nullable: true
+  /images:
+    post:
+      operationId: upload-image
+      tags:
+        - Image
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  url:
+                    type: string
+                    example: https://s3.amazonaws.com/bucketname/foldername/imagename.jpg
   /admin/profile:
     get:
       operationId: get-profile

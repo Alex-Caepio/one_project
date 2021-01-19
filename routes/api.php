@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\MainPageController;
+use App\Http\Controllers\PaymentMethodsController;
 use App\Http\Controllers\PriceController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\ScheduleFreezesController;
@@ -167,5 +168,8 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
 
     Route::get('/purchases', [PurchaseController::class, 'index']);
 
-    Route::post('/upload', [ImageController::class, 'upload']);
+    Route::get('/payment-methods', [PaymentMethodsController::class, 'index']);
+    Route::post('/payment-methods', [PaymentMethodsController::class, 'show']);
+
+    Route::post('/images', [ImageController::class, 'upload']);
 });
