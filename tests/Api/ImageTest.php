@@ -22,13 +22,23 @@ class ImageTest extends TestCase
 
     public function test_can_upload_image()
     {
-        Storage::fake('local');
+        Storage::fake('public');
 
         $response = $this->json('post', 'api/images', [
             'title' => 'kek',
             'file'  => $file = UploadedFile::fake()->image('photo1.jpg'),
         ]);
-        $response->assertOk()->assertJsonStructure(['url']);
+        $response->assertOk()->assertJsonStructure([
+            'url',
+            'message?',
+            'bytes' ,
+            'mime',
+            'original_extension' ,
+            'original_filename'  ,
+            'public_id' ,
+            'signature?',
+            'status'
+        ]);
     }
 }
 
