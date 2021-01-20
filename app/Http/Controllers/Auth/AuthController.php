@@ -17,6 +17,7 @@ use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 use Stripe\StripeClient;
 
@@ -70,6 +71,16 @@ class AuthController extends Controller
     public function update(UpdateRequest $request)
     {
         $user = $request->user();
+        if ($request->filled('media_images'))
+        {
+            foreach ($request->media_images as $media_image)
+            {
+                $image = Storage::disk(config('image.image_storage'))
+                    ->put("/images/users/{$user->id}/media_images/", file_get_contents($media_image['url']));
+                $media_image[] = Storage::url($image);
+            }
+            $request->media_images = $media_image;
+        }
         $user->update($request->all());
         if ($request->filled('password')) {
             $user->password = Hash::make($request->get('password'));

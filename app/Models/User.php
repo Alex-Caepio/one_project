@@ -203,4 +203,11 @@ class User extends Authenticatable implements MustVerifyEmail {
     {
         return $this->hasMany(Image::class);
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     */
+    public function media_images() {
+        return $this->morphMany(MediaImage::class, 'morphesTo', 'model_name', 'model_id');
+    }
 }
