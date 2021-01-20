@@ -25,13 +25,13 @@ class PlanUpdateRequest extends Request
     {
         return [
             'name'   => 'max:20',
-            'price' => 'nullable|integer|gte:0',
+            'price' => 'nullable|integer|min:0',
             'description' => 'max:150',
             'trial_months' => 'nullable|integer',
-            'commission_on_sale' => 'gte:0|lte:100',
-            'schedules_per_service' => 'gte:1|lte:20',
-            'pricing_options_per_service' => 'gte:1|lte:20',
-            'article_publishing' => 'gte:1|lte:20'
+            'commission_on_sale' => 'min:0|max:100',
+            'schedules_per_service' => 'min:1|max:20',
+            'pricing_options_per_service' => 'min:1|max:20',
+            'article_publishing' => 'min:1|max:20'
         ];
     }
 

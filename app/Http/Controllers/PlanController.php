@@ -35,12 +35,13 @@ class PlanController extends Controller
             ]);
 
             if ($subscription->id) {
-                if (!empty($user->plan_id)) {
-                    $stripe->subscriptions->cancel($user->plan_id, []);
+                if (!empty($user->stripe_plan_id)) {
+                    $stripe->subscriptions->cancel($user->stripe_plan_id, []);
                 }
-                $user->plan_id = $subscription->id;
+                $user->stripe_plan_id = $subscription->id;
             }
 
+            $user->plan_id    = $plan->id;
             $user->plan_until = Carbon::createFromTimestamp($subscription->current_period_end);;
             $user->plan_from  = Carbon::now();
             $user->save();

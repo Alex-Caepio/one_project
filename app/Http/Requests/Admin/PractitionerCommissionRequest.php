@@ -26,7 +26,7 @@ class PractitionerCommissionRequest extends Request
     {
         return [
             'practitioner_id'   => 'required|exists:users,id',
-            'rate' => 'gt:0|lte:100',
+            'rate' => 'min:1|max:100',
             'date_from' => 'required_if:is_dateless,false',
             'date_to' => 'required_if:is_dateless,false',
         ];
