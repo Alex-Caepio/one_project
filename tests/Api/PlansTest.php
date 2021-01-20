@@ -5,6 +5,7 @@ namespace Tests\Api;
 
 use App\Models\Plan;
 use App\Models\User;
+use App\Traits\usesStripe;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Event;
 use Mockery;
@@ -16,6 +17,7 @@ use Tests\TestCase;
 class PlansTest extends TestCase
 {
     use DatabaseTransactions;
+    use usesStripe;
 
 
     public function setUp(): void
@@ -39,7 +41,7 @@ class PlansTest extends TestCase
         $stripeProduct = $this->creteStripeProduct();
         $stripePrirce  = $this->creteStripeRecurringPrice($stripeProduct);
         $stripeUser    = $this->createStripeClient($this->user);
-        $paymentMethod = $this->createStripePaymentMethod('4242424242424242', $this->user);
+        $paymentMethod = $this->createStripePaymentMethod( $this->user,'4242424242424242',);
 
         $plan     = Plan::factory()->create(['price' => 1, 'stripe_id' => $stripePrirce->id]);
         $payload  = [
@@ -82,35 +84,4 @@ class PlansTest extends TestCase
             'recurring' => ['interval' => 'month'],
         ]);
     }
-
-    protected function createStripeClient(User $user)
-    {
-        $client = app()->make(StripeClient::class);
-        $stripeUser =  $client->customers->create(['email' => $user->email]);
-        $this->user->stripe_customer_id = $stripeUser->id;
-        $this->user->save();
-
-        return $stripeUser;
-    }
-
-    protected function createStripePaymentMethod($cardNumber, User $user)
-    {
-        $client        = app()->make(StripeClient::class);
-        $paymentMethod = $client->paymentMethods->create([
-            'type' => 'card',
-            'card' => [
-                'number'    => $cardNumber,
-                'exp_month' => 1,
-                'exp_year'  => 2022,
-                'cvc'       => '314',
-            ],
-        ]);
-
-        $client->paymentMethods->attach($paymentMethod->id, [
-            'customer' => $user->stripe_customer_id
-        ]);
-
-        return $paymentMethod;
-    }
-
 }
