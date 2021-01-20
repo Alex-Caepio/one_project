@@ -28,7 +28,7 @@ class ArticleStore extends ArticleAction {
             foreach ($request->media_images as $media_image)
             {
                 $image = Storage::disk(config('image.image_storage'))
-                    ->put("/images/artcles/{$article->id}/media_images/", file_get_contents($media_image));
+                    ->put("/images/artcles/{$article->id}/media_images/", file_get_contents($media_image['url']));
                 $media_image[] = Storage::url($image);
             }
             $request->media_images = $media_image;
