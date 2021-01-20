@@ -5,7 +5,7 @@ namespace Tests\Api;
 
 use App\Models\Plan;
 use App\Models\User;
-use App\Traits\StripeTesting;
+use App\Traits\usesStripe;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Event;
 use Mockery;
@@ -17,7 +17,7 @@ use Tests\TestCase;
 class PlansTest extends TestCase
 {
     use DatabaseTransactions;
-    use StripeTesting;
+    use usesStripe;
 
 
     public function setUp(): void

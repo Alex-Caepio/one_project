@@ -7,7 +7,7 @@ use App\Models\User;
 use phpDocumentor\Reflection\Types\Null_;
 use Stripe\StripeClient;
 
-trait StripeTesting{
+trait usesStripe{
 
     protected function createStripeClient(User $user)
     {
