@@ -3,6 +3,7 @@
 namespace App\Transformers;
 
 use App\Models\User;
+use League\Fractal\Resource\Collection;
 
 class UserTransformer extends Transformer {
     protected $availableIncludes = [
@@ -60,6 +61,7 @@ class UserTransformer extends Transformer {
             'business_company_houses_id'  => $user->business_company_houses_id,
             'plan_from'                   => $user->plan_from,
             'plan_until'                  => $user->plan_until,
+            'discipline_id'               => $user->discipline_id,
         ];
     }
 
@@ -103,4 +105,12 @@ class UserTransformer extends Transformer {
         return $this->itemOrNull($user->plan, new PlanTransformer());
     }
 
+    /**
+     * @param \App\Models\User $user
+     * @return \League\Fractal\Resource\Collection|null
+     */
+
+    public function includeMediaImages(User $user): ?Collection {
+        return $this->collectionOrNull($user->media_images, new MediaImageTransformer());
+    }
 }

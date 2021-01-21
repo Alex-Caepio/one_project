@@ -108,13 +108,6 @@ class ArticleTest extends TestCase
     {
         $user = User::factory()->create(['account_type' => 'practitioner', 'is_published' => true]);
         $article = Article::factory()->make();
-        Storage::fake('local');
-        $response = $this->json('post', 'api/images', [
-            'title' => 'kek',
-            'file'  => $file = UploadedFile::fake()->image('photo1.jpg'),
-        ]);
-        $response->assertOk()->assertJsonStructure(['url']);
-
         $response = $this->actingAs($user)->json('post', '/api/articles', [
             'description' => $article->description,
             'introduction' => $article->introduction,
@@ -122,8 +115,12 @@ class ArticleTest extends TestCase
             'title' => $article->title,
             'user_id' => $user->id,
             'url' => $article->url,
-            'image_url' => env('APP_URL').'/storage/tmp/yUm0etQaFcP8AnSlps88LYPfNx7x8TvMEZ0V1QGm.jpg'
+            'media_images' => [
+                ['url' => 'http://google.com'],
+                ['url' => 'http://google.com'],
+            ]
         ]);
         $response->assertOk();
+        $this->assertCount(2, Article::first()->media_images);
     }
 }
