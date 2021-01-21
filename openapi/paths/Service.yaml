@@ -83,7 +83,7 @@ services:
               type: array
               items:
                 $ref: "../schemas/Service.yaml"
-services/practitioner:
+services-practitioner:
   get:
     tags:
       - Service
@@ -207,7 +207,7 @@ services/{id}:
       '204':
         description: OK
 
-services/practitioner/{id}:
+services-practitioner/{id}:
   get:
     tags:
       - Service

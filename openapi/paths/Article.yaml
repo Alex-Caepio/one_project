@@ -76,7 +76,7 @@ articles:
               type: array
               items:
                 $ref: '../schemas/Article.yaml'
-articles/practitioner:
+articles-practitioner:
   get:
     operationId: articles-practitioner
     tags:
@@ -196,7 +196,7 @@ articles/{id}:
           application/json:
             schema:
               $ref: '../schemas/Article.yaml'
-articles/practitioner/{id}:
+articles-practitioner/{id}:
   get:
     tags:
       - Article
