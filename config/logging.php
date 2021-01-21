@@ -99,6 +99,14 @@ return [
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
         ],
+        'stripe_plans_errors' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/stripe_plan_erros.log'),
+        ],
+        'stripe_plans_success' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/stripe_plan_success.log'),
+        ],
     ],
 
 ];
