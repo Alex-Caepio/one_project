@@ -82,14 +82,14 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::get('/practitioners/favourites', [UserController::class, 'practitionerFavorites']);
 
     Route::middleware(['practitioner'])->group(function () {
-        Route::get('articles/practitioner', [ArticleController::class, 'practitionerArticleList']);
-        Route::get('articles/practitioner/{article}', [ArticleController::class, 'practitionerArticleShow']);
+        Route::get('articles-practitioner', [ArticleController::class, 'practitionerArticleList']);
+        Route::get('articles-practitioner/{article}', [ArticleController::class, 'practitionerArticleShow']);
         Route::post('articles', [ArticleController::class, 'store']);
         Route::put('articles/{article}', [ArticleController::class, 'update']);
         Route::delete('articles/{article}', [ArticleController::class, 'destroy']);
 
-        Route::get('services/practitioner', [ServiceController::class, 'practitionerServiceList']);
-        Route::get('services/practitioner/{service}', [ServiceController::class, 'practitionerServiceShow']);
+        Route::get('services-practitioner', [ServiceController::class, 'practitionerServiceList']);
+        Route::get('services-practitioner/{service}', [ServiceController::class, 'practitionerServiceShow']);
         Route::post('services', [ServiceController::class, 'store']);
         Route::put('services/{service}', [ServiceController::class, 'update']);
         Route::post('services/{service}/publish', [ServiceController::class, 'publish']);

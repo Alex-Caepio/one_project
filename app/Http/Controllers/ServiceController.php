@@ -48,7 +48,7 @@ class ServiceController extends Controller {
         return fractal($publicService, new ServiceTransformer())->parseIncludes($request->getIncludes())->respond();
     }
 
-    public function practitionerServiceShow(ServicePublishRequest $request, Service $service) {
+    public function practitionerServiceShow(ServiceOwnerRequest $request, Service $service) {
         return fractal($service, new ServiceTransformer())->parseIncludes($request->getIncludes())->respond();
     }
 
