@@ -17,6 +17,7 @@ use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 use Stripe\StripeClient;
 
@@ -70,11 +71,53 @@ class AuthController extends Controller
     public function update(UpdateRequest $request)
     {
         $user = $request->user();
+        if ($request->filled('media_images'))
+        {
+            foreach ($request->media_images as $media_image)
+            {
+                $image = Storage::disk(config('image.image_storage'))
+                    ->put("/images/users/{$user->id}/media_images/", file_get_contents($media_image['url']));
+                $media_image[] = Storage::url($image);
+            }
+            $request->media_images = $media_image;
+        }
         $user->update($request->all());
         if ($request->filled('password')) {
             $user->password = Hash::make($request->get('password'));
             $user->save();
             event(new PasswordChanged($user));
+        }
+
+        if ($request->filled('services')) {
+            $user->featured_practitioners()->sync($request->get('services'));
+        }
+        if ($request->filled('articles')) {
+            $user->featured_services()->sync($request->get('articles'));
+        }
+        if ($request->filled('schedules')) {
+            $user->focus_areas()->sync($request->get('schedules'));
+        }
+        if ($request->filled('disciplines')) {
+            $user->related_disciplines()->sync($request->get('disciplines'));
+        }
+        if ($request->filled('promotion_codes')) {
+            $user->featured_focus_areas()->sync($request->get('promotion_codes'));
+        }
+        if ($request->filled('favorite_articles')) {
+            $user->featured_articles()->sync($request->get('favorite_articles'));
+        }
+        if ($request->filled('favorite_services')) {
+            $user->featured_articles()->sync($request->get('favorite_services'));
+        }
+        if ($request->filled('favorite_practitioners')) {
+            $user->featured_articles()->sync($request->get('favorite_practitioners'));
+        }
+        if ($request->filled('plan')) {
+            $user->featured_articles()->sync($request->get('plan'));
+        }
+        if ($request->has('media_images')) {
+            $user->media_images()->delete();
+            $user->media_images()->createMany($request->get('media_images'));
         }
         return fractal($user, new UserTransformer())->respond();
     }

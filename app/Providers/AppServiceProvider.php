@@ -59,6 +59,7 @@ class AppServiceProvider extends ServiceProvider
             'service'    => Service::class,
             'discipline' => Discipline::class,
             'article'    => Article::class,
+            'user'       => User::class,
         ]);
 
         /* Events Observer */
