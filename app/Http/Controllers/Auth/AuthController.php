@@ -113,7 +113,7 @@ class AuthController extends Controller
             }
         }
         if ($request->filled('keywords')) {
-            $keywordsId = Keyword::whereIn('name', $request->keywords)->pluck('id');
+            $keywordsId = Keyword::whereIn('title', $request->keywords)->pluck('id');
             $user->keywords()->sync($keywordsId);
         }
         if ($request->has('media_images')) {
