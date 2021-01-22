@@ -113,4 +113,7 @@ class UserTransformer extends Transformer {
     public function includeMediaImages(User $user): ?Collection {
         return $this->collectionOrNull($user->media_images, new MediaImageTransformer());
     }
+    public function includeMediaVideos(User $user): ?Collection {
+        return $this->collectionOrNull($user->media_videos, new MediaVideoTransformer());
+    }
 }
