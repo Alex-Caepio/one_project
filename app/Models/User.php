@@ -8,6 +8,8 @@ use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -199,15 +201,23 @@ class User extends Authenticatable implements MustVerifyEmail {
         return $this->hasMany(Instalment::class);
     }
 
-    public function images()
-    {
+    public function images(): HasMany {
         return $this->hasMany(Image::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
-     */
-    public function media_images() {
+    public function media_images(): MorphMany {
         return $this->morphMany(MediaImage::class, 'morphesTo', 'model_name', 'model_id');
+    }
+
+    public function media_videos(): MorphMany {
+        return $this->morphMany(MediaImage::class, 'morphesTo', 'model_name', 'model_id');
+    }
+
+    public function service_types(): HasManyThrough {
+        return $this->hasManyThrough(ServiceType::class, Service::class);
+    }
+
+    public function keywords(): HasMany {
+        return $this->hasMany(Keyword::class);
     }
 }

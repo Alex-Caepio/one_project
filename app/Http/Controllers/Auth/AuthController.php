@@ -11,6 +11,8 @@ use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\PublishRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\UpdateRequest;
+use App\Models\Keyword;
+use App\Models\Schedule;
 use App\Models\User;
 use App\Transformers\UserTransformer;
 use DB;
@@ -75,9 +77,12 @@ class AuthController extends Controller
         {
             foreach ($request->media_images as $media_image)
             {
-                $image = Storage::disk(config('image.image_storage'))
-                    ->put("/images/users/{$user->id}/media_images/", file_get_contents($media_image['url']));
-                $media_image[] = Storage::url($image);
+                if (Storage::disk('s3')->missing(file_get_contents($media_image['url'])))
+                {
+                    $image = Storage::disk(config('image.image_storage'))
+                        ->put("/images/users/{$user->id}/media_images/", file_get_contents($media_image['url']));
+                    $media_image[] = Storage::url($image);
+                }
             }
             $request->media_images = $media_image;
         }
@@ -88,36 +93,33 @@ class AuthController extends Controller
             event(new PasswordChanged($user));
         }
 
-        if ($request->filled('services')) {
-            $user->featured_practitioners()->sync($request->get('services'));
-        }
-        if ($request->filled('articles')) {
-            $user->featured_services()->sync($request->get('articles'));
-        }
-        if ($request->filled('schedules')) {
-            $user->focus_areas()->sync($request->get('schedules'));
-        }
         if ($request->filled('disciplines')) {
-            $user->related_disciplines()->sync($request->get('disciplines'));
+            if(!User::with('disciplines')->where('id', $request->disciplines)->get()) {
+                $user->disciplines()->attach($request->get('disciplines'));
+            }
         }
-        if ($request->filled('promotion_codes')) {
-            $user->featured_focus_areas()->sync($request->get('promotion_codes'));
+
+        if ($request->filled('focus_areas')) {
+            if(!User::with('focus_areas')->where('id', $request->focus_areas)) {
+                $user->focus_areas()->attach($request->get('focus_areas'));
+            }
         }
-        if ($request->filled('favorite_articles')) {
-            $user->featured_articles()->sync($request->get('favorite_articles'));
+        if ($request->filled('service_types')) {
+            foreach ($request->service_types as $service_type) {
+                if (!User::with('service_types')->where('id', $service_type)->get()) {
+                    $user->service_types()->save($request->get($service_type));
+                }
+            }
         }
-        if ($request->filled('favorite_services')) {
-            $user->featured_articles()->sync($request->get('favorite_services'));
-        }
-        if ($request->filled('favorite_practitioners')) {
-            $user->featured_articles()->sync($request->get('favorite_practitioners'));
-        }
-        if ($request->filled('plan')) {
-            $user->featured_articles()->sync($request->get('plan'));
+        if ($request->filled('keywords')) {
+            $keywordsId = Keyword::whereIn('name', $request->keywords)->pluck('id');
+            $user->keywords()->sync($keywordsId);
         }
         if ($request->has('media_images')) {
-            $user->media_images()->delete();
             $user->media_images()->createMany($request->get('media_images'));
+        }
+        if ($request->has('media_videos')) {
+            $user->media_videos()->createMany($request->get('media_videos'));
         }
         return fractal($user, new UserTransformer())->respond();
     }
