@@ -39,10 +39,10 @@ class StoreServiceRequest extends Request {
             ];
         }
         return [
-            'title'           => 'min:5|max:100',
-            'description'     => 'string|min:5',
+            'title'           => 'string|min:5|max:100',
+            'description'     => 'nullable|string|min:5|max:1000',
             'is_published'    => 'boolean',
-            'introduction'    => 'min:5',
+            'introduction'    => 'string|min:5|max:500',
             'url'             => 'url',
             'service_type_id' => 'required|exists:service_types,id'
         ];
