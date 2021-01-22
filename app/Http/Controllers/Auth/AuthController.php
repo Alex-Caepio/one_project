@@ -21,6 +21,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Stripe\StripeClient;
 
@@ -29,14 +30,40 @@ class AuthController extends Controller
 {
     public function register(RegisterRequest $request, StripeClient $stripe)
     {
-        $stripeCustomer = run_action(CreateStripeUserByEmail::class, $request->email);
-        $stripeAccount  = $stripe->accounts->create([
-            'type'  => 'standard',
+        try {
+
+            $stripeCustomer = run_action(CreateStripeUserByEmail::class, $request->email);
+            $stripeAccount = $stripe->accounts->create([
+                'type' => 'standard',
+                'email' => $request->email,
+            ]);
+            $user = run_action(CreateUserFromRequest::class, $request, [
+                'stripe_customer_id' => $stripeCustomer->id,
+                'stripe_account_id' => $stripeAccount->id
+            ]);
+
+        } catch (\Stripe\Exception\ApiErrorException $e) {
+
+            Log::channel('stripe_client_error')->info("Client could not registered in stripe", [
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
+                'business_email' => $request->business_email,
+                'email' => $request->email,
+                'stripe_customer_id' => $stripeCustomer->id,
+                'stripe_account_id'  => $stripeAccount->id,
+            ]);
+
+             return abort(500);
+        }
+
+        Log::channel('stripe_client_success')->info("Client registered in stripe", [
+            'user_id' => $user->id,
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'business_email' => $request->business_email,
             'email' => $request->email,
-        ]);
-        $user           = run_action(CreateUserFromRequest::class, $request, [
             'stripe_customer_id' => $stripeCustomer->id,
-            'stripe_account_id'  => $stripeAccount->id
+            'stripe_account_id'  => $stripeAccount->id,
         ]);
 
         event(new UserRegistered($user));
