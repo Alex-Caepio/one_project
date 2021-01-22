@@ -78,7 +78,7 @@ class AuthController extends Controller
         {
             foreach ($request->media_images as $media_image)
             {
-                if (Storage::disk('s3')->missing(file_get_contents($media_image['url'])))
+                if (Storage::disk(config('image.image_storage'))->missing(file_get_contents($media_image['url'])))
                 {
                     $image = Storage::disk(config('image.image_storage'))
                         ->put("/images/users/{$user->id}/media_images/", file_get_contents($media_image['url']));
