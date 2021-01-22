@@ -12,6 +12,7 @@ use App\Http\Requests\Auth\PublishRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\UpdateRequest;
 use App\Models\Keyword;
+use App\Models\MediaVideo;
 use App\Models\Schedule;
 use App\Models\User;
 use App\Transformers\UserTransformer;
@@ -77,7 +78,7 @@ class AuthController extends Controller
         {
             foreach ($request->media_images as $media_image)
             {
-                if (Storage::disk('s3')->missing(file_get_contents($media_image['url'])))
+                if (Storage::disk(config('image.image_storage'))->missing(file_get_contents($media_image['url'])))
                 {
                     $image = Storage::disk(config('image.image_storage'))
                         ->put("/images/users/{$user->id}/media_images/", file_get_contents($media_image['url']));
@@ -95,13 +96,13 @@ class AuthController extends Controller
 
         if ($request->filled('disciplines')) {
             if(!User::with('disciplines')->where('id', $request->disciplines)->get()) {
-                $user->disciplines()->attach($request->get('disciplines'));
+                $user->disciplines()->sync($request->get('disciplines'));
             }
         }
 
         if ($request->filled('focus_areas')) {
             if(!User::with('focus_areas')->where('id', $request->focus_areas)) {
-                $user->focus_areas()->attach($request->get('focus_areas'));
+                $user->focus_areas()->sync($request->get('focus_areas'));
             }
         }
         if ($request->filled('service_types')) {
@@ -112,13 +113,14 @@ class AuthController extends Controller
             }
         }
         if ($request->filled('keywords')) {
-            $keywordsId = Keyword::whereIn('name', $request->keywords)->pluck('id');
+            $keywordsId = Keyword::whereIn('title', $request->keywords)->pluck('id');
             $user->keywords()->sync($keywordsId);
         }
         if ($request->has('media_images')) {
             $user->media_images()->createMany($request->get('media_images'));
         }
         if ($request->has('media_videos')) {
+            MediaVideo::whereNotIn('url', $request->media_videos)->delete();
             $user->media_videos()->createMany($request->get('media_videos'));
         }
         return fractal($user, new UserTransformer())->respond();
