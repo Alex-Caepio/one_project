@@ -217,7 +217,7 @@ class User extends Authenticatable implements MustVerifyEmail {
         return $this->hasManyThrough(ServiceType::class, Service::class);
     }
 
-    public function keywords(): HasMany {
-        return $this->hasMany(Keyword::class);
+    public function keywords(): belongsToMany {
+        return $this->belongsToMany(Keyword::class);
     }
 }

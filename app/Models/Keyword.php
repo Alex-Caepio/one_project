@@ -12,7 +12,4 @@ class Keyword extends Model
 
     protected $fillable = ['title'];
 
-    public function user(): BelongsTo {
-        return $this->belongsTo(User::class);
-    }
 }
