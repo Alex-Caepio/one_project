@@ -17,11 +17,13 @@ use App\Models\Schedule;
 use App\Models\User;
 use App\Transformers\UserTransformer;
 use DB;
+use Doctrine\DBAL\Exception\NotNullConstraintViolationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
+use PHPUnit\Runner\Exception;
 use Stripe\StripeClient;
 
 
@@ -116,11 +118,12 @@ class AuthController extends Controller
             $keywordsId = Keyword::whereIn('title', $request->keywords)->pluck('id');
             $user->keywords()->sync($keywordsId);
         }
-        if ($request->has('media_images')) {
+        if ($request->has('media_images')){
+            $user->media_images()->whereNotIn('url', $request->media_videos)->delete();
             $user->media_images()->createMany($request->get('media_images'));
         }
         if ($request->has('media_videos')) {
-            MediaVideo::whereNotIn('url', $request->media_videos)->delete();
+            $user->media_videos()->whereNotIn('url', $request->media_videos)->delete();
             $user->media_videos()->createMany($request->get('media_videos'));
         }
         return fractal($user, new UserTransformer())->respond();
