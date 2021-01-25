@@ -16,7 +16,9 @@ class UserTransformer extends Transformer {
         'favourite_services',
         'favourite_articles',
         'favourite_practitioners',
-        'plan'
+        'plan',
+        'media_images',
+        'media_videos'
     ];
 
     public function transform(User $user) {
