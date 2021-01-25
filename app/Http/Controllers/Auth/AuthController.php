@@ -98,16 +98,13 @@ class AuthController extends Controller
             $user->disciplines()->sync($request->get('disciplines'));
         }
 
-        if ($request->filled('focus_areas')) {
-            $user->focus_areas()->sync($request->get('focus_areas'));
+        if ($request->filled('featured_focus_area')) {
+            $user->featured_focus_area()->sync($request->get('featured_focus_area'));
         }
         if ($request->filled('service_types')) {
-            foreach ($request->service_types as $service_type) {
-                if (!User::with('service_types')->where('id', $service_type)->get()) {
-                    $user->service_types()->save($request->get($service_type));
-                }
-            }
+            $user->service_types()->sync($request->get('service_types'));
         }
+
         if ($request->filled('keywords')) {
             $keywordsId = Keyword::whereIn('title', $request->keywords)->pluck('id');
             $user->keywords()->sync($keywordsId);
