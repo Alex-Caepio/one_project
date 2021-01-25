@@ -117,7 +117,7 @@ class AuthController extends Controller
             $user->keywords()->sync($keywordsId);
         }
         if ($request->has('media_images')){
-            $user->media_images()->whereNotIn('url', $request->media_videos)->delete();
+            $user->media_images()->whereNotIn('url', $request->media_images)->delete();
             $user->media_images()->createMany($request->get('media_images'));
         }
         if ($request->has('media_videos')) {
