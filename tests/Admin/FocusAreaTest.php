@@ -57,11 +57,11 @@ class FocusAreaTest extends TestCase
         $articles = Article::factory()->count(3)->create();
         $disciplines = Discipline::factory()->count(3)->create(['is_published' => true]);
 
-        $featured_practitioners = User::factory()->count(4)->create();
-        $featured_disciplines = Discipline::factory()->count(4)->create(['is_published' => true]);
-        $featured_articles = Article::factory()->count(4)->create();
-        $featured_services = Service::factory()->count(4)->create();
-        $featured_focus_areas = FocusArea::factory()->count(4)->create();
+        $featuredPractitioners = User::factory()->count(4)->create();
+        $featuredDisciplines = Discipline::factory()->count(4)->create(['is_published' => true]);
+        $featuredArticles = Article::factory()->count(4)->create();
+        $featuredServices = Service::factory()->count(4)->create();
+        $featuredFocusAreas = FocusArea::factory()->count(4)->create();
 
         $response = $this->json('post', '/admin/focus-areas', [
             'name' => $focusArea->name,
@@ -70,11 +70,11 @@ class FocusAreaTest extends TestCase
             'articles' => $articles->pluck('id'),
             'disciplines' => $disciplines->pluck('id'),
 
-            'featured_practitioners' => $featured_practitioners->pluck('id'),
-            'featured_disciplines' => $featured_disciplines->pluck('id'),
-            'featured_articles' => $featured_articles->pluck('id'),
-            'featured_services' => $featured_services->pluck('id'),
-            'featured_focus_areas' => $featured_focus_areas->pluck('id')
+            'featured_practitioners' => $featuredPractitioners->pluck('id'),
+            'featured_disciplines' => $featuredDisciplines->pluck('id'),
+            'featured_articles' => $featuredArticles->pluck('id'),
+            'featured_services' => $featuredServices->pluck('id'),
+            'featured_focus_areas' => $featuredFocusAreas->pluck('id')
         ]);
 
         $response->assertOk()->assertJsonStructure(self::$focusAreasStructure);
@@ -143,11 +143,11 @@ class FocusAreaTest extends TestCase
         $articles = Article::factory()->count(3)->create();
         $disciplines = Discipline::factory()->count(3)->create(['is_published' => true]);
 
-        $featured_practitioners = User::factory()->count(4)->create();
-        $featured_disciplines = Discipline::factory()->count(4)->create(['is_published' => true]);
-        $featured_articles = Article::factory()->count(4)->create();
-        $featured_services = Service::factory()->count(4)->create();
-        $featured_focus_areas = FocusArea::factory()->count(4)->create();
+        $featuredPractitioners = User::factory()->count(4)->create();
+        $featuredDisciplines = Discipline::factory()->count(4)->create(['is_published' => true]);
+        $featuredArticles = Article::factory()->count(4)->create();
+        $featuredServices = Service::factory()->count(4)->create();
+        $featuredFocusAreas = FocusArea::factory()->count(4)->create();
 
         $response = $this->json('put', "admin/focus-areas/{$focusArea->id}/",
             [
@@ -156,22 +156,22 @@ class FocusAreaTest extends TestCase
                 'services' => $services->pluck('id'),
                 'articles' => $articles->pluck('id'),
                 'disciplines' => $disciplines->pluck('id'),
-                'featured_practitioners' => $featured_practitioners->pluck('id'),
-                'featured_disciplines' => $featured_disciplines->pluck('id'),
-                'featured_articles' => $featured_articles->pluck('id'),
-                'featured_services' => $featured_services->pluck('id'),
-                'featured_focus_areas' => $featured_focus_areas->pluck('id')
+                'featured_practitioners' => $featuredPractitioners->pluck('id'),
+                'featured_disciplines' => $featuredDisciplines->pluck('id'),
+                'featured_articles' => $featuredArticles->pluck('id'),
+                'featured_services' => $featuredServices->pluck('id'),
+                'featured_focus_areas' => $featuredFocusAreas->pluck('id')
             ]);
 
         $focusArea->services()->sync($services);
         $focusArea->articles()->sync($articles);
         $focusArea->disciplines()->sync($disciplines);
 
-        $focusArea->featured_practitioners()->sync($featured_practitioners);
-        $focusArea->featured_disciplines()->sync($featured_disciplines);
-        $focusArea->featured_articles()->sync($featured_articles);
-        $focusArea->featured_services()->sync($featured_services);
-        $focusArea->featured_focus_areas()->sync($featured_focus_areas);
+        $focusArea->featured_practitioners()->sync($featuredPractitioners);
+        $focusArea->featured_disciplines()->sync($featuredDisciplines);
+        $focusArea->featured_articles()->sync($featuredArticles);
+        $focusArea->featured_services()->sync($featuredServices);
+        $focusArea->featured_focus_areas()->sync($featuredFocusAreas);
 
         $response->assertOk()->assertJsonStructure(self::$focusAreasStructure);
 
@@ -214,6 +214,7 @@ class FocusAreaTest extends TestCase
         ]);
         Storage::files($path, $fileName);
 
+        $response->assertOk();
     }
 
     public function test_image_focus_area(): void

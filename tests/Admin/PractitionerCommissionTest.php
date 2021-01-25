@@ -23,7 +23,7 @@ class PractitionerCommissionTest extends TestCase
     public function test_get_all_practitionerCommission()
     {
         $user = User::factory()->make(['account_type' => 'practitioner', 'id' => 1]);
-        $pc   = PractitionerCommission::factory()->create(['practitioner_id' => $user->id]);
+        PractitionerCommission::factory()->create(['practitioner_id' => $user->id]);
 
         $response = $this->actingAs($this->user)->json('get', "/admin/practitioner-commissions");
 
@@ -61,7 +61,7 @@ class PractitionerCommissionTest extends TestCase
 
     public function test_update_practitionerCommission()
     {
-        $user = User::factory()->create(['account_type' => 'practitioner','id' => 1]);
+        User::factory()->create(['account_type' => 'practitioner','id' => 1]);
         $pc   = PractitionerCommission::factory()->create(['is_dateless' => false]);
 
         $payload = [
@@ -81,7 +81,6 @@ class PractitionerCommissionTest extends TestCase
     public function test_delete_practitionerCommission(): void
     {
         $pc = PractitionerCommission::factory()->create(['is_dateless' => false]);
-        $id = $pc->id;
         $response = $this->json('delete', "/admin/practitioner-commissions/{$pc->id}");
 
         $response->assertStatus(204);

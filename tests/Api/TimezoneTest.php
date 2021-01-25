@@ -21,7 +21,7 @@ class TimezoneTest extends TestCase
 
     public function test_get_timezones()
     {
-        $timezone = Timezone::factory()->create();
+        Timezone::factory()->create();
 
         $response = $this->json('get','/api/timezones');
         $response->assertOk();

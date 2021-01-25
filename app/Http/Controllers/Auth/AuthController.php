@@ -103,9 +103,9 @@ class AuthController extends Controller
         $user = $request->user();
         if ($request->filled('media_images'))
         {
-            foreach ($request->media_images as $media_image)
+            foreach ($request->media_images as $mediaImage)
             {
-                if (Storage::disk(config('image.image_storage'))->missing(file_get_contents($media_image['url'])))
+                if (Storage::disk(config('image.image_storage'))->missing(file_get_contents($mediaImage['url'])))
                 {
                     $image = Storage::disk(config('image.image_storage'))
                         ->put("/images/users/{$user->id}/media_images/", file_get_contents($media_image['url']));
@@ -128,6 +128,7 @@ class AuthController extends Controller
         if ($request->filled('focus_areas')) {
             $user->focus_areas()->sync($request->get('focus_areas'));
         }
+
         if ($request->filled('service_types')) {
             foreach ($request->service_types as $service_type) {
                 if (!User::with('service_types')->where('id', $service_type)->get()) {
@@ -135,10 +136,12 @@ class AuthController extends Controller
                 }
             }
         }
+
         if ($request->filled('keywords')) {
             $keywordsId = Keyword::whereIn('title', $request->keywords)->pluck('id');
             $user->keywords()->sync($keywordsId);
         }
+
         if ($request->has('media_images')){
             $user->media_images()->whereNotIn('url', $request->media_images)->delete();
             $urls = collect($request->media_images)->pluck('url');
@@ -153,6 +156,7 @@ class AuthController extends Controller
 
             $user->media_images()->createMany($imageUrlToStore);
         }
+
         if ($request->has('media_videos')) {
             $user->media_videos()->whereNotIn('url', $request->media_videos)->delete();
             $urls = collect($request->media_videos)->pluck('url');
