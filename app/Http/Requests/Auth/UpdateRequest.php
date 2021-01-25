@@ -41,8 +41,6 @@ class UpdateRequest extends FormRequest
             'business_phone_number'       => 'digits_between:2,255|numeric',
             'email'                       => 'sometimes|required|email|unique:users,email',
             'email_verified_at'           => 'date_format:Y-m-d H:i:s',
-            'avatar_url'                  => 'min:5',
-            'background_url'              => 'min:5',
 
             'current_password'            => 'required_with:password',
             'password'                    => 'max:20|min:8|regex:/(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]/',
