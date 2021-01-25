@@ -82,10 +82,10 @@ class AuthController extends Controller
                 {
                     $image = Storage::disk(config('image.image_storage'))
                         ->put("/images/users/{$user->id}/media_images/", file_get_contents($media_image['url']));
-                    $media_image[] = Storage::url($image);
+                    $data[]['url'] = Storage::url($image);
                 }
             }
-            $request->media_images = $media_image;
+            $request->media_images = $data;
         }
         $user->update($request->all());
         if ($request->filled('password')) {
@@ -95,15 +95,11 @@ class AuthController extends Controller
         }
 
         if ($request->filled('disciplines')) {
-            if(!User::with('disciplines')->where('id', $request->disciplines)->get()) {
-                $user->disciplines()->sync($request->get('disciplines'));
-            }
+            $user->disciplines()->sync($request->get('disciplines'));
         }
 
         if ($request->filled('focus_areas')) {
-            if(!User::with('focus_areas')->where('id', $request->focus_areas)) {
-                $user->focus_areas()->sync($request->get('focus_areas'));
-            }
+            $user->focus_areas()->sync($request->get('focus_areas'));
         }
         if ($request->filled('service_types')) {
             foreach ($request->service_types as $service_type) {
@@ -118,11 +114,31 @@ class AuthController extends Controller
         }
         if ($request->has('media_images')){
             $user->media_images()->whereNotIn('url', $request->media_images)->delete();
-            $user->media_images()->createMany($request->get('media_images'));
+            $urls = collect($request->media_images)->pluck('url');
+            $recurringURL = $user->media_images()->whereIn('url', $urls)->pluck('url')->toArray();
+            $newImages = $urls->filter(function($value) use ($recurringURL) {
+                return !in_array($value, $recurringURL);
+            });
+
+            foreach ($newImages as $url){
+                $imageUrlToStore[]['url'] = $url;
+            }
+
+            $user->media_images()->createMany($imageUrlToStore);
         }
         if ($request->has('media_videos')) {
             $user->media_videos()->whereNotIn('url', $request->media_videos)->delete();
-            $user->media_videos()->createMany($request->get('media_videos'));
+            $urls = collect($request->media_videos)->pluck('url');
+            $recurringURL = $user->media_videos()->whereIn('url', $urls)->pluck('url')->toArray();
+            $newVideos = $urls->filter(function($value) use ($recurringURL) {
+                return !in_array($value, $recurringURL);
+            });
+
+            foreach ($newVideos as $url){
+               $videoUrlToStore[]['url'] = $url;
+            }
+
+            $user->media_videos()->createMany($videoUrlToStore);
         }
         return fractal($user, new UserTransformer())->respond();
     }
