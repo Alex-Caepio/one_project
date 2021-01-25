@@ -210,7 +210,7 @@ class User extends Authenticatable implements MustVerifyEmail {
     }
 
     public function media_videos(): MorphMany {
-        return $this->morphMany(MediaImage::class, 'morphesTo', 'model_name', 'model_id');
+        return $this->morphMany(MediaVideo::class, 'morphesTo', 'model_name', 'model_id');
     }
 
     public function service_types(): HasManyThrough {
