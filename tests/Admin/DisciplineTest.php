@@ -2,6 +2,7 @@
 
 namespace Tests\Admin;
 
+use App\Models\Article;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\MediaImage;
@@ -61,6 +62,7 @@ class DisciplineTest extends TestCase
         $featuredServices   = Service::factory()->count(3)->create();
         $practitoners       = User::factory()->count(3)->create();
         $focusAreas         = FocusArea::factory()->count(3)->create();
+        $articles           = Article::factory()->count(3)->create();
         $relatedDisciplines = Discipline::factory()->count(3)->create(['is_published' => true]);
 
         $response = $this->json('post', '/admin/disciplines', [
@@ -68,6 +70,8 @@ class DisciplineTest extends TestCase
             'featured_practitioners' => $practitoners->pluck('id'),
             'featured_services'      => $featuredServices->pluck('id'),
             'focus_areas'            => $focusAreas->pluck('id'),
+            'featured_focus_areas'   => $focusAreas->pluck('id'),
+            'featured_articles'      => $articles->pluck('id'),
             'related_disciplines'    => $relatedDisciplines->pluck('id'),
             'media_images'           => [
                 ['url' => 'http://google.com'],
@@ -89,6 +93,8 @@ class DisciplineTest extends TestCase
         self::assertCount(3, $discipline->featured_practitioners);
         self::assertCount(3, $discipline->featured_services);
         self::assertCount(3, $discipline->focus_areas);
+        self::assertCount(3, $discipline->featured_focus_areas);
+        self::assertCount(3, $discipline->featured_articles);
         self::assertCount(3, $discipline->related_disciplines);
         self::assertCount(2, $discipline->media_images);
         self::assertCount(2, $discipline->media_videos);
