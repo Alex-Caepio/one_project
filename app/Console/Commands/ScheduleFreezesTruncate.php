@@ -31,7 +31,7 @@ class ScheduleFreezesTruncate extends Command {
         $artisanDays = $this->argument('days');
         $days = Carbon::now()->subDays($artisanDays);
         $count = ScheduleFreeze::where('freeze_at', '<', $days)->count();
-        $deletedCount = ScheduleFreeze::where('freeze_at', '<', $days)->delete();
+        ScheduleFreeze::where('freeze_at', '<', $days)->delete();
         $this->line('Freeze delete ' . $count . PHP_EOL);
     }
 }

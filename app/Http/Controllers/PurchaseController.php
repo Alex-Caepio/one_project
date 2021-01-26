@@ -16,6 +16,7 @@ use App\Transformers\PurchaseTransformer;
 use Carbon\Carbon;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Stripe\StripeClient;
 
 class PurchaseController extends Controller {
@@ -37,7 +38,6 @@ class PurchaseController extends Controller {
                                 new PurchaseTransformer())->parseIncludes($request->getIncludes()))->withPaginationHeaders($paginator);
 
     }
-
 
     public function purchase(PurchaseScheduleRequest $request, Schedule $schedule, StripeClient $stripe) {
         $price = $schedule->prices()->find($request->get('price_id'));
@@ -61,7 +61,6 @@ class PurchaseController extends Controller {
         $purchase->price = $cost;
         $purchase->is_deposit = false;
         $purchase->save();
-
 
         if ($schedule->service->service_type_id === 'appointment') {
             $availabilities = $request->get('availabilities');
@@ -92,15 +91,39 @@ class PurchaseController extends Controller {
                       ->where('user_id', $request->user()->id)
                       ->delete();
 
-        $stripe->paymentIntents->create([
-                                            'amount'               => $cost,
-                                            'currency'             => $price->name,
-                                            'payment_method_types' => [$stripe->card],
-                                        ]);
+        try {
+            $stripe->paymentIntents->create([
+                'amount' => $cost,
+                'currency' => $price->name,
+                'payment_method_types' => [$stripe->card],
+            ]);
 
-        $paymentIntent = $stripe->paymentIntents->confirm($stripe->getClientId(), ['payment_method' => $stripe->card]);
-        $purchase->stripe_id = $paymentIntent->id;
-        $purchase->save();
+            $paymentIntent = $stripe->paymentIntents->confirm($stripe->getClientId(), ['payment_method' => $stripe->card]);
+            $purchase->stripe_id = $paymentIntent->id;
+            $purchase->save();
+
+        } catch (\Stripe\Exception\ApiErrorException $e) {
+
+            Log::channel('stripe_purchase_schedule_error')->info("Client could not purchase schedule", [
+                'user_id' => $request->user()->id,
+                'price_id'  => $price->id,
+                'service_id' => $schedule->service->id,
+                'schedule_id' => $schedule->id,
+                'payment_intent' => $paymentIntent->id,
+                'payment_method' => $stripe->card,
+            ]);
+
+            return abort(500);
+        }
+
+        Log::channel('stripe_purchase_schedule_success')->info("Client purchase schedule", [
+            'user_id' => $request->user()->id,
+            'price_id'  => $price->id,
+            'service_id' => $schedule->service->id,
+            'schedule_id' => $schedule->id,
+            'payment_intent' => $paymentIntent->id,
+            'payment_method' => $stripe->card,
+        ]);
 
         return response(null, 200);
 

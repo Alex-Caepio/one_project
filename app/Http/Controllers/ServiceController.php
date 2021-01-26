@@ -15,6 +15,7 @@ use App\Http\Requests\Services\ServicePublishRequest;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Stripe\StripeClient;
 
 class ServiceController extends Controller {
@@ -48,7 +49,7 @@ class ServiceController extends Controller {
         return fractal($publicService, new ServiceTransformer())->parseIncludes($request->getIncludes())->respond();
     }
 
-    public function practitionerServiceShow(ServicePublishRequest $request, Service $service) {
+    public function practitionerServiceShow(ServiceOwnerRequest $request, Service $service) {
         return fractal($service, new ServiceTransformer())->parseIncludes($request->getIncludes())->respond();
     }
 
@@ -65,8 +66,27 @@ class ServiceController extends Controller {
 
 
     public function store(StoreServiceRequest $request, StripeClient $stripe) {
-        $stripeProduct = $stripe->products->create(['name' => $request->title,]);
-        $service = run_action(ServiceStore::class, $request, $stripeProduct);
+
+        try {
+
+            $stripeProduct = $stripe->products->create(['name' => $request->title,]);
+            $service = run_action(ServiceStore::class, $request, $stripeProduct);
+
+        } catch (\Stripe\Exception\ApiErrorException $e) {
+            Log::channel('stripe_product_errors')->info("Client could not create product", [
+                'user_id' => $request->user_id,
+                'stripe_product'  => $stripeProduct->id,
+                'name' => $request->title,
+            ]);
+
+            return abort(500);
+        }
+
+        Log::channel('stripe_product_success')->info("Client created product", [
+            'user_id' => $request->user_id,
+            'stripe_product'  => $stripeProduct->id,
+            'name' => $request->title,
+        ]);
 
         return fractal($service, new ServiceTransformer())->respond();
     }

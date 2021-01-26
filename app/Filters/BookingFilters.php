@@ -35,14 +35,14 @@ class BookingFilters extends QueryFilter
         });
     }
 
-    public function datetime_from($datetime_from)
+    public function datetime_from($datetimeFrom)
     {
-        return $this->builder->where('datetime_from', '>=', $datetime_from);
+        return $this->builder->where('datetime_from', '>=', $datetimeFrom);
     }
 
-    public function datetime_to($datetime_to)
+    public function datetime_to($datetimeTo)
     {
-        return $this->builder->where('datetime_from', '<=', $datetime_to);
+        return $this->builder->where('datetime_from', '<=', $datetimeTo);
     }
 
     public function bookingReference(string $reference)
@@ -50,28 +50,28 @@ class BookingFilters extends QueryFilter
         return $this->builder->where('reference', '=', $reference);
     }
 
-    public function serviceType(int $service_type_id)
+    public function serviceType(int $serviceTypeId)
     {
-        return $this->builder->whereHas('schedule.service', function ($q) use($service_type_id)
+        return $this->builder->whereHas('schedule.service', function ($q) use($serviceTypeId)
         {
-            $q->where('service_type_id', '=', $service_type_id);
+            $q->where('service_type_id', '=', $serviceTypeId);
         });
     }
 
-    public function isVirtual(string $is_virtual)
+    public function isVirtual(string $isVirtual)
     {
-        $is_virtual = strtolower($is_virtual);
+        $isVirtual = strtolower($isVirtual);
 
-        if ($is_virtual == 'virtual')
+        if ($isVirtual == 'virtual')
         {
-            return $this->builder->whereHas('schedule', function ($q) use ($is_virtual)
+            return $this->builder->whereHas('schedule', function ($q) use ($isVirtual)
             {
                 $q->where('is_virtual', '=', true);
             });
         }
-        elseif ($is_virtual == 'physical')
+        elseif ($isVirtual == 'physical')
         {
-            return $this->builder->whereHas('schedule', function ($q) use ($is_virtual)
+            return $this->builder->whereHas('schedule', function ($q) use ($isVirtual)
             {
                 $q->where('is_virtual', '!=', true);
             });
@@ -92,25 +92,5 @@ class BookingFilters extends QueryFilter
         {
             $q->where('country', '=', strtolower($country));
         });
-    }
-
-    public function paymentMethod(string $payment)
-    {
-        $payment = strtolower($payment);
-
-        if ($payment == 'deposit')
-        {
-            return $this->builder->whereHas('purchase', function ($q) use ($payment)
-            {
-                $q->where('is_deposit', '=', true);
-            });
-        }
-        elseif ($payment == 'singlepayment')
-        {
-            return $this->builder->whereHas('purchase', function ($q) use ($payment)
-            {
-                $q->where('is_deposit', '=', false);
-            });
-        }
     }
 }

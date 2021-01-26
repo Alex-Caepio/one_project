@@ -50,11 +50,12 @@ class DisciplineTransformer extends Transformer
             'section_6_background'      => $discipline->section_6_background,
             'section_6_textarea'        => $discipline->section_6_textarea,
 
-            'section_7_media_url'       => $discipline->section_7_media_url,
             'section_7_tag_line'        => $discipline->section_7_tag_line,
             'section_7_alt_text'        => $discipline->section_7_alt_text,
             'section_7_url'             => $discipline->section_7_url,
             'section_7_target_blanc'    => $discipline->section_7_target_blanc,
+            'section_7_image_url'       => $discipline->section_7_image_url,
+            'section_7_video_url'       => $discipline->section_7_video_url,
 
             'section_8_h2'              => $discipline->section_8_h2,
 
@@ -65,19 +66,22 @@ class DisciplineTransformer extends Transformer
 
             'section_10_h2'             => $discipline->section_10_h2,
 
-            'section_11_media_url'      => $discipline->section_11_media_url,
             'section_11_tag_line'       => $discipline->section_11_tag_line,
             'section_11_alt_text'       => $discipline->section_11_alt_text,
             'section_11_url'            => $discipline->section_11_url,
             'section_11_target_blanc'   => $discipline->section_11_target_blanc,
+            'section_11_image_url'      => $discipline->section_11_image_url,
+            'section_11_video_url'      => $discipline->section_11_video_url,
 
             'section_12_h2'             => $discipline->section_12_h2,
 
-            'section_13_media_url'      => $discipline->section_13_media_url,
             'section_13_tag_line'       => $discipline->section_13_tag_line,
             'section_13_alt_text'       => $discipline->section_13_alt_text,
             'section_13_url'            => $discipline->section_13_url,
             'section_13_target_blanc'   => $discipline->section_13_target_blanc,
+            'section_13_image_url'      => $discipline->section_13_image_url,
+            'section_13_video_url'      => $discipline->section_13_video_url,
+
 
             'created_at'                => $this->dateTime($discipline->created_at),
             'updated_at'                => $this->dateTime($discipline->updated_at),

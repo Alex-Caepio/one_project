@@ -53,11 +53,12 @@ class DisciplineStoreRequest extends Request
             'section_6_background'      => 'nullable|min:6|max:7',
             'section_6_textarea'        => 'nullable|max:2000',
 
-            'section_7_media_url'       => 'nullable|url',
             'section_7_tag_line',
             'section_7_alt_text'        => 'nullable|max:150',
             'section_7_url'             => 'nullable|url',
             'section_7_target_blanc'    => 'nullable|boolean',
+            'section_7_image_url'       => 'nullable|url',
+            'section_7_video_url'       => 'nullable|url',
 
             'section_8_h2'              => 'nullable|max:300',
 
@@ -68,19 +69,21 @@ class DisciplineStoreRequest extends Request
 
             'section_10_h2'             => 'nullable|max:300',
 
-            'section_11_media_url'      => 'nullable|url',
             'section_11_tag_line',
             'section_11_alt_text'       => 'nullable|max:150',
             'section_11_url'            => 'nullable|url',
             'section_11_target_blanc'   => 'nullable|boolean',
+            'section_11_image_url'       => 'nullable|url',
+            'section_11_video_url'       => 'nullable|url',
 
             'section_12_h2'             => 'nullable|max:300',
 
-            'section_13_media_url'      => 'nullable|url',
             'section_13_tag_line',
             'section_13_alt_text'       => 'nullable|max:150',
             'section_13_url'            => 'nullable|url',
             'section_13_target_blanc'   => 'nullable|boolean',
+            'section_13_image_url'       => 'nullable|url',
+            'section_13_video_url'       => 'nullable|url',
         ];
     }
 

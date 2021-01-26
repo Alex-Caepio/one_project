@@ -124,7 +124,9 @@ class DisciplineController extends Controller
         if ($request->filled('featured_articles')) {
             $discipline->featured_articles()->sync($request->get('featured_articles'));
         }
-
+        if ($request->filled('featured_focus_areas')) {
+            $discipline->featured_focus_areas()->sync($request->get('featured_focus_areas'));
+        }
         if ($request->has('media_images')) {
             $discipline->media_images()->delete();
             $discipline->media_images()->createMany($request->get('media_images'));

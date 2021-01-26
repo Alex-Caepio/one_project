@@ -21,6 +21,7 @@ use App\Http\Requests\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Stripe\StripeClient;
 
@@ -29,14 +30,40 @@ class AuthController extends Controller
 {
     public function register(RegisterRequest $request, StripeClient $stripe)
     {
-        $stripeCustomer = run_action(CreateStripeUserByEmail::class, $request->email);
-        $stripeAccount  = $stripe->accounts->create([
-            'type'  => 'standard',
+        try {
+
+            $stripeCustomer = run_action(CreateStripeUserByEmail::class, $request->email);
+            $stripeAccount = $stripe->accounts->create([
+                'type' => 'standard',
+                'email' => $request->email,
+            ]);
+            $user = run_action(CreateUserFromRequest::class, $request, [
+                'stripe_customer_id' => $stripeCustomer->id,
+                'stripe_account_id' => $stripeAccount->id
+            ]);
+
+        } catch (\Stripe\Exception\ApiErrorException $e) {
+
+            Log::channel('stripe_client_error')->info("Client could not registered in stripe", [
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
+                'business_email' => $request->business_email,
+                'email' => $request->email,
+                'stripe_customer_id' => $stripeCustomer->id,
+                'stripe_account_id'  => $stripeAccount->id,
+            ]);
+
+             return abort(500);
+        }
+
+        Log::channel('stripe_client_success')->info("Client registered in stripe", [
+            'user_id' => $user->id,
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'business_email' => $request->business_email,
             'email' => $request->email,
-        ]);
-        $user           = run_action(CreateUserFromRequest::class, $request, [
             'stripe_customer_id' => $stripeCustomer->id,
-            'stripe_account_id'  => $stripeAccount->id
+            'stripe_account_id'  => $stripeAccount->id,
         ]);
 
         event(new UserRegistered($user));
@@ -77,9 +104,9 @@ class AuthController extends Controller
         $user = $request->user();
         if ($request->filled('media_images'))
         {
-            foreach ($request->media_images as $media_image)
+            foreach ($request->media_images as $mediaImage)
             {
-                if (Storage::disk(config('image.image_storage'))->missing(file_get_contents($media_image['url'])))
+                if (Storage::disk(config('image.image_storage'))->missing(file_get_contents($mediaImage['url'])))
                 {
                     $image = Storage::disk(config('image.image_storage'))
                         ->put("/images/users/{$user->id}/media_images/", file_get_contents($media_image['url']));
@@ -107,6 +134,7 @@ class AuthController extends Controller
             $keywordsId = Keyword::whereIn('title', $request->keywords)->pluck('id');
             $user->keywords()->sync($keywordsId);
         }
+
         if ($request->has('media_images')){
             $user->media_images()->whereNotIn('url', $request->media_images)->delete();
             $urls = collect($request->media_images)->pluck('url');
@@ -121,6 +149,7 @@ class AuthController extends Controller
 
             $user->media_images()->createMany($imageUrlToStore);
         }
+
         if ($request->has('media_videos')) {
             $user->media_videos()->whereNotIn('url', $request->media_videos)->delete();
             $urls = collect($request->media_videos)->pluck('url');

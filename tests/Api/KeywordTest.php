@@ -38,7 +38,7 @@ class KeywordTest extends TestCase
 
     public function test_can_get_all_keyword_filter(): void
     {
-        $filterOne = Keyword::factory()->create();
+        Keyword::factory()->create();
         $filterTwo = Keyword::factory()->create();
         $response = $this->json('get', "/api/keywords/filter", [
             'title' => $filterTwo->title,

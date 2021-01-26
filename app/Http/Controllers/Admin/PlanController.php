@@ -8,6 +8,7 @@ use App\Http\Requests\Admin\PlanUpdateRequest;
 use App\Models\Plan;
 use App\Transformers\PlanTransformer;
 use App\Http\Requests\Request;
+use Illuminate\Support\Facades\Log;
 use Stripe\StripeClient;
 
 class PlanController extends Controller
@@ -46,24 +47,41 @@ class PlanController extends Controller
     {
         $plan       = new Plan();
 
-        $product    = $stripe->products->create([
-            'name' => $request->name
-        ]);
+        try {
+            $product = $stripe->products->create([
+                'name' => $request->name
+            ]);
 
-        $planStripe = $stripe->prices->create([
-            'unit_amount'   => $request->get('is_free') ? 0 : $request->get('price'),
-            'currency'  => 'usd',
-            'recurring' => ['interval' => 'month'],
-            'product'   => $product->id
-        ]);
+            $planStripe = $stripe->prices->create([
+                'unit_amount' => $request->get('is_free') ? 0 : $request->get('price'),
+                'currency' => 'usd',
+                'recurring' => ['interval' => 'month'],
+                'product' => $product->id
+            ]);
 
-        $data              = $request->all();
-        $data['stripe_id'] = $planStripe->id;
-        $data['order'] = Plan::max('order') + 1;
+            $data = $request->all();
+            $data['stripe_id'] = $planStripe->id;
+            $data['order'] = Plan::max('order') + 1;
 
-        $plan->fill($data);
-        $plan->save();
-        $plan->service_types()->sync($request->get('service_types'));
+            $plan->fill($data);
+            $plan->save();
+            $plan->service_types()->sync($request->get('service_types'));
+
+        } catch (\Stripe\Exception\ApiErrorException $e) {
+            Log::channel('stripe_price_error')->info("Client could not purchase plan", [
+                'plan_id' => $plan->id,
+                'stripe_id'  => $planStripe->id,
+                'product'   => $product->id,
+            ]);
+
+            return abort(500);
+        }
+
+         Log::channel('stripe_price_success')->info("Client purchase plan", [
+             'plan_id' => $plan->id,
+             'stripe_id'  => $planStripe->id,
+             'product'   => $product->id,
+         ]);
 
         return fractal($plan, new PlanTransformer())->respond();
     }
