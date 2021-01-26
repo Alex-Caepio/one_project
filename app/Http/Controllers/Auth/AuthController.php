@@ -11,9 +11,11 @@ use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\PublishRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\UpdateRequest;
+use App\Models\Discipline;
 use App\Models\Keyword;
 use App\Models\MediaVideo;
 use App\Models\Schedule;
+use App\Models\ServiceType;
 use App\Models\User;
 use App\Transformers\UserTransformer;
 use DB;
@@ -123,7 +125,8 @@ class AuthController extends Controller
         }
 
         if ($request->filled('disciplines')) {
-            $user->disciplines()->sync($request->get('disciplines'));
+            $disciplineIds = Discipline::whereIn('id', $request->disciplines)->pluck('id');
+            $user->disciplines()->sync($disciplineIds);
         }
 
         if ($request->filled('focus_areas')) {
@@ -131,7 +134,9 @@ class AuthController extends Controller
         }
 
         if ($request->filled('service_types')) {
-            $user->service_types()->sync($request->get('service_types'));
+            $serviceTypeIds = ServiceType::whereIn('id', $request->service_types)->pluck('id');
+            $user->service_types()->sync($serviceTypeIds);
+//            $user->service_types()->sync($request->get('service_types'));
         }
 
         if ($request->filled('keywords')) {

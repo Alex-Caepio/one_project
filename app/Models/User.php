@@ -218,7 +218,7 @@ class User extends Authenticatable implements MustVerifyEmail {
     }
 
     public function service_types(): BelongsToMany {
-        return $this->belongsToMany(ServiceType::class, 'service_type_user','user_id','service_type_id',);
+        return $this->belongsToMany(ServiceType::class, 'service_type_user','user_id','service_type_id');
     }
 
     public function keywords(): belongsToMany {
