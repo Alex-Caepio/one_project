@@ -65,7 +65,7 @@ class AuthTest extends TestCase
     public function test_user_can_get_his_profile(): void
     {
 
-        $response = $this->json('get', '/api/auth/profile?with=media_images',);
+        $response = $this->json('get', '/api/auth/profile?with=media_videos',);
 
         $response->assertOk();
     }

@@ -159,8 +159,8 @@ class User extends Authenticatable implements MustVerifyEmail {
         return $this->belongsToMany(FocusArea::class, 'focus_area_features_user', 'user_id', 'focus_area_id');
     }
 
-    public function focus_area() {
-        return $this->belongsToMany(FocusArea::class, 'focus_area_features_user', 'user_id', 'focus_area_id');
+    public function focus_areas() {
+        return $this->belongsToMany(FocusArea::class, 'focus_area_user', 'user_id', 'focus_area_id');
     }
 
     public function featured_practitioners() {

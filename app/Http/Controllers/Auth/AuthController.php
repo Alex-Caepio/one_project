@@ -109,11 +109,11 @@ class AuthController extends Controller
                 if (Storage::disk(config('image.image_storage'))->missing(file_get_contents($mediaImage['url'])))
                 {
                     $image = Storage::disk(config('image.image_storage'))
-                        ->put("/images/users/{$user->id}/media_images/", file_get_contents($media_image['url']));
-                    $data[]['url'] = Storage::url($image);
+                        ->put("/images/users/{$user->id}/media_images/", file_get_contents($mediaImage['url']));
+                    $image_urls[]['url'] = Storage::url($image);
                 }
             }
-            $request->media_images = $data;
+            $request->media_images = $image_urls;
         }
         $user->update($request->all());
         if ($request->filled('password')) {
@@ -127,7 +127,11 @@ class AuthController extends Controller
         }
 
         if ($request->filled('focus_area')) {
-            $user->featured_focus_area()->sync($request->get('featured_focus_area'));
+            $user->focus_area()->sync($request->get('focus_area'));
+        }
+
+        if ($request->filled('service_types')) {
+            $user->service_types()->sync($request->get('service_types'));
         }
 
         if ($request->filled('keywords')) {
