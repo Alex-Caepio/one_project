@@ -136,7 +136,6 @@ class AuthController extends Controller
         if ($request->filled('service_types')) {
             $serviceTypeIds = ServiceType::whereIn('id', $request->service_types)->pluck('id');
             $user->service_types()->sync($serviceTypeIds);
-//            $user->service_types()->sync($request->get('service_types'));
         }
 
         if ($request->filled('keywords')) {
