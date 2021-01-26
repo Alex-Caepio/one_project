@@ -18,7 +18,8 @@ class UserTransformer extends Transformer {
         'favourite_practitioners',
         'plan',
         'media_images',
-        'media_videos'
+        'media_videos',
+        'service_types'
     ];
 
     public function transform(User $user) {
@@ -107,15 +108,15 @@ class UserTransformer extends Transformer {
         return $this->itemOrNull($user->plan, new PlanTransformer());
     }
 
-    /**
-     * @param \App\Models\User $user
-     * @return \League\Fractal\Resource\Collection|null
-     */
-
     public function includeMediaImages(User $user): ?Collection {
         return $this->collectionOrNull($user->media_images, new MediaImageTransformer());
     }
+
     public function includeMediaVideos(User $user): ?Collection {
         return $this->collectionOrNull($user->media_videos, new MediaVideoTransformer());
+    }
+
+    public function includeServiceTypes(User $user): ?Collection {
+        return $this->collectionOrNull($user->service_types, new ServiceTypeTransformer());
     }
 }

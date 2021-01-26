@@ -17,7 +17,7 @@ use App\Models\Schedule;
 use App\Models\User;
 use App\Transformers\UserTransformer;
 use DB;
-use Illuminate\Http\Request;
+use App\Http\Requests\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -95,6 +95,7 @@ class AuthController extends Controller
     public function profile(Request $request)
     {
         return fractal($request->user(), new UserTransformer())
+            ->parseIncludes($request->getIncludes())
             ->respond();
     }
 
@@ -125,16 +126,8 @@ class AuthController extends Controller
             $user->disciplines()->sync($request->get('disciplines'));
         }
 
-        if ($request->filled('focus_areas')) {
-            $user->focus_areas()->sync($request->get('focus_areas'));
-        }
-
-        if ($request->filled('service_types')) {
-            foreach ($request->service_types as $service_type) {
-                if (!User::with('service_types')->where('id', $service_type)->get()) {
-                    $user->service_types()->save($request->get($service_type));
-                }
-            }
+        if ($request->filled('focus_area')) {
+            $user->featured_focus_area()->sync($request->get('featured_focus_area'));
         }
 
         if ($request->filled('keywords')) {
