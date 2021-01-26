@@ -159,6 +159,10 @@ class User extends Authenticatable implements MustVerifyEmail {
         return $this->belongsToMany(FocusArea::class, 'focus_area_features_user', 'user_id', 'focus_area_id');
     }
 
+    public function focus_area() {
+        return $this->belongsToMany(FocusArea::class, 'focus_area_features_user', 'user_id', 'focus_area_id');
+    }
+
     public function featured_practitioners() {
         return $this->belongsToMany(FocusArea::class, 'focus_area_features_user', 'focus_area_id', 'user_id');
     }
@@ -216,9 +220,6 @@ class User extends Authenticatable implements MustVerifyEmail {
     public function service_types(): BelongsToMany {
         return $this->belongsToMany(ServiceType::class, 'service_type_user','user_id','service_type_id',);
     }
-//    public function service_types(): HasManyThrough {
-//        return $this->hasManyThrough(ServiceType::class, Service::class,'user_id','service_id',);
-//    }
 
     public function keywords(): belongsToMany {
         return $this->belongsToMany(Keyword::class);
