@@ -12,6 +12,7 @@ use App\Http\Requests\Auth\PublishRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\UpdateRequest;
 use App\Models\Discipline;
+use App\Models\FocusArea;
 use App\Models\Keyword;
 use App\Models\MediaVideo;
 use App\Models\Schedule;
@@ -130,7 +131,8 @@ class AuthController extends Controller
         }
 
         if ($request->filled('focus_areas')) {
-            $user->focus_areas()->sync($request->get('focus_areas'));
+            $focusAreasIds = FocusArea::whereIn('id', $request->focus_areas)->pluck('id');
+            $user->focus_areas()->sync($focusAreasIds);
         }
 
         if ($request->filled('service_types')) {
