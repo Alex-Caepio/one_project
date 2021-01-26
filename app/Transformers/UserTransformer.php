@@ -20,7 +20,8 @@ class UserTransformer extends Transformer {
         'media_images',
         'media_videos',
         'service_types',
-        'focus_areas'
+        'focus_areas',
+        'keywords'
     ];
 
     public function transform(User $user) {
@@ -123,5 +124,9 @@ class UserTransformer extends Transformer {
 
     public function includeFocusAreas(User $user): ?Collection {
         return $this->collectionOrNull($user->focus_areas, new FocusAreaTransformer());
+    }
+
+    public function includeKeywords(User $user): ?Collection {
+        return $this->collectionOrNull($user->keywords, new KeywordTransformer());
     }
 }

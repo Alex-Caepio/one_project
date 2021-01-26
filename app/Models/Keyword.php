@@ -14,6 +14,6 @@ class Keyword extends Model
     protected $fillable = ['title'];
 
     public function users(): belongsToMany {
-        return $this->belongsToMany(User::class,'keyword_user','keywords_id');
+        return $this->belongsToMany(User::class,'keyword_user','keyword_id','user_id');
     }
 }
