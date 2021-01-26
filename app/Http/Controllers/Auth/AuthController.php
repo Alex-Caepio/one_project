@@ -109,7 +109,7 @@ class AuthController extends Controller
                 if (Storage::disk(config('image.image_storage'))->missing(file_get_contents($mediaImage['url'])))
                 {
                     $image = Storage::disk(config('image.image_storage'))
-                        ->put("/images/users/{$user->id}/media_images/", file_get_contents($media_image['url']));
+                        ->put("/images/users/{$user->id}/media_images/", file_get_contents($mediaImage['url']));
                     $data[]['url'] = Storage::url($image);
                 }
             }
