@@ -19,7 +19,8 @@ class UserTransformer extends Transformer {
         'plan',
         'media_images',
         'media_videos',
-        'service_types'
+        'service_types',
+        'focus_areas'
     ];
 
     public function transform(User $user) {
@@ -118,5 +119,9 @@ class UserTransformer extends Transformer {
 
     public function includeServiceTypes(User $user): ?Collection {
         return $this->collectionOrNull($user->service_types, new ServiceTypeTransformer());
+    }
+
+    public function includeFocusAreas(User $user): ?Collection {
+        return $this->collectionOrNull($user->focus_areas, new FocusAreaTransformer());
     }
 }
