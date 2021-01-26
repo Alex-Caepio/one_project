@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Keyword extends Model
 {
@@ -12,4 +13,7 @@ class Keyword extends Model
 
     protected $fillable = ['title'];
 
+    public function users(): belongsToMany {
+        return $this->belongsToMany(User::class,'keyword_user','keywords_id');
+    }
 }

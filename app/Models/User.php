@@ -222,6 +222,6 @@ class User extends Authenticatable implements MustVerifyEmail {
     }
 
     public function keywords(): belongsToMany {
-        return $this->belongsToMany(Keyword::class);
+        return $this->belongsToMany(Keyword::class,'keyword_user','user_id','keywords_id');
     }
 }
