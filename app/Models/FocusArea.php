@@ -107,5 +107,9 @@ class FocusArea extends Model
         return $this->belongsToMany(Promotion::class, 'promotion_focus_area', 'focus_area_id', 'promotion_id');
     }
 
+    public function user() {
+        return $this->belongsToMany(User::class, 'focus_area_user',  'focus_area_id','user_id');
+    }
+
 }
 

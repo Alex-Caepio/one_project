@@ -100,7 +100,11 @@ class AuthController extends Controller
         }
 
         if ($request->filled('focus_area')) {
-            $user->featured_focus_area()->sync($request->get('featured_focus_area'));
+            $user->focus_area()->sync($request->get('focus_area'));
+        }
+
+        if ($request->filled('service_types')) {
+            $user->service_types()->sync($request->get('service_types'));
         }
 
         if ($request->filled('keywords')) {
