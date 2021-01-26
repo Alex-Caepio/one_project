@@ -102,7 +102,7 @@ class AuthController extends Controller
     public function update(UpdateRequest $request)
     {
         $user = $request->user();
-        if ($request->filled('media_images')&& !empty($request->media_images))
+        if ($request->filled('media_images') && !empty($request->media_images))
         {
             foreach ($request->media_images as $mediaImage)
             {
@@ -139,7 +139,7 @@ class AuthController extends Controller
             $user->keywords()->sync($keywordsId);
         }
 
-        if ($request->filled('media_images')&&!empty($request->media_images)){
+        if ($request->filled('media_images') && !empty($request->media_images)){
             $user->media_images()->whereNotIn('url', $request->media_images)->delete();
             $urls = collect($request->media_images)->pluck('url');
             $recurringURL = $user->media_images()->whereIn('url', $urls)->pluck('url')->toArray();
@@ -154,7 +154,7 @@ class AuthController extends Controller
             $user->media_images()->createMany($imageUrlToStore);
         }
 
-        if ($request->has('media_videos')) {
+        if ($request->filled('media_videos') && !empty($request->media_videos)) {
             $user->media_videos()->whereNotIn('url', $request->media_videos)->delete();
             $urls = collect($request->media_videos)->pluck('url');
             $recurringURL = $user->media_videos()->whereIn('url', $urls)->pluck('url')->toArray();
