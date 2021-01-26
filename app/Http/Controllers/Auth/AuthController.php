@@ -126,7 +126,7 @@ class AuthController extends Controller
             $user->disciplines()->sync($request->get('disciplines'));
         }
 
-        if ($request->filled('focus_area')) {
+        if ($request->filled('focus_areas')) {
             $user->focus_area()->sync($request->get('focus_area'));
         }
 
