@@ -11,7 +11,6 @@ use App\Models\ScheduleUser;
 use App\Models\ScheduleFreeze;
 use App\Http\Requests\Request;
 use App\Transformers\UserTransformer;
-//use App\Events\ServiceScheduleLive;
 use App\Transformers\ScheduleTransformer;
 use App\Http\Requests\Schedule\CreateScheduleInterface;
 use Carbon\Carbon;
@@ -33,7 +32,7 @@ class ScheduleController extends Controller
         $data               = $request->all();
         $data['service_id'] = $service->id;
         $schedule           = Schedule::create($data);
-        $user               = $request->user();
+        $request->user();
 
         if ($request->filled('media_files')) {
             $schedule->media_files()->createMany($request->get('media_files'));
@@ -64,9 +63,6 @@ class ScheduleController extends Controller
         if ($request->filled('schedule_hidden_files')) {
             $schedule->schedule_hidden_files()->createMany($request->get('schedule_hidden_files'));
         }
-
-        // @todo fix with the new event
-        //event(new ServiceScheduleLive($service, $user, $schedule));
 
         return fractal($schedule, new ScheduleTransformer())
             ->parseIncludes($request->getIncludes())
@@ -113,13 +109,13 @@ class ScheduleController extends Controller
     public function availabilities(Schedule $schedule)
     {
         $time           = Carbon::now()->subMinutes(15);
-        $amount_total   = $schedule->attendees;
-        $amount_bought  = ScheduleUser::where('schedule_id', $schedule->id)->count();
-        $amount_freezed = ScheduleFreeze::where('schedule_id', $schedule->id)
+        $amountTotal   = $schedule->attendees;
+        $amountBought  = ScheduleUser::where('schedule_id', $schedule->id)->count();
+        $amountFreezed = ScheduleFreeze::where('schedule_id', $schedule->id)
             ->where('freeze_at', '>', $time->toDateTimeString())->count();
-        $amount_left    = $amount_total - $amount_bought - $amount_freezed;
+        $amount_left    = $amountTotal - $amountBought - $amountFreezed;
 
-        return response([$amount_total, $amount_left, $amount_bought, $amount_freezed]);
+        return response([$amountTotal, $amount_left, $amountBought, $amountFreezed]);
     }
 
     public function freeze(Schedule $schedule)

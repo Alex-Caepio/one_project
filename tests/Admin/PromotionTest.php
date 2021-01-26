@@ -72,20 +72,20 @@ class PromotionTest extends TestCase
 
     public function test_admin_can_change_promotion_status(): void
     {
-        $promotion_active = Promotion::factory()->create(['status' => 'active']);
+        $promotionActive = Promotion::factory()->create(['status' => 'active']);
 
         $response = $this->actingAs($this->user)->json('post',
-            "/admin/promotions/{$promotion_active->id}/disable");
+            "/admin/promotions/{$promotionActive->id}/disable");
         $response->assertOk()
             ->assertJson(['status' => 'disabled']);
 
-        $promotion_disabled = Promotion::factory()->create([
+        $promotionDisabled = Promotion::factory()->create([
             'status' => 'disabled',
             'expiry_date' => '2022-12-12'
             ]);
 
         $response = $this->actingAs($this->user)->json('post',
-            "/admin/promotions/{$promotion_disabled->id}/enable");
+            "/admin/promotions/{$promotionDisabled->id}/enable");
         $response->assertOk()
             ->assertJson(['status' => 'active']);
     }

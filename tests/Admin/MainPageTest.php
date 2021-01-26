@@ -51,20 +51,20 @@ class MainPageTest extends TestCase
         $mainPage = MainPage::factory()->create();
         $mainPage->first();
 
-        $featured_practitioners = User::factory()->count(4)->create();
-        $featured_disciplines = Discipline::factory()->count(4)->create(['is_published' => true]);
-        $featured_services = Service::factory()->count(4)->create();
-        $featured_focus_areas = FocusArea::factory()->count(4)->create();
+        $featuredPractitioners = User::factory()->count(4)->create();
+        $featuredDisciplines = Discipline::factory()->count(4)->create(['is_published' => true]);
+        $featuredServices = Service::factory()->count(4)->create();
+        $featuredFocusAreas = FocusArea::factory()->count(4)->create();
 
         $response = $this->json('put','/admin/mainpage',
             [
                 'section_2_background' => '121212',
                 'section_1_alt_text' => '12312313',
                 'section_1_intro_text' => '2121212',
-                'featured_practitioners' => $featured_practitioners->pluck('id'),
-                'featured_disciplines' => $featured_disciplines->pluck('id'),
-                'featured_services' => $featured_services->pluck('id'),
-                'featured_focus_areas' => $featured_focus_areas->pluck('id')
+                'featured_practitioners' => $featuredPractitioners->pluck('id'),
+                'featured_disciplines' => $featuredDisciplines->pluck('id'),
+                'featured_services' => $featuredServices->pluck('id'),
+                'featured_focus_areas' => $featuredFocusAreas->pluck('id')
             ]);
 
         $response->assertOk();

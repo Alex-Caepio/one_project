@@ -49,7 +49,7 @@ class RescheduleRequestTest extends TestCase
     {
         $user       = User::factory()->create();
         $reschedule = RescheduleRequest::factory()->create();
-        $response   = $this->json('post', "api/reschedule-requests/{$reschedule->id}/accept");
+        $this->json('post', "api/reschedule-requests/{$reschedule->id}/accept");
         $user->schedules()->detach($reschedule);
         $user->schedules()->attach($reschedule);
     }
