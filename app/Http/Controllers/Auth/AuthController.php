@@ -110,10 +110,10 @@ class AuthController extends Controller
                 {
                     $image = Storage::disk(config('image.image_storage'))
                         ->put("/images/users/{$user->id}/media_images/", file_get_contents($mediaImage['url']));
-                    $data[]['url'] = Storage::url($image);
+                    $image_urls[]['url'] = Storage::url($image);
                 }
             }
-            $request->media_images = $data;
+            $request->media_images = $image_urls;
         }
         $user->update($request->all());
         if ($request->filled('password')) {
