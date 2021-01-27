@@ -142,7 +142,13 @@ class AuthController extends Controller
                $ids = Keyword::firstOrCreate(['title' => $keyword])->pluck('id');
                $keywordIds = collect($ids);
             }
-            $user->keywords()->sync($keywordIds);
+
+            $recurringIds = $user->keywords()->whereNotIn('title', $request->keywords)->pluck('keyword_id')->toArray();
+            $newKeywords = $keywordIds->filter(function($value) use ($recurringIds) {
+                return !in_array($value, $recurringIds);
+            });
+
+            $user->keywords()->sync($newKeywords);
         }
 
         if ($request->filled('media_images') && !empty($request->media_images)){

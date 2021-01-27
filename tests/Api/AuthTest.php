@@ -194,6 +194,7 @@ class AuthTest extends TestCase
     public function test_user_can_update_his_profile_with_relations(): void
     {
         $this->user->account_type = 'practitioner';
+        $this->user->keywords()->create(['title' =>'kekw']);
         $keyword = Keyword::factory()->create(['title' => 'Yoga']);
         $focus_area = FocusArea::factory()->create();
         $service_type = ServiceType::factory()->count(2)->create();
