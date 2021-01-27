@@ -169,7 +169,7 @@ class AuthController extends Controller
 
         if ($request->filled('media_videos') && !empty($request->media_videos)) {
             $user->media_videos()->whereNotIn('url', $request->media_videos)->delete();
-            $urls = collect($request->media_videos)->pluck('url');
+            $urls = collect($request->media_videos);
             $recurringURL = $user->media_videos()->whereIn('url', $urls)->pluck('url')->toArray();
             $newVideos = $urls->filter(function($value) use ($recurringURL) {
                 return !in_array($value, $recurringURL);
