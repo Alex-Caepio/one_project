@@ -195,10 +195,8 @@ class AuthTest extends TestCase
     {
         $this->user->account_type = 'practitioner';
         $keyword = Keyword::factory()->create(['title' => 'Yoga']);
-        $keyword1 = Keyword::factory()->create(['title' => 'Sport']);
         $focus_area = FocusArea::factory()->create();
-        $service_type = ServiceType::factory()->create();
-        $service_type1 = ServiceType::factory()->create();
+        $service_type = ServiceType::factory()->count(2)->create();
         $discipline = Discipline::factory()->count(2)->create(['name' => 'waka','is_published' => true]);
         $response = $this->actingAs($this->user)->json('put', '/api/auth/profile',[
             'first_name' => 'Kekwkekw',
@@ -208,22 +206,15 @@ class AuthTest extends TestCase
             ],
             'keywords' => [
                 $keyword->title,
-                $keyword1->title,
+                'Sport'
             ],
             'media_videos' => [
                 ['url' => 'http://google.com'],
                 ['url' => 'http://google.com'],
             ],
-            'focus_areas' => [$focus_area->id
-            ],
-            'service_types' =>[
-                $service_type->id,
-                $service_type1->id
-            ],
-            'disciplines' =>
-                 $discipline->pluck('id'),
-
-
+            'focus_areas' => $focus_area->id,
+            'service_types' => $service_type->pluck('id'),
+            'disciplines' => $discipline->pluck('id'),
         ]);
 
         $response->assertOk()->assertJson(['first_name' => 'Kekwkekw']);

@@ -138,8 +138,11 @@ class AuthController extends Controller
         }
 
         if ($request->filled('keywords')) {
-            $keywordsId = Keyword::whereIn('title', $request->keywords)->pluck('id');
-            $user->keywords()->sync($keywordsId);
+            foreach ($request->keywords as $keyword) {
+               $ids = Keyword::firstOrCreate(['title' => $keyword])->pluck('id');
+               $keywordIds = collect($ids);
+            }
+            $user->keywords()->sync($keywordIds);
         }
 
         if ($request->filled('media_images') && !empty($request->media_images)){
