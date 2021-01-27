@@ -29,12 +29,12 @@ class ServicePublishRequest extends Request {
     public function withValidator(Validator $validator) {
         $validator->setRules([
                                  'title'           => 'required|min:5|max:100',
-                                 'description'     => 'string|min:5|max:1000',
+                                 'description'     => 'nullable|string|min:5|max:1000',
                                  'is_published'    => 'boolean',
                                  'introduction'    => 'required|min:5|max:500',
                                  'url'             => 'required|url|unique:services,url,' . $this->service->id,
                                  'image_url'       => 'nullable|url',
-                                 'icon_url'        => 'url',
+                                 'icon_url'        => 'nullable|url',
                                  'service_type_id' => 'required|exists:service_types,id'
                              ])->setData($this->service->toArray())->validate();
         if (!$validator->fails()) {
