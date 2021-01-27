@@ -109,11 +109,11 @@ class AuthController extends Controller
         {
             foreach ($request->media_images as $mediaImage)
             {
-                if (Storage::disk(config('image.image_storage'))->missing(file_get_contents($mediaImage['url'])))
+                if (Storage::disk(config('image.image_storage'))->missing(file_get_contents($mediaImage)))
                 {
                     $image = Storage::disk(config('image.image_storage'))
-                        ->put("/images/users/{$user->id}/media_images/", file_get_contents($mediaImage['url']));
-                    $image_urls[]['url'] = Storage::url($image);
+                        ->put("/images/users/{$user->id}/media_images/", file_get_contents($mediaImage));
+                    $image_urls[] = Storage::url($image);
                 }
             }
             $request->media_images = $image_urls;
@@ -138,26 +138,27 @@ class AuthController extends Controller
         }
 
         if ($request->filled('keywords')) {
+            $user->keywords()->whereNotIn('title', $request->keywords)->delete();
             foreach ($request->keywords as $keyword) {
                $ids = Keyword::firstOrCreate(['title' => $keyword])->pluck('id');
                $keywordIds = collect($ids);
             }
+//
+//            $recurringIds = $user->keywords()->whereNotIn('title', $request->keywords)->pluck('keyword_id')->toArray();
+//            $newKeywords = $keywordIds->filter(function($value) use ($recurringIds) {
+//                return !in_array($value, $recurringIds);
+//            });
 
-            $recurringIds = $user->keywords()->whereNotIn('title', $request->keywords)->pluck('keyword_id')->toArray();
-            $newKeywords = $keywordIds->filter(function($value) use ($recurringIds) {
-                return !in_array($value, $recurringIds);
-            });
-
-            $user->keywords()->sync($newKeywords);
+            $user->keywords()->sync($keywordIds);
         }
 
         if ($request->filled('media_images') && !empty($request->media_images)){
             $user->media_images()->whereNotIn('url', $request->media_images)->delete();
-            $urls = collect($request->media_images)->pluck('url');
+            $urls = collect($request->media_images);
             $recurringURL = $user->media_images()->whereIn('url', $urls)->pluck('url')->toArray();
             $newImages = $urls->filter(function($value) use ($recurringURL) {
                 return !in_array($value, $recurringURL);
-            });
+            })->toArray();
 
             foreach ($newImages as $url){
                 $imageUrlToStore[]['url'] = $url;
@@ -168,7 +169,7 @@ class AuthController extends Controller
 
         if ($request->filled('media_videos') && !empty($request->media_videos)) {
             $user->media_videos()->whereNotIn('url', $request->media_videos)->delete();
-            $urls = collect($request->media_videos)->pluck('url');
+            $urls = collect($request->media_videos);
             $recurringURL = $user->media_videos()->whereIn('url', $urls)->pluck('url')->toArray();
             $newVideos = $urls->filter(function($value) use ($recurringURL) {
                 return !in_array($value, $recurringURL);
