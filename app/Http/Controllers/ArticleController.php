@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Actions\Article\ArticleStore;
 use App\Actions\Article\ArticleUpdate;
+use App\Http\Requests\Admin\ArticlePublishRequest;
 use App\Http\Requests\Articles\ArticleActionRequest;
 use App\Http\Requests\Articles\ArticleRequest;
 use App\Http\Requests\Request;
 use App\Models\Article;
 use App\Transformers\ArticleTransformer;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
 class ArticleController extends Controller {
@@ -119,5 +121,27 @@ class ArticleController extends Controller {
             });
         }
         return $queryBuilder->paginate($request->getLimit());
+    }
+
+    /**
+     * @param \App\Models\Article $article
+     * @param \App\Http\Requests\Admin\ArticlePublishRequest $publishRequest
+     * @return \Illuminate\Http\Response
+     */
+    public function publish(Article $article, ArticlePublishRequest $publishRequest): Response {
+        $article->forceFill(['is_published' => true]);
+        $article->save();
+        return response(null, 204);
+    }
+
+
+    /**
+     * @param \App\Models\Article $article
+     * @return \Illuminate\Http\Response
+     */
+    public function unpublish(Article $article): Response {
+        $article->forceFill(['is_published' => false]);
+        $article->save();
+        return response(null, 204);
     }
 }

@@ -41,6 +41,8 @@ class FocusAreaTransformer extends Transformer
             'section_4_alt_text'        => $focusArea->section_4_alt_text,
             'section_4_url'             => $focusArea->section_4_url,
             'section_4_target_blanc'    => $focusArea->section_4_target_blanc,
+            'section_4_video_url'       => $focusArea->section_4_video_url,
+            'section_4_image_url'       => $focusArea->section_4_image_url,
 
             'section_5_h2'              => $focusArea->section_5_h2,
             'section_5_h3'              => $focusArea->section_5_h3,
@@ -60,6 +62,8 @@ class FocusAreaTransformer extends Transformer
             'section_9_alt_text'        => $focusArea->section_9_alt_text,
             'section_9_url'             => $focusArea->section_9_url,
             'section_9_target_blanc'    => $focusArea->section_9_target_blanc,
+            'section_9_video_url'       => $focusArea->section_9_video_url,
+            'section_9_image_url'       => $focusArea->section_9_image_url,
 
             'section_10_h2'             => $focusArea->section_10_h2,
             'section_10_h3'             => $focusArea->section_10_h3,
@@ -75,6 +79,8 @@ class FocusAreaTransformer extends Transformer
             'section_13_alt_text'       => $focusArea->section_13_alt_text,
             'section_13_url'            => $focusArea->section_13_url,
             'section_13_target_blanc'   => $focusArea->section_13_target_blanc,
+            'section_13_image_url'      => $focusArea->section_13_image_url,
+            'section_13_video_url'      => $focusArea->section_13_video_url,
 
             'created_at'                => $focusArea->created_at,
             'updated_at'                => $focusArea->updated_at,
