@@ -11,9 +11,12 @@ use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\PublishRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\UpdateRequest;
+use App\Models\Discipline;
+use App\Models\FocusArea;
 use App\Models\Keyword;
 use App\Models\MediaVideo;
 use App\Models\Schedule;
+use App\Models\ServiceType;
 use App\Models\User;
 use App\Transformers\UserTransformer;
 use DB;
@@ -123,20 +126,23 @@ class AuthController extends Controller
         }
 
         if ($request->filled('disciplines')) {
-            $user->disciplines()->sync($request->get('disciplines'));
+            $user->disciplines()->sync($request->disciplines);
         }
 
         if ($request->filled('focus_areas')) {
-            $user->focus_areas()->sync($request->get('focus_areas'));
+            $user->focus_areas()->sync($request->focus_areas);
         }
 
         if ($request->filled('service_types')) {
-            $user->service_types()->sync($request->get('service_types'));
+            $user->service_types()->sync($request->service_types);
         }
 
         if ($request->filled('keywords')) {
-            $keywordsId = Keyword::whereIn('title', $request->keywords)->pluck('id');
-            $user->keywords()->sync($keywordsId);
+            foreach ($request->keywords as $keyword) {
+               $ids = Keyword::firstOrCreate(['title' => $keyword])->pluck('id');
+               $keywordIds = collect($ids);
+            }
+            $user->keywords()->sync($keywordIds);
         }
 
         if ($request->filled('media_images') && !empty($request->media_images)){
