@@ -65,8 +65,8 @@ class AuthTest extends TestCase
 
     public function test_user_can_get_his_profile(): void
     {
-        $this->user->keywords()->create(['title' => 'kek']);
-        $response = $this->json('get', '/api/auth/profile?with=keywords',);
+
+        $response = $this->json('get', '/api/auth/profile',);
 
         $response->assertOk();
     }
@@ -208,23 +208,21 @@ class AuthTest extends TestCase
                 ['url' => 'http://facebook.com'],
             ],
             'keywords' => [
-                ['title' => $keyword->title],
-                ['title' => $keyword1->title],
+                $keyword->title,
+                $keyword1->title,
             ],
             'media_videos' => [
                 ['url' => 'http://google.com'],
                 ['url' => 'http://google.com'],
             ],
-            'focus_areas' => [
-                ['id' => $focus_area->id]
+            'focus_areas' => [$focus_area->id
             ],
             'service_types' =>[
-                ['id' => $service_type->id],
-                ['id' => $service_type1->id]
+                $service_type->id,
+                $service_type1->id
             ],
             'disciplines' => [
-                ['id' => $discipline->id],
-                ['id' => $discipline1->id]
+                 $discipline->id, $discipline1->id
             ]
 
         ]);

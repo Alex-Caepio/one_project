@@ -126,18 +126,15 @@ class AuthController extends Controller
         }
 
         if ($request->filled('disciplines')) {
-            $disciplineIds = Discipline::whereIn('id', $request->disciplines)->pluck('id');
-            $user->disciplines()->sync($disciplineIds);
+            $user->disciplines()->sync($request->disciplines);
         }
 
         if ($request->filled('focus_areas')) {
-            $focusAreasIds = FocusArea::whereIn('id', $request->focus_areas)->pluck('id');
-            $user->focus_areas()->sync($focusAreasIds);
+            $user->focus_areas()->sync($request->focus_areas);
         }
 
         if ($request->filled('service_types')) {
-            $serviceTypeIds = ServiceType::whereIn('id', $request->service_types)->pluck('id');
-            $user->service_types()->sync($serviceTypeIds);
+            $user->service_types()->sync($request->service_types);
         }
 
         if ($request->filled('keywords')) {
