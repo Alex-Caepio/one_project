@@ -40,7 +40,7 @@ class ArticleRequest extends Request {
             'is_published' => 'bool',
             'introduction' => 'string|min:5|max:200',
             'url'          => 'url',
-            'image_url'    => 'url'
+            'image_url'    => 'nullable|url'
         ];
 
     }

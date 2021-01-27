@@ -33,7 +33,7 @@ class ServicePublishRequest extends Request {
                                  'is_published'    => 'boolean',
                                  'introduction'    => 'required|min:5|max:500',
                                  'url'             => 'required|url|unique:services,url,' . $this->service->id,
-                                 'image_url'       => 'url',
+                                 'image_url'       => 'nullable|url',
                                  'icon_url'        => 'url',
                                  'service_type_id' => 'required|exists:service_types,id'
                              ])->setData($this->service->toArray())->validate();
