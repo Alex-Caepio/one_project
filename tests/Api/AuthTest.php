@@ -199,8 +199,7 @@ class AuthTest extends TestCase
         $focus_area = FocusArea::factory()->create();
         $service_type = ServiceType::factory()->create();
         $service_type1 = ServiceType::factory()->create();
-        $discipline = Discipline::factory()->create(['name' => 'waka','is_published' => true]);
-        $discipline1 = Discipline::factory()->create(['name' => 'waka','is_published' => true]);
+        $discipline = Discipline::factory()->count(2)->create(['name' => 'waka','is_published' => true]);
         $response = $this->actingAs($this->user)->json('put', '/api/auth/profile',[
             'first_name' => 'Kekwkekw',
             'media_images' => [
@@ -221,9 +220,9 @@ class AuthTest extends TestCase
                 $service_type->id,
                 $service_type1->id
             ],
-            'disciplines' => [
-                 $discipline->id, $discipline1->id
-            ]
+            'disciplines' =>
+                 $discipline->pluck('id'),
+
 
         ]);
 
