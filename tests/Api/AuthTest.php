@@ -212,7 +212,7 @@ class AuthTest extends TestCase
                 ['url' => 'http://google.com'],
                 ['url' => 'http://google.com'],
             ],
-            'focus_areas' => $focus_area->id,
+            'focus_areas' => [$focus_area->id],
             'service_types' => $service_type->pluck('id'),
             'disciplines' => $discipline->pluck('id'),
         ]);
