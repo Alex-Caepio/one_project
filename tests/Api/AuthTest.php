@@ -5,6 +5,14 @@ namespace Tests\Api;
 use App\Actions\CreateApplication;
 use App\Models\Application;
 use App\Models\ApplicationUser;
+use App\Models\Article;
+use App\Models\Discipline;
+use App\Models\FocusArea;
+use App\Models\MediaImage;
+use App\Models\PromotionCode;
+use App\Models\Schedule;
+use App\Models\Service;
+use App\Models\ServiceType;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Http\UploadedFile;
@@ -56,7 +64,9 @@ class AuthTest extends TestCase
 
     public function test_user_can_get_his_profile(): void
     {
-        $response = $this->json('get', '/api/auth/profile');
+
+        $response = $this->json('get', '/api/auth/profile?with=media_videos',);
+
         $response->assertOk();
     }
 
@@ -178,5 +188,48 @@ class AuthTest extends TestCase
         $response = $this->json('post', '/api/auth/login', ['email' => $this->user->email, 'password' => '1123aaaFg'])
             ->assertJsonStructure(['access_token' => ['token']])
             ->assertOk();
+    }
+
+    public function test_user_can_update_his_profile_with_media_images(): void
+    {
+        $response = $this->actingAs($this->user)->json('put', '/api/auth/profile',[
+            'first_name' => 'Kekwkekw',
+            'media_images' => [
+                ['url' => 'http://google.com'],
+                ['url' => 'http://facebook.com'],
+            ]
+        ]);
+
+        $response->assertOk()->assertJson(['first_name' => 'Kekwkekw']);
+        $this->assertCount(2, User::first()->media_images);
+    }
+
+
+    public function test_user_can_update_his_profile_with_relations(): void
+    {
+        $user = User::factory()->create(['account_type' => 'practitioner']);
+        $discipline = Discipline::factory()->create(['name' => 'waka']);
+        $service = Service::factory()->create(['user_id' => $user->id]);
+        $service_type = ServiceType::factory()->create();
+        $service_type1 = ServiceType::factory()->create();
+        $response = $this->actingAs($user)->json('put', '/api/auth/profile',[
+            'first_name' => 'Kekwkekw',
+            'disciplines' => [
+                ['id' => $discipline->id]
+            ],
+            'media_videos' => [
+                ['url' => 'http://google.com'],
+                ['url' => 'http://google.com'],
+            ],
+//            'service_types' =>[
+//                ['name' => $service_type->name],
+//                ['name' => $service_type1->name],
+//            ]
+        ]);
+
+        $response->assertOk()->assertJson(['first_name' => 'Kekwkekw']);
+        $this->assertDatabaseHas('media_videos',['url'=> 'http://google.com']);
+        $this->assertCount(2,User::first()->media_videos);
+//        $this->assertCount(2, User::first()->media_videos); this assertion doesn't work -_-
     }
 }

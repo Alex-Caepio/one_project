@@ -31,8 +31,18 @@ class Discipline extends Model
     use HasFactory, PublishedScope;
 
     protected $fillable = [
-        'name', 'url', 'icon_url', 'banner_url',
-        'introduction', 'description', 'is_published'
+        'name', 'description', 'introduction', 'url', 'icon_url', 'banner_url',
+        'is_published', 'section_2_h2', 'section_2_h3', 'section_2_background',
+        'section_2_textarea', 'section_3_h2', 'section_3_h4', 'section_4_h2',
+        'section_4_h3', 'section_4_background', 'section_4_textarea',
+        'section_5_header_h2', 'section_6_h2', 'section_6_h3', 'section_6_background',
+        'section_6_textarea', 'section_7_tag_line', 'section_7_alt_text',
+        'section_7_url', 'section_7_target_blanc', 'section_7_image_url', 'section_7_video_url',
+        'section_8_h2', 'section_9_h2', 'section_9_h3', 'section_9_background',
+        'section_9_textarea', 'section_10_h2', 'section_11_tag_line', 'section_11_alt_text',
+        'section_11_url', 'section_11_target_blanc', 'section_11_image_url', 'section_11_video_url',
+        'section_12_h2', 'section_13_tag_line', 'section_13_alt_text', 'section_13_url',
+        'section_13_target_blanc', 'section_13_image_url', 'section_13_video_url'
     ];
 
     public function featured_practitioners(): BelongsToMany

@@ -8,6 +8,8 @@ use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -157,6 +159,10 @@ class User extends Authenticatable implements MustVerifyEmail {
         return $this->belongsToMany(FocusArea::class, 'focus_area_features_user', 'user_id', 'focus_area_id');
     }
 
+    public function focus_areas() {
+        return $this->belongsToMany(FocusArea::class, 'focus_area_user', 'user_id', 'focus_area_id');
+    }
+
     public function featured_practitioners() {
         return $this->belongsToMany(FocusArea::class, 'focus_area_features_user', 'focus_area_id', 'user_id');
     }
@@ -199,15 +205,23 @@ class User extends Authenticatable implements MustVerifyEmail {
         return $this->hasMany(Instalment::class);
     }
 
-    public function images()
-    {
+    public function images(): HasMany {
         return $this->hasMany(Image::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
-     */
-    public function media_images() {
+    public function media_images(): MorphMany {
         return $this->morphMany(MediaImage::class, 'morphesTo', 'model_name', 'model_id');
+    }
+
+    public function media_videos(): MorphMany {
+        return $this->morphMany(MediaVideo::class, 'morphesTo', 'model_name', 'model_id');
+    }
+
+    public function service_types(): BelongsToMany {
+        return $this->belongsToMany(ServiceType::class, 'service_type_user','user_id','service_type_id',);
+    }
+
+    public function keywords(): belongsToMany {
+        return $this->belongsToMany(Keyword::class,'keyword_user','user_id','keyword_id');
     }
 }

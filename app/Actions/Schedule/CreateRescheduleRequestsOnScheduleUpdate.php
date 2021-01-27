@@ -62,9 +62,7 @@ class CreateRescheduleRequestsOnScheduleUpdate
 
     protected function dateHasChanged(Request $request, Schedule $schedule): bool
     {
-        if ($request['start_date'] != $schedule->start_date) {
-            return true;
-        } else if ($request['end_date'] != $schedule->end_date) {
+        if ($request['start_date'] != $schedule->start_date || $request['end_date'] != $schedule->end_date) {
             return true;
         }
 
@@ -73,21 +71,17 @@ class CreateRescheduleRequestsOnScheduleUpdate
 
     protected function locationHasChanged(Request $request, Schedule $schedule): bool
     {
-        if ($request['location_id'] != $schedule->location_id) {
+        if (
+            $request['location_id'] != $schedule->location_id
+            || $request['venue'] != $schedule->venue
+            || $request['city'] != $schedule->city
+            || $request['country'] != $schedule->country
+            || $request['post_code'] != $schedule->post_code
+            || $request['location_displayed'] != $schedule->location_displayed
+            || $request['is_virtual'] != $schedule->is_virtual
+        ) {
             return true;
-        } else if ($request['venue'] != $schedule->venue) {
-            return true;
-        } else if ($request['city'] != $schedule->city) {
-            return true;
-        } else if ($request['country'] != $schedule->country) {
-            return true;
-        } else if ($request['post_code'] != $schedule->post_code) {
-            return true;
-        } else if ($request['location_displayed'] != $schedule->location_displayed) {
-            return true;
-        } else if ($request['is_virtual'] != $schedule->is_virtual) {
-            return true;
-        }
+            }
 
         return false;
     }

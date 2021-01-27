@@ -31,7 +31,7 @@ class ArticleRequest extends Request {
                 'is_published' => 'bool',
                 'introduction' => 'required|string|min:5|max:200',
                 'url'          => 'required|url|unique:articles,url' . ($this->article ? ',' . $this->article->id : ''),
-                'image_url'    => 'url'
+                'image_url'    => 'nullable|url'
             ];
         }
         return [

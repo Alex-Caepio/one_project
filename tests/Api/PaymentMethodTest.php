@@ -21,7 +21,7 @@ class PaymentMethodTest extends TestCase
         $this->login($this->user);
     }
 
-    function test_get_payment_methods(): void
+    public function test_get_public_payment_methods(): void
     {
         $stripeUser = $this->createStripeClient($this->user);
         $this->createStripePaymentMethod($this->user);

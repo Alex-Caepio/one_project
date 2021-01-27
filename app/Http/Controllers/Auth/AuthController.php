@@ -11,13 +11,17 @@ use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\PublishRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\UpdateRequest;
+use App\Models\Keyword;
+use App\Models\MediaVideo;
+use App\Models\Schedule;
 use App\Models\User;
 use App\Transformers\UserTransformer;
 use DB;
-use Illuminate\Http\Request;
+use App\Http\Requests\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Stripe\StripeClient;
 
@@ -26,14 +30,40 @@ class AuthController extends Controller
 {
     public function register(RegisterRequest $request, StripeClient $stripe)
     {
-        $stripeCustomer = run_action(CreateStripeUserByEmail::class, $request->email);
-        $stripeAccount  = $stripe->accounts->create([
-            'type'  => 'standard',
+        try {
+
+            $stripeCustomer = run_action(CreateStripeUserByEmail::class, $request->email);
+            $stripeAccount = $stripe->accounts->create([
+                'type' => 'standard',
+                'email' => $request->email,
+            ]);
+            $user = run_action(CreateUserFromRequest::class, $request, [
+                'stripe_customer_id' => $stripeCustomer->id,
+                'stripe_account_id' => $stripeAccount->id
+            ]);
+
+        } catch (\Stripe\Exception\ApiErrorException $e) {
+
+            Log::channel('stripe_client_error')->info("Client could not registered in stripe", [
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
+                'business_email' => $request->business_email,
+                'email' => $request->email,
+                'stripe_customer_id' => $stripeCustomer->id,
+                'stripe_account_id'  => $stripeAccount->id,
+            ]);
+
+             return abort(500);
+        }
+
+        Log::channel('stripe_client_success')->info("Client registered in stripe", [
+            'user_id' => $user->id,
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'business_email' => $request->business_email,
             'email' => $request->email,
-        ]);
-        $user           = run_action(CreateUserFromRequest::class, $request, [
             'stripe_customer_id' => $stripeCustomer->id,
-            'stripe_account_id'  => $stripeAccount->id
+            'stripe_account_id'  => $stripeAccount->id,
         ]);
 
         event(new UserRegistered($user));
@@ -65,21 +95,25 @@ class AuthController extends Controller
     public function profile(Request $request)
     {
         return fractal($request->user(), new UserTransformer())
+            ->parseIncludes($request->getIncludes())
             ->respond();
     }
 
     public function update(UpdateRequest $request)
     {
         $user = $request->user();
-        if ($request->filled('media_images'))
+        if ($request->filled('media_images') && !empty($request->media_images))
         {
-            foreach ($request->media_images as $media_image)
+            foreach ($request->media_images as $mediaImage)
             {
-                $image = Storage::disk(config('image.image_storage'))
-                    ->put("/images/users/{$user->id}/media_images/", file_get_contents($media_image['url']));
-                $media_image[] = Storage::url($image);
+                if (Storage::disk(config('image.image_storage'))->missing(file_get_contents($mediaImage['url'])))
+                {
+                    $image = Storage::disk(config('image.image_storage'))
+                        ->put("/images/users/{$user->id}/media_images/", file_get_contents($mediaImage['url']));
+                    $image_urls[]['url'] = Storage::url($image);
+                }
             }
-            $request->media_images = $media_image;
+            $request->media_images = $image_urls;
         }
         $user->update($request->all());
         if ($request->filled('password')) {
@@ -88,36 +122,51 @@ class AuthController extends Controller
             event(new PasswordChanged($user));
         }
 
-        if ($request->filled('services')) {
-            $user->featured_practitioners()->sync($request->get('services'));
-        }
-        if ($request->filled('articles')) {
-            $user->featured_services()->sync($request->get('articles'));
-        }
-        if ($request->filled('schedules')) {
-            $user->focus_areas()->sync($request->get('schedules'));
-        }
         if ($request->filled('disciplines')) {
-            $user->related_disciplines()->sync($request->get('disciplines'));
+            $user->disciplines()->sync($request->get('disciplines'));
         }
-        if ($request->filled('promotion_codes')) {
-            $user->featured_focus_areas()->sync($request->get('promotion_codes'));
+
+        if ($request->filled('focus_areas')) {
+            $user->focus_areas()->sync($request->get('focus_areas'));
         }
-        if ($request->filled('favorite_articles')) {
-            $user->featured_articles()->sync($request->get('favorite_articles'));
+
+        if ($request->filled('service_types')) {
+            $user->service_types()->sync($request->get('service_types'));
         }
-        if ($request->filled('favorite_services')) {
-            $user->featured_articles()->sync($request->get('favorite_services'));
+
+        if ($request->filled('keywords')) {
+            $keywordsId = Keyword::whereIn('title', $request->keywords)->pluck('id');
+            $user->keywords()->sync($keywordsId);
         }
-        if ($request->filled('favorite_practitioners')) {
-            $user->featured_articles()->sync($request->get('favorite_practitioners'));
+
+        if ($request->filled('media_images') && !empty($request->media_images)){
+            $user->media_images()->whereNotIn('url', $request->media_images)->delete();
+            $urls = collect($request->media_images)->pluck('url');
+            $recurringURL = $user->media_images()->whereIn('url', $urls)->pluck('url')->toArray();
+            $newImages = $urls->filter(function($value) use ($recurringURL) {
+                return !in_array($value, $recurringURL);
+            });
+
+            foreach ($newImages as $url){
+                $imageUrlToStore[]['url'] = $url;
+            }
+
+            $user->media_images()->createMany($imageUrlToStore);
         }
-        if ($request->filled('plan')) {
-            $user->featured_articles()->sync($request->get('plan'));
-        }
-        if ($request->has('media_images')) {
-            $user->media_images()->delete();
-            $user->media_images()->createMany($request->get('media_images'));
+
+        if ($request->filled('media_videos') && !empty($request->media_videos)) {
+            $user->media_videos()->whereNotIn('url', $request->media_videos)->delete();
+            $urls = collect($request->media_videos)->pluck('url');
+            $recurringURL = $user->media_videos()->whereIn('url', $urls)->pluck('url')->toArray();
+            $newVideos = $urls->filter(function($value) use ($recurringURL) {
+                return !in_array($value, $recurringURL);
+            });
+
+            foreach ($newVideos as $url){
+               $videoUrlToStore[]['url'] = $url;
+            }
+
+            $user->media_videos()->createMany($videoUrlToStore);
         }
         return fractal($user, new UserTransformer())->respond();
     }

@@ -26,7 +26,6 @@ class ImageTest extends TestCase
 
         $response = $this->json('post', 'api/images', [
             'title' => 'kek',
-            'file'  => $file = UploadedFile::fake()->image('photo1.jpg'),
         ]);
         $response->assertOk()->assertJsonStructure([
             'url',

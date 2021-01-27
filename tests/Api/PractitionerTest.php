@@ -36,7 +36,7 @@ class PractitionerTest extends TestCase
     {
         $authUser = User::factory()->create();
         $userId = User::factory()->create();
-        $response = $this->json('post', "api/practitioners/{$userId->id}/favourite");
+        $this->json('post', "api/practitioners/{$userId->id}/favourite");
         $authUser->favourite_practitioners()->attach($userId);
 
         $this->assertDatabaseHas('practitioner_favorites', [

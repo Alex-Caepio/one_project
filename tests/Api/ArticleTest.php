@@ -87,7 +87,7 @@ class ArticleTest extends TestCase
     {
         $authUser = User::factory()->create();
         $articleId = Article::factory()->create();
-        $response = $this->json('post', "article/{$articleId->id}/favourite");
+        $this->json('post', "article/{$articleId->id}/favourite");
         $authUser->favourite_articles()->attach($articleId);
 
         $this->assertDatabaseHas('article_favorites', [

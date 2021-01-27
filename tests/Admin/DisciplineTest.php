@@ -2,6 +2,7 @@
 
 namespace Tests\Admin;
 
+use App\Models\Article;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\MediaImage;
@@ -61,6 +62,7 @@ class DisciplineTest extends TestCase
         $featuredServices   = Service::factory()->count(3)->create();
         $practitoners       = User::factory()->count(3)->create();
         $focusAreas         = FocusArea::factory()->count(3)->create();
+        $articles           = Article::factory()->count(3)->create();
         $relatedDisciplines = Discipline::factory()->count(3)->create(['is_published' => true]);
 
         $response = $this->json('post', '/admin/disciplines', [
@@ -68,6 +70,8 @@ class DisciplineTest extends TestCase
             'featured_practitioners' => $practitoners->pluck('id'),
             'featured_services'      => $featuredServices->pluck('id'),
             'focus_areas'            => $focusAreas->pluck('id'),
+            'featured_focus_areas'   => $focusAreas->pluck('id'),
+            'featured_articles'      => $articles->pluck('id'),
             'related_disciplines'    => $relatedDisciplines->pluck('id'),
             'media_images'           => [
                 ['url' => 'http://google.com'],
@@ -89,6 +93,8 @@ class DisciplineTest extends TestCase
         self::assertCount(3, $discipline->featured_practitioners);
         self::assertCount(3, $discipline->featured_services);
         self::assertCount(3, $discipline->focus_areas);
+        self::assertCount(3, $discipline->featured_focus_areas);
+        self::assertCount(3, $discipline->featured_articles);
         self::assertCount(3, $discipline->related_disciplines);
         self::assertCount(2, $discipline->media_images);
         self::assertCount(2, $discipline->media_videos);
@@ -103,11 +109,11 @@ class DisciplineTest extends TestCase
             ->assertJsonFragment(['url' => 'stairway-to-heaven']);
 
         // 2. Check that url field get advantage over name
-       $response =  $this->json('post', '/admin/disciplines', [
+        $response = $this->json('post', '/admin/disciplines', [
             'name' => 'Heartbreaker',
             'url'  => 'http://wholelottalove.com',
         ]);
-       $response->assertOk()
+        $response->assertOk()
             ->assertJsonFragment(['url' => 'http://wholelottalove.com']);
 
         // 3. Check that same url or name can not be saved twice
@@ -135,8 +141,8 @@ class DisciplineTest extends TestCase
             ->assertJsonFragment(['name' => ['The name has already been taken.']]);
 
         // 4. Check that generated url from name is unique
-       $response = $this->json('post', '/admin/disciplines', ['name' => 'Heartbreaker']);
-       $response->assertStatus(422)
+        $response = $this->json('post', '/admin/disciplines', ['name' => 'Heartbreaker']);
+        $response->assertStatus(422)
             ->assertJsonFragment([
                 'name' => ['The name has already been taken.']
             ]);
@@ -144,43 +150,28 @@ class DisciplineTest extends TestCase
 
     public function test_update_discipline(): void
     {
-        $featuredServices = Service::factory()->count(3)->create();
-        $practitoners     = User::factory()->count(3)->create();
-        $mediaImage       = MediaImage::factory()->count(2)->create();
-        $mediaVideo       = MediaVideo::factory()->count(2)->create();
-        $mediaFile        = MediaFile::factory()->count(2)->create();
+        $services     = Service::factory()->count(3)->create();
+        $practitoners = User::factory()->count(3)->create();
+        $focusAreas   = FocusArea::factory()->count(3)->create();
 
         /** @var Discipline $discipline */
-        $discipline         = Discipline::factory()->create();
-        $discipline['name'] = 'Discipline';
+        $discipline = Discipline::factory()->create(['name' => 'Discipline']);
 
-        $response = $this->json('put', '/admin/disciplines/' . $discipline->id, [
-            'name'                   => 'name',
+        $response        = $this->json('put', '/admin/disciplines/' . $discipline->id, [
+            'name'                   => $discipline->name,
             'featured_practitioners' => $practitoners->pluck('id'),
-            'featured_services'      => $featuredServices->pluck('id'),
+            'featured_services'      => $services->pluck('id'),
+            'featured_focus_areas'   => $focusAreas->pluck('id'),
         ]);
-
-        $discipline->featured_practitioners()->sync($practitoners);
-        $discipline->featured_services()->sync($featuredServices);
-
-        $discipline->media_images()->delete();
-        $discipline->media_videos()->delete();
-        $discipline->media_files()->delete();
-
-        $discipline->media_images()->saveMany($mediaImage);
-        $discipline->media_videos()->saveMany($mediaVideo);
-        $discipline->media_files()->saveMany($mediaFile);
+        $responseContent = $response->getOriginalContent();
 
         $response->assertOk()->assertJsonStructure(self::$disciplineStructure);
+        $this->assertEquals($responseContent->name, $discipline->name);
 
-        $this->assertEquals($discipline['name'], $discipline->name);
-
-        $discipline = Discipline::find($response->getOriginalContent()->id);
+        $discipline = Discipline::find($responseContent->id);
         self::assertCount(3, $discipline->featured_practitioners);
         self::assertCount(3, $discipline->featured_services);
-        self::assertCount(2, $discipline->media_images);
-        self::assertCount(2, $discipline->media_videos);
-        self::assertCount(2, $discipline->media_files);
+        self::assertCount(3, $discipline->featured_focus_areas);
     }
 
     public function test_delete_discipline(): void

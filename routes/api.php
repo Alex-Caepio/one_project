@@ -117,7 +117,6 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::post('/credit-cards', [CardStripeController::class, 'store']);
     Route::get('/credit-cards', [CardStripeController::class, 'index']);
 
-    Route::get('/plans', [PlanController::class, 'index']);
     Route::post('/plans/{plan}/purchase', [PlanController::class, 'purchase']);
 
     Route::post('/services/{service}/schedules', [ScheduleController::class, 'store']);

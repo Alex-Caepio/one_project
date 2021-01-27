@@ -99,6 +99,57 @@ return [
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
         ],
+
+        'stripe_plans_errors' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/stripe_plan_erros.log'),
+        ],
+
+        'stripe_plans_success' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/stripe_plan_success.log'),
+        ],
+
+        'stripe_client_error' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/stripe_client_error.log'),
+        ],
+
+        'stripe_client_success' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/stripe_client_success.log'),
+        ],
+
+        'stripe_price_error' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/stripe_price_error.log'),
+        ],
+
+        'stripe_price_success' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/stripe_price_success.log'),
+        ],
+
+        'stripe_product_error' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/stripe_product_error.log'),
+        ],
+
+        'stripe_product_success' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/stripe_product_success.log'),
+        ],
+
+
+        'stripe_purchase_schedule_error' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/stripe_purchase_schedule_error.log'),
+        ],
+
+        'stripe_purchase_schedule_success' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/stripe_purchase_schedule_success.log'),
+        ],
     ],
 
 ];

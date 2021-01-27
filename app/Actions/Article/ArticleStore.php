@@ -16,22 +16,22 @@ class ArticleStore extends ArticleAction {
     public function execute(ArticleRequest $request): Article {
         $article = new Article();
 
-        if ($request->filled('image_url'))
+        if (!empty($request->image_url))
         {
             $image = Storage::disk(config('image.image_storage'))
                 ->put("/images/artcles/{$article->id}/media_images/", file_get_contents($request->image_url));
             $request->image_url = Storage::url($image);
         }
 
-        if ($request->filled('media_images'))
+        if (!empty($request->media_images))
         {
-            foreach ($request->media_images as $media_image)
+            foreach ($request->media_images as $mediaImage)
             {
                 $image = Storage::disk(config('image.image_storage'))
-                    ->put("/images/artcles/{$article->id}/media_images/", file_get_contents($media_image['url']));
-                $media_image[] = Storage::url($image);
+                    ->put("/images/artcles/{$article->id}/media_images/", file_get_contents($mediaImage['url']));
+                $mediaImage[] = Storage::url($image);
             }
-            $request->media_images = $media_image;
+            $request->media_images = $mediaImage;
         }
 
         $this->saveArticle($article, $request);

@@ -35,7 +35,7 @@ class BookingTest extends TestCase
 
     public function test_user_can_filter_booking_by_status(): void
     {
-        $booking_past = Booking::factory()->create([
+        $bookingPast = Booking::factory()->create([
             'cost' => 5,
             'datetime_from' => '2020-9-5',
             'user_id'=>$this->user->id
@@ -44,9 +44,9 @@ class BookingTest extends TestCase
         $response = $this->actingAs($this->user)->json('get', "/api/bookings?status=completed");
         $response
             ->assertOk()
-        ->assertJson([['user_id' => $booking_past->user_id, 'id' => $booking_past->id]]);
+        ->assertJson([['user_id' => $bookingPast->user_id, 'id' => $bookingPast->id]]);
 
-        $booking_future = Booking::factory()->create([
+        $bookingFuture = Booking::factory()->create([
             'cost' => 5,
             'datetime_from' => '2022-12-31',
             'user_id'=>$this->user->id
@@ -55,9 +55,9 @@ class BookingTest extends TestCase
         $response = $this->actingAs($this->user)->json('get', "/api/bookings?status=upcoming");
         $response
             ->assertOk()
-            ->assertJson([['user_id' => $booking_future->user_id, 'id' => $booking_future->id]]);
+            ->assertJson([['user_id' => $bookingFuture->user_id, 'id' => $bookingFuture->id]]);
 
-        $booking_deleted = Booking::factory()->create([
+        $bookingDeleted = Booking::factory()->create([
             'cost' => 5,
             'deleted_at' => '2020-11-25',
             'user_id'=>$this->user->id
@@ -66,7 +66,7 @@ class BookingTest extends TestCase
         $response = $this->actingAs($this->user)->json('get', "/api/bookings?status=canceled");
         $response
             ->assertOk()
-        ->assertJson([['user_id' => $booking_deleted->user_id, 'id' => $booking_deleted->id]]);
+        ->assertJson([['user_id' => $bookingDeleted->user_id, 'id' => $bookingDeleted->id]]);
     }
 
     public function test_user_can_filter_booking_by_practitioner(): void
@@ -136,7 +136,7 @@ class BookingTest extends TestCase
             'schedule_id' => $schedule->id,
         ]);
 
-        $response = $this->actingAs($this->user)->json(
+        $this->actingAs($this->user)->json(
             'get', "/api/bookings?serviceType="
             .$service->service_type_id)
             ->assertOk()
@@ -145,7 +145,7 @@ class BookingTest extends TestCase
 
     public function test_user_can_filter_booking_by_is_virtual(): void
     {
-        $user = User::factory()->create(['account_type' => 'practitioner']);
+        User::factory()->create(['account_type' => 'practitioner']);
 
 
         $schedule = Schedule::factory()->create(['is_virtual' => 1]);
@@ -157,27 +157,27 @@ class BookingTest extends TestCase
             'schedule_id' => $schedule->id,
         ]);
 
-        $response = $this->actingAs($this->user)->json('get', "/api/bookings?isVirtual=virtual")
+        $this->actingAs($this->user)->json('get', "/api/bookings?isVirtual=virtual")
             ->assertOk()
             ->assertJson([['user_id' => $booking->user_id, 'id' => $booking->id]]);
 
-        $schedule_real = Schedule::factory()->create(['is_virtual' => 0]);
+        $scheduleReal = Schedule::factory()->create(['is_virtual' => 0]);
 
-        $booking_real = Booking::factory()->create([
+        $bookingReal = Booking::factory()->create([
             'cost' => 5,
             'datetime_from' => '2020-9-5',
             'user_id' => $this->user->id,
-            'schedule_id' => $schedule_real->id,
+            'schedule_id' => $scheduleReal->id,
         ]);
 
-        $response = $this->actingAs($this->user)->json('get', "/api/bookings?isVirtual=physical")
+        $this->actingAs($this->user)->json('get', "/api/bookings?isVirtual=physical")
             ->assertOk()
-            ->assertJson([['user_id' => $booking_real->user_id, 'id' => $booking_real->id]]);
+            ->assertJson([['user_id' => $bookingReal->user_id, 'id' => $bookingReal->id]]);
     }
 
     public function test_user_can_filter_booking_by_city(): void
     {
-        $user = User::factory()->create(['account_type' => 'practitioner']);
+        User::factory()->create(['account_type' => 'practitioner']);
 
 
         $schedule = Schedule::factory()->create(['is_virtual' => 0]);
@@ -189,14 +189,14 @@ class BookingTest extends TestCase
             'schedule_id' => $schedule->id,
         ]);
 
-        $response = $this->actingAs($this->user)->json('get', "/api/bookings?city=".$schedule->city)
+        $this->actingAs($this->user)->json('get', "/api/bookings?city=".$schedule->city)
             ->assertOk()
             ->assertJson([['user_id' => $booking->user_id, 'id' => $booking->id]]);
     }
 
     public function test_user_can_filter_booking_by_country(): void
     {
-        $user = User::factory()->create(['account_type' => 'practitioner']);
+        User::factory()->create(['account_type' => 'practitioner']);
 
 
         $schedule = Schedule::factory()->create(['is_virtual' => 0]);
@@ -208,14 +208,14 @@ class BookingTest extends TestCase
             'schedule_id' => $schedule->id,
         ]);
 
-        $response = $this->actingAs($this->user)->json('get', "/api/bookings?country=".$schedule->country)
+       $this->actingAs($this->user)->json('get', "/api/bookings?country=".$schedule->country)
             ->assertOk()
             ->assertJson([['user_id' => $booking->user_id, 'id' => $booking->id]]);
     }
 
     public function test_user_can_filter_booking_by_payment_method():void
     {
-        $purchase_deposit = Purchase::factory()->create([
+        $purchaseDeposit = Purchase::factory()->create([
             'user_id' => $this->user->id,
             'is_deposit' => true,
             ]);
@@ -223,7 +223,7 @@ class BookingTest extends TestCase
         $booking = Booking::factory()->create([
             'cost' => 5,
             'user_id' => $this->user->id,
-            'purchase_id' => $purchase_deposit->id
+            'purchase_id' => $purchaseDeposit->id
         ]);
 
         $response = $this->actingAs($this->user)->json('get', "/api/bookings?paymentMethod=deposit");
@@ -231,20 +231,20 @@ class BookingTest extends TestCase
             ->assertOk()
             ->assertJson([['user_id' => $booking->user_id, 'id' => $booking->id]]);
 
-        $purchase_single = Purchase::factory()->create([
+        $purchaseSingle = Purchase::factory()->create([
             'user_id' => $this->user->id,
             'is_deposit' => false,
         ]);
 
-        $booking_single = Booking::factory()->create([
+        $bookingSingle = Booking::factory()->create([
             'cost' => 5,
             'user_id'=>$this->user->id,
-            'purchase_id' => $purchase_single->id,
+            'purchase_id' => $purchaseSingle->id,
         ]);
 
         $response = $this->actingAs($this->user)->json('get', "/api/bookings?paymentMethod=singlepayment");
         $response
             ->assertOk()
-            ->assertJson([['user_id' => $booking_single->user_id, 'id' => $booking_single->id]]);
+            ->assertJson([['user_id' => $bookingSingle->user_id, 'id' => $bookingSingle->id]]);
     }
 }
