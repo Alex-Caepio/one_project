@@ -137,7 +137,7 @@ class AuthController extends Controller
             $user->service_types()->sync($request->service_types);
         }
 
-        if ($request->filled('keywords')) {
+        if ($request->filled('keywords') && !empty($request->keywords)) {
             $user->keywords()->whereNotIn('title', $request->keywords)->delete();
             foreach ($request->keywords as $keyword) {
                $ids = Keyword::firstOrCreate(['title' => $keyword])->pluck('id');
