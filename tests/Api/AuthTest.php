@@ -202,8 +202,8 @@ class AuthTest extends TestCase
         $response = $this->actingAs($this->user)->json('put', '/api/auth/profile',[
             'first_name' => 'Kekwkekw',
             'media_images' => [
-                ['url' => 'http://google.com'],
-                ['url' => 'http://facebook.com'],
+                'http://google.com',
+                'http://facebook.com',
             ],
             'keywords' => [
                 $keyword->title,
@@ -225,5 +225,8 @@ class AuthTest extends TestCase
         $this->assertCount(1, User::first()->focus_areas);
         $this->assertCount(2, User::first()->disciplines);
         $this->assertCount(2, User::first()->service_types);
+        $this->assertDatabaseHas('keywords',['title' => $keyword->title]);
+        $this->assertDatabaseHas('keywords',['title' => 'Sport']);
+        $this->assertDatabaseMissing('keywords',['title' => 'kekw']);
     }
 }
