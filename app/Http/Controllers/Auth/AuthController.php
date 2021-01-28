@@ -137,17 +137,12 @@ class AuthController extends Controller
             $user->service_types()->sync($request->service_types);
         }
 
-        if ($request->filled('keywords') && !empty($request->keywords)) {
+        if ($request->filled('keywords')) {
             $user->keywords()->whereNotIn('title', $request->keywords)->delete();
             foreach ($request->keywords as $keyword) {
                $ids = Keyword::firstOrCreate(['title' => $keyword])->pluck('id');
                $keywordIds = collect($ids);
             }
-//
-//            $recurringIds = $user->keywords()->whereNotIn('title', $request->keywords)->pluck('keyword_id')->toArray();
-//            $newKeywords = $keywordIds->filter(function($value) use ($recurringIds) {
-//                return !in_array($value, $recurringIds);
-//            });
 
             $user->keywords()->sync($keywordIds);
         }
