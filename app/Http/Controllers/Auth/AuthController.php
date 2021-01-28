@@ -144,7 +144,7 @@ class AuthController extends Controller
                $keywordIds = collect($ids);
             }
 
-            if (!empty($keywordIds)) {
+            if (isset($keywordIds) && !empty($keywordIds)) {
                 $user->keywords()->sync($keywordIds);
             }
         }
