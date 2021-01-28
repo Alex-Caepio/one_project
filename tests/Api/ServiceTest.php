@@ -194,6 +194,34 @@ class ServiceTest extends TestCase
         $this->assertCount(0, Service::first()->keywords);
     }
 
+    public function test_service_can_be_updated_with_media()
+    {
+        $user = User::factory()->create(['account_type' => 'practitioner']);
+        $serviceType = ServiceType::factory()->create();
+        $service    = Service::factory()->create([
+            'user_id'         => $user->id,
+            'service_type_id' => $serviceType->id,
+        ]);
+
+        $response = $this->actingAs($user)->json('put', "/api/services/{$service->id}", [
+            'title'           => $service->title,
+            'user_id'         => $service->user_id,
+            'service_type_id' => $serviceType->id,
+            'introduction'    => $service->introduction,
+            'media_images' => [
+                 'http://google.com',
+                'http://google.com',
+            ],
+            'media_videos' => [
+                'http://google.com',
+                'http://google.com',
+            ]
+        ]);
+        $response->assertOk();
+        $this->assertCount(2, Service::first()->media_images);
+        $this->assertCount(2, Service::first()->media_videos);
+
+    }
     public function test_practitioner_can_see_unpublished_service()
     {
         $user = User::factory()->create(['account_type' => 'practitioner']);
