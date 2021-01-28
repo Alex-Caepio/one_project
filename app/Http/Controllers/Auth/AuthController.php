@@ -168,16 +168,17 @@ class AuthController extends Controller
         }
 
         if ($request->filled('media_videos')) {
-            $user->media_videos()->whereNotIn('url', $request->media_videos)->delete();
             $urls         = collect($request->media_videos);
-            $recurringURL = $user->media_videos()->whereIn('url', $urls)->pluck('url')->toArray();
+            $user->media_videos()->whereNotIn('url', $urls->pluck('url'))->delete();
+            $recurringURL = $user->media_videos()->whereIn('url', $urls->pluck('url'))->pluck('url')->toArray();
             $newVideos    = $urls->filter(function ($value) use ($recurringURL) {
-                return !in_array($value, $recurringURL);
+                return !in_array($value['url'], $recurringURL);
             });
 
             $videoUrlToStore = [];
-            foreach ($newVideos as $url) {
-                $videoUrlToStore[]['url'] = $url;
+            foreach ($newVideos as $key=>$url) {
+                $videoUrlToStore[$key]['url'] = $url['url'];
+                $videoUrlToStore[$key]['preview'] = $url['preview'];
             }
 
             if ($videoUrlToStore) {
