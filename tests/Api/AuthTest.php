@@ -194,29 +194,31 @@ class AuthTest extends TestCase
     public function test_user_can_update_his_profile_with_relations(): void
     {
         $this->user->account_type = 'practitioner';
-        $this->user->keywords()->create(['title' =>'kekw']);
-        $keyword = Keyword::factory()->create(['title' => 'Yoga']);
-        $focus_area = FocusArea::factory()->create();
+        $this->user->keywords()->create(['title' => 'kekw']);
+        $keyword      = Keyword::factory()->create(['title' => 'Yoga']);
+        $focus_areas   = FocusArea::factory()->count(2)->create();
         $service_type = ServiceType::factory()->count(2)->create();
-        $discipline = Discipline::factory()->count(2)->create(['name' => 'waka','is_published' => true]);
-        $response = $this->actingAs($this->user)->json('put', '/api/auth/profile',[
-            'first_name' => 'Kekwkekw',
-            'media_images' => [
-                'http://google.com',
-                'http://facebook.com',
-            ],
-            'keywords' => [
-                $keyword->title,
-                'Sport'
-            ],
-            'media_videos' => [
-                'http://google.com',
-            'http://google.com',
-            ],
-            'focus_areas' => [$focus_area->id],
-            'service_types' => $service_type->pluck('id'),
-            'disciplines' => $discipline->pluck('id'),
-        ]);
+        $discipline   = Discipline::factory()->count(2)->create(['name' => 'waka', 'is_published' => true]);
+
+        $response = $this->actingAs($this->user)
+            ->json('put', '/api/auth/profile', [
+                'first_name'    => 'Kekwkekw',
+                'media_images'  => [
+                    'http://google.com',
+                    'http://facebook.com',
+                ],
+                'keywords'      => [
+                    $keyword->title,
+                    'Sport'
+                ],
+                'media_videos'  => [
+                    'http://google.com',
+                    'http://google.com',
+                ],
+                'focus_areas'   => $focus_areas->pluck('id'),
+                'service_types' => $service_type->pluck('id'),
+                'disciplines'   => $discipline->pluck('id'),
+            ]);
 
         $response->assertOk()->assertJson(['first_name' => 'Kekwkekw']);
         $this->assertCount(2, User::first()->media_images);
@@ -225,9 +227,9 @@ class AuthTest extends TestCase
         $this->assertCount(1, User::first()->focus_areas);
         $this->assertCount(2, User::first()->disciplines);
         $this->assertCount(2, User::first()->service_types);
-        $this->assertDatabaseHas('keywords',['title' => $keyword->title]);
-        $this->assertDatabaseHas('keywords',['title' => 'Sport']);
+        $this->assertDatabaseHas('keywords', ['title' => $keyword->title]);
+        $this->assertDatabaseHas('keywords', ['title' => 'Sport']);
         $this->assertDatabaseHas('media_images',['url' => '/storage/1']);
-        $this->assertDatabaseMissing('keywords',['title' => 'kekw']);
+        $this->assertDatabaseMissing('keywords', ['title' => 'kekw']);
     }
 }
