@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 abstract class ServiceAction {
+
     use hasMediaItems;
     /**
      * @param \App\Models\Service $service
@@ -52,27 +53,24 @@ abstract class ServiceAction {
      * @param \App\Http\Requests\Request $request
      */
     protected function fillRelations(Service $service, Request $request): void {
-        if ($request->filled('media_images') && !empty($request->media_images))
+        if ($request->filled('media_images'))
         {
-            foreach ($request->media_images as $mediaImage)
-            {
-                if (Storage::disk(config('image.image_storage'))->missing(file_get_contents($mediaImage)))
-                {
-                    $image = Storage::disk(config('image.image_storage'))
-                        ->put("/images/services/{$service->id}/media_images/", file_get_contents($mediaImage));
-                    $image_urls[] = Storage::url($image);
-                }
-            }
-            $links = $image_urls;
-            $service->media_images()->whereNotIn('url', $links)->delete();
-            $service->media_images()->createMany($this->links($links,$service,true));
+//            foreach ($request->media_images as $mediaImage)
+//            {
+//                if (Storage::disk(config('image.image_storage'))->missing(file_get_contents($mediaImage)))
+//                {
+//                    $image = Storage::disk(config('image.image_storage'))
+//                        ->put("/images/services/{$service->id}/media_images/", file_get_contents($mediaImage));
+//                    $image_urls[] = Storage::url($image);
+//                }
+//            }
+//            $request->media_images = $image_urls;
+            $this->syncImages($request->media_images,$service);
         }
 
 
-        if ($request->filled('media_videos') && !empty($request->media_videos)) {
-            $service->media_videos()->whereNotIn('url', $request->media_videos)->delete();
-            $links = $request->media_videos;
-            $service->media_videos()->createMany($this->links($links,$service,false));
+        if ($request->filled('media_videos')) {
+            $this->syncVideos($request->media_videos,$service);
         }
 
         if ($request->has('media_files')) {
