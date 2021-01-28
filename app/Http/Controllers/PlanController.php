@@ -71,7 +71,7 @@ class PlanController extends Controller
             'price_stripe_id' => $plan->stripe_id
         ]);
 
-        event(new SubscriptionConfirmationPaid($user));
+//        event(new SubscriptionConfirmationPaid($user));
 
         return response(null, 204);
     }
