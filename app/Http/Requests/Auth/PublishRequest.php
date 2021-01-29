@@ -56,12 +56,12 @@ class PublishRequest extends FormRequest
                     'You have not filled in the field "Business introduction"'
                 );
             }
-            if (!$user->timezone_id) {
-                $validator->errors()->add(
-                    'timezone_id',
-                    'You have not filled in the field "Timezone"'
-                );
-            }
+//            if (!$user->timezone_id) {
+//                $validator->errors()->add(
+//                    'timezone_id',
+//                    'You have not filled in the field "Timezone"'
+//                );
+//            }
 
         });
     }
