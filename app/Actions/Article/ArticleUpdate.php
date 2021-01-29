@@ -16,21 +16,21 @@ class ArticleUpdate extends ArticleAction {
      * @param \App\Models\Article $article
      */
     public function execute(ArticleRequest $request, Article $article) {
-        if ($request->filled('media_images') && !empty($request->media_images))
-        {
-            foreach ($request->media_images as $mediaImage)
-            {
-                if (Storage::disk(config('image.image_storage'))->missing(file_get_contents($mediaImage['url'])))
-                {
-                    $image = Storage::disk(config('image.image_storage'))
-                        ->put("/images/articles/{$article->id}/media_images/", file_get_contents($mediaImage['url']));
-                    $image_urls[]['url'] = Storage::url($image);
-                }
-            }
-            $request->media_images = $image_urls;
-        }
+//        if ($request->filled('media_images'))
+//        {
+//            foreach ($request->media_images as $mediaImage)
+//            {
+//                if (Storage::disk(config('image.image_storage'))->missing(file_get_contents($mediaImage)))
+//                {
+//                    $image = Storage::disk(config('image.image_storage'))
+//                        ->put("/images/articles/{$article->id}/media_images/", file_get_contents($mediaImage));
+//                    $image_urls[] = Storage::url($image);
+//                }
+//            }
+//            $request->media_images = $image_urls;
+//        }
         $this->saveArticle($article, $request);
-        if ($request->filled('media_images') && !empty($request->media_images)){
+        if ($request->filled('media_images')){
             $article->media_images()->whereNotIn('url', $request->media_images)->delete();
             $urls = collect($request->media_images)->pluck('url');
             $recurringURL = $article->media_images()->whereIn('url', $urls)->pluck('url')->toArray();
