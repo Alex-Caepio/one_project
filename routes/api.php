@@ -100,6 +100,8 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::post('/articles/{article}/favourite', [ArticleController::class, 'storeFavorite']);
     Route::delete('/articles/{article}/favourite', [ArticleController::class, 'deleteFavorite']);
     Route::get('/articles/favourites', [UserController::class, 'articleFavorites']);
+    Route::post('/articles/{article}/publish', [ArticleController::class, 'publish']);
+    Route::post('/articles/{article}/unpublish', [ArticleController::class, 'unpublish']);
 
     Route::get('disciplines', [DisciplineController::class, 'index']);
     Route::get('disciplines/{discipline}', [DisciplineController::class, 'show']);

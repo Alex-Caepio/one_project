@@ -41,18 +41,22 @@ class FocusAreaTransformer extends Transformer
             'section_4_alt_text'        => $focusArea->section_4_alt_text,
             'section_4_url'             => $focusArea->section_4_url,
             'section_4_target_blanc'    => $focusArea->section_4_target_blanc,
+            'section_4_video_url'       => $focusArea->section_4_video_url,
+            'section_4_image_url'       => $focusArea->section_4_image_url,
 
             'section_5_h2'              => $focusArea->section_5_h2,
             'section_5_h3'              => $focusArea->section_5_h3,
             'section_5_background'      => $focusArea->section_5_background,
             'section_5_textarea'        => $focusArea->section_5_textarea,
 
-            'section_6_header_h2'       => $focusArea->section_6_header_h2,
+            'section_6_h2'              => $focusArea->section_6_h2,
 
             'section_7_h2'              => $focusArea->section_7_h2,
             'section_7_h3'              => $focusArea->section_7_h3,
             'section_7_background'      => $focusArea->section_7_background,
-            'section_7_text'            => $focusArea->section_7_text,
+            'section_7_textarea'        => $focusArea->section_7_textarea,
+            'section_7_image_url'       => $focusArea->section_7_image_url,
+            'section_7_video_url'       => $focusArea->section_7_video_url,
 
             'section_8_h2'              => $focusArea->section_8_h2,
 
@@ -60,6 +64,8 @@ class FocusAreaTransformer extends Transformer
             'section_9_alt_text'        => $focusArea->section_9_alt_text,
             'section_9_url'             => $focusArea->section_9_url,
             'section_9_target_blanc'    => $focusArea->section_9_target_blanc,
+            'section_9_video_url'       => $focusArea->section_9_video_url,
+            'section_9_image_url'       => $focusArea->section_9_image_url,
 
             'section_10_h2'             => $focusArea->section_10_h2,
             'section_10_h3'             => $focusArea->section_10_h3,
@@ -67,6 +73,8 @@ class FocusAreaTransformer extends Transformer
             'section_10_textarea'       => $focusArea->section_10_textarea,
 
             'section_11_h2'             => $focusArea->section_11_h2,
+            'section_11_image_url'      => $focusArea->section_11_image_url,
+            'section_11_video_url'      => $focusArea->section_11_video_url,
 
             'section_12_h2'             => $focusArea->section_11_h2,
             'section_12_h4'             => $focusArea->section_11_h4,
@@ -75,6 +83,8 @@ class FocusAreaTransformer extends Transformer
             'section_13_alt_text'       => $focusArea->section_13_alt_text,
             'section_13_url'            => $focusArea->section_13_url,
             'section_13_target_blanc'   => $focusArea->section_13_target_blanc,
+            'section_13_image_url'      => $focusArea->section_13_image_url,
+            'section_13_video_url'      => $focusArea->section_13_video_url,
 
             'created_at'                => $focusArea->created_at,
             'updated_at'                => $focusArea->updated_at,

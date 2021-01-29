@@ -4,8 +4,9 @@ namespace App\Http\Requests\Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\Request;
 
-class UpdateRequest extends FormRequest
+class UpdateRequest extends Request
 {
     /**
      * Authorization rules

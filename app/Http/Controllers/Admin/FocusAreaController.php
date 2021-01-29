@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\FocusAreaPublishRequest;
 use App\Http\Requests\Admin\FocusAreaStoreRequest;
+use App\Http\Requests\Admin\FocusAreaUpdateRequest;
 use App\Http\Requests\Image\IconRequests;
 use App\Http\Requests\Image\ImageRequests;
 use App\Http\Requests\Request;
@@ -100,7 +101,7 @@ class FocusAreaController extends Controller
             ->respond();
     }
 
-    public function update(FocusAreaStoreRequest $request, FocusArea $focusArea)
+    public function update(FocusAreaUpdateRequest $request, FocusArea $focusArea)
     {
         $data        = $request->all();
         $url         = $data['url'] ?? to_url($data['name']);
