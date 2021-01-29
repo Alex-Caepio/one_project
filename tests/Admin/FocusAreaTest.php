@@ -137,7 +137,7 @@ class FocusAreaTest extends TestCase
 
     public function test_update_focus_area(): void
     {
-        $focusArea = FocusArea::factory()->create(['url' => 'http://google.com']);
+        $focusArea = FocusArea::factory()->create();
 //        $focusAreaTwinUrl = FocusArea::factory()->create(['url' => 'http://google.com']);
         $services = Service::factory()->count(3)->create();
         $articles = Article::factory()->count(3)->create();
@@ -152,7 +152,7 @@ class FocusAreaTest extends TestCase
         $response = $this->json('put', "admin/focus-areas/{$focusArea->id}/",
             [
                 'name' => 'new name',
-                'url' => 'http://google.com',
+//                'url' => 'http://google.com',
                 'services' => $services->pluck('id'),
                 'articles' => $articles->pluck('id'),
                 'disciplines' => $disciplines->pluck('id'),

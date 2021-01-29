@@ -104,8 +104,8 @@ class FocusAreaController extends Controller
     public function update(FocusAreaUpdateRequest $request, FocusArea $focusArea)
     {
         $data        = $request->all();
-        $url         = $data['url'] ?? to_url($data['name']);
-        $data['url'] = $url;
+//        $url         = $data['url'] ?? to_url($data['name']);
+//        $data['url'] = $url;
 
         $focusArea->update($data);
 
