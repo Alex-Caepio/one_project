@@ -13,8 +13,6 @@ class KeywordTransformer extends Transformer
         return [
             'id'           => $keyword->id,
             'title'        => $keyword->title,
-            'created_at'   => $keyword->created_at,
-            'updated_at'   => $keyword->updated_at,
         ];
     }
 
