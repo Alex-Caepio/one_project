@@ -14,9 +14,27 @@ class KeywordController extends Controller
 
     public function index(Request $request)
     {
-        $keyword = Keyword::all();
-        return fractal($keyword, new KeywordTransformer())->parseIncludes($request->getIncludes())
-            ->toArray();
+        $query = Keyword::query();
+
+        if ($request->hasSearch()) {
+            $search = $request->search();
+
+            $query->where(
+                function ($query) use ($search) {
+                    $query->where('title', 'like', "%{$search}%");
+                }
+            );
+        }
+
+        $includes  = $request->getIncludes();
+        $paginator = $query->with($includes)
+            ->paginate($request->getLimit());
+
+        $keyword = $paginator->getCollection();
+
+        return response(fractal($keyword, new KeywordTransformer())
+            ->parseIncludes($includes)->toArray())
+            ->withPaginationHeaders($paginator);
     }
 
 

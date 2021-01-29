@@ -134,7 +134,9 @@ class AuthController extends Controller
                $keywordIds = collect($ids);
             }
 
-            $user->keywords()->sync($keywordIds);
+            if (isset($keywordIds) && !empty($keywordIds)) {
+                $user->keywords()->sync($keywordIds);
+            }
         }
 
         if ($request->filled('media_images')) {

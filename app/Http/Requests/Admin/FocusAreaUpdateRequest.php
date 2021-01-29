@@ -5,7 +5,7 @@ namespace App\Http\Requests\Admin;
 use App\Models\FocusArea;
 use App\Http\Requests\Request;
 
-class FocusAreaStoreRequest extends Request
+class FocusAreaUpdateRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -96,7 +96,7 @@ class FocusAreaStoreRequest extends Request
             $url       = $this->get('url') ?? to_url($this->get('name'));
             $fieldName = $this->get('url') ? 'url' : 'name';
 
-            if (FocusArea::where('url', $url)->exists()) {
+            if (FocusArea::where('url', $url)->where('id', '!=', $this->focusArea->id)->exists()) {
                 $validator->errors()->add($fieldName, "The slug {$url} is not unique! Please, chose the different {$fieldName}.");
             }
         });
