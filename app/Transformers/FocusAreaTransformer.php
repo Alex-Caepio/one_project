@@ -49,12 +49,12 @@ class FocusAreaTransformer extends Transformer
             'section_5_background'      => $focusArea->section_5_background,
             'section_5_textarea'        => $focusArea->section_5_textarea,
 
-            'section_6_header_h2'       => $focusArea->section_6_header_h2,
+            'section_6_h2'              => $focusArea->section_6_h2,
 
             'section_7_h2'              => $focusArea->section_7_h2,
             'section_7_h3'              => $focusArea->section_7_h3,
             'section_7_background'      => $focusArea->section_7_background,
-            'section_7_text'            => $focusArea->section_7_text,
+            'section_7_textarea'        => $focusArea->section_7_textarea,
             'section_7_image_url'       => $focusArea->section_7_image_url,
             'section_7_video_url'       => $focusArea->section_7_video_url,
 

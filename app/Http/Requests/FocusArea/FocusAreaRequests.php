@@ -49,14 +49,12 @@ class FocusAreaRequests extends FormRequest
             'section_5_background'      => 'nullable|min:6|max:7',
             'section_5_textarea'        => 'nullable|max:2000',
 
-            'section_6_header_h2'       => 'nullable|max:300',
+            'section_6_h2'              => 'nullable|max:300',
 
             'section_7_h2'              => 'nullable|max:300',
             'section_7_h3'              => 'nullable|max:300',
             'section_7_background'      => 'nullable|min:6|max:7',
-            'section_7_text'            => 'nullable|max:2000',
-            'section_7_image_url'       => 'nullable|url',
-            'section_7_video_url'       => 'nullable|url',
+            'section_7_textarea'        => 'nullable|max:2000',
 
             'section_8_h2'              => 'nullable|max:300',
 
