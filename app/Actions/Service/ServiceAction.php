@@ -5,11 +5,14 @@ namespace App\Actions\Service;
 use App\Models\Keyword;
 use App\Models\Service;
 use App\Http\Requests\Request;
+use App\Traits\hasMediaItems;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 abstract class ServiceAction {
 
+    use hasMediaItems;
     /**
      * @param \App\Models\Service $service
      * @param \App\Http\Requests\Request $request
@@ -50,14 +53,24 @@ abstract class ServiceAction {
      * @param \App\Http\Requests\Request $request
      */
     protected function fillRelations(Service $service, Request $request): void {
-        if ($request->has('media_images')) {
-            $service->media_images()->delete();
-            $service->media_images()->createMany($request->get('media_images'));
+        if ($request->filled('media_images'))
+        {
+//            foreach ($request->media_images as $mediaImage)
+//            {
+//                if (Storage::disk(config('image.image_storage'))->missing(file_get_contents($mediaImage)))
+//                {
+//                    $image = Storage::disk(config('image.image_storage'))
+//                        ->put("/images/services/{$service->id}/media_images/", file_get_contents($mediaImage));
+//                    $image_urls[] = Storage::url($image);
+//                }
+//            }
+//            $request->media_images = $image_urls;
+            $this->syncImages($request->media_images,$service);
         }
 
-        if ($request->has('media_videos')) {
-            $service->media_videos()->delete();
-            $service->media_videos()->createMany($request->get('media_videos'));
+
+        if ($request->filled('media_videos')) {
+            $this->syncVideos($request->media_videos,$service);
         }
 
         if ($request->has('media_files')) {

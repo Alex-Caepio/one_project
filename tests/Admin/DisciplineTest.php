@@ -74,12 +74,12 @@ class DisciplineTest extends TestCase
             'featured_articles'      => $articles->pluck('id'),
             'related_disciplines'    => $relatedDisciplines->pluck('id'),
             'media_images'           => [
-                ['url' => 'http://google.com'],
-                ['url' => 'http://google.com'],
+                'http://google.com',
+                'http://google.com',
             ],
             'media_videos'           => [
-                ['url' => 'http://google.com'],
-                ['url' => 'http://google.com'],
+                'http://google.com',
+                'http://google.com',
             ],
             'media_files'            => [
                 ['url' => 'http://google.com'],
@@ -162,6 +162,14 @@ class DisciplineTest extends TestCase
             'featured_practitioners' => $practitoners->pluck('id'),
             'featured_services'      => $services->pluck('id'),
             'featured_focus_areas'   => $focusAreas->pluck('id'),
+            'media_images'           => [
+                'http://google.com',
+                'http://google.com',
+            ],
+            'media_videos'           => [
+                'http://google.com',
+                'http://google.com',
+            ],
         ]);
         $responseContent = $response->getOriginalContent();
 
@@ -172,6 +180,7 @@ class DisciplineTest extends TestCase
         self::assertCount(3, $discipline->featured_practitioners);
         self::assertCount(3, $discipline->featured_services);
         self::assertCount(3, $discipline->featured_focus_areas);
+        self::assertCount(2, $discipline->media_images);
     }
 
     public function test_delete_discipline(): void
