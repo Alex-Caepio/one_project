@@ -56,11 +56,12 @@ class ServiceTest extends TestCase
     }
     public function test_update_service(): void
     {
-        $service = Service::factory()->create();
+        $service = Service::factory()->create(['is_published' => true]);
         $newService = Service::factory()->create();
-
-        $response = $this->json('put', "admin/services/{$service->id}",
+        $serviceType = ServiceType::factory()->create();
+        $response = $this->actingAs($this->user)->json('put', "admin/services/{$service->id}",
             [
+                'service_type_id' => $serviceType->id,
                 'title' => $newService->title,
             ]);
 

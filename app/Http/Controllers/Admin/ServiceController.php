@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Events\ServiceListingLive;
 use App\Filters\ServiceFiltrator;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\ServiceUpdateRequest;
 use App\Http\Requests\Services\ServicePublishRequest;
 use App\Http\Requests\Services\StoreServiceRequest;
 use App\Models\Service;
@@ -33,7 +34,7 @@ class ServiceController extends Controller
             ->withPaginationHeaders($paginator);
     }
 
-    public function store(Request $request)
+    public function store(ServiceUpdateRequest $request)
     {
         $data = $request->all();
         $service = Service::create($data);
@@ -46,7 +47,7 @@ class ServiceController extends Controller
             ->toArray();
     }
 
-    public function update(StoreServiceRequest $request, Service $service)
+    public function update(ServiceUpdateRequest $request, Service $service)
     {
         $service->update($request->all());
         return fractal($service, new ServiceTransformer())->respond();
