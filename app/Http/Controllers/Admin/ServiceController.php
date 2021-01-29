@@ -6,6 +6,7 @@ use App\Events\ServiceListingLive;
 use App\Filters\ServiceFiltrator;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Services\ServicePublishRequest;
+use App\Http\Requests\Services\StoreServiceRequest;
 use App\Models\Service;
 use App\Transformers\ServiceTransformer;
 use App\Http\Requests\Request;
@@ -45,7 +46,7 @@ class ServiceController extends Controller
             ->toArray();
     }
 
-    public function update(Request $request, Service $service)
+    public function update(StoreServiceRequest $request, Service $service)
     {
         $service->update($request->all());
         return fractal($service, new ServiceTransformer())->respond();
