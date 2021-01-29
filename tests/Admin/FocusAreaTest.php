@@ -137,8 +137,8 @@ class FocusAreaTest extends TestCase
 
     public function test_update_focus_area(): void
     {
-        $focusArea = FocusArea::factory()->create();
-
+        $focusArea = FocusArea::factory()->create(['url' => 'http://google.com']);
+//        $focusAreaTwinUrl = FocusArea::factory()->create(['url' => 'http://google.com']);
         $services = Service::factory()->count(3)->create();
         $articles = Article::factory()->count(3)->create();
         $disciplines = Discipline::factory()->count(3)->create(['is_published' => true]);
