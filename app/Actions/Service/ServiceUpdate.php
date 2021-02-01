@@ -38,11 +38,14 @@ class ServiceUpdate extends ServiceAction {
                 return !in_array($value, $recurringURL);
             });
 
-            foreach ($newImages as $url){
+            $imageUrlToStore = [];
+            foreach ($newImages as $url) {
                 $imageUrlToStore[]['url'] = $url;
             }
 
-            $service->media_images()->createMany($imageUrlToStore);
+            if ($imageUrlToStore) {
+                $service->media_images()->createMany($imageUrlToStore);
+            }
         }
         if ($request->filled('media_videos') && !empty($request->media_videos)) {
             $service->media_videos()->whereNotIn('url', $request->media_videos)->delete();
@@ -52,11 +55,14 @@ class ServiceUpdate extends ServiceAction {
                 return !in_array($value, $recurringURL);
             });
 
-            foreach ($newVideos as $url){
+            $videoUrlToStore = [];
+            foreach ($newVideos as $url) {
                 $videoUrlToStore[]['url'] = $url;
             }
 
-            $service->media_videos()->createMany($videoUrlToStore);
+            if ($videoUrlToStore) {
+                $service->media_videos()->createMany($videoUrlToStore);
+            }
         }
 
         return $service;

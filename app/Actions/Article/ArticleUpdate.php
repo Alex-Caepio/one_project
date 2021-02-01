@@ -38,11 +38,14 @@ class ArticleUpdate extends ArticleAction {
                 return !in_array($value, $recurringURL);
             });
 
-            foreach ($newImages as $url){
+            $imageUrlToStore = [];
+            foreach ($newImages as $url) {
                 $imageUrlToStore[]['url'] = $url;
             }
 
-            $article->media_images()->createMany($imageUrlToStore);
+            if ($imageUrlToStore) {
+                $article->media_images()->createMany($imageUrlToStore);
+            }
         }
         if ($request->filled('media_videos') && !empty($request->media_videos)) {
             $article->media_videos()->whereNotIn('url', $request->media_videos)->delete();
@@ -52,11 +55,14 @@ class ArticleUpdate extends ArticleAction {
                 return !in_array($value, $recurringURL);
             });
 
-            foreach ($newVideos as $url){
+            $videoUrlToStore = [];
+            foreach ($newVideos as $url) {
                 $videoUrlToStore[]['url'] = $url;
             }
 
-            $article->media_videos()->createMany($videoUrlToStore);
+            if ($videoUrlToStore) {
+                $article->media_videos()->createMany($videoUrlToStore);
+            }
         }
         return $article;
     }
