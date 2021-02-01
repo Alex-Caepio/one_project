@@ -30,7 +30,7 @@ class ServiceUpdate extends ServiceAction {
 //        }
         $this->saveService($service, $request);
 
-        if ($request->filled('media_images') && !empty($request->media_images)){
+        if ($request->filled('media_images')){
             $service->media_images()->whereNotIn('url', $request->media_images)->delete();
             $urls = collect($request->media_images)->pluck('url');
             $recurringURL = $service->media_images()->whereIn('url', $urls)->pluck('url')->toArray();
@@ -47,7 +47,7 @@ class ServiceUpdate extends ServiceAction {
                 $service->media_images()->createMany($imageUrlToStore);
             }
         }
-        if ($request->filled('media_videos') && !empty($request->media_videos)) {
+        if ($request->filled('media_videos')) {
             $service->media_videos()->whereNotIn('url', $request->media_videos)->delete();
             $urls = collect($request->media_videos)->pluck('url');
             $recurringURL = $service->media_videos()->whereIn('url', $urls)->pluck('url')->toArray();
