@@ -93,7 +93,8 @@ class FocusAreaUpdateRequest extends Request
             if($validator->errors()->isNotEmpty()){
                 return;
             }
-            $url       = $this->get('url') ?? to_url($this->get('name'));
+
+            $url       = $this->get('url') ?? $this->focusArea->url ?? to_url($this->get('name'));
             $fieldName = $this->get('url') ? 'url' : 'name';
 
             if (FocusArea::where('id', '!=', $this->focusArea->id)->where('url', $url)->exists()) {
