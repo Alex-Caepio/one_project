@@ -17,6 +17,7 @@ class PaymentMethodController extends Controller {
     }
 
     public function attach(StripeClient $stripe, Request $request) {
+
         $paymentMethods = $stripe->paymentMethods->attach(
             $request->payment_method_id,
             ['customer' => Auth::user()->stripe_customer_id]
@@ -25,12 +26,28 @@ class PaymentMethodController extends Controller {
         return $paymentMethods;
     }
 
-    public function detach(StripeClient $stripe, Request $request) {
+    public function default(StripeClient $stripe, Request $request) {
 
-        $stripe->paymentMethods->detach(
-            $request->payment_method_id,
-            []
+        $paymentMethods = $stripe->customers->update(
+            Auth::user()->stripe_customer_id,
+            ['default_source' => $request->payment_method_id]
         );
+
+        return $paymentMethods;
+    }
+
+    public function update(StripeClient $stripe, Request $request) {
+
+        $paymentMethods = $stripe->paymentMethods->update(
+            $request->payment_method_id,
+            $request->except('payment_method_id')
+        );
+
+        return $paymentMethods;
+    }
+
+    public function detach(StripeClient $stripe, Request $request) {
+        $stripe->paymentMethods->detach($request->payment_method_id, []);
 
         return response(null, 204);
     }

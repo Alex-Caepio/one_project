@@ -171,6 +171,8 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
 
     Route::get('/payment-methods', [PaymentMethodController::class, 'index']);
     Route::post('/payment-methods', [PaymentMethodController::class, 'attach']);
+    Route::post('/payment-methods/default', [PaymentMethodController::class, 'default']);
+    Route::put('/payment-methods', [PaymentMethodController::class, 'update']);
     Route::delete('/payment-methods', [PaymentMethodController::class, 'detach']);
 
     Route::post('/images', [ImageController::class, 'upload']);
