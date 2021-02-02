@@ -29,7 +29,7 @@ class PaymentMethodController extends Controller {
 
         $stripe->paymentMethods->detach(
             $request->payment_method_id,
-            ['customer' => Auth::user()->stripe_customer_id]
+            []
         );
 
         return response(null, 204);
