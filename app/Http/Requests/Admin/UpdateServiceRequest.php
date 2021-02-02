@@ -28,12 +28,12 @@ class UpdateServiceRequest extends Request {
 
         if ($isPublished === true) {
             return [
-                'title'           => 'required|string|min:5|max:100',
+                'title'           => 'string|min:5|max:100',
                 'description'     => 'nullable|string|min:5|max:1000',
                 'is_published'    => 'bool',
-                'introduction'    => 'required|string|min:5|max:500',
-                'url'             => 'required|url|unique:services,url' . ($this->service ? ',' . $this->service->id : ''),
-                'service_type_id' => 'required|exists:service_types,id',
+                'introduction'    => 'string|min:5|max:500',
+                'url'             => 'url|unique:services,url' . ($this->service ? ',' . $this->service->id : ''),
+                'service_type_id' => 'exists:service_types,id',
                 'image_url'       => 'nullable|url',
                 'icon_url'        => 'nullable|url',
             ];
@@ -44,7 +44,7 @@ class UpdateServiceRequest extends Request {
             'is_published'    => 'boolean',
             'introduction'    => 'string|min:5|max:500',
             'url'             => 'url',
-            'service_type_id' => 'required|exists:service_types,id'
+            'service_type_id' => 'exists:service_types,id'
         ];
     }
 }
