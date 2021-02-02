@@ -30,4 +30,9 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'stripe' => [
+        'secret' => env('STRIPE_SECRET', '_'),
+        'hook_sign' => env('STRIPE_SIGNING_SECRET')
+    ]
+
 ];

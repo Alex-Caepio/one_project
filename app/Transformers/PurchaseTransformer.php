@@ -14,7 +14,8 @@ class PurchaseTransformer extends Transformer {
         'price',
         'service',
         'promocode',
-        'instalments'
+        'instalments',
+        'cancellations'
     ];
 
     /**
@@ -65,5 +66,9 @@ class PurchaseTransformer extends Transformer {
 
     public function includeInstalments(Purchase $purchase): ?Collection {
         return $this->collectionOrNull($purchase->instalments, new InstalmentTransformer());
+    }
+
+    public function includeCancellations(Purchase $purchase): ?Collection {
+        return $this->collectionOrNull($purchase->cancellations, new CancellationTransformer());
     }
 }

@@ -4,19 +4,23 @@ namespace App\Transformers;
 
 use App\Models\Booking;
 
-class BookingTransformer extends Transformer
-{
+class BookingTransformer extends Transformer {
     protected $availableIncludes = [
-        'schedule', 'user', 'price',
-        'schedule_availability', 'purchase'
+        'schedule',
+        'user',
+        'practitioner',
+        'price',
+        'schedule_availability',
+        'purchase',
+        'cancellation'
     ];
+
     /**
      * A Fractal transformer.
      *
      * @return array
      */
-    public function transform(Booking $booking)
-    {
+    public function transform(Booking $booking) {
         return [
             'id'              => $booking->id,
             'user_id'         => $booking->user_id,
@@ -34,28 +38,31 @@ class BookingTransformer extends Transformer
         ];
     }
 
-    public function includeSchedules(Booking $booking)
-    {
+    public function includeSchedules(Booking $booking) {
         return $this->collectionOrNull($booking->schedule, new ScheduleTransformer());
     }
 
-    public function includeUsers(Booking $booking)
-    {
+    public function includeUser(Booking $booking) {
         return $this->itemOrNull($booking->user, new UserTransformer());
     }
 
-    public function includePrices(Booking $booking)
-    {
+    public function includePractitioner(Booking $booking) {
+        return $this->itemOrNull($booking->practitioner, new UserTransformer());
+    }
+
+    public function includePrices(Booking $booking) {
         return $this->itemOrNull($booking->price, new PriceTransformer());
     }
 
-    public function includeScheduleAvailabilities(Booking $booking)
-    {
+    public function includeScheduleAvailabilities(Booking $booking) {
         return $this->itemOrNull($booking->schedule_availability, new ScheduleAvailabilityTransformer());
     }
 
-    public function includePurchases(Booking $booking)
-    {
+    public function includePurchases(Booking $booking) {
         return $this->itemOrNull($booking->purchase, new PurchaseTransformer());
+    }
+
+    public function includeCancellation(Booking $booking) {
+        return $this->itemOrNull($booking->cancellation, new CancellationTransformer());
     }
 }

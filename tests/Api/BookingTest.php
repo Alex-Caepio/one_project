@@ -81,6 +81,7 @@ class BookingTest extends TestCase
             'cost' => 5,
             'datetime_from' => '2020-9-5',
             'user_id' => $this->user->id,
+            'practitioner' => $user->id,
             'schedule_id' => $schedule->id,
         ]);
 

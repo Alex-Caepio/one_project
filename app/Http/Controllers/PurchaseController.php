@@ -50,7 +50,7 @@ class PurchaseController extends Controller {
                 $cost = run_action(CalculatePromoPrice::class, $promo, $cost);
             }
         }
-
+        $schedule->load('service');
         $purchase = new Purchase();
         $purchase->schedule_id = $schedule->id;
         $purchase->service_id = $schedule->service->id;
@@ -67,6 +67,7 @@ class PurchaseController extends Controller {
             foreach ($availabilities as $availability) {
                 $booking = new Booking();
                 $booking->user_id = $request->user()->id;
+                $booking->practitioner_id = $schedule->service->user_id;
                 $booking->price_id = $request->get('price_id');
                 $booking->schedule_id = $schedule->id;
                 $booking->availability_id = $availability['availability_id'];
@@ -80,6 +81,7 @@ class PurchaseController extends Controller {
         } else {
             $booking = new Booking();
             $booking->user_id = $request->user()->id;
+            $booking->practitioner_id = $schedule->service->user_id;
             $booking->price_id = $request->get('price_id');
             $booking->schedule_id = $schedule->id;
             $booking->cost = $cost;

@@ -55,6 +55,10 @@ class Purchase extends Model {
         return $this->hasMany(Instalment::class);
     }
 
+    public function cancellations(): HasMany {
+        return $this->hasMany(Cancellation::class);
+    }
+
     public function scopeFilter(Builder $builder, QueryFilter $filters): Builder {
         return $filters->apply($builder);
     }

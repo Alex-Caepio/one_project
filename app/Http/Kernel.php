@@ -7,6 +7,7 @@ use App\Http\Middleware\CheckForMaintenanceMode;
 use App\Http\Middleware\EncryptCookies;
 use App\Http\Middleware\Practitioner;
 use App\Http\Middleware\RedirectIfAuthenticated;
+use App\Http\Middleware\StripeAuthentication;
 use App\Http\Middleware\TrimStrings;
 use App\Http\Middleware\TrustProxies;
 use App\Http\Middleware\UnsuspendedMiddleware;
@@ -90,6 +91,7 @@ class Kernel extends HttpKernel
         'signed' => ValidateSignature::class,
         'throttle' => ThrottleRequests::class,
         'verified' => EnsureEmailIsVerified::class,
-        'practitioner' => Practitioner::class
+        'practitioner' => Practitioner::class,
+        'stripe' => StripeAuthentication::class
     ];
 }

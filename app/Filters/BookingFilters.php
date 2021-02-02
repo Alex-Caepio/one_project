@@ -11,16 +11,16 @@ class BookingFilters extends QueryFilter
     {
         $status = strtolower($status);
 
-        if ($status == 'upcoming')
+        if ($status === 'upcoming')
         {
             return $this->builder->where('datetime_from', '>', Carbon::now()->format('Y-m-d H:i:s'));
         }
 
-        if ($status == 'completed'){
+        if ($status === 'completed'){
             return $this->builder->where('datetime_from', '<', Carbon::now()->format('Y-m-d H:i:s'));
         }
 
-        if ($status == 'canceled')
+        if ($status === 'canceled')
         {
             return $this->builder->whereNotNull('deleted_at')->withTrashed();
         }
@@ -29,10 +29,7 @@ class BookingFilters extends QueryFilter
 
     public function practitioner(int $id)
     {
-        return $this->builder->whereHas('schedule.service', function ($q) use($id)
-        {
-           $q->where('user_id', '=', $id);
-        });
+        return $this->builder->where('practitioner_id', '=', $id);
     }
 
     public function datetime_from($datetimeFrom)
@@ -62,15 +59,14 @@ class BookingFilters extends QueryFilter
     {
         $isVirtual = strtolower($isVirtual);
 
-        if ($isVirtual == 'virtual')
-        {
+        if ($isVirtual === 'virtual') {
             return $this->builder->whereHas('schedule', function ($q) use ($isVirtual)
             {
                 $q->where('is_virtual', '=', true);
             });
         }
-        elseif ($isVirtual == 'physical')
-        {
+
+        if ($isVirtual === 'physical') {
             return $this->builder->whereHas('schedule', function ($q) use ($isVirtual)
             {
                 $q->where('is_virtual', '!=', true);

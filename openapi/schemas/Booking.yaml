@@ -4,6 +4,8 @@ properties:
     type: integer
   user_id:
     type: integer
+  practitioner_id:
+    type: integer
   schedule_id:
     type: integer
   availability_id:
