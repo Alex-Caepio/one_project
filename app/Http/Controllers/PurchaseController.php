@@ -42,6 +42,7 @@ class PurchaseController extends Controller {
     public function purchase(PurchaseScheduleRequest $request, Schedule $schedule, StripeClient $stripe) {
         $price = $schedule->prices()->find($request->get('price_id'));
         $cost = $price->cost;
+        $practitoner = $schedule->service->user;
 
         $promo = null;
         if ($request->has('promo_code')) {
@@ -101,6 +102,12 @@ class PurchaseController extends Controller {
             $paymentIntent = $stripe->paymentIntents->confirm($stripe->getClientId(), ['payment_method' => $stripe->card]);
             $purchase->stripe_id = $paymentIntent->id;
             $purchase->save();
+
+            $stripe->transfers->create([
+                'amount' => $cost,
+                'currency' => 'usd',
+                'destination' => $practitoner->stripe_account_id,
+            ]);
 
         } catch (\Stripe\Exception\ApiErrorException $e) {
 

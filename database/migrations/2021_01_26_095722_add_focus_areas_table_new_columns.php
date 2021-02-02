@@ -20,9 +20,6 @@ class AddFocusAreasTableNewColumns extends Migration
             $table->string('section_11_image_url')->nullable()->after('section_11_h2');
             $table->string('section_11_video_url')->nullable()->after('section_11_h2');
 
-            $table->string('section_13_image_url')->nullable();
-            $table->string('section_13_video_url')->nullable();
-
         });
     }
 
@@ -36,7 +33,7 @@ class AddFocusAreasTableNewColumns extends Migration
         Schema::table('focus_areas', function (Blueprint $table) {
             $table->dropColumn(['section_7_image_url', 'section_7_video_url',
                 'section_11_image_url', 'section_11_video_url',
-                'section_13_image_url', 'section_13_video_url']);
+                ]);
         });
     }
 }
