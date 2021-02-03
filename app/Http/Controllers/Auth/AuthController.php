@@ -89,15 +89,6 @@ class AuthController extends Controller
             ->respond();
     }
 
-    public function publish(PublishRequest $request)
-    {
-        $user               = $request->user();
-        $user->is_published = true;
-        $user->save();
-        return fractal($request->user(), new UserTransformer())
-            ->respond();
-    }
-
     public function profile(Request $request)
     {
         return fractal($request->user(), new UserTransformer())
@@ -108,6 +99,12 @@ class AuthController extends Controller
     public function update(UpdateRequest $request)
     {
         $user = $request->user();
+        if ($request->is_published === true)
+        {
+            $user->is_published = true;
+            $user->save();
+        }
+
         $user->update($request->all());
         if ($request->filled('password')) {
             $user->password = Hash::make($request->get('password'));
