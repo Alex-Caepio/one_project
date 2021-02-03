@@ -35,14 +35,13 @@ class AuthTest extends TestCase
         $this->login($this->user);
     }
 
-    public function test_user_publish(): void
+    public function test_user_can_publish_via_update(): void
     {
-        $user = User::factory()->make();
+        $user = User::factory()->create(['is_published' => false]);
 
-        $response = $this->actingAs($user)->json('post', 'api/auth/profile/publish', [
-            'is_published' => true
-        ]);
+        $response = $this->actingAs($user)->json('put', 'api/auth/profile');
         $response->assertOk();
+        $this->assertTrue($user->is_published === true);
     }
 
     public function test_user_can_register_a_new_account(): void

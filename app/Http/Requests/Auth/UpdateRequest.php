@@ -68,6 +68,41 @@ class UpdateRequest extends Request
     public function withValidator($validator)
     {
         $user = $this->user();
+        $validator->after(function ($validator) use($user){
+            if ($user->is_published === false){
+                if (!$user->business_name) {
+                    $validator->errors()->add(
+                        'business_name',
+                        'You have not filled in the field "Business name"'
+                    );
+                }
+                if (!$user->business_address) {
+                    $validator->errors()->add(
+                        'business_address',
+                        'You have not filled in the field "Business address"'
+                    );
+                }
+                if (!$user->business_email) {
+                    $validator->errors()->add(
+                        'business_email',
+                        'You have not filled in the field "Business email"'
+                    );
+                }
+                if (!$user->business_introduction) {
+                    $validator->errors()->add(
+                        'business_introduction',
+                        'You have not filled in the field "Business introduction"'
+                    );
+                }
+                if (!$user->timezone_id) {
+                    $validator->errors()->add(
+                        'timezone_id',
+                        'You have not filled in the field "Timezone"'
+                    );
+                }
+
+            }
+        });
         $validator->after(function ($validator) use ($user) {
             if ($this->get('current_password') && !Hash::check($this->get('current_password'), $user->password)) {
                 $validator->errors()->add('current_password', 'The current password is incorrect!');

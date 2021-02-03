@@ -65,7 +65,6 @@ Route::get('/service-types', [ServiceTypeController::class, 'index']);
 Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::get('auth/profile', [AuthController::class, 'profile']);
     Route::put('auth/profile', [AuthController::class, 'update']);
-    Route::post('auth/profile/publish', [AuthController::class, 'publish']);
     Route::post('auth/resend-verification', [AuthController::class, 'resendVerification']);
     Route::post('auth/profile/avatar', [AuthController::class, 'avatar']);
     Route::post('auth/profile/background', [AuthController::class, 'background']);
