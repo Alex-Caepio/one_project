@@ -7,12 +7,14 @@ use App\Http\Requests\Articles\ArticleRequest;
 use App\Http\Requests\Request;
 use App\Models\Article;
 use App\Models\Keyword;
+use App\Traits\hasMediaItems;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 abstract class ArticleAction {
 
+    use hasMediaItems;
 
     /**
      * @param \App\Models\Article $article
@@ -50,14 +52,22 @@ abstract class ArticleAction {
      * @param \App\Http\Requests\Articles\ArticleRequest $request
      */
     protected function fillRelations(Article $article, ArticleRequest $request): void {
-        if ($request->has('media_images')) {
-            $article->media_images()->delete();
-            $article->media_images()->createMany($request->get('media_images'));
-        }
 
-        if ($request->has('media_videos')) {
-            $article->media_videos()->delete();
-            $article->media_videos()->createMany($request->get('media_videos'));
+        if ($request->filled('media_images')){
+//            foreach ($request->media_images as $mediaImage)
+//            {
+//                if (Storage::disk(config('image.image_storage'))->missing(file_get_contents($mediaImage)))
+//                {
+//                    $image = Storage::disk(config('image.image_storage'))
+//                        ->put("/images/articles/{$article->id}/media_images/", file_get_contents($mediaImage));
+//                    $image_urls[] = Storage::url($image);
+//                }
+//            }
+//            $request->media_images = $image_urls;
+            $this->syncImages($request->media_images,$article);
+        }
+        if ($request->filled('media_videos')) {
+            $this->syncVideos($request->media_videos,$article);
         }
 
         if ($request->has('media_files')) {
