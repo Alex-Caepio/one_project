@@ -197,6 +197,10 @@ class User extends Authenticatable implements MustVerifyEmail {
         return $this->hasMany(Booking::class);
     }
 
+    public function practitioner_bookings(): HasMany {
+        return $this->hasMany(Booking::class, 'id', 'practitioner_id');
+    }
+
     public function purchases(): HasMany {
         return $this->hasMany(Purchase::class);
     }
@@ -224,4 +228,13 @@ class User extends Authenticatable implements MustVerifyEmail {
     public function keywords(): belongsToMany {
         return $this->belongsToMany(Keyword::class,'keyword_user','user_id','keyword_id');
     }
+
+    public function user_cancellations(): HasMany {
+        return $this->hasMany(Cancellation::class, 'id', 'user_id');
+    }
+
+    public function practitioner_cancellations(): HasMany {
+        return $this->hasMany(Cancellation::class, 'id', 'practitioner_id');
+    }
+
 }

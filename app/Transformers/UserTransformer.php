@@ -21,7 +21,11 @@ class UserTransformer extends Transformer {
         'media_videos',
         'service_types',
         'focus_areas',
-        'keywords'
+        'keywords',
+        'user_cancellations',
+        'practitioner_cancellations',
+        'bookings',
+        'practitioner_bookings'
     ];
 
     public function transform(User $user) {
@@ -130,5 +134,21 @@ class UserTransformer extends Transformer {
 
     public function includeKeywords(User $user): ?Collection {
         return $this->collectionOrNull($user->keywords, new KeywordTransformer());
+    }
+
+    public function includeUserCancellations(User $user): ?Collection {
+        return $this->collectionOrNull($user->user_cancellations, new CancellationTransformer());
+    }
+
+    public function includePractitionerCancellations(User $user): ?Collection {
+        return $this->collectionOrNull($user->practitioner_cancellations, new CancellationTransformer());
+    }
+
+    public function includeBookings(User $user): ?Collection {
+        return $this->collectionOrNull($user->bookings, new BookingTransformer());
+    }
+
+    public function includePractitionerBookings(User $user): ?Collection {
+        return $this->collectionOrNull($user->practitioner_bookings, new BookingTransformer());
     }
 }

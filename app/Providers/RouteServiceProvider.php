@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Article;
+use App\Models\Booking;
 use App\Models\Promotion;
 use App\Models\Service;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
@@ -55,6 +56,12 @@ class RouteServiceProvider extends ServiceProvider {
 
         Route::bind('promotionWithTrashed', function($value) {
             return Promotion::withTrashed()->where('id', (int)$value)->firstOrFail();
+        });
+
+        Route::bind('booking', function($value) {
+            return Booking::where('id', $value)
+                          ->orWhere('reference', $value)
+                          ->firstOrFail();
         });
 
         parent::boot();

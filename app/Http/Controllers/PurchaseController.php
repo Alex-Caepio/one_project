@@ -56,13 +56,13 @@ class PurchaseController extends Controller
                 $cost = run_action(CalculatePromoPrice::class, $promo, $cost);
             }
         }
-
-        $purchase                 = new Purchase();
-        $purchase->schedule_id    = $schedule->id;
-        $purchase->service_id     = $schedule->service->id;
-        $purchase->price_id       = $price->id;
-        $purchase->user_id        = Auth::id();
-        $purchase->promocode_id   = $promo instanceof PromotionCode ? $promo->id : null;
+        $schedule->load('service');
+        $purchase = new Purchase();
+        $purchase->schedule_id = $schedule->id;
+        $purchase->service_id = $schedule->service->id;
+        $purchase->price_id = $price->id;
+        $purchase->user_id = Auth::id();
+        $purchase->promocode_id = $promo instanceof PromotionCode ? $promo->id : null;
         $purchase->price_original = $price->cost;
         $purchase->price          = $cost;
         $purchase->is_deposit     = false;
@@ -71,10 +71,11 @@ class PurchaseController extends Controller
         if ($schedule->service->service_type_id === 'appointment') {
             $availabilities = $request->get('availabilities');
             foreach ($availabilities as $availability) {
-                $booking                  = new Booking();
-                $booking->user_id         = $request->user()->id;
-                $booking->price_id        = $request->get('price_id');
-                $booking->schedule_id     = $schedule->id;
+                $booking = new Booking();
+                $booking->user_id = $request->user()->id;
+                $booking->practitioner_id = $schedule->service->user_id;
+                $booking->price_id = $request->get('price_id');
+                $booking->schedule_id = $schedule->id;
                 $booking->availability_id = $availability['availability_id'];
                 $booking->datetime_from   = $availability['datetime_from'];
                 $datetimeTo               = (new Carbon($booking->datetime_from))->addMinutes($price->duration);
@@ -84,9 +85,10 @@ class PurchaseController extends Controller
                 $booking->save();
             }
         } else {
-            $booking              = new Booking();
-            $booking->user_id     = $request->user()->id;
-            $booking->price_id    = $request->get('price_id');
+            $booking = new Booking();
+            $booking->user_id = $request->user()->id;
+            $booking->practitioner_id = $schedule->service->user_id;
+            $booking->price_id = $request->get('price_id');
             $booking->schedule_id = $schedule->id;
             $booking->cost        = $cost;
             $booking->purchase_id = $purchase->id;

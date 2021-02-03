@@ -6,6 +6,8 @@ use App\Filters\QueryFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -17,6 +19,7 @@ class Booking extends Model
 
     protected $fillable = [
         'user_id',
+        'practitioner_id',
         'schedule_id',
         'price_id',
         'availability_id',
@@ -32,7 +35,12 @@ class Booking extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    public function practitioner()
+    {
+        return $this->belongsTo(User::class, 'practitioner_id', 'id');
     }
 
     public function schedule()
@@ -53,6 +61,10 @@ class Booking extends Model
     public function purchase()
     {
         return $this->belongsTo(Purchase::class);
+    }
+
+    public function cancellation(): HasOne {
+        return $this->hasOne(Cancellation::class);
     }
 
     public function scopeFilter(Builder $builder, QueryFilter $filters)
