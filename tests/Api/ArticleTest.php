@@ -70,8 +70,15 @@ class ArticleTest extends TestCase
                     'http://google.com',
                 ],
                 'media_videos'           => [
-                    'http://google.com',
-                    'http://google.com',
+                    [
+                        'url' => 'http://google.com',
+                        'preview' => 'http://google.com',
+                    ],
+
+                    [
+                        'url' => 'http://yandex.com',
+                        'preview' => 'http://facebook.com',
+                    ],
                 ],
             ]);
 

@@ -70,13 +70,25 @@ class ServiceTest extends TestCase
             'introduction' => $service->introduction,
             'is_published' => $service->is_published,
             'service_type_id' => $serviceType->id,
-            'media_images' => [
-                ['url' => 'http://google.com'],
-                ['url' => 'http://google.com'],
-            ]
+            'media_images'           => [
+                'http://google.com',
+                'http://google.com',
+            ],
+            'media_videos'           => [
+                [
+                    'url' => 'http://google.com',
+                    'preview' => 'http://google.com',
+                ],
+
+                [
+                    'url' => 'http://yandex.com',
+                    'preview' => 'http://facebook.com',
+                ],
+            ],
         ]);
         $response->assertOk();
         $this->assertCount(2, Service::first()->media_images);
+        $this->assertCount(2, Service::first()->media_videos);
     }
 
     public function test_practitioner_can_delete_service(): void
@@ -212,10 +224,17 @@ class ServiceTest extends TestCase
                  'http://google.com',
                 'http://google.com',
             ],
-            'media_videos' => [
-                'http://google.com',
-                'http://google.com',
-            ]
+            'media_videos'           => [
+                [
+                    'url' => 'http://google.com',
+                    'preview' => 'http://google.com',
+                ],
+
+                [
+                    'url' => 'http://yandex.com',
+                    'preview' => 'http://facebook.com',
+                ],
+            ],
         ]);
         $response->assertOk();
         $this->assertCount(2, Service::first()->media_images);

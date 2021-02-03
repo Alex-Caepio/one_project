@@ -69,6 +69,21 @@ class FocusAreaTest extends TestCase
             'services' => $services->pluck('id'),
             'articles' => $articles->pluck('id'),
             'disciplines' => $disciplines->pluck('id'),
+            'media_images'           => [
+                'http://google.com',
+                'http://google.com',
+            ],
+            'media_videos'           => [
+                [
+                    'url' => 'http://google.com',
+                    'preview' => 'http://google.com',
+                ],
+
+                [
+                    'url' => 'http://yandex.com',
+                    'preview' => 'http://facebook.com',
+                ],
+            ],
 
             'featured_practitioners' => $featuredPractitioners->pluck('id'),
             'featured_disciplines' => $featuredDisciplines->pluck('id'),
@@ -88,6 +103,8 @@ class FocusAreaTest extends TestCase
         self::assertCount(4, $focusArea->featured_articles);
         self::assertCount(4, $focusArea->featured_services);
         self::assertCount(4, $focusArea->featured_focus_areas);
+        self::assertCount(2, $focusArea->media_videos);
+        self::assertCount(2, $focusArea->media_images);
 
     }
 
@@ -166,8 +183,15 @@ class FocusAreaTest extends TestCase
                     'http://google.com',
                 ],
                 'media_videos'           => [
-                    'http://google.com',
-                    'http://google.com',
+                    [
+                        'url' => 'http://google.com',
+                        'preview' => 'http://google.com',
+                    ],
+
+                    [
+                        'url' => 'http://yandex.com',
+                        'preview' => 'http://facebook.com',
+                    ],
                 ],
 
             ]);
