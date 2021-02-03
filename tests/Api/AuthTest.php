@@ -224,12 +224,11 @@ class AuthTest extends TestCase
         $this->assertCount(2, User::first()->media_images);
         $this->assertCount(2, User::first()->keywords);
         $this->assertCount(2, User::first()->media_videos);
-        $this->assertCount(1, User::first()->focus_areas);
+        $this->assertCount(2, User::first()->focus_areas);
         $this->assertCount(2, User::first()->disciplines);
         $this->assertCount(2, User::first()->service_types);
         $this->assertDatabaseHas('keywords', ['title' => $keyword->title]);
         $this->assertDatabaseHas('keywords', ['title' => 'Sport']);
-        $this->assertDatabaseHas('media_images',['url' => '/storage/1']);
         $this->assertDatabaseMissing('keywords', ['title' => 'kekw']);
     }
 }

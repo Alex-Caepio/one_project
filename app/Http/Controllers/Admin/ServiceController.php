@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Events\ServiceListingLive;
 use App\Filters\ServiceFiltrator;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\UpdateServiceRequest;
 use App\Http\Requests\Services\ServicePublishRequest;
 use App\Models\Service;
 use App\Transformers\ServiceTransformer;
@@ -45,7 +46,7 @@ class ServiceController extends Controller
             ->toArray();
     }
 
-    public function update(Request $request, Service $service)
+    public function update(UpdateServiceRequest $request, Service $service)
     {
         $service->update($request->all());
         return fractal($service, new ServiceTransformer())->respond();

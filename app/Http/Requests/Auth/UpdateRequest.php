@@ -5,6 +5,7 @@ namespace App\Http\Requests\Auth;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\Request;
+use Illuminate\Validation\Rule;
 
 class UpdateRequest extends Request
 {
@@ -40,7 +41,11 @@ class UpdateRequest extends Request
             'date_of_birth'               => 'date',
             'mobile_number'               => 'digits_between:2,255|numeric',
             'business_phone_number'       => 'digits_between:2,255|numeric',
-            'email'                       => 'sometimes|required|email|unique:users,email',
+            'email'                       => ['sometimes',
+                'required',
+                'email',
+                Rule::unique('users','email')->ignore($this->user()->id)
+            ],
             'email_verified_at'           => 'date_format:Y-m-d H:i:s',
 
             'current_password'            => 'required_with:password',

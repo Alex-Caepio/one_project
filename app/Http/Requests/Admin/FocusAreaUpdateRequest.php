@@ -93,10 +93,11 @@ class FocusAreaUpdateRequest extends Request
             if($validator->errors()->isNotEmpty()){
                 return;
             }
-            $url       = $this->get('url') ?? to_url($this->get('name'));
+
+            $url       = $this->get('url') ?? $this->focusArea->url ?? to_url($this->get('name'));
             $fieldName = $this->get('url') ? 'url' : 'name';
 
-            if (FocusArea::where('url', $url)->where('id', '!=', $this->focusArea->id)->exists()) {
+            if (FocusArea::where('id', '!=', $this->focusArea->id)->where('url', $url)->exists()) {
                 $validator->errors()->add($fieldName, "The slug {$url} is not unique! Please, chose the different {$fieldName}.");
             }
         });

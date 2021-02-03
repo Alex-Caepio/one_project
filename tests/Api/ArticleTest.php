@@ -65,12 +65,22 @@ class ArticleTest extends TestCase
         $response = $this->actingAs($user)->json('put', "/api/articles/{$article->id}",
             [
                 'title' => $newArticle->title,
+                'media_images'           => [
+                    'http://google.com',
+                    'http://google.com',
+                ],
+                'media_videos'           => [
+                    'http://google.com',
+                    'http://google.com',
+                ],
             ]);
 
         $response->assertOk()
             ->assertJson([
                 'title' => $newArticle->title,
             ]);
+        self::assertCount(2, $article->media_images);
+        self::assertCount(2, $article->media_videos);
     }
 
     public function test_show_article(): void
@@ -116,8 +126,8 @@ class ArticleTest extends TestCase
             'user_id' => $user->id,
             'url' => $article->url,
             'media_images' => [
-                ['url' => 'http://google.com'],
-                ['url' => 'http://google.com'],
+                 'http://google.com',
+                 'http://google.com',
             ]
         ]);
         $response->assertOk();

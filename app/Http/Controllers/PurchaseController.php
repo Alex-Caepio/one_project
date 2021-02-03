@@ -8,6 +8,8 @@ use App\Http\Requests\PromotionCode\ValidatePromocodeRequest;
 use App\Http\Requests\Request;
 use App\Http\Requests\Schedule\PurchaseScheduleRequest;
 use App\Models\Booking;
+use App\Models\Plan;
+use App\Models\PractitionerCommission;
 use App\Models\PromotionCode;
 use App\Models\Purchase;
 use App\Models\Schedule;
@@ -19,29 +21,33 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Stripe\StripeClient;
 
-class PurchaseController extends Controller {
+class PurchaseController extends Controller
+{
 
     /**
      * @param \App\Http\Requests\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request): Response {
+    public function index(Request $request): Response
+    {
         $query = Purchase::query();
 
         $purchaseFilter = new PurchaseFilters();
         $purchaseFilter->apply($query, $request);
 
-        $includes = $request->getIncludes();
+        $includes  = $request->getIncludes();
         $paginator = $query->with($includes)->paginate($request->getLimit());
 
         return response(fractal($paginator->getCollection(),
-                                new PurchaseTransformer())->parseIncludes($request->getIncludes()))->withPaginationHeaders($paginator);
+            new PurchaseTransformer())->parseIncludes($request->getIncludes()))->withPaginationHeaders($paginator);
 
     }
 
-    public function purchase(PurchaseScheduleRequest $request, Schedule $schedule, StripeClient $stripe) {
-        $price = $schedule->prices()->find($request->get('price_id'));
-        $cost = $price->cost;
+    public function purchase(PurchaseScheduleRequest $request, Schedule $schedule, StripeClient $stripe)
+    {
+        $price       = $schedule->prices()->find($request->get('price_id'));
+        $cost        = $price->cost;
+        $practitoner = $schedule->service->user;
 
         $promo = null;
         if ($request->has('promo_code')) {
@@ -58,8 +64,8 @@ class PurchaseController extends Controller {
         $purchase->user_id = Auth::id();
         $purchase->promocode_id = $promo instanceof PromotionCode ? $promo->id : null;
         $purchase->price_original = $price->cost;
-        $purchase->price = $cost;
-        $purchase->is_deposit = false;
+        $purchase->price          = $cost;
+        $purchase->is_deposit     = false;
         $purchase->save();
 
         if ($schedule->service->service_type_id === 'appointment') {
@@ -71,11 +77,11 @@ class PurchaseController extends Controller {
                 $booking->price_id = $request->get('price_id');
                 $booking->schedule_id = $schedule->id;
                 $booking->availability_id = $availability['availability_id'];
-                $booking->datetime_from = $availability['datetime_from'];
-                $datetimeTo = (new Carbon($booking->datetime_from))->addMinutes($price->duration);
-                $booking->datetime_to = $datetimeTo->format('Y-m-d H:i:s');
-                $booking->cost = $cost;
-                $booking->purchase_id = $purchase->id;
+                $booking->datetime_from   = $availability['datetime_from'];
+                $datetimeTo               = (new Carbon($booking->datetime_from))->addMinutes($price->duration);
+                $booking->datetime_to     = $datetimeTo->format('Y-m-d H:i:s');
+                $booking->cost            = $cost;
+                $booking->purchase_id     = $purchase->id;
                 $booking->save();
             }
         } else {
@@ -84,33 +90,58 @@ class PurchaseController extends Controller {
             $booking->practitioner_id = $schedule->service->user_id;
             $booking->price_id = $request->get('price_id');
             $booking->schedule_id = $schedule->id;
-            $booking->cost = $cost;
+            $booking->cost        = $cost;
             $booking->purchase_id = $purchase->id;
             $booking->save();
         }
 
         ScheduleFreeze::where('schedule_id', $schedule->id)
-                      ->where('user_id', $request->user()->id)
-                      ->delete();
+            ->where('user_id', $request->user()->id)
+            ->delete();
+
+        $practitionerPlan = $practitoner->plan;
+
+        $practitionerCommissions = PractitionerCommission::where('practitioner_id', $practitoner->id)
+            ->where(function ($q) {
+                $q->orWhereRaw('date_from >= NOW() OR date_to <= NOW()')
+                    ->where('is_dateless', true);
+            })->get();
+
+        $reductions[] = $cost * $practitionerPlan->commission_on_sale / 100;
+
+        foreach ($practitionerCommissions as $practitionerCommission){
+            $reductions[] = $cost * $practitionerCommission->rate / 100;
+        }
+
+        $amount = $cost;
+        foreach ($reductions as $reduction){
+            $amount -= $reduction;
+        }
 
         try {
             $stripe->paymentIntents->create([
-                'amount' => $cost,
-                'currency' => $price->name,
+                'amount'               => $cost,
+                'currency'             => $price->name,
                 'payment_method_types' => [$stripe->card],
             ]);
 
-            $paymentIntent = $stripe->paymentIntents->confirm($stripe->getClientId(), ['payment_method' => $stripe->card]);
+            $paymentIntent       = $stripe->paymentIntents->confirm($stripe->getClientId(), ['payment_method' => $stripe->card]);
             $purchase->stripe_id = $paymentIntent->id;
             $purchase->save();
+
+            $stripe->transfers->create([
+                'amount'      => $amount,
+                'currency'    => 'usd',
+                'destination' => $practitoner->stripe_account_id,
+            ]);
 
         } catch (\Stripe\Exception\ApiErrorException $e) {
 
             Log::channel('stripe_purchase_schedule_error')->info("Client could not purchase schedule", [
-                'user_id' => $request->user()->id,
-                'price_id'  => $price->id,
-                'service_id' => $schedule->service->id,
-                'schedule_id' => $schedule->id,
+                'user_id'        => $request->user()->id,
+                'price_id'       => $price->id,
+                'service_id'     => $schedule->service->id,
+                'schedule_id'    => $schedule->id,
                 'payment_intent' => $paymentIntent->id,
                 'payment_method' => $stripe->card,
             ]);
@@ -119,10 +150,10 @@ class PurchaseController extends Controller {
         }
 
         Log::channel('stripe_purchase_schedule_success')->info("Client purchase schedule", [
-            'user_id' => $request->user()->id,
-            'price_id'  => $price->id,
-            'service_id' => $schedule->service->id,
-            'schedule_id' => $schedule->id,
+            'user_id'        => $request->user()->id,
+            'price_id'       => $price->id,
+            'service_id'     => $schedule->service->id,
+            'schedule_id'    => $schedule->id,
             'payment_intent' => $paymentIntent->id,
             'payment_method' => $stripe->card,
         ]);
@@ -140,10 +171,11 @@ class PurchaseController extends Controller {
 //        }
     }
 
-    public function validatePromocode(ValidatePromocodeRequest $request, Schedule $schedule) {
-        $name = $request->get('promo_code');
+    public function validatePromocode(ValidatePromocodeRequest $request, Schedule $schedule)
+    {
+        $name         = $request->get('promo_code');
         $scheduleCost = $schedule->cost;
-        $promo = PromotionCode::where('name', $name)->first();
+        $promo        = PromotionCode::where('name', $name)->first();
         return run_action(CalculatePromoPrice::class, $promo, $scheduleCost);
     }
 
