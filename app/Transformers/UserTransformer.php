@@ -67,6 +67,8 @@ class UserTransformer extends Transformer {
             'plan_from'                   => $user->plan_from,
             'plan_until'                  => $user->plan_until,
             'discipline_id'               => $user->discipline_id,
+            'timezone_id'                 => $user->timezone_id,
+            'default_fee_payment_method'  => $user->default_fee_payment_method
         ];
     }
 

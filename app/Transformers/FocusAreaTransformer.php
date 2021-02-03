@@ -55,8 +55,6 @@ class FocusAreaTransformer extends Transformer
             'section_7_h3'              => $focusArea->section_7_h3,
             'section_7_background'      => $focusArea->section_7_background,
             'section_7_textarea'        => $focusArea->section_7_textarea,
-            'section_7_image_url'       => $focusArea->section_7_image_url,
-            'section_7_video_url'       => $focusArea->section_7_video_url,
 
             'section_8_h2'              => $focusArea->section_8_h2,
 
