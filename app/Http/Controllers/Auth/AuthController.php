@@ -99,7 +99,7 @@ class AuthController extends Controller
     public function update(UpdateRequest $request)
     {
         $user = $request->user();
-        if ($user->is_published === false)
+        if ($request->is_published === true)
         {
             $user->is_published = true;
             $user->save();

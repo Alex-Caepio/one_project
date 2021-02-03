@@ -24,6 +24,7 @@ class UpdateRequest extends Request
      */
     public function rules()
     {
+
         return [
             'about_me'                    => 'max:10000',
             'emails_holistify_update'     => 'bool',
@@ -67,9 +68,10 @@ class UpdateRequest extends Request
 
     public function withValidator($validator)
     {
+
         $user = $this->user();
         $validator->after(function ($validator) use($user){
-            if ($user->is_published === false){
+            if ($this->getBoolFromRequest('is_published') === true){
                 if (!$user->business_name) {
                     $validator->errors()->add(
                         'business_name',

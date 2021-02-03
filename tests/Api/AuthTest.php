@@ -39,7 +39,8 @@ class AuthTest extends TestCase
     {
         $user = User::factory()->create(['is_published' => false]);
 
-        $response = $this->actingAs($user)->json('put', 'api/auth/profile');
+        $response = $this->actingAs($user)->json('put', 'api/auth/profile',
+            ['is_published' => true]);
         $response->assertOk();
         $this->assertTrue($user->is_published === true);
     }
