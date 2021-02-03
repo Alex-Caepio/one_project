@@ -160,7 +160,16 @@ class FocusAreaTest extends TestCase
                 'featured_disciplines' => $featuredDisciplines->pluck('id'),
                 'featured_articles' => $featuredArticles->pluck('id'),
                 'featured_services' => $featuredServices->pluck('id'),
-                'featured_focus_areas' => $featuredFocusAreas->pluck('id')
+                'featured_focus_areas' => $featuredFocusAreas->pluck('id'),
+                'media_images'           => [
+                    'http://google.com',
+                    'http://google.com',
+                ],
+                'media_videos'           => [
+                    'http://google.com',
+                    'http://google.com',
+                ],
+
             ]);
 
         $focusArea->services()->sync($services);
@@ -187,6 +196,8 @@ class FocusAreaTest extends TestCase
         self::assertCount(4, $focusArea->featured_articles);
         self::assertCount(4, $focusArea->featured_services);
         self::assertCount(4, $focusArea->featured_focus_areas);
+        self::assertCount(2, $focusArea->media_images);
+        self::assertCount(2, $focusArea->media_videos);
     }
 
     public function test_store_videos_focus_area(): void
