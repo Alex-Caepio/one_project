@@ -46,6 +46,15 @@ class PaymentMethodController extends Controller {
         return $paymentMethods;
     }
 
+    public function defaultFee(Request $request) {
+
+        $user = Auth::user();
+        $user->default_fee_payment_method = $request->payment_method_id;
+        $user->save();
+
+        return response(null, 204);
+    }
+
     public function detach(StripeClient $stripe, Request $request) {
         $stripe->paymentMethods->detach($request->payment_method_id, []);
 
