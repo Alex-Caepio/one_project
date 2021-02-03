@@ -52,8 +52,9 @@ trait hasMediaItems
         });
 
         $videoUrlToStore = [];
-        foreach ($newVideos as $url) {
-            $videoUrlToStore[]['url'] = $url;
+        foreach ($newVideos as $key => $url) {
+            $videoUrlToStore[$key]['url'] = $url['url'];
+            $videoUrlToStore[$key]['preview'] = $url['preview'];
         }
 
         if ($videoUrlToStore) {

@@ -78,11 +78,21 @@ class DisciplineController extends Controller
         if ($request->filled('featured_articles')) {
             $discipline->featured_articles()->sync($request->get('featured_articles'));
         }
-        if ($request->filled('media_images')) {
-            $discipline->media_images()->createMany($request->get('media_images'));
+        if ($request->filled('media_images')){
+//            foreach ($request->media_images as $mediaImage)
+//            {
+//                if (Storage::disk(config('image.image_storage'))->missing(file_get_contents($mediaImage)))
+//                {
+//                    $image = Storage::disk(config('image.image_storage'))
+//                        ->put("/images/disciplines/{$discipline->id}/media_images/", file_get_contents($mediaImage));
+//                    $image_urls[] = Storage::url($image);
+//                }
+//            }
+//            $request->media_images = $image_urls;
+            $this->syncImages($request->media_images,$discipline);
         }
         if ($request->filled('media_videos')) {
-            $discipline->media_videos()->createMany($request->get('media_videos'));
+            $this->syncVideos($request->media_videos,$discipline);
         }
         if ($request->filled('media_files')) {
             $discipline->media_files()->createMany($request->get('media_files'));
