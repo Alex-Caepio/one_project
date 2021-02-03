@@ -23,8 +23,10 @@ use Laravel\Sanctum\HasApiTokens;
  * @property string last_name
  * @property string first_name
  * @property string account_type
- * @property string stripe_customer_id
  * @property string stripe_account_id
+ * @property string stripe_customer_id
+ * @property string default_payment_method
+ * @property string default_fee_payment_method
  * @property Carbon email_verified_at
  * @property Plan plan
  *
@@ -76,7 +78,7 @@ class User extends Authenticatable implements MustVerifyEmail {
         'business_postal_code',
         'business_time_zone',
         'business_vat',
-        'business_company_houses_id'
+        'business_company_houses_id',
     ];
 
     /**
