@@ -10,7 +10,7 @@ class ScheduleFreeze extends Model {
 
     use HasFactory;
 
-    protected $fillable = ['freeze_at', 'user_id', 'schedule_id'];
+    protected $fillable = ['freeze_at', 'user_id', 'schedule_id', 'quantity'];
 
     /**
      *
