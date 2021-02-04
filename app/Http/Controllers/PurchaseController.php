@@ -144,6 +144,7 @@ class PurchaseController extends Controller
                 'schedule_id'    => $schedule->id,
                 'payment_intent' => $paymentIntent->id,
                 'payment_method' => $stripe->card,
+                'message' => $e->getMessage(),
             ]);
 
             return abort(500);

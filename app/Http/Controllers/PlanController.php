@@ -55,7 +55,8 @@ class PlanController extends Controller
                 'customer'  => $user->stripe_customer_id,
                 'stripe_plan_id' => $subscription->id,
                 'payment_method_id' => $request->payment_method_id,
-                'price_stripe_id' => $plan->stripe_id
+                'price_stripe_id' => $plan->stripe_id,
+                'message' => $e->getMessage(),
             ]);
 
 

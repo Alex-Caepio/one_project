@@ -57,6 +57,7 @@ class AuthController extends Controller
                 'email' => $request->email,
                 'stripe_customer_id' => $stripeCustomer->id,
                 'stripe_account_id'  => $stripeAccount->id,
+                'message' => $e->getMessage(),
             ]);
 
              return abort(500);

@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PaymentMethod\UpdatePaymentMethodRequest;
 use App\Http\Requests\Request;
+use Illuminate\Support\Facades\Log;
 use Stripe\StripeClient;
 use Illuminate\Support\Facades\Auth;
 
@@ -31,12 +33,24 @@ class PaymentMethodController extends Controller
         return response(null, 204);
     }
 
-    public function update(StripeClient $stripe, Request $request)
+    public function update(StripeClient $stripe, UpdatePaymentMethodRequest $request)
     {
-        return $stripe->paymentMethods->update(
-            $request->payment_method_id,
-            $request->except('payment_method_id')
-        );
+        try {
+            return $stripe->paymentMethods->update(
+                $request->payment_method_id,
+                //except payment_method_id and query string
+                $request->except(array_merge(['payment_method_id'], array_keys($request->query())))
+            );
+        } catch (\Stripe\Exception\ApiErrorException $e) {
+            Log::channel('stripe_payment_method_update_error')
+                ->info("Client could not update payment method", [
+                    'user_id' => $request->user()->id,
+                    'payload' => $request->except('payment_method_id'),
+                    'message' => $e->getMessage(),
+                ]);
+
+            return abort(500, 'Something went wrong');
+        }
     }
 
     /**

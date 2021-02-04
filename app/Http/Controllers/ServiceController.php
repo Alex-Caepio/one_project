@@ -77,6 +77,7 @@ class ServiceController extends Controller {
                 'user_id' => $request->user_id,
                 'stripe_product'  => $stripeProduct->id,
                 'name' => $request->title,
+                'message' => $e->getMessage(),
             ]);
 
             return abort(500);
