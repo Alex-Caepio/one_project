@@ -72,31 +72,31 @@ class UpdateRequest extends Request
         $user = $this->user();
         $validator->after(function ($validator) use($user){
             if ($this->getBoolFromRequest('is_published') === true){
-                if (!$user->business_name) {
+                if (!$user->business_name && !$this->business_name) {
                     $validator->errors()->add(
                         'business_name',
                         'You have not filled in the field "Business name"'
                     );
                 }
-                if (!$user->business_address) {
+                if (!$user->business_address && !$this->business_address) {
                     $validator->errors()->add(
                         'business_address',
                         'You have not filled in the field "Business address"'
                     );
                 }
-                if (!$user->business_email) {
+                if (!$user->business_email && !$this->business_email) {
                     $validator->errors()->add(
                         'business_email',
                         'You have not filled in the field "Business email"'
                     );
                 }
-                if (!$user->business_introduction) {
+                if (!$user->business_introduction && !$this->business_introduction) {
                     $validator->errors()->add(
                         'business_introduction',
                         'You have not filled in the field "Business introduction"'
                     );
                 }
-                if (!$user->timezone_id) {
+                if (!$user->timezone_id && !$this->timezone_id) {
                     $validator->errors()->add(
                         'timezone_id',
                         'You have not filled in the field "Timezone"'
