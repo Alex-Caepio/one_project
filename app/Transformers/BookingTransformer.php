@@ -38,7 +38,7 @@ class BookingTransformer extends Transformer {
         ];
     }
 
-    public function includeSchedules(Booking $booking) {
+    public function includeSchedule(Booking $booking) {
         return $this->collectionOrNull($booking->schedule, new ScheduleTransformer());
     }
 
