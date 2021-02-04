@@ -2,21 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use App\Actions\RescheduleRequest\RescheduleRequestStore;
-use App\Http\Requests\Request;
-use App\Http\Requests\Reschedule\RescheduleRequestRequest;
-use App\Models\Booking;
-use App\Models\RescheduleRequest;
 use App\Models\Schedule;
+use App\Http\Requests\Request;
+use App\Models\RescheduleRequest;
+use App\Actions\RescheduleRequest\RescheduleRequestStore;
+use App\Transformers\RescheduleRequestTransformer;
 use Illuminate\Support\Facades\Auth;
 
 class RescheduleRequestController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $user = Auth::id();
-        $rescheduleRequest = RescheduleRequest::all()->where('user_id', $user);
-        return response($rescheduleRequest);
+        $includes = $request->getIncludes();
+        $paginator = RescheduleRequest::where('user_id', Auth::id())
+            ->with($includes)
+            ->paginate($request->getLimit());
+
+        return fractal($paginator->getCollection(), new RescheduleRequestTransformer())
+            ->parseIncludes($request->getIncludes())->toArray();
     }
 
     public function store(Schedule $schedule, Request $request)
