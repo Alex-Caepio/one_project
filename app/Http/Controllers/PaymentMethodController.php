@@ -20,10 +20,26 @@ class PaymentMethodController extends Controller
 
     public function attach(StripeClient $stripe, Request $request)
     {
-        return $stripe->paymentMethods->attach(
+        $cards = $stripe->paymentMethods->all([
+            'customer' => Auth::user()->stripe_customer_id,
+            'type'     => 'card',
+        ]);
+
+        $attachedCard = $stripe->paymentMethods->attach(
             $request->payment_method_id,
             ['customer' => Auth::user()->stripe_customer_id]
         );
+
+        if (count($cards) == 0) {
+            $user = Auth::user();
+
+            //if user had no cards prior to that moment, make that new card his primary
+            $user->default_payment_method     = $attachedCard->id;
+            $user->default_fee_payment_method = $attachedCard->id;
+            $user->save();
+        }
+
+        return $attachedCard;
     }
 
     public function detach(StripeClient $stripe, Request $request)
