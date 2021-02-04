@@ -8,18 +8,6 @@ properties:
   description:
     type: string
     nullable: true
-  type:
-    type: string
-    nullable: true
-  locations:
-    type: string
-    nullable: true
-  basic_location:
-    type: string
-    nullable: true
-  deposit_instalment_payments:
-    type: string
-    nullable: true
   user_id:
     type: integer
   is_published:
@@ -34,6 +22,12 @@ properties:
   service_type_id:
     type: string
     nullable: true
+  image_url:
+    type: string
+    nullable: true
+  icon_url:
+    type: string
+    nullable: true
   created_at:
     type: string
     nullable: true
@@ -46,9 +40,3 @@ properties:
     type: string
     nullable: true
     format: date-time
-  image_url:
-    type: string
-    nullable: true
-  icon_url:
-    type: string
-    nullable: true

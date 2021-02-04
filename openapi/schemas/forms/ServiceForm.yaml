@@ -54,17 +54,19 @@ properties:
   media_images:
     type: array
     items:
-      type: object
+      type: string
     example:
-      - url: http://cdn.com/yoga-practice.png
-      - url: http://cdn.com/another-picture.png
+      - http://cdn.com/yoga-practice.png
+      - http://cdn.com/another-picture.png
   media_videos:
     type: array
     items:
       type: object
     example:
       - url: http://cdn.com/yoga-practice.mov
-      - url: http://cdn.com/another-picture.mov
+        preview: http://cdn.com/yoga-picture.jpeg
+      - url: http://cdn.com/aroma-practice.mov
+        preview: http://cdn.com/aroma-picture.jpeg
   media_files:
     type: array
     items:
