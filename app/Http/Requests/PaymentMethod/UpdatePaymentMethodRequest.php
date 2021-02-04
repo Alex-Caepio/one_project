@@ -26,8 +26,8 @@ class UpdatePaymentMethodRequest extends FormRequest
         return [
             'billing_details.address.postal_code' => 'required',
             'billing_details.name' => 'required',
-            'card.exp_month' => 'required|min:2|integer',
-            'card.exp_year' => 'required|min:2|integer',
+            'card.exp_month' => 'required|min:2',
+            'card.exp_year' => 'required|min:2',
         ];
     }
 
