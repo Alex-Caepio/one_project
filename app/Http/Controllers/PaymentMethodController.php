@@ -49,7 +49,7 @@ class PaymentMethodController extends Controller
                     'message' => $e->getMessage(),
                 ]);
 
-            return abort(500, 'Something went wrong');
+            return abort(422, 'Something went wrong');
         }
     }
 
