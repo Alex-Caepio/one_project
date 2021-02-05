@@ -5,7 +5,6 @@ namespace App\Http\Requests\Services;
 use App\Http\Requests\Request;
 use App\Models\Service;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rule;
 
 class StoreServiceRequest extends Request
 {
@@ -36,18 +35,18 @@ class StoreServiceRequest extends Request
                 'description'     => 'nullable|string|min:5|max:1000',
                 'is_published'    => 'bool',
                 'introduction'    => 'required|string|min:5|max:500',
-                'url'             => 'required|url|unique:services,url' . ($this->service ? ',' . $this->service->id : ''),
+                'url'             => 'required',
                 'service_type_id' => 'required|exists:service_types,id',
                 'image_url'       => 'nullable|url',
                 'icon_url'        => 'nullable|url',
             ];
         }
         return [
-            'title'           => 'string|min:5|max:100',
+            'title'           => 'required|string|min:5|max:100',
             'description'     => 'nullable|string|min:5|max:1000',
             'is_published'    => 'boolean',
             'introduction'    => 'string|min:5|max:500',
-            'url'             => 'url',
+            'url'             => 'required',
             'service_type_id' => 'required|exists:service_types,id'
         ];
     }
@@ -57,6 +56,9 @@ class StoreServiceRequest extends Request
         $validator->after(function ($validator) {
             if ($this->user()->services()->where('title', $this->get('title'))->exists()) {
                 $validator->errors()->add('title', 'Service name should be unique!');
+            }
+            if ($this->user()->services()->where('url', $this->get('url'))->exists()) {
+                $validator->errors()->add('url', 'Service url should be unique!');
             }
         });
     }
