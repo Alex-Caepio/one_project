@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Traits;
+namespace Tests\Traits;
 
 
 use App\Models\User;
-use phpDocumentor\Reflection\Types\Null_;
 use Stripe\StripeClient;
 
-trait usesStripe{
+trait UsesStripe{
 
     protected function createStripeClient(User $user)
     {
@@ -41,6 +40,24 @@ trait usesStripe{
 
         return $paymentMethod;
     }
+
+    protected function createStripeProduct()
+    {
+        $client = app()->make(StripeClient::class);
+        return $client->products->create(['name' => 'Test product @' . now()->toDateTimeString()]);
+    }
+
+    protected function createStripeRecurringPrice($stripeProductId)
+    {
+        $client = app()->make(StripeClient::class);
+        return $client->prices->create([
+            'unit_amount' => '1000',
+            'currency'    => 'usd',
+            'product'     => $stripeProductId,
+            'recurring' => ['interval' => 'month'],
+        ]);
+    }
+
 //    protected function createStripePaymentMethod($cardNumber, User $user)
 //    {
 //        $client        = app()->make(StripeClient::class);
