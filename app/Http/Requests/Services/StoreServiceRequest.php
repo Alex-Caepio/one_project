@@ -45,7 +45,7 @@ class StoreServiceRequest extends Request
             'title'           => 'required|string|min:5|max:100',
             'description'     => 'nullable|string|min:5|max:1000',
             'is_published'    => 'boolean',
-            'introduction'    => 'string|min:5|max:500',
+            'introduction'    => 'required|string|min:5|max:500',
             'url'             => 'required',
             'service_type_id' => 'required|exists:service_types,id'
         ];
