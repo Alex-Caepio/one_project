@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Scopes\PublishedScope;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -29,6 +30,8 @@ use Laravel\Sanctum\HasApiTokens;
  * @property string default_fee_payment_method
  * @property Carbon email_verified_at
  * @property Plan plan
+ * @property Collection latest_services
+ * @property Collection latest_articles
  *
  * @package App\Models
  */
@@ -239,4 +242,17 @@ class User extends Authenticatable implements MustVerifyEmail {
         return $this->hasMany(Cancellation::class, 'id', 'practitioner_id');
     }
 
+    public function latest_services(): HasMany
+    {
+        return $this->hasMany(Service::class)
+            ->where('is_published', true)
+            ->orderBy('created_at', 'desc');
+    }
+
+    public function latest_articles(): HasMany
+    {
+        return $this->hasMany(Article::class)
+            ->where('is_published', true)
+            ->orderBy('published_at', 'desc');
+    }
 }

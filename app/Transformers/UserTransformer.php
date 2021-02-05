@@ -25,7 +25,9 @@ class UserTransformer extends Transformer {
         'user_cancellations',
         'practitioner_cancellations',
         'bookings',
-        'practitioner_bookings'
+        'practitioner_bookings',
+        'latest_articles',
+        'latest_services',
     ];
 
     public function transform(User $user) {
@@ -151,5 +153,13 @@ class UserTransformer extends Transformer {
 
     public function includePractitionerBookings(User $user): ?Collection {
         return $this->collectionOrNull($user->practitioner_bookings, new BookingTransformer());
+    }
+
+    public function includeLatestArticles(User $user): ?Collection {
+        return $this->collectionOrNull($user->latest_articles, new ArticleTransformer());
+    }
+
+    public function includeLatestServices(User $user): ?Collection {
+        return $this->collectionOrNull($user->latest_services, new ServiceTransformer());
     }
 }
