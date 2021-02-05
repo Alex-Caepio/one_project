@@ -5,14 +5,17 @@ namespace App\Http\Requests\Services;
 use App\Http\Requests\Request;
 use App\Models\Service;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
-class StoreServiceRequest extends Request {
+class StoreServiceRequest extends Request
+{
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
-    public function authorize() {
+    public function authorize()
+    {
         return Auth::user()->isPractitioner();
     }
 
@@ -21,9 +24,10 @@ class StoreServiceRequest extends Request {
      *
      * @return array
      */
-    public function rules() {
+    public function rules()
+    {
         $isPublished = $this->getBoolFromRequest('is_published');
-        $url = $this->get('url') ?? to_url($this->get('title'));
+        $url         = $this->get('url') ?? to_url($this->get('title'));
         $this->getInputSource()->set('url', $url);
 
         if ($isPublished === true) {
@@ -46,5 +50,14 @@ class StoreServiceRequest extends Request {
             'url'             => 'url',
             'service_type_id' => 'required|exists:service_types,id'
         ];
+    }
+
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            if ($this->user()->services()->where('title', $this->get('title'))->exists()) {
+                $validator->errors()->add('title', 'Service name should be unique!');
+            }
+        });
     }
 }
