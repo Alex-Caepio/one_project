@@ -2613,7 +2613,7 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Booking"
-  "bookings/{id}/reschedule":
+  "/bookings/{id}/reschedule":
     post:
       tags:
         - Booking
