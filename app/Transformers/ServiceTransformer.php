@@ -11,6 +11,7 @@ class ServiceTransformer extends Transformer
 
     protected $availableIncludes = [
         'user',
+        'practitioner',
         'keywords',
         'disciplines',
         'focus_areas',
@@ -50,6 +51,11 @@ class ServiceTransformer extends Transformer
     }
 
     public function includeUser(Service $service)
+    {
+        return $this->itemOrNull($service->user, new UserTransformer());
+    }
+
+    public function includePractitioner(Service $service)
     {
         return $this->itemOrNull($service->user, new UserTransformer());
     }
