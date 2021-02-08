@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Actions\Promo\CalculatePromoPrice;
+use App\Actions\Stripe\GetViablePaymentMethod;
+use App\Actions\Stripe\TransferFundsWithCommissions;
 use App\Filters\PurchaseFilters;
 use App\Http\Requests\PromotionCode\ValidatePromocodeRequest;
 use App\Http\Requests\Request;
@@ -57,12 +59,12 @@ class PurchaseController extends Controller
             }
         }
         $schedule->load('service');
-        $purchase = new Purchase();
-        $purchase->schedule_id = $schedule->id;
-        $purchase->service_id = $schedule->service->id;
-        $purchase->price_id = $price->id;
-        $purchase->user_id = Auth::id();
-        $purchase->promocode_id = $promo instanceof PromotionCode ? $promo->id : null;
+        $purchase                 = new Purchase();
+        $purchase->schedule_id    = $schedule->id;
+        $purchase->service_id     = $schedule->service->id;
+        $purchase->price_id       = $price->id;
+        $purchase->user_id        = Auth::id();
+        $purchase->promocode_id   = $promo instanceof PromotionCode ? $promo->id : null;
         $purchase->price_original = $price->cost;
         $purchase->price          = $cost;
         $purchase->is_deposit     = false;
@@ -71,11 +73,11 @@ class PurchaseController extends Controller
         if ($schedule->service->service_type_id === 'appointment') {
             $availabilities = $request->get('availabilities');
             foreach ($availabilities as $availability) {
-                $booking = new Booking();
-                $booking->user_id = $request->user()->id;
+                $booking                  = new Booking();
+                $booking->user_id         = $request->user()->id;
                 $booking->practitioner_id = $schedule->service->user_id;
-                $booking->price_id = $request->get('price_id');
-                $booking->schedule_id = $schedule->id;
+                $booking->price_id        = $request->get('price_id');
+                $booking->schedule_id     = $schedule->id;
                 $booking->availability_id = $availability['availability_id'];
                 $booking->datetime_from   = $availability['datetime_from'];
                 $datetimeTo               = (new Carbon($booking->datetime_from))->addMinutes($price->duration);
@@ -85,10 +87,10 @@ class PurchaseController extends Controller
                 $booking->save();
             }
         } else {
-            $booking = new Booking();
-            $booking->user_id = $request->user()->id;
+            $booking              = new Booking();
+            $booking->user_id     = $request->user()->id;
             $booking->practitioner_id = $schedule->service->user_id;
-            $booking->price_id = $request->get('price_id');
+            $booking->price_id    = $request->get('price_id');
             $booking->schedule_id = $schedule->id;
             $booking->cost        = $cost;
             $booking->purchase_id = $purchase->id;
@@ -99,41 +101,23 @@ class PurchaseController extends Controller
             ->where('user_id', $request->user()->id)
             ->delete();
 
-        $practitionerPlan = $practitoner->plan;
-
-        $practitionerCommissions = PractitionerCommission::where('practitioner_id', $practitoner->id)
-            ->where(function ($q) {
-                $q->orWhereRaw('date_from >= NOW() OR date_to <= NOW()')
-                    ->where('is_dateless', true);
-            })->get();
-
-        $reductions[] = $cost * $practitionerPlan->commission_on_sale / 100;
-
-        foreach ($practitionerCommissions as $practitionerCommission){
-            $reductions[] = $cost * $practitionerCommission->rate / 100;
-        }
-
-        $amount = $cost;
-        foreach ($reductions as $reduction){
-            $amount -= $reduction;
-        }
 
         try {
-            $stripe->paymentIntents->create([
+            $payment_method_id = run_action(GetViablePaymentMethod::class, $practitoner, $request->payment_method_id);
+
+            $paymentIntent =  $stripe->paymentIntents->create([
                 'amount'               => $cost,
                 'currency'             => $price->name,
-                'payment_method_types' => [$stripe->card],
+                'payment_method_types' => ['card'],
+                'customer'             => Auth::user()->stripe_customer_id,
+                'payment_method'       => $payment_method_id
             ]);
 
-            $paymentIntent       = $stripe->paymentIntents->confirm($stripe->getClientId(), ['payment_method' => $stripe->card]);
+            $paymentIntent       = $stripe->paymentIntents->confirm($paymentIntent->id, ['payment_method' => $payment_method_id]);
             $purchase->stripe_id = $paymentIntent->id;
             $purchase->save();
 
-            $stripe->transfers->create([
-                'amount'      => $amount,
-                'currency'    => 'usd',
-                'destination' => $practitoner->stripe_account_id,
-            ]);
+            run_action(TransferFundsWithCommissions::class, $cost, $practitoner);
 
         } catch (\Stripe\Exception\ApiErrorException $e) {
 
@@ -143,11 +127,11 @@ class PurchaseController extends Controller
                 'service_id'     => $schedule->service->id,
                 'schedule_id'    => $schedule->id,
                 'payment_intent' => $paymentIntent->id,
-                'payment_method' => $stripe->card,
-                'message' => $e->getMessage(),
+                'payment_method' => $payment_method_id,
+                'message'        => $e->getMessage(),
             ]);
 
-            return abort(500);
+            return abort( 500);
         }
 
         Log::channel('stripe_purchase_schedule_success')->info("Client purchase schedule", [
@@ -156,7 +140,7 @@ class PurchaseController extends Controller
             'service_id'     => $schedule->service->id,
             'schedule_id'    => $schedule->id,
             'payment_intent' => $paymentIntent->id,
-            'payment_method' => $stripe->card,
+            'payment_method' => $payment_method_id,
         ]);
 
         return response(null, 200);

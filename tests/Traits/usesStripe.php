@@ -2,23 +2,37 @@
 
 namespace Tests\Traits;
 
-
 use App\Models\User;
 use Stripe\StripeClient;
 
-trait UsesStripe{
+trait UsesStripe
+{
+
+    protected function createConnectAccount(User $user)
+    {
+        $client                  = app()->make(StripeClient::class);
+        $connectAccount          = $client->accounts->create([
+            'type'    => 'standard',
+            'country' => 'US',
+            'email'   => $user->email,
+        ]);
+        $user->stripe_account_id = $connectAccount->id;
+        $user->save();
+
+        return $connectAccount->id;
+    }
 
     protected function createStripeClient(User $user)
     {
-        $client = app()->make(StripeClient::class);
-        $stripeUser =  $client->customers->create(['email' => $user->email]);
-        $this->user->stripe_customer_id = $stripeUser->id;
-        $this->user->save();
+        $client                   = app()->make(StripeClient::class);
+        $stripeUser               = $client->customers->create(['email' => $user->email]);
+        $user->stripe_customer_id = $stripeUser->id;
+        $user->save();
 
         return $stripeUser->id;
     }
 
-    protected function createStripePaymentMethod(User $user,$cardNumber = null)
+    protected function createStripePaymentMethod(User $user, $cardNumber = null)
     {
         $stripe        = app()->make(StripeClient::class);
         $paymentMethod = $stripe->paymentMethods->create([
@@ -26,7 +40,7 @@ trait UsesStripe{
             'card' => [
                 'number'    => $cardNumber
                     ? $cardNumber
-                    :'4242424242424242',
+                    : '4242424242424242',
                 'exp_month' => 1,
                 'exp_year'  => 2022,
                 'cvc'       => '314',
@@ -54,26 +68,7 @@ trait UsesStripe{
             'unit_amount' => '1000',
             'currency'    => 'usd',
             'product'     => $stripeProductId,
-            'recurring' => ['interval' => 'month'],
+            'recurring'   => ['interval' => 'month'],
         ]);
     }
-
-//    protected function createStripePaymentMethod($cardNumber, User $user)
-//    {
-//        $client        = app()->make(StripeClient::class);
-//        $paymentMethod = $client->paymentMethods->create([
-//            'type' => 'card',
-//            'card' => [
-//                'number'    => $cardNumber,
-//                'exp_month' => 1,
-//                'exp_year'  => 2022,
-//                'cvc'       => '314',
-//            ],
-//        ]);
-//
-//        $client->paymentMethods->attach($paymentMethod->id, [
-//            'customer' => $user->stripe_customer_id
-//        ]);
-//
-//        return $paymentMethod;
 }

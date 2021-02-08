@@ -46,6 +46,7 @@ class ServiceTransformer extends Transformer
             'image_url'                   => $service->image_url,
             'icon_url'                    => $service->icon_url,
             'stripe_id'                   => $service->stripe_id,
+            'published_at'                => $service->published_at,
 
         ];
     }

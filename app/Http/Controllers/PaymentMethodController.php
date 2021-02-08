@@ -44,7 +44,18 @@ class PaymentMethodController extends Controller
 
     public function detach(StripeClient $stripe, Request $request)
     {
+        $user = Auth::user();
         $stripe->paymentMethods->detach($request->payment_method_id, []);
+
+        switch ($request->payment_method_id){
+            case  $user->default_payment_method:
+                $user->default_payment_method = null;
+                return $user->save();
+
+            case $user->default_fee_payment_method:
+                $user->default_fee_payment_method = null;
+                return $user->save();
+            }
 
         return response(null, 204);
     }

@@ -99,6 +99,7 @@ class ServiceController extends Controller {
 
     public function publish(Service $service, ServicePublishRequest $request) {
         $service->is_published = true;
+        $service->published_at = NOW();
         $service->save();
         $service->fresh();
         event(new ServiceListingLive($service, $request->user()));
