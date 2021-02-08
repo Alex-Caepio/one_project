@@ -23,7 +23,7 @@ class BookingController extends Controller
             $Query->orderBy($order['column'], $order['direction']);
         }
 
-        $paginator = $Query->paginate();
+        $paginator = $Query->paginate($request->getLimit());
         $booking   = $paginator->getCollection();
 
         return response(fractal($booking, new BookingTransformer())
