@@ -56,7 +56,7 @@ class UserTransformer extends Transformer {
             'business_phone_number'       => $user->business_phone_number,
             'email_verified_at'           => $user->email_verified_at,
             'email'                       => $user->email,
-            'is_admin'                    => $user->is_admin,
+            'is_admin'                    => (bool) $user->is_admin,
             'account_type'                => $user->account_type,
             'avatar_url'                  => $user->avatar_url,
             'background_url'              => $user->background_url,
