@@ -54,14 +54,12 @@ class UserTransformer extends Transformer {
             'mobile_number'               => $user->mobile_number,
             'business_phone_country_code' => $user->business_phone_country_code,
             'business_phone_number'       => $user->business_phone_number,
-            'email_verified_at'           => $this->dateTime($user->email_verified_at),
+            'email_verified_at'           => $user->email_verified_at,
             'email'                       => $user->email,
             'is_admin'                    => (bool) $user->is_admin,
             'account_type'                => $user->account_type,
             'avatar_url'                  => $user->avatar_url,
             'background_url'              => $user->background_url,
-            'created_at'                  => $this->dateTime($user->created_at),
-            'updated_at'                  => $this->dateTime($user->updated_at),
             'termination_message'         => $user->termination_message,
             'status'                      => $user->status,
             'business_country'            => $user->business_country,
@@ -81,6 +79,8 @@ class UserTransformer extends Transformer {
             'postal_code'                 => $user->postal_code,
             'country'                     => $user->country,
             'gender'                      => $user->gender,
+            'created_at'                  => $user->created_at,
+            'updated_at'                  => $user->updated_at,
         ];
     }
 

@@ -106,6 +106,7 @@ class User extends Authenticatable implements MustVerifyEmail {
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'date_of_birth' => 'datetime',
     ];
 
     public function services() {
