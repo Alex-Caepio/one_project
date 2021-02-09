@@ -76,6 +76,11 @@ class UserTransformer extends Transformer {
             'timezone_id'                 => $user->timezone_id,
             'default_payment_method'      => $user->default_payment_method,
             'default_fee_payment_method'  => $user->default_fee_payment_method,
+            'address'                     => $user->address,
+            'city'                        => $user->city,
+            'postal_code'                 => $user->postal_code,
+            'country'                     => $user->country,
+            'gender'                      => $user->gender,
         ];
     }
 

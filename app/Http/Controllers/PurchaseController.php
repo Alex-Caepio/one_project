@@ -117,8 +117,6 @@ class PurchaseController extends Controller
             $purchase->stripe_id = $paymentIntent->id;
             $purchase->save();
 
-            run_action(TransferFundsWithCommissions::class, $cost, $practitoner);
-
         } catch (\Stripe\Exception\ApiErrorException $e) {
 
             Log::channel('stripe_purchase_schedule_error')->info("Client could not purchase schedule", [
@@ -132,6 +130,13 @@ class PurchaseController extends Controller
             ]);
 
             return abort( 500);
+        }
+
+        try {
+            run_action(TransferFundsWithCommissions::class, $cost, $practitoner);
+            //log transfer + transfers table record
+        } catch (\Stripe\Exception\ApiErrorException $e) {
+            //log transfer + transfers table record
         }
 
         Log::channel('stripe_purchase_schedule_success')->info("Client purchase schedule", [
