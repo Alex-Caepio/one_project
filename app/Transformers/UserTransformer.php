@@ -54,7 +54,7 @@ class UserTransformer extends Transformer {
             'mobile_number'               => $user->mobile_number,
             'business_phone_country_code' => $user->business_phone_country_code,
             'business_phone_number'       => $user->business_phone_number,
-            'email_verified_at'           => $user->email_verified_at,
+            'email_verified_at'           => $this->dateTime($user->email_verified_at),
             'email'                       => $user->email,
             'is_admin'                    => (bool) $user->is_admin,
             'account_type'                => $user->account_type,
