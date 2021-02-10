@@ -56,6 +56,7 @@ class User extends Authenticatable implements MustVerifyEmail {
         'last_name',
         'password',
         'about_me',
+        'email',
         'emails_holistify_update',
         'emails_practitioner_offers',
         'email_forward_practitioners',

@@ -34,12 +34,14 @@ class BookingFilters extends QueryFilter
 
     public function datetime_from($datetimeFrom)
     {
-        return $this->builder->where('datetime_from', '>=', $datetimeFrom);
+        $date = Carbon::create($datetimeFrom)->toDateTimeString();
+        return $this->builder->where('datetime_from', '>=', $date);
     }
 
     public function datetime_to($datetimeTo)
     {
-        return $this->builder->where('datetime_from', '<=', $datetimeTo);
+        $date = Carbon::create($datetimeTo)->toDateTimeString();
+        return $this->builder->where('datetime_from', '<=', $date);
     }
 
     public function bookingReference(string $reference)
@@ -47,7 +49,7 @@ class BookingFilters extends QueryFilter
         return $this->builder->where('reference', '=', $reference);
     }
 
-    public function serviceType(int $serviceTypeId)
+    public function serviceType(string $serviceTypeId)
     {
         return $this->builder->whereHas('schedule.service', function ($q) use($serviceTypeId)
         {
