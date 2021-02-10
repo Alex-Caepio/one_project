@@ -54,10 +54,10 @@ class StoreServiceRequest extends Request
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
-            if ($this->user()->services()->where('title', $this->get('title'))->exists()) {
+            if ($this->user()->services()->where('user_id', '!=', $this->user()->id)->where('title', $this->get('title'))->exists()) {
                 $validator->errors()->add('title', 'Service name should be unique!');
             }
-            if ($this->user()->services()->where('url', $this->get('url'))->exists()) {
+            if ($this->user()->services()->where('user_id', '!=', $this->user()->id)->where('url', $this->get('url'))->exists()) {
                 $validator->errors()->add('url', 'Service url should be unique!');
             }
         });
