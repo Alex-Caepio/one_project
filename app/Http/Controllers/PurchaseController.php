@@ -133,10 +133,32 @@ class PurchaseController extends Controller
         }
 
         try {
-            run_action(TransferFundsWithCommissions::class, $cost, $practitoner);
-            //log transfer + transfers table record
+            run_action(TransferFundsWithCommissions::class, $cost, $practitoner, $schedule);
+
+            Log::channel('stripe_transfer_success')->info("The practitioner received transfer", [
+                'user_id'        => $request->user()->id,
+                'practitioner'   => $practitoner->id,
+                'price_id'       => $price->id,
+                'service_id'     => $schedule->service->id,
+                'schedule_id'    => $schedule->id,
+                'payment_intent' => $paymentIntent->id,
+                'payment_method' => $payment_method_id,
+            ]);
+
         } catch (\Stripe\Exception\ApiErrorException $e) {
-            //log transfer + transfers table record
+
+            Log::channel('stripe_transfer_fail')->info("The practitioner could not received transfer", [
+                'user_id'        => $request->user()->id,
+                'practitioner'   => $practitoner->id,
+                'price_id'       => $price->id,
+                'service_id'     => $schedule->service->id,
+                'schedule_id'    => $schedule->id,
+                'payment_intent' => $paymentIntent->id,
+                'payment_method' => $payment_method_id,
+                'message'        => $e->getMessage(),
+            ]);
+
+            return abort( 500);
         }
 
         Log::channel('stripe_purchase_schedule_success')->info("Client purchase schedule", [

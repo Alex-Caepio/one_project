@@ -148,11 +148,11 @@ class AuthController extends Controller
 //                }
 //            }
 //            $request->media_images = $image_urls;
-            $this->syncImages($request->media_images,$user);
+            $this->syncImages($request->media_images, $user);
         }
 
         if ($request->filled('media_videos')) {
-            $this->syncVideos($request->media_videos,$user);
+            $this->syncVideos($request->media_videos, $user);
         }
         return fractal($user, new UserTransformer())->respond();
     }
