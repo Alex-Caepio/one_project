@@ -40,6 +40,17 @@ class Service extends Model {
         'published_at'
     ];
 
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
+    ];
+
     public function media_images() {
         return $this->morphMany(MediaImage::class, 'morphesTo', 'model_name', 'model_id');
     }

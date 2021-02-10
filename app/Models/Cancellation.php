@@ -20,6 +20,16 @@ class Cancellation extends Model {
         'stripe_id'
     ];
 
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
     public function user(): BelongsTo {
         return $this->belongsTo(User::class, 'user_id', 'id')
                     ->where('account_type', User::ACCOUNT_CLIENT);

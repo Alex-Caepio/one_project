@@ -13,6 +13,16 @@ class ScheduleFreeze extends Model {
     protected $fillable = ['freeze_at', 'user_id', 'schedule_id', 'quantity'];
 
     /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'freeze_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+    /**
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

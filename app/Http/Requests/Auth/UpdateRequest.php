@@ -96,9 +96,9 @@ class UpdateRequest extends Request
                         'You have not filled in the field "Business introduction"'
                     );
                 }
-                if (!$user->timezone_id && !$this->timezone_id) {
+                if (!$user->business_time_zone_id && !$this->business_time_zone_id) {
                     $validator->errors()->add(
-                        'timezone_id',
+                        'business_time_zone_id',
                         'You have not filled in the field "Timezone"'
                     );
                 }

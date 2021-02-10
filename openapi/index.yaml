@@ -935,7 +935,7 @@ components:
           type: string
           example: cus_HpyQPawZU9Nw16
           nullable: true
-        timezone_id:
+        business_timezone_id:
           type: integer
           nullable: true
           example: 98
@@ -1357,7 +1357,7 @@ paths:
                   stripe_id:
                     type: string
                     example: cus_HpyQPawZU9Nw16
-                  timezone_id:
+                  business_timezone_id:
                     type: integer
                     example: 98
                   access_token:
@@ -1459,7 +1459,7 @@ paths:
                 last_name:
                   type: string
                   example: Doe
-                timezone_id:
+                business_timezone_id:
                   type: integer
                   example: 98
       responses:

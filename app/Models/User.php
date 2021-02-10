@@ -72,7 +72,7 @@ class User extends Authenticatable implements MustVerifyEmail {
         'mobile_country_code',
         'business_phone_number',
         'business_phone_country_code',
-        'timezone_id',
+        'business_time_zone_id',
         'avatar_url',
         'background_url',
         'termination_message',
@@ -114,7 +114,7 @@ class User extends Authenticatable implements MustVerifyEmail {
     }
 
     public function timezone() {
-        return $this->belongsTo(Timezone::class);
+        return $this->belongsTo(Timezone::class, 'business_time_zone_id');
     }
 
     public function articles() {

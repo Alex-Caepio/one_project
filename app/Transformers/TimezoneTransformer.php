@@ -13,8 +13,8 @@ class TimezoneTransformer extends Transformer
             'id'           => $timezone->id,
             'value'        => $timezone->value,
             'label'        => $timezone->label,
-            'created_at'   => $this->dateTime($timezone->created_at),
-            'updated_at'   => $this->dateTime($timezone->updated_at),
+            'created_at'   => $timezone->created_at,
+            'updated_at'   => $timezone->updated_at,
         ];
     }
 

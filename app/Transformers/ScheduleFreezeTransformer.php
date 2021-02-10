@@ -19,9 +19,9 @@ class ScheduleFreezeTransformer extends Transformer
             'schedule_id' => $freeze->schedule_id,
             'user_id'     => $freeze->user_id,
             'quantity'    => $freeze->quantity,
-            'freeze_at'   => $this->dateTime($freeze->freeze_at),
-            'created_at'  => $this->dateTime($freeze->created_at),
-            'updated_at'  => $this->dateTime($freeze->updated_at),
+            'freeze_at'   => $freeze->freeze_at,
+            'created_at'  => $freeze->created_at,
+            'updated_at'  => $freeze->updated_at,
         ];
     }
 

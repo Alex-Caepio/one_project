@@ -27,7 +27,7 @@ class UserFactory extends Factory
             'business_address' => $this->faker->sentence(),
             'business_email' => $this->faker->sentence(),
             'business_introduction' => $this->faker->sentence(),
-            'timezone_id' => $this->faker->randomDigit,
+            'business_timezone_id' => $this->faker->randomDigit,
             'business_country' => $this->faker->sentence(),
             'business_city' => $this->faker->sentence(),
             'business_postal_code' => $this->faker->sentence(),

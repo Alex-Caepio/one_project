@@ -15,6 +15,16 @@ class Image extends Model
     ];
     public $appends = ['url', 'uploaded_time', 'size_in_kb'];
 
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
     public static function boot()
     {
         parent::boot();

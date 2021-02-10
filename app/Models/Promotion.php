@@ -41,6 +41,19 @@ class Promotion extends Model {
     public const APPLIED_HOST = 'host';
     public const APPLIED_BOTH = 'both';
 
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'valid_from' => 'datetime',
+        'expiry_date' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
+    ];
+
     public function promotion_codes() {
         return $this->hasMany(PromotionCode::class);
     }
