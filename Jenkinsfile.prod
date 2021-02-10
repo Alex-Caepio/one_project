@@ -1,0 +1,50 @@
+pipeline{
+    environment{
+        projectName = "oneness-backend"
+        workingEnv = "dev"
+        registryName = "214053718704.dkr.ecr.eu-west-2.amazonaws.com"
+        registryCredentials = "oneness_aws_creds"
+        imageName = "214053718704.dkr.ecr.eu-west-2.amazonaws.com/oneness-backend"
+    }
+    
+    agent{
+        label "master"
+    }
+    
+    stages{
+        
+        stage("Build docker image"){
+            steps{
+                configFileProvider([configFile(fileId: 'oneness_envconfig_dev', targetLocation: '.env')]){
+                    script{
+                        dockerImage = docker.build('$imageName:$workingEnv', "-f ./Dockerfile ./")
+                    }
+                }
+            }
+        }
+        
+        stage("Deploy docker image to AWS ECR"){
+            steps{
+                script{
+                    docker.withRegistry('',registryCredentials){
+                        dockerImage.push()
+                    }
+                }
+            }
+        }
+        
+        stage("Clean from docker images"){
+            steps{
+                sh '''docker rmi -f $(docker images --filter=reference=${imageName} -q) >/dev/null 2>&1'''
+            }
+        }
+    }
+    post{
+        success{
+            cleanWs()
+        }
+        failure{
+            echo "========pipeline execution failed========"
+        }
+    }
+}
