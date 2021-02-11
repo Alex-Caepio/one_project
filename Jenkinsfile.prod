@@ -4,7 +4,6 @@ pipeline{
         workingEnv = "dev"
         registryName = "214053718704.dkr.ecr.eu-west-2.amazonaws.com"
         registryCredentials = "oneness_aws_creds"
-        imageName = "214053718704.dkr.ecr.eu-west-2.amazonaws.com/oneness-backend"
     }
     
     agent{
@@ -17,7 +16,7 @@ pipeline{
             steps{
                 configFileProvider([configFile(fileId: 'oneness_envconfig_dev', targetLocation: '.env')]){
                     script{
-                        dockerImage = docker.build('$imageName:$workingEnv', "-f ./Dockerfile ./")
+                        dockerImage = docker.build('$projectName:$workingEnv', "-f ./Dockerfile ./")
                     }
                 }
             }
