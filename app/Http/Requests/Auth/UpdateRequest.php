@@ -39,7 +39,7 @@ class UpdateRequest extends Request
             'public_link'                 => 'max:255|url',
             'business_introduction'       => 'max:255',
             'gender'                      => 'string',
-            'date_of_birth'               => 'date',
+            'date_of_birth'               => 'date|before:-18 years',
             'mobile_number'               => 'digits_between:2,255|numeric',
             'business_phone_number'       => 'digits_between:2,255|numeric',
             'email'                       => ['sometimes',
