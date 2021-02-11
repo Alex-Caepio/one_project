@@ -26,7 +26,7 @@ pipeline{
         stage("Deploy docker image to AWS ECR"){
             steps{
                 script{
-                    docker.withRegistry('https://214053718704.dkr.ecr.eu-west-2.amazonaws.com','oneness-ecr-creds'){
+                    docker.withRegistry('https://214053718704.dkr.ecr.eu-west-2.amazonaws.com','ecr:eu-west-2:oneness-ecr-creds'){
                         dockerImage.push()
                     }
                 }
