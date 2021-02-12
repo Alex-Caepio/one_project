@@ -79,8 +79,8 @@ class DisciplineTransformer extends Transformer
             'section_13_video_url'    => $discipline->section_13_video_url,
 
 
-            'created_at' => $this->dateTime($discipline->created_at),
-            'updated_at' => $this->dateTime($discipline->updated_at),
+            'created_at' => $discipline->created_at,
+            'updated_at' => $discipline->updated_at,
         ];
     }
 

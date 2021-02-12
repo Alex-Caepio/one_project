@@ -45,6 +45,16 @@ class Discipline extends Model
         'section_13_target_blanc', 'section_13_image_url', 'section_13_video_url'
     ];
 
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
     public function featured_practitioners(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'discipline_featured_practitioner', 'discipline_id', 'user_id')

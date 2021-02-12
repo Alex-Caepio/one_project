@@ -23,6 +23,10 @@ class Article extends Model {
 
     protected $casts = [
         'is_published' => 'boolean',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
+        'published_at' => 'datetime',
     ];
 
     public function disciplines() {

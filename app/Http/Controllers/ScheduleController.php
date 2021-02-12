@@ -118,7 +118,7 @@ class ScheduleController extends Controller
         return response([$amountTotal, $amount_left, $amountBought, $amountFreezed]);
     }
 
-    public function freeze(Schedule $schedule)
+    public function freeze(Schedule $schedule, Request $request)
     {
         $personalFreezed = ScheduleFreeze::where('schedule_id', $schedule->id)
             ->where('user_id', Auth::id())->first();
@@ -127,9 +127,10 @@ class ScheduleController extends Controller
         if ($personalFreezed === null) {
             $freeze = new ScheduleFreeze();
             $freeze->forceFill([
-                'schedule_id' => $schedule->id,
+                'freeze_at'   => $time,
                 'user_id'     => Auth::id(),
-                'freeze_at'   => $time
+                'schedule_id' => $schedule->id,
+                'quantity'    => $request->get('quantity') ?? 1,
             ]);
             $freeze->save();
         }

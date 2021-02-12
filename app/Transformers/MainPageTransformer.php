@@ -97,8 +97,8 @@ class MainPageTransformer extends Transformer
             'section_12_media_6_url'          => $mainPage->section_12_media_6_url,
             'section_12_media_6_target_blanc' => (bool)$mainPage->section_12_media_6_target_blanc,
 
-            'created_at' => $this->dateTime($mainPage->created_at),
-            'updated_at' => $this->dateTime($mainPage->updated_at),
+            'created_at' => $mainPage->created_at,
+            'updated_at' => $mainPage->updated_at,
         ];
     }
 

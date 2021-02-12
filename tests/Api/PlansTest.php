@@ -5,7 +5,7 @@ namespace Tests\Api;
 
 use App\Models\Plan;
 use App\Models\User;
-use App\Traits\usesStripe;
+use Tests\Traits\UsesStripe;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Event;
 use Mockery;
@@ -17,7 +17,7 @@ use Tests\TestCase;
 class PlansTest extends TestCase
 {
     use DatabaseTransactions;
-    use usesStripe;
+    use UsesStripe;
 
 
     public function setUp(): void
@@ -74,13 +74,13 @@ class PlansTest extends TestCase
         return $client->products->create(['name' => 'Test product @' . now()->toDateTimeString()]);
     }
 
-    protected function creteStripeRecurringPrice($product)
+    protected function creteStripeRecurringPrice($stripeProductId)
     {
         $client = app()->make(StripeClient::class);
         return $client->prices->create([
             'unit_amount' => '1000',
             'currency'    => 'usd',
-            'product'     => $product,
+            'product'     => $stripeProductId,
             'recurring' => ['interval' => 'month'],
         ]);
     }

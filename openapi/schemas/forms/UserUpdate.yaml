@@ -62,7 +62,7 @@ properties:
 #    type: string
 #    nullable: true
 #    example: 'example.com/users/johndoe'
-  timezone_id:
+  business_timezone_id:
     type: integer
     example: 98
 

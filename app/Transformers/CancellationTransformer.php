@@ -37,8 +37,8 @@ class CancellationTransformer extends TransformerAbstract {
             'fee'                 => $cancellation->fee,
             'cancelled_by_client' => $cancellation->cancelled_by_client,
             'stripe_id'           => $cancellation->stripe_id,
-            'created_at'          => $this->dateTime($cancellation->created_at),
-            'updated_at'          => $this->dateTime($cancellation->updated_at),
+            'created_at'          => $cancellation->created_at,
+            'updated_at'          => $cancellation->updated_at,
         ];
     }
 

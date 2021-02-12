@@ -71,7 +71,7 @@ properties:
   stripe_id:
     type: string
     example: 'cus_HpyQPawZU9Nw16'
-  timezone_id:
+  business_timezone_id:
     type: integer
     example: 98
   access_token:

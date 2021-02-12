@@ -7,24 +7,25 @@ use Illuminate\Database\Eloquent\Model;
 
 trait hasMediaItems
 {
-    public function links(array $links,Model $model,bool $flag): array
+    public function links(array $links, Model $model, bool $flag): array
     {
-            $flag === true
-                ? $relation = $model->media_images()
-                : $relation = $model->media_videos();
-            $links = collect($links);
-            $recurringURL = $relation->whereIn('url', $links)->pluck('url')->toArray();
-            $newImage = $links->filter(function ($value) use ($recurringURL) {
-                return !in_array($value, $recurringURL);
-            })->toArray();
+        $flag === true
+            ? $relation = $model->media_images()
+            : $relation = $model->media_videos();
+        $links        = collect($links);
+        $recurringURL = $relation->whereIn('url', $links)->pluck('url')->toArray();
+        $newImage     = $links->filter(function ($value) use ($recurringURL) {
+            return !in_array($value, $recurringURL);
+        })->toArray();
 
-            foreach ($newImage as $url) {
-                $newMediaToStore[]['url'] = $url;
-            }
+        foreach ($newImage as $url) {
+            $newMediaToStore[]['url'] = $url;
+        }
 
         return $newMediaToStore;
     }
-    public function syncImages($links,$model)
+
+    public function syncImages($links, $model)
     {
         $model->media_images()->whereNotIn('url', $links)->delete();
         $urls         = collect($links);
@@ -42,18 +43,20 @@ trait hasMediaItems
             $model->media_images()->createMany($imageUrlToStore);
         }
     }
-    public function syncVideos($links,$model)
+
+    public function syncVideos($links, $model)
     {
-        $model->media_videos()->whereNotIn('url', $links)->delete();
-        $urls         = collect($links);
+        $urls = collect($links);
+        $model->media_videos()->whereNotIn('url', $urls->pluck('url'))->delete();
         $recurringURL = $model->media_videos()->whereIn('url', $urls)->pluck('url')->toArray();
         $newVideos    = $urls->filter(function ($value) use ($recurringURL) {
-            return !in_array($value, $recurringURL);
+            return !in_array($value['url'], $recurringURL);
         });
 
         $videoUrlToStore = [];
-        foreach ($newVideos as $url) {
-            $videoUrlToStore[]['url'] = $url;
+        foreach ($newVideos as $key => $url) {
+            $videoUrlToStore[$key]['url']     = $url['url'];
+            $videoUrlToStore[$key]['preview'] = $url['preview'];
         }
 
         if ($videoUrlToStore) {
@@ -61,7 +64,7 @@ trait hasMediaItems
         }
     }
 
-    public function syncDocuments($links,$model)
+    public function syncDocuments($links, $model)
     {
         $model->documents()->whereNotIn('url', $links)->delete();
         $model->documents()->createMany($links);

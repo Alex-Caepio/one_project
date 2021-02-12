@@ -761,18 +761,6 @@ components:
         description:
           type: string
           nullable: true
-        type:
-          type: string
-          nullable: true
-        locations:
-          type: string
-          nullable: true
-        basic_location:
-          type: string
-          nullable: true
-        deposit_instalment_payments:
-          type: string
-          nullable: true
         user_id:
           type: integer
         is_published:
@@ -787,6 +775,12 @@ components:
         service_type_id:
           type: string
           nullable: true
+        image_url:
+          type: string
+          nullable: true
+        icon_url:
+          type: string
+          nullable: true
         created_at:
           type: string
           nullable: true
@@ -799,12 +793,6 @@ components:
           type: string
           nullable: true
           format: date-time
-        image_url:
-          type: string
-          nullable: true
-        icon_url:
-          type: string
-          nullable: true
     ServiceType:
       type: object
       properties:
@@ -931,6 +919,10 @@ components:
           type: string
           nullable: true
           format: date-time
+        plan_from:
+          type: string
+          nullable: true
+          format: date-time
         public_link:
           type: string
           nullable: true
@@ -943,7 +935,7 @@ components:
           type: string
           example: cus_HpyQPawZU9Nw16
           nullable: true
-        timezone_id:
+        business_timezone_id:
           type: integer
           nullable: true
           example: 98
@@ -1215,6 +1207,8 @@ components:
           type: integer
         user_id:
           type: integer
+        practitioner_id:
+          type: integer
         schedule_id:
           type: integer
         availability_id:
@@ -1363,7 +1357,7 @@ paths:
                   stripe_id:
                     type: string
                     example: cus_HpyQPawZU9Nw16
-                  timezone_id:
+                  business_timezone_id:
                     type: integer
                     example: 98
                   access_token:
@@ -1465,7 +1459,7 @@ paths:
                 last_name:
                   type: string
                   example: Doe
-                timezone_id:
+                business_timezone_id:
                   type: integer
                   example: 98
       responses:
@@ -1684,17 +1678,19 @@ paths:
                 media_images:
                   type: array
                   items:
-                    type: object
+                    type: string
                   example:
-                    - url: http://cdn.com/yoga-practice.png
-                    - url: http://cdn.com/another-picture.png
+                    - http://cdn.com/yoga-practice.png
+                    - http://cdn.com/another-picture.png
                 media_videos:
                   type: array
                   items:
                     type: object
                   example:
                     - url: http://cdn.com/yoga-practice.mov
-                    - url: http://cdn.com/another-picture.mov
+                      preview: http://cdn.com/yoga-picture.jpeg
+                    - url: http://cdn.com/aroma-practice.mov
+                      preview: http://cdn.com/aroma-picture.jpeg
                 media_files:
                   type: array
                   items:
@@ -1786,63 +1782,7 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Article"
-  /articles/practitioner:
-    get:
-      operationId: articles-practitioner
-      tags:
-        - Article
-      parameters:
-        - name: page
-          in: query
-          description: Pagination page results
-          required: false
-          schema:
-            type: integer
-            example: 2
-        - name: limit
-          in: query
-          description: Results per page
-          required: false
-          schema:
-            type: integer
-            example: 10
-        - name: x-page
-          in: header
-          description: Pagination page results
-          required: false
-          schema:
-            type: integer
-            example: 2
-        - name: x-limit
-          in: header
-          description: Results per page
-          required: false
-          schema:
-            type: integer
-            example: 10
-        - name: with
-          in: query
-          description: Include additional objects in response
-          required: false
-          schema:
-            type: string
-            example: user,disciplines,favourite_articles,media_images,media_videos,media_files,focus_areas,keywords,services,last_published
-        - name: x-with
-          in: header
-          description: Include additional objects in response
-          required: false
-          schema:
-            type: string
-            example: user,disciplines,favourite_articles,media_images,media_videos,media_files,focus_areas,keywords,services,last_published
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Article"
+  /articles/practitioner: {}
   "/articles/{id}":
     get:
       tags:
@@ -1911,38 +1851,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Article"
-  "/articles/practitioner/{id}":
-    get:
-      tags:
-        - Article
-      parameters:
-        - name: id
-          in: path
-          description: Article ID
-          required: true
-          schema:
-            type: integer
-        - name: with
-          in: query
-          description: Include additional objects in response
-          required: false
-          schema:
-            type: string
-            example: user,disciplines,favourite_articles,media_images,media_videos,media_files,focus_areas,keywords,services,last_published
-        - name: x-with
-          in: header
-          description: Include additional objects in response
-          required: false
-          schema:
-            type: string
-            example: user,disciplines,favourite_articles,media_images,media_videos,media_files,focus_areas,keywords,services,last_published
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Article"
+  "/articles/practitioner/{id}": {}
   /focus-areas:
     get:
       parameters:
@@ -2151,17 +2060,19 @@ paths:
                 media_images:
                   type: array
                   items:
-                    type: object
+                    type: string
                   example:
-                    - url: http://cdn.com/yoga-practice.png
-                    - url: http://cdn.com/another-picture.png
+                    - http://cdn.com/yoga-practice.png
+                    - http://cdn.com/another-picture.png
                 media_videos:
                   type: array
                   items:
                     type: object
                   example:
                     - url: http://cdn.com/yoga-practice.mov
-                    - url: http://cdn.com/another-picture.mov
+                      preview: http://cdn.com/yoga-picture.jpeg
+                    - url: http://cdn.com/aroma-practice.mov
+                      preview: http://cdn.com/aroma-picture.jpeg
                 media_files:
                   type: array
                   items:
@@ -2342,101 +2253,8 @@ paths:
           description: OK
   "/services/{id}/unpublish":
     $ref: "#/paths/~1services~1%7Bid%7D~1publish"
-  /services/practitioner:
-    get:
-      tags:
-        - Service
-      parameters:
-        - name: page
-          in: query
-          description: Pagination page results
-          required: false
-          schema:
-            type: integer
-            example: 2
-        - name: limit
-          in: query
-          description: Results per page
-          required: false
-          schema:
-            type: integer
-            example: 10
-        - name: x-page
-          in: header
-          description: Pagination page results
-          required: false
-          schema:
-            type: integer
-            example: 2
-        - name: x-limit
-          in: header
-          description: Results per page
-          required: false
-          schema:
-            type: integer
-            example: 10
-        - name: with
-          in: query
-          description: Include additional objects in response
-          required: false
-          schema:
-            type: string
-            example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles,media_images,media_videos,media_files
-        - name: x-with
-          in: header
-          description: Include additional objects in response
-          required: false
-          schema:
-            type: string
-            example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles,media_images,media_videos,media_files
-        - name: service_type
-          in: query
-          description: Include service types
-          required: false
-          schema:
-            type: string
-            example: workshop,events,retreat,appointment,cources
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Service"
-  "/services/practitioner/{id}":
-    get:
-      tags:
-        - Service
-      parameters:
-        - name: id
-          in: path
-          description: Service ID
-          required: true
-          schema:
-            type: integer
-        - name: with
-          in: query
-          description: Include additional objects in response
-          required: false
-          schema:
-            type: string
-            example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles,media_images,media_videos,media_files,last_published
-        - name: x-with
-          in: header
-          description: Include additional objects in response
-          required: false
-          schema:
-            type: string
-            example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles,media_images,media_videos,media_files,last_published
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Service"
+  /services/practitioner: {}
+  "/services/practitioner/{id}": {}
   /service-types:
     get:
       tags:
@@ -2795,7 +2613,7 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Booking"
-  "bookings/{id}/reschedule":
+  "/bookings/{id}/reschedule":
     post:
       tags:
         - Booking
@@ -3738,17 +3556,19 @@ paths:
                 media_images:
                   type: array
                   items:
-                    type: object
+                    type: string
                   example:
-                    - url: http://cdn.com/yoga-practice.png
-                    - url: http://cdn.com/another-picture.png
+                    - http://cdn.com/yoga-practice.png
+                    - http://cdn.com/another-picture.png
                 media_videos:
                   type: array
                   items:
                     type: object
                   example:
                     - url: http://cdn.com/yoga-practice.mov
-                    - url: http://cdn.com/another-picture.mov
+                      preview: http://cdn.com/yoga-picture.jpeg
+                    - url: http://cdn.com/aroma-practice.mov
+                      preview: http://cdn.com/aroma-picture.jpeg
                 media_files:
                   type: array
                   items:
@@ -4098,17 +3918,19 @@ paths:
                 media_images:
                   type: array
                   items:
-                    type: object
+                    type: string
                   example:
-                    - url: http://cdn.com/yoga-practice.png
-                    - url: http://cdn.com/another-picture.png
+                    - http://cdn.com/yoga-practice.png
+                    - http://cdn.com/another-picture.png
                 media_videos:
                   type: array
                   items:
                     type: object
                   example:
                     - url: http://cdn.com/yoga-practice.mov
-                    - url: http://cdn.com/another-picture.mov
+                      preview: http://cdn.com/yoga-picture.jpeg
+                    - url: http://cdn.com/aroma-practice.mov
+                      preview: http://cdn.com/aroma-picture.jpeg
                 media_files:
                   type: array
                   items:

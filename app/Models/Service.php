@@ -36,7 +36,19 @@ class Service extends Model {
         'introduction',
         'url',
         'service_type_id',
-        'stripe_id'
+        'stripe_id',
+        'published_at'
+    ];
+
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
     ];
 
     public function media_images() {
@@ -52,6 +64,10 @@ class Service extends Model {
     }
 
     public function user() {
+        return $this->belongsTo(User::class);
+    }
+
+    public function practitioner() {
         return $this->belongsTo(User::class);
     }
 

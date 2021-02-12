@@ -3,7 +3,7 @@
 namespace Tests\Api;
 
 use App\Models\User;
-use App\Traits\usesStripe;
+use Tests\Traits\UsesStripe;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Stripe\StripeClient;
 use Tests\TestCase;
@@ -11,7 +11,7 @@ use Tests\TestCase;
 class PaymentMethodTest extends TestCase
 {
     use DatabaseTransactions;
-    use usesStripe;
+    use UsesStripe;
 
     public function setUp(): void
     {

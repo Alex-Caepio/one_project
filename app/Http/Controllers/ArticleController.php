@@ -129,7 +129,10 @@ class ArticleController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function publish(Article $article, ArticlePublishRequest $publishRequest): Response {
-        $article->forceFill(['is_published' => true]);
+        $article->forceFill([
+            'is_published' => true,
+            'published_at' => now()
+        ]);
         $article->save();
         return response(null, 204);
     }

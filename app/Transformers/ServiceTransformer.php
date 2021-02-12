@@ -11,6 +11,7 @@ class ServiceTransformer extends Transformer
 
     protected $availableIncludes = [
         'user',
+        'practitioner',
         'keywords',
         'disciplines',
         'focus_areas',
@@ -39,17 +40,23 @@ class ServiceTransformer extends Transformer
             'introduction'                => $service->introduction,
             'url'                         => $service->url,
             'service_type_id'             => $service->service_type_id,
-            'created_at'                  => $this->dateTime($service->created_at),
-            'updated_at'                  => $this->dateTime($service->updated_at),
-            'deleted_at'                  => $this->dateTime($service->deleted_at),
+            'created_at'                  => $service->created_at,
+            'updated_at'                  => $service->updated_at,
+            'deleted_at'                  => $service->deleted_at,
             'image_url'                   => $service->image_url,
             'icon_url'                    => $service->icon_url,
             'stripe_id'                   => $service->stripe_id,
+            'published_at'                => $service->published_at,
 
         ];
     }
 
     public function includeUser(Service $service)
+    {
+        return $this->itemOrNull($service->user, new UserTransformer());
+    }
+
+    public function includePractitioner(Service $service)
     {
         return $this->itemOrNull($service->user, new UserTransformer());
     }

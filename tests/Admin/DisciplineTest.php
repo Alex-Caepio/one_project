@@ -78,8 +78,15 @@ class DisciplineTest extends TestCase
                 'http://google.com',
             ],
             'media_videos'           => [
-                'http://google.com',
-                'http://google.com',
+                [
+                    'url' => 'http://google.com',
+                    'preview' => 'http://google.com',
+                ],
+
+                [
+                    'url' => 'http://yandex.com',
+                    'preview' => 'http://facebook.com',
+                ],
             ],
             'media_files'            => [
                 ['url' => 'http://google.com'],
@@ -167,8 +174,15 @@ class DisciplineTest extends TestCase
                 'http://google.com',
             ],
             'media_videos'           => [
-                'http://google.com',
-                'http://google.com',
+                [
+                    'url' => 'http://google.com',
+                    'preview' => 'http://google.com',
+                ],
+
+                [
+                    'url' => 'http://yandex.com',
+                    'preview' => 'http://facebook.com',
+                ],
             ],
         ]);
         $responseContent = $response->getOriginalContent();
@@ -181,6 +195,7 @@ class DisciplineTest extends TestCase
         self::assertCount(3, $discipline->featured_services);
         self::assertCount(3, $discipline->featured_focus_areas);
         self::assertCount(2, $discipline->media_images);
+        self::assertCount(2, $discipline->media_videos);
     }
 
     public function test_delete_discipline(): void

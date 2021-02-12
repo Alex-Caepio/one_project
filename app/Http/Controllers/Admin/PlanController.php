@@ -72,6 +72,7 @@ class PlanController extends Controller
                 'plan_id' => $plan->id,
                 'stripe_id'  => $planStripe->id,
                 'product'   => $product->id,
+                'message' => $e->getMessage(),
             ]);
 
             return abort(500);

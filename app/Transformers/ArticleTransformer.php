@@ -43,10 +43,10 @@ class ArticleTransformer extends Transformer {
             'introduction' => $article->introduction,
             'url'          => $article->url,
             'image_url'    => $article->image_url,
-            'created_at'   => $this->dateTime($article->created_at),
-            'updated_at'   => $this->dateTime($article->updated_at),
-            'deleted_at'   => $this->dateTime($article->deleted_at),
-            'published_at' => $this->dateTime($article->published_at),
+            'created_at'   => $article->created_at,
+            'updated_at'   => $article->updated_at,
+            'deleted_at'   => $article->deleted_at,
+            'published_at' => $article->published_at,
         ];
     }
 

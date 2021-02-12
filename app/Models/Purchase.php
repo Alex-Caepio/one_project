@@ -31,6 +31,17 @@ class Purchase extends Model {
         'stripe_id'
     ];
 
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
+    ];
+
     public function user(): BelongsTo {
         return $this->belongsTo(User::class);
     }

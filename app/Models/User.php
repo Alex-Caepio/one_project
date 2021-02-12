@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Scopes\PublishedScope;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -23,10 +24,14 @@ use Laravel\Sanctum\HasApiTokens;
  * @property string last_name
  * @property string first_name
  * @property string account_type
- * @property string stripe_customer_id
  * @property string stripe_account_id
+ * @property string stripe_customer_id
+ * @property string default_payment_method
+ * @property string default_fee_payment_method
  * @property Carbon email_verified_at
  * @property Plan plan
+ * @property Collection latest_services
+ * @property Collection latest_articles
  *
  * @package App\Models
  */
@@ -51,6 +56,7 @@ class User extends Authenticatable implements MustVerifyEmail {
         'last_name',
         'password',
         'about_me',
+        'email',
         'emails_holistify_update',
         'emails_practitioner_offers',
         'email_forward_practitioners',
@@ -67,7 +73,7 @@ class User extends Authenticatable implements MustVerifyEmail {
         'mobile_country_code',
         'business_phone_number',
         'business_phone_country_code',
-        'timezone_id',
+        'business_time_zone_id',
         'avatar_url',
         'background_url',
         'termination_message',
@@ -76,7 +82,12 @@ class User extends Authenticatable implements MustVerifyEmail {
         'business_postal_code',
         'business_time_zone',
         'business_vat',
-        'business_company_houses_id'
+        'business_company_houses_id',
+        'address',
+        'city',
+        'postal_code',
+        'country',
+        'gender',
     ];
 
     /**
@@ -96,6 +107,7 @@ class User extends Authenticatable implements MustVerifyEmail {
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'date_of_birth' => 'datetime',
     ];
 
     public function services() {
@@ -103,7 +115,7 @@ class User extends Authenticatable implements MustVerifyEmail {
     }
 
     public function timezone() {
-        return $this->belongsTo(Timezone::class);
+        return $this->belongsTo(Timezone::class, 'business_time_zone_id');
     }
 
     public function articles() {
@@ -237,4 +249,17 @@ class User extends Authenticatable implements MustVerifyEmail {
         return $this->hasMany(Cancellation::class, 'id', 'practitioner_id');
     }
 
+    public function latest_services(): HasMany
+    {
+        return $this->hasMany(Service::class)
+            ->where('is_published', true)
+            ->orderBy('created_at', 'desc');
+    }
+
+    public function latest_articles(): HasMany
+    {
+        return $this->hasMany(Article::class)
+            ->where('is_published', true)
+            ->orderBy('published_at', 'desc');
+    }
 }

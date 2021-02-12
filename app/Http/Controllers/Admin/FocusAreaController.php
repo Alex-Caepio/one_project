@@ -12,11 +12,13 @@ use App\Http\Requests\Request;
 use App\Models\FocusArea;
 use App\Models\FocusAreaImage;
 use App\Models\FocusAreaVideo;
+use App\Traits\hasMediaItems;
 use App\Transformers\FocusAreaTransformer;
 use Illuminate\Support\Facades\DB;
 
 class FocusAreaController extends Controller
 {
+    use hasMediaItems;
     public function index(Request $request)
     {
         $query = FocusArea::query();
@@ -75,10 +77,20 @@ class FocusAreaController extends Controller
         }
 
         if ($request->filled('media_images')) {
-            $focusArea->media_images()->createMany($request->get('media_images'));
+//            foreach ($request->media_images as $mediaImage)
+//            {
+//                if (Storage::disk(config('image.image_storage'))->missing(file_get_contents($mediaImage)))
+//                {
+//                    $image = Storage::disk(config('image.image_storage'))
+//                        ->put("/images/disciplines/{$discipline->id}/media_images/", file_get_contents($mediaImage));
+//                    $image_urls[] = Storage::url($image);
+//                }
+//            }
+//            $request->media_images = $image_urls;
+            $this->syncImages($request->media_images, $focusArea);
         }
         if ($request->filled('media_videos')) {
-            $focusArea->media_videos()->createMany($request->get('media_videos'));
+            $this->syncVideos($request->media_videos,$focusArea);
         }
         if ($request->filled('media_files')) {
             $focusArea->media_files()->createMany($request->get('media_files'));
@@ -139,13 +151,21 @@ class FocusAreaController extends Controller
             $focusArea->disciplines()->sync($request->get('disciplines'));
         }
 
-        if ($request->has('media_images')) {
-            $focusArea->media_images()->delete();
-            $focusArea->media_images()->createMany($request->get('media_images'));
+        if ($request->filled('media_images')){
+//            foreach ($request->media_images as $mediaImage)
+//            {
+//                if (Storage::disk(config('image.image_storage'))->missing(file_get_contents($mediaImage)))
+//                {
+//                    $image = Storage::disk(config('image.image_storage'))
+//                        ->put("/images/disciplines/{$discipline->id}/media_images/", file_get_contents($mediaImage));
+//                    $image_urls[] = Storage::url($image);
+//                }
+//            }
+//            $request->media_images = $image_urls;
+            $this->syncImages($request->media_images,$focusArea);
         }
-        if ($request->has('media_videos')) {
-            $focusArea->media_videos()->delete();
-            $focusArea->media_videos()->createMany($request->get('media_videos'));
+        if ($request->filled('media_videos')) {
+            $this->syncVideos($request->media_videos,$focusArea);
         }
         if ($request->has('media_files')) {
             $focusArea->media_files()->delete();

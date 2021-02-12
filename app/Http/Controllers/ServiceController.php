@@ -75,8 +75,9 @@ class ServiceController extends Controller {
         } catch (\Stripe\Exception\ApiErrorException $e) {
             Log::channel('stripe_product_errors')->info("Client could not create product", [
                 'user_id' => $request->user_id,
-                'stripe_product'  => $stripeProduct->id,
+                'stripe_product'  => $stripeProduct ? $stripeProduct->id : null,
                 'name' => $request->title,
+                'message' => $e->getMessage(),
             ]);
 
             return abort(500);
@@ -98,6 +99,7 @@ class ServiceController extends Controller {
 
     public function publish(Service $service, ServicePublishRequest $request) {
         $service->is_published = true;
+        $service->published_at = NOW();
         $service->save();
         $service->fresh();
         event(new ServiceListingLive($service, $request->user()));

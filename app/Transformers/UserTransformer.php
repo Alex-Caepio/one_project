@@ -25,7 +25,9 @@ class UserTransformer extends Transformer {
         'user_cancellations',
         'practitioner_cancellations',
         'bookings',
-        'practitioner_bookings'
+        'practitioner_bookings',
+        'latest_articles',
+        'latest_services',
     ];
 
     public function transform(User $user) {
@@ -54,12 +56,10 @@ class UserTransformer extends Transformer {
             'business_phone_number'       => $user->business_phone_number,
             'email_verified_at'           => $user->email_verified_at,
             'email'                       => $user->email,
-            'is_admin'                    => $user->is_admin,
+            'is_admin'                    => (bool) $user->is_admin,
             'account_type'                => $user->account_type,
             'avatar_url'                  => $user->avatar_url,
             'background_url'              => $user->background_url,
-            'created_at'                  => $this->dateTime($user->created_at),
-            'updated_at'                  => $this->dateTime($user->updated_at),
             'termination_message'         => $user->termination_message,
             'status'                      => $user->status,
             'business_country'            => $user->business_country,
@@ -71,8 +71,16 @@ class UserTransformer extends Transformer {
             'plan_from'                   => $user->plan_from,
             'plan_until'                  => $user->plan_until,
             'discipline_id'               => $user->discipline_id,
-            'timezone_id'                 => $user->timezone_id,
-            'default_fee_payment_method'  => $user->default_fee_payment_method
+            'business_time_zone_id'       => $user->business_time_zone_id,
+            'default_payment_method'      => $user->default_payment_method,
+            'default_fee_payment_method'  => $user->default_fee_payment_method,
+            'address'                     => $user->address,
+            'city'                        => $user->city,
+            'postal_code'                 => $user->postal_code,
+            'country'                     => $user->country,
+            'gender'                      => $user->gender,
+            'created_at'                  => $user->created_at,
+            'updated_at'                  => $user->updated_at,
         ];
     }
 
@@ -150,5 +158,13 @@ class UserTransformer extends Transformer {
 
     public function includePractitionerBookings(User $user): ?Collection {
         return $this->collectionOrNull($user->practitioner_bookings, new BookingTransformer());
+    }
+
+    public function includeLatestArticles(User $user): ?Collection {
+        return $this->collectionOrNull($user->latest_articles, new ArticleTransformer());
+    }
+
+    public function includeLatestServices(User $user): ?Collection {
+        return $this->collectionOrNull($user->latest_services, new ServiceTransformer());
     }
 }

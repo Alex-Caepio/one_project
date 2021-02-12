@@ -24,8 +24,8 @@ class ImageTransformer extends Transformer {
             'path'           => $image->path,
             'url'            => $image->url,
             'size'           => $image->size,
-            'created_at'     => $this->dateTime($image->created_at),
-            'updated_at'     => $this->dateTime($image->updated_at),
+            'created_at'     => $image->created_at,
+            'updated_at'     => $image->updated_at,
         ];
     }
 

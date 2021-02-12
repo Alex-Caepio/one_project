@@ -21,10 +21,11 @@ use Tests\TestCase;
 use Stripe\StripeClient;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\Traits\UsesStripe;
 
 class ScheduleTest extends TestCase
 {
-    use DatabaseTransactions;
+    use DatabaseTransactions, UsesStripe;
 
     public function setUp(): void
     {
@@ -47,8 +48,9 @@ class ScheduleTest extends TestCase
     public function test_store_schedule(): void
     {
         Event::fake();
+        $stripeProduct = $this->createStripeProduct();
         $serviceType = ServiceType::factory()->create(['id' => 'training_program']);
-        $service     = Service::factory()->create(['service_type_id' => $serviceType->id]);
+        $service     = Service::factory()->create(['service_type_id' => $serviceType->id, 'stripe_id' => $stripeProduct->id]);
         $schedule    = Schedule::factory()->make();
         $response    = $this->json('post', "api/services/{$service->id}/schedules", [
             'title'              => $schedule->title,

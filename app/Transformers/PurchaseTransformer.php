@@ -35,9 +35,9 @@ class PurchaseTransformer extends Transformer {
             'promocode_id'   => $purchase->promocode_id,
             'price_original' => $purchase->price_original,
             'price'          => $purchase->price,
-            'created_at'     => $this->dateTime($purchase->created_at),
-            'updated_at'     => $this->dateTime($purchase->updated_at),
-            'deleted_at'     => $this->dateTime($purchase->deleted_at),
+            'created_at'     => $purchase->created_at,
+            'updated_at'     => $purchase->updated_at,
+            'deleted_at'     => $purchase->deleted_at,
             'is_deposit'     => $purchase->is_deposit,
             'deposit_amount' => $purchase->deposit_amount,
             'stripe_id'      => $purchase->stripe_id

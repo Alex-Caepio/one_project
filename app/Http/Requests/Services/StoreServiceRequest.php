@@ -6,13 +6,15 @@ use App\Http\Requests\Request;
 use App\Models\Service;
 use Illuminate\Support\Facades\Auth;
 
-class StoreServiceRequest extends Request {
+class StoreServiceRequest extends Request
+{
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
-    public function authorize() {
+    public function authorize()
+    {
         return Auth::user()->isPractitioner();
     }
 
@@ -21,9 +23,10 @@ class StoreServiceRequest extends Request {
      *
      * @return array
      */
-    public function rules() {
+    public function rules()
+    {
         $isPublished = $this->getBoolFromRequest('is_published');
-        $url = $this->get('url') ?? to_url($this->get('title'));
+        $url         = $this->get('url') ?? to_url($this->get('title'));
         $this->getInputSource()->set('url', $url);
 
         if ($isPublished === true) {
@@ -32,19 +35,31 @@ class StoreServiceRequest extends Request {
                 'description'     => 'nullable|string|min:5|max:1000',
                 'is_published'    => 'bool',
                 'introduction'    => 'required|string|min:5|max:500',
-                'url'             => 'required|url|unique:services,url' . ($this->service ? ',' . $this->service->id : ''),
+                'url'             => 'required',
                 'service_type_id' => 'required|exists:service_types,id',
                 'image_url'       => 'nullable|url',
                 'icon_url'        => 'nullable|url',
             ];
         }
         return [
-            'title'           => 'string|min:5|max:100',
+            'title'           => 'required|string|min:5|max:100',
             'description'     => 'nullable|string|min:5|max:1000',
             'is_published'    => 'boolean',
-            'introduction'    => 'string|min:5|max:500',
-            'url'             => 'url',
+            'introduction'    => 'required|string|min:5|max:500',
+            'url'             => 'required',
             'service_type_id' => 'required|exists:service_types,id'
         ];
+    }
+
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            if ($this->user()->services()->where('user_id', '!=', $this->user()->id)->where('title', $this->get('title'))->exists()) {
+                $validator->errors()->add('title', 'Service name should be unique!');
+            }
+            if ($this->user()->services()->where('user_id', '!=', $this->user()->id)->where('url', $this->get('url'))->exists()) {
+                $validator->errors()->add('url', 'Service url should be unique!');
+            }
+        });
     }
 }

@@ -93,6 +93,16 @@ class MainPage extends Model
         'section_12_media_6_target_blanc',
     ];
 
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
     public function featured_focus_areas(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(FocusArea::class, 'main_page_featured_focus_area', 'main_page_id', 'focus_area_id');

@@ -57,6 +57,7 @@ class AuthController extends Controller
                 'email' => $request->email,
                 'stripe_customer_id' => $stripeCustomer->id,
                 'stripe_account_id'  => $stripeAccount->id,
+                'message' => $e->getMessage(),
             ]);
 
              return abort(500);
@@ -89,15 +90,6 @@ class AuthController extends Controller
             ->respond();
     }
 
-    public function publish(PublishRequest $request)
-    {
-        $user               = $request->user();
-        $user->is_published = true;
-        $user->save();
-        return fractal($request->user(), new UserTransformer())
-            ->respond();
-    }
-
     public function profile(Request $request)
     {
         return fractal($request->user(), new UserTransformer())
@@ -108,6 +100,12 @@ class AuthController extends Controller
     public function update(UpdateRequest $request)
     {
         $user = $request->user();
+        if ($request->is_published === true)
+        {
+            $user->is_published = true;
+            $user->save();
+        }
+
         $user->update($request->all());
         if ($request->filled('password')) {
             $user->password = Hash::make($request->get('password'));
@@ -150,11 +148,11 @@ class AuthController extends Controller
 //                }
 //            }
 //            $request->media_images = $image_urls;
-            $this->syncImages($request->media_images,$user);
+            $this->syncImages($request->media_images, $user);
         }
 
         if ($request->filled('media_videos')) {
-            $this->syncVideos($request->media_videos,$user);
+            $this->syncVideos($request->media_videos, $user);
         }
         return fractal($user, new UserTransformer())->respond();
     }

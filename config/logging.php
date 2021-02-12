@@ -150,6 +150,21 @@ return [
             'driver' => 'daily',
             'path' => storage_path('logs/stripe_purchase_schedule_success.log'),
         ],
+
+        'stripe_payment_method_update_error' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/stripe_payment_method_update_error.log'),
+        ],
+
+        'stripe_transfer_success' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/stripe_transfer_success.log'),
+        ],
+
+        'stripe_transfer_fail' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/stripe_transfer_fail.log'),
+        ],
     ],
 
 ];
