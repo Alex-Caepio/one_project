@@ -97,7 +97,7 @@ class AuthController extends Controller
             ->respond();
     }
 
-    public function update(UpdateRequest $request)
+    public function update(UpdateRequest $request , StripeClient $stripe)
     {
         $user = $request->user();
         if ($request->is_published === true)
@@ -106,11 +106,21 @@ class AuthController extends Controller
             $user->save();
         }
 
+        if( $request->has('email'))
+        {
+            if (auth()->user()->email != $request->get('email')) {
+                $stripe->customers->update(
+                    auth()->user()->stripe_customer_id,
+                    ['email' => $request->get('email')]
+                );
+            }
+        }
+
         $user->update($request->all());
         if ($request->filled('password')) {
             $user->password = Hash::make($request->get('password'));
             $user->save();
-            event(new PasswordChanged($user));
+//            event(new PasswordChanged($user));
         }
 
         if ($request->filled('disciplines')) {

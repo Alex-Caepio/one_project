@@ -45,6 +45,7 @@ class PlanController extends Controller
 
             $user->plan_until = Carbon::createFromTimestamp($subscription->current_period_end);;
             $user->plan_from  = Carbon::now();
+            $user->account_type = 'practitioner';
             $user->save();
 
         } catch (\Stripe\Exception\ApiErrorException $e) {
