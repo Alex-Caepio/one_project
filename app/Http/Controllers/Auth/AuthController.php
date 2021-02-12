@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Actions\Auth\GetUsersPermissions;
 use App\Actions\Stripe\CreateStripeUserByEmail;
 use App\Actions\User\CreateUserFromRequest;
 use App\Events\PasswordChanged;
@@ -83,7 +84,9 @@ class AuthController extends Controller
     public function login(LoginRequest $request)
     {
         $user = User::where('email', $request->get('email'))->first();
-        $user->withAccessToken($user->createToken('access-token'));
+
+        $permissions = run_action(GetUsersPermissions::class, $user);
+        $user->withAccessToken($user->createToken('access-token', $permissions));
 
         return fractal($user, new UserTransformer())
             ->parseIncludes('access_token')
