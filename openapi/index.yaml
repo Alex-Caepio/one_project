@@ -11,1234 +11,1234 @@ components:
     bearerAuth:
       type: http
       scheme: bearer
-  schemas:
-    AccessToken:
-      type: object
-      properties:
-        abilities:
-          type: array
-          items:
-            type: string
-          example:
-            - "*"
-        name:
-          type: string
-          example: access-token
-        token:
-          type: string
-          example: 4|hKv4yyJYSZlBDuuZmOcy5AO2ZzPbRJCp6gfbRGvvponscCQzetB51kh1p1Hsis1R2FnKJ5z0gHN4mJll
-    Article:
-      type: object
-      properties:
-        id:
-          type: integer
-        title:
-          type: string
-          nullable: true
-        description:
-          type: string
-          nullable: true
-        user_id:
-          type: integer
-          nullable: true
-        is_published:
-          type: boolean
-          nullable: true
-        introduction:
-          type: string
-          nullable: true
-        url:
-          type: string
-          nullable: true
-        image_url:
-          type: string
-          nullable: true
-        created_at:
-          type: string
-          nullable: true
-          format: date-time
-        updated_at:
-          type: string
-          nullable: true
-          format: date-time
-        deleted_at:
-          type: string
-          nullable: true
-          format: date-time
-        published_at:
-          type: string
-          nullable: true
-          format: date-time
-    Discipline:
-      type: object
-      properties:
-        id:
-          type: integer
-          example: 123
-        name:
-          type: string
-          example: Yoga practice
-        introduction:
-          type: string
-          nullable: true
-          example: Yoga desc
-        description:
-          type: string
-          nullable: true
-          example: Yoga loooooong description
-        url:
-          type: string
-          nullable: true
-          example: yoga-practice
-        icon_url:
-          type: string
-          nullable: true
-          example: http://cdn.com/yoga-practice.png
-        banner_url:
-          type: string
-          nullable: true
-          example: http://cdn.com/yoga-practice.png
-        is_published:
-          type: boolean
-          nullable: true
-          example: true
-        created_at:
-          type: string
-          nullable: true
-          format: date-time
-        updated_at:
-          type: string
-          nullable: true
-          format: date-time
-        section_2_h2:
-          nullable: true
-          type: string
-        section_2_h3:
-          nullable: true
-          type: string
-        section_2_background:
-          nullable: true
-          type: string
-        section_2_textarea:
-          nullable: true
-          type: string
-        section_3_h2:
-          nullable: true
-          type: string
-        section_3_h4:
-          nullable: true
-          type: string
-        section_4_h2:
-          nullable: true
-          type: string
-        section_4_h3:
-          nullable: true
-          type: string
-        section_4_background:
-          nullable: true
-          type: string
-        section_4_textarea:
-          nullable: true
-          type: string
-        section_5_header_h2:
-          nullable: true
-          type: string
-        section_6_h2:
-          nullable: true
-          type: string
-        section_6_h3:
-          nullable: true
-          type: string
-        section_6_background:
-          nullable: true
-          type: string
-        section_6_textarea:
-          nullable: true
-          type: string
-        section_7_media_url:
-          nullable: true
-          type: string
-        section_7_tag_line:
-          nullable: true
-          type: string
-        section_7_alt_text:
-          nullable: true
-          type: string
-        section_7_url:
-          nullable: true
-          type: string
-        section_7_target_blanc:
-          nullable: true
-          type: boolean
-        section_8_h2:
-          nullable: true
-          type: string
-        section_9_h2:
-          nullable: true
-          type: string
-        section_9_h3:
-          nullable: true
-          type: string
-        section_9_background:
-          nullable: true
-          type: string
-        section_9_textarea:
-          nullable: true
-          type: string
-        section_10_h2:
-          nullable: true
-          type: string
-        section_11_media_url:
-          nullable: true
-          type: string
-        section_11_tag_line:
-          nullable: true
-          type: string
-        section_11_alt_text:
-          nullable: true
-          type: string
-        section_11_url:
-          nullable: true
-          type: string
-        section_11_target_blanc:
-          nullable: true
-          type: boolean
-        section_12_h2:
-          nullable: true
-          type: string
-        section_13_media_url:
-          nullable: true
-          type: string
-        section_13_tag_line:
-          nullable: true
-          type: string
-        section_13_alt_text:
-          nullable: true
-          type: string
-        section_13_url:
-          nullable: true
-          type: string
-        section_13_target_blanc:
-          nullable: true
-          type: boolean
-        media_images:
-          type: array
-          items:
-            type: object
-            properties:
-              url:
-                type: string
-                example: http://cdn.com/yoga-practice.png
-        media_videos:
-          type: array
-          items:
-            type: object
-            properties:
-              url:
-                type: string
-                example: http://cdn.com/yoga-practice.mp4
-              preview:
-                type: string
-                example: http://cdn.com/yoga-practice.jpg
-        media_files:
-          type: array
-          items:
-            type: object
-            properties:
-              url:
-                type: string
-                example: http://cdn.com/yoga-practice.pdf
-        featured_services:
-          type: array
-          items:
-            $ref: "#/components/schemas/Service"
-        featured_focus_areas:
-          type: array
-          items:
-            $ref: "#/components/schemas/FocusArea"
-        featured_articles:
-          type: array
-          items:
-            $ref: "#/components/schemas/Article"
-        featured_practitioners:
-          type: array
-          items:
-            $ref: "#/components/schemas/User"
-    FocusArea:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        url:
-          type: string
-          nullable: true
-        introduction:
-          nullable: true
-          type: string
-        description:
-          nullable: true
-          type: string
-        section_2_h2:
-          nullable: true
-          type: string
-        section_2_h3:
-          nullable: true
-          type: string
-        section_2_background:
-          nullable: true
-          type: string
-        section_2_textarea:
-          nullable: true
-          type: string
-        section_3_h2:
-          nullable: true
-          type: string
-        section_4_tag_line:
-          nullable: true
-          type: string
-        section_4_alt_text:
-          nullable: true
-          type: string
-        section_4_url:
-          nullable: true
-          type: string
-        section_4_target_blanc:
-          nullable: true
-          type: boolean
-        section_5_h2:
-          nullable: true
-          type: string
-        section_5_h3:
-          nullable: true
-          type: string
-        section_5_background:
-          nullable: true
-          type: string
-        section_5_textarea:
-          nullable: true
-          type: string
-        section_6_header_h2:
-          nullable: true
-          type: string
-        section_7_h2:
-          nullable: true
-          type: string
-        section_7_h3:
-          nullable: true
-          type: string
-        section_7_background:
-          nullable: true
-          type: string
-        section_7_text:
-          nullable: true
-          type: string
-        section_8_h2:
-          nullable: true
-          type: string
-        section_9_tag_line:
-          nullable: true
-          type: string
-        section_9_alt_text:
-          nullable: true
-          type: string
-        section_9_url:
-          nullable: true
-          type: string
-        section_9_target_blanc:
-          nullable: true
-          type: boolean
-        section_10_h2:
-          nullable: true
-          type: string
-        section_10_h3:
-          nullable: true
-          type: string
-        section_10_background:
-          nullable: true
-          type: string
-        section_10_textarea:
-          nullable: true
-          type: string
-        section_11_h2:
-          nullable: true
-          type: string
-        section_12_h2:
-          nullable: true
-          type: string
-        section_12_h4:
-          nullable: true
-          type: string
-        section_13_tag_line:
-          nullable: true
-          type: string
-        section_13_alt_text:
-          nullable: true
-          type: string
-        section_13_url:
-          nullable: true
-          type: string
-        section_13_target_blanc:
-          nullable: true
-          type: boolean
-        media_images:
-          type: array
-          items:
-            $ref: "#/components/schemas/Discipline/properties/media_images/items"
-        media_videos:
-          type: array
-          items:
-            $ref: "#/components/schemas/Discipline/properties/media_videos/items"
-        media_files:
-          type: array
-          items:
-            $ref: "#/components/schemas/Discipline/properties/media_files/items"
-        featured_services:
-          type: array
-          items:
-            $ref: "#/components/schemas/Service"
-        featured_disciplines:
-          type: array
-          items:
-            $ref: "#/components/schemas/Discipline"
-        featured_articles:
-          type: array
-          items:
-            $ref: "#/components/schemas/Article"
-        featured_practitioners:
-          type: array
-          items:
-            $ref: "#/components/schemas/User"
-    Keyword:
-      type: object
-      properties:
-        id:
-          type: integer
-        title:
-          type: string
-    Location:
-      type: object
-      properties:
-        id:
-          type: integer
-        title:
-          type: string
-    Plan:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-          nullable: true
-        stripe_id:
-          type: integer
-          nullable: true
-        price:
-          type: number
-          format: double
-          nullable: true
-        service_types:
-          type: string
-        image_url:
-          type: string
-          nullable: true
-        description:
-          type: string
-          nullable: true
-        is_free:
-          type: boolean
-          nullable: true
-        unlimited_bookings:
-          type: boolean
-          nullable: true
-        amount_bookings:
-          type: integer
-          nullable: true
-        commission_on_sale:
-          type: number
-          format: double
-          nullable: true
-        schedules_per_service:
-          type: integer
-          nullable: true
-        schedules_per_service_unlimited:
-          type: boolean
-        pricing_options_per_service:
-          type: integer
-          nullable: true
-        pricing_options_per_service_unlimited:
-          type: boolean
-        list_paid_services:
-          type: boolean
-          nullable: true
-        list_free_services:
-          type: boolean
-          nullable: true
-        take_deposits_and_instalment:
-          type: boolean
-          nullable: true
-        contact_clients_with_booking:
-          type: boolean
-          nullable: true
-        market_to_clients:
-          type: string
-        client_reviews:
-          type: string
-        article_publishing:
-          type: integer
-          nullable: true
-        article_publishing_unlimited:
-          type: boolean
-          nullable: true
-        prioritised_business_profile_search:
-          type: boolean
-          nullable: true
-        prioritised_service_search:
-          type: boolean
-          nullable: true
-        busines_profile_page:
-          type: boolean
-          nullable: true
-        unique_web_address:
-          type: boolean
-          nullable: true
-        onboarding_support:
-          type: boolean
-          nullable: true
-        client_analytics:
-          type: boolean
-          nullable: true
-        service_analytics:
-          type: boolean
-          nullable: true
-        financial_analytics:
-          type: boolean
-          nullable: true
-        discount_codes:
-          type: boolean
-        trial_month:
-          type: integer
-          nullable: true
-        order:
-          type: integer
-        created_at:
-          type: string
-          nullable: true
-          format: date-time
-        updated_at:
-          type: string
-          nullable: true
-          format: date-time
-    Promotion:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        valid_from:
-          type: string
-          format: date-time
-          nullable: true
-        expiry_date:
-          type: string
-          format: date-time
-          nullable: true
-        spend_min:
-          type: number
-          format: double
-          nullable: true
-        spend_max:
-          type: number
-          format: double
-          nullable: true
-        discount_type:
-          type: string
-        discount_value:
-          type: number
-          format: integer
-        applied_to:
-          type: string
-          nullable: true
-        status:
-          type: string
-          nullable: false
-        created_at:
-          type: string
-          nullable: true
-          format: date-time
-        updated_at:
-          type: string
-          nullable: true
-          format: date-time
-        deleted_at:
-          type: string
-          nullable: true
-          format: date-time
-    PromotionCode:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        uses_per_client:
-          type: integer
-          nullable: true
-        uses_per_code:
-          type: integer
-          nullable: true
-        created_at:
-          type: string
-          nullable: true
-          format: date-time
-        updated_at:
-          type: string
-          nullable: true
-          format: date-time
-        deleted_at:
-          type: string
-          nullable: true
-          format: date-time
-        status:
-          type: string
-          nullable: false
-    Schedule:
-      type: object
-      properties:
-        id:
-          type: integer
-        title:
-          type: string
-        service_id:
-          type: integer
-          nullable: true
-        location_id:
-          type: integer
-          nullable: true
-        start_date:
-          type: string
-          format: date-time
-          nullable: true
-        end_date:
-          type: string
-          format: date-time
-          nullable: true
-        attendees:
-          type: integer
-          nullable: true
-        comments:
-          type: string
-          nullable: true
-        venue:
-          type: string
-          nullable: true
-        city:
-          type: string
-          nullable: true
-        country:
-          type: string
-          nullable: true
-        post_code:
-          type: string
-          nullable: true
-        location_displayed:
-          type: string
-          nullable: true
-        created_at:
-          type: string
-          nullable: true
-          format: date-time
-        updated_at:
-          type: string
-          nullable: true
-          format: date-time
-        meals_breakfast:
-          type: boolean
-        meals_lunch:
-          type: boolean
-        meals_dinner:
-          type: boolean
-        meals_alcoholic_beverages:
-          type: boolean
-        meals_dietry_accomodated:
-          type: boolean
-        refund_terms:
-          type: integer
-          nullable: true
-        booking_message:
-          type: string
-          nullable: true
-        is_virtual:
-          type: boolean
-          nullable: true
-        url:
-          type: string
-          nullable: true
-        book_full_series:
-          type: boolean
-          nullable: true
-        accomodation:
-          type: string
-          example:
-            - included
-            - optional
-            - no
-          nullable: true
-        accomodation_details:
-          type: string
-          nullable: true
-        travel:
-          type: string
-          example:
-            - included
-            - optional
-            - no
-          nullable: true
-        travel_details:
-          type: string
-          nullable: true
-        notice_min_time:
-          type: integer
-          nullable: true
-        notice_min_period:
-          type: string
-          example:
-            - mins
-            - hours
-            - days
-          nullable: true
-        buffer_time:
-          type: integer
-          nullable: true
-        buffer_period:
-          type: string
-          example:
-            - daily
-            - weekly
-            - monthly
-          nullable: true
-        repeat_every:
-          type: integer
-          nullable: true
-        repeat_period:
-          type: string
-          example:
-            - day
-            - week
-            - month
-          nullable: true
-    ScheduleFreeze:
-      type: object
-      properties:
-        id:
-          type: integer
-        schedule_id:
-          type: integer
-        user_id:
-          type: integer
-        freeze_at:
-          type: string
-          format: date-time
-        created_at:
-          type: string
-          format: date-time
-          nullable: true
-        updated_at:
-          type: string
-          format: date-time
-          nullable: true
-    Service:
-      type: object
-      properties:
-        id:
-          type: integer
-        title:
-          type: string
-          nullable: true
-        description:
-          type: string
-          nullable: true
-        user_id:
-          type: integer
-        is_published:
-          type: boolean
-          nullable: true
-        introduction:
-          type: string
-          nullable: true
-        url:
-          type: string
-          nullable: true
-        service_type_id:
-          type: string
-          nullable: true
-        image_url:
-          type: string
-          nullable: true
-        icon_url:
-          type: string
-          nullable: true
-        created_at:
-          type: string
-          nullable: true
-          format: date-time
-        updated_at:
-          type: string
-          nullable: true
-          format: date-time
-        deleted_at:
-          type: string
-          nullable: true
-          format: date-time
-    ServiceType:
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        created_at:
-          type: string
-          nullable: true
-          format: date-time
-        updated_at:
-          type: string
-          nullable: true
-          format: date-time
-    User:
-      type: object
-      properties:
-        id:
-          type: integer
-          example: 6
-        about_me:
-          type: string
-          nullable: true
-        about_my_business:
-          type: string
-          nullable: true
-        account_type:
-          type: string
-          example: practitioner
-        avatar_url:
-          type: string
-          example: example.com/avatar.png
-        background_url:
-          type: string
-          example: example.com/background.png
-        business_address:
-          type: string
-          nullable: true
-        business_company_houses_id:
-          type: string
-          nullable: true
-        business_country:
-          type: string
-          nullable: true
-        business_city:
-          type: string
-          nullable: true
-        business_email:
-          type: string
-          nullable: true
-        business_introduction:
-          type: string
-          nullable: true
-        business_name:
-          type: string
-          nullable: true
-        business_phone_number:
-          type: string
-          nullable: true
-        business_postal_code:
-          type: string
-          nullable: true
-        business_time_zone:
-          type: string
-          nullable: true
-        business_vat:
-          type: string
-          nullable: true
-        date_of_birth:
-          type: string
-          nullable: true
-        email:
-          type: string
-          example: mmorissette@example.net
-        email_forward_clients:
-          type: boolean
-          example: true
-        email_forward_practitioners:
-          type: boolean
-          example: true
-        email_forward_support:
-          type: boolean
-          example: true
-        email_verified_at:
-          type: string
-          format: date-time
-          nullable: true
-        emails_holistify_update:
-          type: boolean
-          example: true
-        emails_practitioner_offers:
-          type: boolean
-          example: true
-        first_name:
-          type: string
-          example: John
-        gender:
-          type: string
-          example: female
-        last_name:
-          type: string
-          example: Doe
-        is_published:
-          type: boolean
-          example: true
-        is_admin:
-          type: boolean
-          nullable: true
-          example: false
-        is_suspended:
-          type: boolean
-          example: true
-        mobile_number:
-          type: string
-          nullable: true
-        mobile_country_number_code:
-          type: string
-          nullable: true
-        plan_id:
-          type: integer
-          nullable: true
-        plan_until:
-          type: string
-          nullable: true
-          format: date-time
-        plan_from:
-          type: string
-          nullable: true
-          format: date-time
-        public_link:
-          type: string
-          nullable: true
-          example: example.com/users/johndoe
-        stripe_customer_id:
-          type: string
-          example: cus_HpyQPawZU9Nw16
-          nullable: true
-        stripe_account_id:
-          type: string
-          example: cus_HpyQPawZU9Nw16
-          nullable: true
-        business_timezone_id:
-          type: integer
-          nullable: true
-          example: 98
-        termination_message:
-          type: string
-          nullable: true
-          example: Termination reason
-        status:
-          type: string
-          example: registered,active,suspended,closed
-        created_at:
-          type: string
-          nullable: true
-          format: date-time
-        updated_at:
-          type: string
-          nullable: true
-          format: date-time
-    Mainpage:
-      type: object
-      properties:
-        id:
-          type: string
-        section_1_image_url:
-          nullable: true
-          type: string
-        section_1_alt_text:
-          nullable: true
-          type: string
-        section_1_intro_text:
-          nullable: true
-          type: string
-        section_2_background:
-          nullable: true
-          type: string
-        section_3_h1:
-          nullable: true
-          type: string
-        section_3_h2:
-          nullable: true
-          type: string
-        section_3_background:
-          nullable: true
-          type: string
-        section_3_button_text:
-          nullable: true
-          type: string
-        section_3_button_color:
-          nullable: true
-          type: string
-        section_3_button_url:
-          nullable: true
-          type: string
-        section_3_text:
-          nullable: true
-          type: string
-        section_3_target_blanc:
-          nullable: true
-          type: boolean
-        section_4_h2:
-          nullable: true
-          type: string
-        section_5_h2:
-          nullable: true
-          type: string
-        section_5_h3:
-          nullable: true
-          type: string
-        section_5_background:
-          nullable: true
-          type: string
-        section_5_text:
-          nullable: true
-          type: string
-        section_6_h1:
-          nullable: true
-          type: string
-        section_6_h3:
-          nullable: true
-          type: string
-        section_6_button_text:
-          nullable: true
-          type: string
-        section_6_button_color:
-          nullable: true
-          type: string
-        section_6_button_url:
-          nullable: true
-          type: string
-        section_6_target_blanc:
-          nullable: true
-          type: boolean
-        section_6_text:
-          nullable: true
-          type: string
-        section_6_media_url:
-          nullable: true
-          type: string
-        section_6_alt_text:
-          nullable: true
-          type: string
-        section_7_h2:
-          nullable: true
-          type: string
-        section_8_h1:
-          nullable: true
-          type: string
-        section_8_h3:
-          nullable: true
-          type: string
-        section_8_background:
-          nullable: true
-          type: string
-        section_8_text:
-          nullable: true
-          type: string
-        section_9_h2:
-          nullable: true
-          type: string
-        section_10_h2:
-          nullable: true
-          type: string
-        section_10_h3:
-          nullable: true
-          type: string
-        section_10_text:
-          nullable: true
-          type: string
-        section_10_media_url:
-          nullable: true
-          type: string
-        section_10_alt_text:
-          nullable: true
-          type: string
-        section_11_h2:
-          nullable: true
-          type: string
-        section_11_h3:
-          nullable: true
-          type: string
-        section_11_text:
-          nullable: true
-          type: string
-        section_11_button_text:
-          nullable: true
-          type: string
-        section_11_button_url:
-          nullable: true
-          type: string
-        section_11_button_color:
-          nullable: true
-          type: string
-        section_11_target_blanc:
-          nullable: true
-          type: boolean
-        section_11_media_url:
-          nullable: true
-          type: string
-        section_11_alt_text:
-          nullable: true
-          type: string
-        section_12_h2:
-          nullable: true
-          type: string
-        section_12_h3:
-          nullable: true
-          type: string
-        section_12_media_1_media_url:
-          nullable: true
-          type: string
-        section_12_media_1_url:
-          nullable: true
-          type: string
-        section_12_media_1_traget_blanc:
-          nullable: true
-          type: string
-        section_12_media_2_media_url:
-          nullable: true
-          type: string
-        section_12_media_2_url:
-          nullable: true
-          type: string
-        section_12_media_2_traget_blanc:
-          nullable: true
-          type: boolean
-        section_12_media_3_media_url:
-          nullable: true
-          type: string
-        section_12_media_3_url:
-          nullable: true
-          type: string
-        section_12_media_3_traget_blanc:
-          nullable: true
-          type: boolean
-        section_12_media_4_media_url:
-          nullable: true
-          type: string
-        section_12_media_4_url:
-          nullable: true
-          type: string
-        section_12_media_4_traget_blanc:
-          nullable: true
-          type: boolean
-        section_12_media_5_media_url:
-          nullable: true
-          type: string
-        section_12_media_5_url:
-          nullable: true
-          type: string
-        section_12_media_5_traget_blanc:
-          nullable: true
-          type: boolean
-        section_12_media_6_media_url:
-          nullable: true
-          type: string
-        section_12_media_6_url:
-          nullable: true
-          type: string
-        section_12_media_6_traget_blanc:
-          nullable: true
-          type: boolean
-        featured_focus_areas:
-          type: array
-          items:
-            $ref: "#/components/schemas/FocusArea"
-        featured_disciplines:
-          type: array
-          items:
-            $ref: "#/components/schemas/Discipline"
-        featured_practitioners:
-          type: array
-          items:
-            $ref: "#/components/schemas/User"
-        featured_services:
-          type: array
-          items:
-            $ref: "#/components/schemas/Service"
-    Country:
-      type: object
-      properties:
-        id:
-          type: integer
-        iso:
-          type: string
-        iso3:
-          type: string
-          nullable: true
-        name:
-          type: string
-        nicename:
-          type: string
-        numcode:
-          type: string
-          nullable: true
-        phonecode:
-          type: string
-        created_at:
-          type: string
-          nullable: true
-          format: date-time
-        updated_at:
-          type: string
-          nullable: true
-          format: date-time
-    Booking:
-      type: object
-      properties:
-        id:
-          type: integer
-        user_id:
-          type: integer
-        practitioner_id:
-          type: integer
-        schedule_id:
-          type: integer
-        availability_id:
-          type: integer
-          nullable: true
-        datetime_from:
-          type: string
-          format: date-time
-          nullable: true
-        datetime_to:
-          type: string
-          format: date-time
-          nullable: true
-        quantity:
-          type: integer
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
-        cost:
-          type: number
-          format: double
-        promocode_id:
-          type: integer
-        reference:
-          type: string
-        purchase_id:
-          type: integer
+schemas:
+  AccessToken:
+    type: object
+    properties:
+      abilities:
+        type: array
+        items:
+          type: string
+        example:
+          - "*"
+      name:
+        type: string
+        example: access-token
+      token:
+        type: string
+        example: 4|hKv4yyJYSZlBDuuZmOcy5AO2ZzPbRJCp6gfbRGvvponscCQzetB51kh1p1Hsis1R2FnKJ5z0gHN4mJll
+  Article:
+    type: object
+    properties:
+      id:
+        type: integer
+      title:
+        type: string
+        nullable: true
+      description:
+        type: string
+        nullable: true
+      user_id:
+        type: integer
+        nullable: true
+      is_published:
+        type: boolean
+        nullable: true
+      introduction:
+        type: string
+        nullable: true
+      url:
+        type: string
+        nullable: true
+      image_url:
+        type: string
+        nullable: true
+      created_at:
+        type: string
+        nullable: true
+        format: date-time
+      updated_at:
+        type: string
+        nullable: true
+        format: date-time
+      deleted_at:
+        type: string
+        nullable: true
+        format: date-time
+      published_at:
+        type: string
+        nullable: true
+        format: date-time
+  Discipline:
+    type: object
+    properties:
+      id:
+        type: integer
+        example: 123
+      name:
+        type: string
+        example: Yoga practice
+      introduction:
+        type: string
+        nullable: true
+        example: Yoga desc
+      description:
+        type: string
+        nullable: true
+        example: Yoga loooooong description
+      url:
+        type: string
+        nullable: true
+        example: yoga-practice
+      icon_url:
+        type: string
+        nullable: true
+        example: http://cdn.com/yoga-practice.png
+      banner_url:
+        type: string
+        nullable: true
+        example: http://cdn.com/yoga-practice.png
+      is_published:
+        type: boolean
+        nullable: true
+        example: true
+      created_at:
+        type: string
+        nullable: true
+        format: date-time
+      updated_at:
+        type: string
+        nullable: true
+        format: date-time
+      section_2_h2:
+        nullable: true
+        type: string
+      section_2_h3:
+        nullable: true
+        type: string
+      section_2_background:
+        nullable: true
+        type: string
+      section_2_textarea:
+        nullable: true
+        type: string
+      section_3_h2:
+        nullable: true
+        type: string
+      section_3_h4:
+        nullable: true
+        type: string
+      section_4_h2:
+        nullable: true
+        type: string
+      section_4_h3:
+        nullable: true
+        type: string
+      section_4_background:
+        nullable: true
+        type: string
+      section_4_textarea:
+        nullable: true
+        type: string
+      section_5_header_h2:
+        nullable: true
+        type: string
+      section_6_h2:
+        nullable: true
+        type: string
+      section_6_h3:
+        nullable: true
+        type: string
+      section_6_background:
+        nullable: true
+        type: string
+      section_6_textarea:
+        nullable: true
+        type: string
+      section_7_media_url:
+        nullable: true
+        type: string
+      section_7_tag_line:
+        nullable: true
+        type: string
+      section_7_alt_text:
+        nullable: true
+        type: string
+      section_7_url:
+        nullable: true
+        type: string
+      section_7_target_blanc:
+        nullable: true
+        type: boolean
+      section_8_h2:
+        nullable: true
+        type: string
+      section_9_h2:
+        nullable: true
+        type: string
+      section_9_h3:
+        nullable: true
+        type: string
+      section_9_background:
+        nullable: true
+        type: string
+      section_9_textarea:
+        nullable: true
+        type: string
+      section_10_h2:
+        nullable: true
+        type: string
+      section_11_media_url:
+        nullable: true
+        type: string
+      section_11_tag_line:
+        nullable: true
+        type: string
+      section_11_alt_text:
+        nullable: true
+        type: string
+      section_11_url:
+        nullable: true
+        type: string
+      section_11_target_blanc:
+        nullable: true
+        type: boolean
+      section_12_h2:
+        nullable: true
+        type: string
+      section_13_media_url:
+        nullable: true
+        type: string
+      section_13_tag_line:
+        nullable: true
+        type: string
+      section_13_alt_text:
+        nullable: true
+        type: string
+      section_13_url:
+        nullable: true
+        type: string
+      section_13_target_blanc:
+        nullable: true
+        type: boolean
+      media_images:
+        type: array
+        items:
+          type: object
+          properties:
+            url:
+              type: string
+              example: http://cdn.com/yoga-practice.png
+      media_videos:
+        type: array
+        items:
+          type: object
+          properties:
+            url:
+              type: string
+              example: http://cdn.com/yoga-practice.mp4
+            preview:
+              type: string
+              example: http://cdn.com/yoga-practice.jpg
+      media_files:
+        type: array
+        items:
+          type: object
+          properties:
+            url:
+              type: string
+              example: http://cdn.com/yoga-practice.pdf
+      featured_services:
+        type: array
+        items:
+          $ref: "#/schemas/Service"
+      featured_focus_areas:
+        type: array
+        items:
+          $ref: "#/schemas/FocusArea"
+      featured_articles:
+        type: array
+        items:
+          $ref: "#/schemas/Article"
+      featured_practitioners:
+        type: array
+        items:
+          $ref: "#/schemas/User"
+  FocusArea:
+    type: object
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      url:
+        type: string
+        nullable: true
+      introduction:
+        nullable: true
+        type: string
+      description:
+        nullable: true
+        type: string
+      section_2_h2:
+        nullable: true
+        type: string
+      section_2_h3:
+        nullable: true
+        type: string
+      section_2_background:
+        nullable: true
+        type: string
+      section_2_textarea:
+        nullable: true
+        type: string
+      section_3_h2:
+        nullable: true
+        type: string
+      section_4_tag_line:
+        nullable: true
+        type: string
+      section_4_alt_text:
+        nullable: true
+        type: string
+      section_4_url:
+        nullable: true
+        type: string
+      section_4_target_blanc:
+        nullable: true
+        type: boolean
+      section_5_h2:
+        nullable: true
+        type: string
+      section_5_h3:
+        nullable: true
+        type: string
+      section_5_background:
+        nullable: true
+        type: string
+      section_5_textarea:
+        nullable: true
+        type: string
+      section_6_header_h2:
+        nullable: true
+        type: string
+      section_7_h2:
+        nullable: true
+        type: string
+      section_7_h3:
+        nullable: true
+        type: string
+      section_7_background:
+        nullable: true
+        type: string
+      section_7_text:
+        nullable: true
+        type: string
+      section_8_h2:
+        nullable: true
+        type: string
+      section_9_tag_line:
+        nullable: true
+        type: string
+      section_9_alt_text:
+        nullable: true
+        type: string
+      section_9_url:
+        nullable: true
+        type: string
+      section_9_target_blanc:
+        nullable: true
+        type: boolean
+      section_10_h2:
+        nullable: true
+        type: string
+      section_10_h3:
+        nullable: true
+        type: string
+      section_10_background:
+        nullable: true
+        type: string
+      section_10_textarea:
+        nullable: true
+        type: string
+      section_11_h2:
+        nullable: true
+        type: string
+      section_12_h2:
+        nullable: true
+        type: string
+      section_12_h4:
+        nullable: true
+        type: string
+      section_13_tag_line:
+        nullable: true
+        type: string
+      section_13_alt_text:
+        nullable: true
+        type: string
+      section_13_url:
+        nullable: true
+        type: string
+      section_13_target_blanc:
+        nullable: true
+        type: boolean
+      media_images:
+        type: array
+        items:
+          $ref: "#/schemas/Discipline/properties/media_images/items"
+      media_videos:
+        type: array
+        items:
+          $ref: "#/schemas/Discipline/properties/media_videos/items"
+      media_files:
+        type: array
+        items:
+          $ref: "#/schemas/Discipline/properties/media_files/items"
+      featured_services:
+        type: array
+        items:
+          $ref: "#/schemas/Service"
+      featured_disciplines:
+        type: array
+        items:
+          $ref: "#/schemas/Discipline"
+      featured_articles:
+        type: array
+        items:
+          $ref: "#/schemas/Article"
+      featured_practitioners:
+        type: array
+        items:
+          $ref: "#/schemas/User"
+  Keyword:
+    type: object
+    properties:
+      id:
+        type: integer
+      title:
+        type: string
+  Location:
+    type: object
+    properties:
+      id:
+        type: integer
+      title:
+        type: string
+  Plan:
+    type: object
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+        nullable: true
+      stripe_id:
+        type: integer
+        nullable: true
+      price:
+        type: number
+        format: double
+        nullable: true
+      service_types:
+        type: string
+      image_url:
+        type: string
+        nullable: true
+      description:
+        type: string
+        nullable: true
+      is_free:
+        type: boolean
+        nullable: true
+      unlimited_bookings:
+        type: boolean
+        nullable: true
+      amount_bookings:
+        type: integer
+        nullable: true
+      commission_on_sale:
+        type: number
+        format: double
+        nullable: true
+      schedules_per_service:
+        type: integer
+        nullable: true
+      schedules_per_service_unlimited:
+        type: boolean
+      pricing_options_per_service:
+        type: integer
+        nullable: true
+      pricing_options_per_service_unlimited:
+        type: boolean
+      list_paid_services:
+        type: boolean
+        nullable: true
+      list_free_services:
+        type: boolean
+        nullable: true
+      take_deposits_and_instalment:
+        type: boolean
+        nullable: true
+      contact_clients_with_booking:
+        type: boolean
+        nullable: true
+      market_to_clients:
+        type: string
+      client_reviews:
+        type: string
+      article_publishing:
+        type: integer
+        nullable: true
+      article_publishing_unlimited:
+        type: boolean
+        nullable: true
+      prioritised_business_profile_search:
+        type: boolean
+        nullable: true
+      prioritised_service_search:
+        type: boolean
+        nullable: true
+      busines_profile_page:
+        type: boolean
+        nullable: true
+      unique_web_address:
+        type: boolean
+        nullable: true
+      onboarding_support:
+        type: boolean
+        nullable: true
+      client_analytics:
+        type: boolean
+        nullable: true
+      service_analytics:
+        type: boolean
+        nullable: true
+      financial_analytics:
+        type: boolean
+        nullable: true
+      discount_codes:
+        type: boolean
+      trial_month:
+        type: integer
+        nullable: true
+      order:
+        type: integer
+      created_at:
+        type: string
+        nullable: true
+        format: date-time
+      updated_at:
+        type: string
+        nullable: true
+        format: date-time
+  Promotion:
+    type: object
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      valid_from:
+        type: string
+        format: date-time
+        nullable: true
+      expiry_date:
+        type: string
+        format: date-time
+        nullable: true
+      spend_min:
+        type: number
+        format: double
+        nullable: true
+      spend_max:
+        type: number
+        format: double
+        nullable: true
+      discount_type:
+        type: string
+      discount_value:
+        type: number
+        format: integer
+      applied_to:
+        type: string
+        nullable: true
+      status:
+        type: string
+        nullable: false
+      created_at:
+        type: string
+        nullable: true
+        format: date-time
+      updated_at:
+        type: string
+        nullable: true
+        format: date-time
+      deleted_at:
+        type: string
+        nullable: true
+        format: date-time
+  PromotionCode:
+    type: object
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      uses_per_client:
+        type: integer
+        nullable: true
+      uses_per_code:
+        type: integer
+        nullable: true
+      created_at:
+        type: string
+        nullable: true
+        format: date-time
+      updated_at:
+        type: string
+        nullable: true
+        format: date-time
+      deleted_at:
+        type: string
+        nullable: true
+        format: date-time
+      status:
+        type: string
+        nullable: false
+  Schedule:
+    type: object
+    properties:
+      id:
+        type: integer
+      title:
+        type: string
+      service_id:
+        type: integer
+        nullable: true
+      location_id:
+        type: integer
+        nullable: true
+      start_date:
+        type: string
+        format: date-time
+        nullable: true
+      end_date:
+        type: string
+        format: date-time
+        nullable: true
+      attendees:
+        type: integer
+        nullable: true
+      comments:
+        type: string
+        nullable: true
+      venue:
+        type: string
+        nullable: true
+      city:
+        type: string
+        nullable: true
+      country:
+        type: string
+        nullable: true
+      post_code:
+        type: string
+        nullable: true
+      location_displayed:
+        type: string
+        nullable: true
+      created_at:
+        type: string
+        nullable: true
+        format: date-time
+      updated_at:
+        type: string
+        nullable: true
+        format: date-time
+      meals_breakfast:
+        type: boolean
+      meals_lunch:
+        type: boolean
+      meals_dinner:
+        type: boolean
+      meals_alcoholic_beverages:
+        type: boolean
+      meals_dietry_accomodated:
+        type: boolean
+      refund_terms:
+        type: integer
+        nullable: true
+      booking_message:
+        type: string
+        nullable: true
+      is_virtual:
+        type: boolean
+        nullable: true
+      url:
+        type: string
+        nullable: true
+      book_full_series:
+        type: boolean
+        nullable: true
+      accomodation:
+        type: string
+        example:
+          - included
+          - optional
+          - no
+        nullable: true
+      accomodation_details:
+        type: string
+        nullable: true
+      travel:
+        type: string
+        example:
+          - included
+          - optional
+          - no
+        nullable: true
+      travel_details:
+        type: string
+        nullable: true
+      notice_min_time:
+        type: integer
+        nullable: true
+      notice_min_period:
+        type: string
+        example:
+          - mins
+          - hours
+          - days
+        nullable: true
+      buffer_time:
+        type: integer
+        nullable: true
+      buffer_period:
+        type: string
+        example:
+          - daily
+          - weekly
+          - monthly
+        nullable: true
+      repeat_every:
+        type: integer
+        nullable: true
+      repeat_period:
+        type: string
+        example:
+          - day
+          - week
+          - month
+        nullable: true
+  ScheduleFreeze:
+    type: object
+    properties:
+      id:
+        type: integer
+      schedule_id:
+        type: integer
+      user_id:
+        type: integer
+      freeze_at:
+        type: string
+        format: date-time
+      created_at:
+        type: string
+        format: date-time
+        nullable: true
+      updated_at:
+        type: string
+        format: date-time
+        nullable: true
+  Service:
+    type: object
+    properties:
+      id:
+        type: integer
+      title:
+        type: string
+        nullable: true
+      description:
+        type: string
+        nullable: true
+      user_id:
+        type: integer
+      is_published:
+        type: boolean
+        nullable: true
+      introduction:
+        type: string
+        nullable: true
+      url:
+        type: string
+        nullable: true
+      service_type_id:
+        type: string
+        nullable: true
+      image_url:
+        type: string
+        nullable: true
+      icon_url:
+        type: string
+        nullable: true
+      created_at:
+        type: string
+        nullable: true
+        format: date-time
+      updated_at:
+        type: string
+        nullable: true
+        format: date-time
+      deleted_at:
+        type: string
+        nullable: true
+        format: date-time
+  ServiceType:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      created_at:
+        type: string
+        nullable: true
+        format: date-time
+      updated_at:
+        type: string
+        nullable: true
+        format: date-time
+  User:
+    type: object
+    properties:
+      id:
+        type: integer
+        example: 6
+      about_me:
+        type: string
+        nullable: true
+      about_my_business:
+        type: string
+        nullable: true
+      account_type:
+        type: string
+        example: practitioner
+      avatar_url:
+        type: string
+        example: example.com/avatar.png
+      background_url:
+        type: string
+        example: example.com/background.png
+      business_address:
+        type: string
+        nullable: true
+      business_company_houses_id:
+        type: string
+        nullable: true
+      business_country:
+        type: string
+        nullable: true
+      business_city:
+        type: string
+        nullable: true
+      business_email:
+        type: string
+        nullable: true
+      business_introduction:
+        type: string
+        nullable: true
+      business_name:
+        type: string
+        nullable: true
+      business_phone_number:
+        type: string
+        nullable: true
+      business_postal_code:
+        type: string
+        nullable: true
+      business_time_zone:
+        type: string
+        nullable: true
+      business_vat:
+        type: string
+        nullable: true
+      date_of_birth:
+        type: string
+        nullable: true
+      email:
+        type: string
+        example: mmorissette@example.net
+      email_forward_clients:
+        type: boolean
+        example: true
+      email_forward_practitioners:
+        type: boolean
+        example: true
+      email_forward_support:
+        type: boolean
+        example: true
+      email_verified_at:
+        type: string
+        format: date-time
+        nullable: true
+      emails_holistify_update:
+        type: boolean
+        example: true
+      emails_practitioner_offers:
+        type: boolean
+        example: true
+      first_name:
+        type: string
+        example: John
+      gender:
+        type: string
+        example: female
+      last_name:
+        type: string
+        example: Doe
+      is_published:
+        type: boolean
+        example: true
+      is_admin:
+        type: boolean
+        nullable: true
+        example: false
+      is_suspended:
+        type: boolean
+        example: true
+      mobile_number:
+        type: string
+        nullable: true
+      mobile_country_number_code:
+        type: string
+        nullable: true
+      plan_id:
+        type: integer
+        nullable: true
+      plan_until:
+        type: string
+        nullable: true
+        format: date-time
+      plan_from:
+        type: string
+        nullable: true
+        format: date-time
+      public_link:
+        type: string
+        nullable: true
+        example: example.com/users/johndoe
+      stripe_customer_id:
+        type: string
+        example: cus_HpyQPawZU9Nw16
+        nullable: true
+      stripe_account_id:
+        type: string
+        example: cus_HpyQPawZU9Nw16
+        nullable: true
+      business_timezone_id:
+        type: integer
+        nullable: true
+        example: 98
+      termination_message:
+        type: string
+        nullable: true
+        example: Termination reason
+      status:
+        type: string
+        example: registered,active,suspended,closed
+      created_at:
+        type: string
+        nullable: true
+        format: date-time
+      updated_at:
+        type: string
+        nullable: true
+        format: date-time
+  Mainpage:
+    type: object
+    properties:
+      id:
+        type: string
+      section_1_image_url:
+        nullable: true
+        type: string
+      section_1_alt_text:
+        nullable: true
+        type: string
+      section_1_intro_text:
+        nullable: true
+        type: string
+      section_2_background:
+        nullable: true
+        type: string
+      section_3_h1:
+        nullable: true
+        type: string
+      section_3_h2:
+        nullable: true
+        type: string
+      section_3_background:
+        nullable: true
+        type: string
+      section_3_button_text:
+        nullable: true
+        type: string
+      section_3_button_color:
+        nullable: true
+        type: string
+      section_3_button_url:
+        nullable: true
+        type: string
+      section_3_text:
+        nullable: true
+        type: string
+      section_3_target_blanc:
+        nullable: true
+        type: boolean
+      section_4_h2:
+        nullable: true
+        type: string
+      section_5_h2:
+        nullable: true
+        type: string
+      section_5_h3:
+        nullable: true
+        type: string
+      section_5_background:
+        nullable: true
+        type: string
+      section_5_text:
+        nullable: true
+        type: string
+      section_6_h1:
+        nullable: true
+        type: string
+      section_6_h3:
+        nullable: true
+        type: string
+      section_6_button_text:
+        nullable: true
+        type: string
+      section_6_button_color:
+        nullable: true
+        type: string
+      section_6_button_url:
+        nullable: true
+        type: string
+      section_6_target_blanc:
+        nullable: true
+        type: boolean
+      section_6_text:
+        nullable: true
+        type: string
+      section_6_media_url:
+        nullable: true
+        type: string
+      section_6_alt_text:
+        nullable: true
+        type: string
+      section_7_h2:
+        nullable: true
+        type: string
+      section_8_h1:
+        nullable: true
+        type: string
+      section_8_h3:
+        nullable: true
+        type: string
+      section_8_background:
+        nullable: true
+        type: string
+      section_8_text:
+        nullable: true
+        type: string
+      section_9_h2:
+        nullable: true
+        type: string
+      section_10_h2:
+        nullable: true
+        type: string
+      section_10_h3:
+        nullable: true
+        type: string
+      section_10_text:
+        nullable: true
+        type: string
+      section_10_media_url:
+        nullable: true
+        type: string
+      section_10_alt_text:
+        nullable: true
+        type: string
+      section_11_h2:
+        nullable: true
+        type: string
+      section_11_h3:
+        nullable: true
+        type: string
+      section_11_text:
+        nullable: true
+        type: string
+      section_11_button_text:
+        nullable: true
+        type: string
+      section_11_button_url:
+        nullable: true
+        type: string
+      section_11_button_color:
+        nullable: true
+        type: string
+      section_11_target_blanc:
+        nullable: true
+        type: boolean
+      section_11_media_url:
+        nullable: true
+        type: string
+      section_11_alt_text:
+        nullable: true
+        type: string
+      section_12_h2:
+        nullable: true
+        type: string
+      section_12_h3:
+        nullable: true
+        type: string
+      section_12_media_1_media_url:
+        nullable: true
+        type: string
+      section_12_media_1_url:
+        nullable: true
+        type: string
+      section_12_media_1_traget_blanc:
+        nullable: true
+        type: string
+      section_12_media_2_media_url:
+        nullable: true
+        type: string
+      section_12_media_2_url:
+        nullable: true
+        type: string
+      section_12_media_2_traget_blanc:
+        nullable: true
+        type: boolean
+      section_12_media_3_media_url:
+        nullable: true
+        type: string
+      section_12_media_3_url:
+        nullable: true
+        type: string
+      section_12_media_3_traget_blanc:
+        nullable: true
+        type: boolean
+      section_12_media_4_media_url:
+        nullable: true
+        type: string
+      section_12_media_4_url:
+        nullable: true
+        type: string
+      section_12_media_4_traget_blanc:
+        nullable: true
+        type: boolean
+      section_12_media_5_media_url:
+        nullable: true
+        type: string
+      section_12_media_5_url:
+        nullable: true
+        type: string
+      section_12_media_5_traget_blanc:
+        nullable: true
+        type: boolean
+      section_12_media_6_media_url:
+        nullable: true
+        type: string
+      section_12_media_6_url:
+        nullable: true
+        type: string
+      section_12_media_6_traget_blanc:
+        nullable: true
+        type: boolean
+      featured_focus_areas:
+        type: array
+        items:
+          $ref: "#/schemas/FocusArea"
+      featured_disciplines:
+        type: array
+        items:
+          $ref: "#/schemas/Discipline"
+      featured_practitioners:
+        type: array
+        items:
+          $ref: "#/schemas/User"
+      featured_services:
+        type: array
+        items:
+          $ref: "#/schemas/Service"
+  Country:
+    type: object
+    properties:
+      id:
+        type: integer
+      iso:
+        type: string
+      iso3:
+        type: string
+        nullable: true
+      name:
+        type: string
+      nicename:
+        type: string
+      numcode:
+        type: string
+        nullable: true
+      phonecode:
+        type: string
+      created_at:
+        type: string
+        nullable: true
+        format: date-time
+      updated_at:
+        type: string
+        nullable: true
+        format: date-time
+  Booking:
+    type: object
+    properties:
+      id:
+        type: integer
+      user_id:
+        type: integer
+      practitioner_id:
+        type: integer
+      schedule_id:
+        type: integer
+      availability_id:
+        type: integer
+        nullable: true
+      datetime_from:
+        type: string
+        format: date-time
+        nullable: true
+      datetime_to:
+        type: string
+        format: date-time
+        nullable: true
+      quantity:
+        type: integer
+      created_at:
+        type: string
+        format: date-time
+      updated_at:
+        type: string
+        format: date-time
+      cost:
+        type: number
+        format: double
+      promocode_id:
+        type: integer
+      reference:
+        type: string
+      purchase_id:
+        type: integer
 paths:
   /api/auth/register:
     post:
@@ -1361,7 +1361,7 @@ paths:
                     type: integer
                     example: 98
                   access_token:
-                    $ref: "#/components/schemas/AccessToken"
+                    $ref: "#/schemas/AccessToken"
         "422":
           description: Validation errors
           content:
@@ -1468,7 +1468,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/User"
+                $ref: "#/schemas/User"
   /api/auth/login:
     post:
       operationId: login
@@ -1509,7 +1509,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/User"
+                $ref: "#/schemas/User"
         "422":
           description: Validation errors
           content:
@@ -1704,7 +1704,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Article"
+                $ref: "#/schemas/Article"
         "422":
           description: Validation errors
           content:
@@ -1781,7 +1781,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Article"
+                  $ref: "#/schemas/Article"
   /articles/practitioner: {}
   "/articles/{id}":
     get:
@@ -1814,7 +1814,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Article"
+                $ref: "#/schemas/Article"
     put:
       tags:
         - Article
@@ -1832,7 +1832,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Article"
+                $ref: "#/schemas/Article"
         "422":
           description: Validation errors
           content:
@@ -1850,7 +1850,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Article"
+                $ref: "#/schemas/Article"
   "/articles/practitioner/{id}": {}
   /focus-areas:
     get:
@@ -1907,7 +1907,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/FocusArea"
+                  $ref: "#/schemas/FocusArea"
   "/focus-areas/{id}":
     get:
       tags:
@@ -1925,7 +1925,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/FocusArea"
+                $ref: "#/schemas/FocusArea"
   /disciplines:
     get:
       tags:
@@ -1967,7 +1967,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Discipline"
+                  $ref: "#/schemas/Discipline"
   "/diciplines/{id}":
     get:
       tags:
@@ -1985,7 +1985,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Discipline"
+                $ref: "#/schemas/Discipline"
   /services:
     post:
       tags:
@@ -2086,7 +2086,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Service"
+                $ref: "#/schemas/Service"
         "422":
           description: Validation errors
           content:
@@ -2172,7 +2172,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Service"
+                  $ref: "#/schemas/Service"
   "/services/{id}":
     get:
       tags:
@@ -2204,7 +2204,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Service"
+                $ref: "#/schemas/Service"
     put:
       tags:
         - Service
@@ -2222,7 +2222,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Service"
+                $ref: "#/schemas/Service"
         "422":
           description: Validation errors
           content:
@@ -2267,7 +2267,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/ServiceType"
+                  $ref: "#/schemas/ServiceType"
   /schedule-freezes:
     get:
       tags:
@@ -2337,7 +2337,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/ScheduleFreeze"
+                  $ref: "#/schemas/ScheduleFreeze"
   /practitoners: {}
   /plans:
     get:
@@ -2352,7 +2352,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Plan"
+                  $ref: "#/schemas/Plan"
   "/plans/{id}/purchase":
     post:
       operationId: purchase-plan
@@ -2371,7 +2371,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Plan"
+                $ref: "#/schemas/Plan"
   /users:
     get:
       tags:
@@ -2455,7 +2455,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/User"
+                  $ref: "#/schemas/User"
   /mainpage:
     get:
       tags:
@@ -2483,7 +2483,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Mainpage"
+                  $ref: "#/schemas/Mainpage"
   /stripe/link:
     get:
       operationId: get-stripe-link
@@ -2599,7 +2599,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Country"
+                  $ref: "#/schemas/Country"
   /bookings:
     get:
       tags:
@@ -2612,7 +2612,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Booking"
+                  $ref: "#/schemas/Booking"
   "/bookings/{id}/reschedule":
     post:
       tags:
@@ -2632,7 +2632,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Booking"
+                  $ref: "#/schemas/Booking"
         "422":
           description: Validation errors
           content:
@@ -2658,7 +2658,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Booking"
+                $ref: "#/schemas/Booking"
   /keywords:
     get:
       tags:
@@ -2671,7 +2671,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Keyword"
+                  $ref: "#/schemas/Keyword"
   /keywords/list:
     get:
       tags:
@@ -2684,7 +2684,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Keyword"
+                  $ref: "#/schemas/Keyword"
   /keywords/filter:
     get:
       tags:
@@ -2733,7 +2733,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Keyword"
+                  $ref: "#/schemas/Keyword"
   /locations:
     get:
       tags:
@@ -2782,7 +2782,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Location"
+                  $ref: "#/schemas/Location"
   /locations/list:
     get:
       tags:
@@ -2855,7 +2855,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Schedule"
+                  $ref: "#/schemas/Schedule"
     get:
       tags:
         - Schedules
@@ -2869,7 +2869,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Schedule"
+                  $ref: "#/schemas/Schedule"
   "/schedules/{id}":
     put:
       tags:
@@ -3014,7 +3014,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Schedule"
+                  $ref: "#/schemas/Schedule"
   "/schedules/{id}/purchase":
     post:
       tags:
@@ -3034,7 +3034,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Schedule"
+                  $ref: "#/schemas/Schedule"
   "/schedules/{id}/attendants":
     get:
       tags:
@@ -3054,7 +3054,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/User"
+                  $ref: "#/schemas/User"
   "/schedules/{id}/freeze":
     post:
       tags:
@@ -3074,7 +3074,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Schedule"
+                  $ref: "#/schemas/Schedule"
   "/schedules/{id}/availabilities":
     get:
       tags:
@@ -3218,7 +3218,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/User"
+                $ref: "#/schemas/User"
     put:
       operationId: update-profile
       summary: Update profile for currently logged in admin
@@ -3252,7 +3252,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/User"
+                $ref: "#/schemas/User"
   /admin/articles:
     get:
       tags:
@@ -3350,7 +3350,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Article"
+                  $ref: "#/schemas/Article"
   "/admin/articles/{id}":
     delete:
       tags:
@@ -3582,7 +3582,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/FocusArea"
+                $ref: "#/schemas/FocusArea"
     get:
       tags:
         - Focus Area
@@ -3637,7 +3637,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/FocusArea"
+                  $ref: "#/schemas/FocusArea"
   "/admin/focus-areas/{id}":
     put:
       tags:
@@ -3662,7 +3662,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/FocusArea"
+                $ref: "#/schemas/FocusArea"
     get:
       tags:
         - Focus Area
@@ -3674,7 +3674,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/FocusArea"
+                $ref: "#/schemas/FocusArea"
     delete:
       tags:
         - Focus Area
@@ -3944,7 +3944,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Discipline"
+                $ref: "#/schemas/Discipline"
     get:
       tags:
         - Discipline
@@ -4006,7 +4006,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Discipline"
+                  $ref: "#/schemas/Discipline"
   "/admin/disciplines/{id}":
     put:
       tags:
@@ -4031,7 +4031,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Discipline"
+                $ref: "#/schemas/Discipline"
     get:
       tags:
         - Discipline
@@ -4043,7 +4043,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Discipline"
+                $ref: "#/schemas/Discipline"
     delete:
       tags:
         - Discipline
@@ -4128,7 +4128,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Mainpage"
+                  $ref: "#/schemas/Mainpage"
     put:
       tags:
         - Main Page
@@ -4377,7 +4377,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Mainpage"
+                  $ref: "#/schemas/Mainpage"
   /admin/clients:
     get:
       tags:
@@ -4465,7 +4465,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/User"
+                  $ref: "#/schemas/User"
   "/admin/clients/{id}/delete":
     post:
       parameters:
@@ -4596,7 +4596,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/User"
+                  $ref: "#/schemas/User"
   "/admin/practitioners/{id}/delete":
     post:
       parameters:
@@ -4759,7 +4759,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Promotion"
+                  $ref: "#/schemas/Promotion"
     post:
       tags:
         - Promotion
@@ -4866,7 +4866,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Promotion"
+                $ref: "#/schemas/Promotion"
         "422":
           description: Validation errors
           content:
@@ -4910,7 +4910,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Promotion"
+                $ref: "#/schemas/Promotion"
     delete:
       tags:
         - Promotion
@@ -4937,7 +4937,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Promotion"
+                $ref: "#/schemas/Promotion"
         "422":
           description: Validation errors
           content:
@@ -4962,7 +4962,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Promotion"
+                $ref: "#/schemas/Promotion"
         "422":
           description: Validation failed
           content:
@@ -4995,7 +4995,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Promotion"
+                $ref: "#/schemas/Promotion"
   /admin/promotion-codes:
     get:
       tags:
@@ -5072,7 +5072,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/PromotionCode"
+                  $ref: "#/schemas/PromotionCode"
   /admin/promotion-codes/export:
     get:
       tags:
@@ -5145,7 +5145,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PromotionCode"
+                $ref: "#/schemas/PromotionCode"
   "/admin/promotion-codes/{id}/disable":
     post:
       tags:
@@ -5163,7 +5163,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PromotionCode"
+                $ref: "#/schemas/PromotionCode"
   /admin/plans:
     post:
       operationId: admin-create-plan
@@ -5254,7 +5254,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Plan"
+                $ref: "#/schemas/Plan"
     get:
       operationId: admin-get-plans
       tags:
@@ -5267,7 +5267,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Plan"
+                  $ref: "#/schemas/Plan"
   "/admin/plans/{id}/":
     put:
       operationId: admin-edit-plans
@@ -5292,7 +5292,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Plan"
+                $ref: "#/schemas/Plan"
     get:
       operationId: admin-show-plans
       tags:
@@ -5305,7 +5305,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Plan"
+                $ref: "#/schemas/Plan"
     delete:
       operationId: admin-delete-plans
       tags:
@@ -5315,3 +5315,164 @@ paths:
       responses:
         "204":
           description: OK
+  /admin/transactional-emails:
+    post:
+      operationId: admin-create-email
+      tags:
+        - Email
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                user_type:
+                  type: string
+                from_email:
+                  type: string
+                from_title:
+                  type: string
+                subject:
+                  type: string
+                logo:
+                  type: string
+                  format: binary
+                text:
+                  type: string
+                delay:
+                  type: integer
+                  example: 5
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  user_type:
+                    type: string
+                  from_email:
+                    type: string
+                  from_title:
+                    type: string
+                  subject:
+                    type: string
+                  logo:
+                    type: string
+                    format: binary
+                  text:
+                    type: string
+                  delay:
+                    type: integer
+                  created_at:
+                    type: string
+                    nullable: true
+                    format: date-time
+                  updated_at:
+                    type: string
+                    nullable: true
+                    format: date-time
+    get:
+      tags:
+        - Email
+      parameters:
+        - name: page
+          in: query
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: limit
+          in: query
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: x-page
+          in: header
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: x-limit
+          in: header
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/paths/~1admin~1transactional-emails/post/responses/200/content/applica\
+                    tion~1json/schema"
+  "/admin/transactional-emails/{id}":
+    put:
+      parameters:
+        - name: id
+          in: path
+          description: Email ID
+          required: true
+          schema:
+            type: integer
+      tags:
+        - Email
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/paths/~1admin~1transactional-emails/post/requestBody/content/applicati\
+                on~1json/schema"
+      responses:
+        "204":
+          description: OK
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: The given data was invalid.
+    delete:
+      parameters:
+        - $ref: "#/paths/~1admin~1transactional-emails~1%7Bid%7D/put/parameters/0"
+      tags:
+        - Email
+      responses:
+        "204":
+          description: OK
+    get:
+      tags:
+        - Email
+      parameters:
+        - $ref: "#/paths/~1admin~1transactional-emails~1%7Bid%7D/put/parameters/0"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/paths/~1admin~1transactional-emails/post/responses/200/content/applica\
+                    tion~1json/schema"

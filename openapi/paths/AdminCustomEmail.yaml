@@ -1,0 +1,111 @@
+transactional-emails:
+  post:
+    operationId: admin-create-email
+    tags:
+      - Email
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/forms/admin/Email.yaml'
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/Email.yaml'
+  get:
+    tags:
+      - Email
+    parameters:
+      - name: page
+        in: query
+        description: Pagination page results
+        required: false
+        schema:
+          type: integer
+          example: 2
+      - name: limit
+        in: query
+        description: Results per page
+        required: false
+        schema:
+          type: integer
+          example: 10
+      - name: x-page
+        in: header
+        description: Pagination page results
+        required: false
+        schema:
+          type: integer
+          example: 2
+      - name: x-limit
+        in: header
+        description: Results per page
+        required: false
+        schema:
+          type: integer
+          example: 10
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../schemas/Email.yaml'
+
+transactional-emails/{id}:
+  put:
+    parameters:
+      - $ref: "#/parameters/id"
+    tags:
+      - Email
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/forms/admin/Email.yaml'
+    responses:
+      '204':
+        description: OK
+      '422':
+        description: Validation error
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/422/Email.yaml'
+  delete:
+    parameters:
+      - $ref: "#/parameters/id"
+    tags:
+      - Email
+    responses:
+      '204':
+        description: OK
+  get:
+    tags:
+      - Email
+    parameters:
+      - $ref: "#/parameters/id"
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../schemas/Email.yaml'
+parameters:
+  id:
+    name: id
+    in: path
+    description: Email ID
+    required: true
+    schema:
+      type: integer

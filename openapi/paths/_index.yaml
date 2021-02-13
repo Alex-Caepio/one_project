@@ -193,3 +193,8 @@
   $ref: "./AdminPlan.yaml#/plans"
 /admin/plans/{id}/:
   $ref: "./AdminPlan.yaml#/plans~1{id}"
+# Emails
+/admin/transactional-emails:
+  $ref: "./AdminCustomEmail.yaml#/transactional-emails"
+/admin/transactional-emails/{id}:
+  $ref: "./AdminCustomEmail.yaml#/transactional-emails~1{id}"
