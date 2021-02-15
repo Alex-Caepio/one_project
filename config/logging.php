@@ -165,6 +165,16 @@ return [
             'driver' => 'daily',
             'path' => storage_path('logs/stripe_transfer_fail.log'),
         ],
+
+        'stripe_refund_success' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/stripe_refund_success.log'),
+        ],
+
+        'stripe_refund_fail' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/stripe_refund_fail.log'),
+        ],
     ],
 
 ];
