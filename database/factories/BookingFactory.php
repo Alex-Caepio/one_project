@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\Booking;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 class BookingFactory extends Factory {
 
@@ -22,7 +23,7 @@ class BookingFactory extends Factory {
             'datetime_to'     => Carbon::tomorrow()->addHour()->format('Y-m-d H:i:s'),
             'cost'            => 100,
             'quantity'        => $this->faker->randomNumber(),
-            'reference'       => $this->faker->text(6),
+            'reference'       => Str::random(6),
             'created_at'      => $this->faker->date("Y-m-d H:i:s"),
             'updated_at'      => $this->faker->date("Y-m-d H:i:s"),
         ];

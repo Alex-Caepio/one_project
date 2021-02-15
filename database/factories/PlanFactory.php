@@ -14,7 +14,7 @@ class PlanFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->sentence(),
+            'name' => $this->faker->sentence(2),
         ];
     }
 }
