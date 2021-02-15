@@ -97,7 +97,7 @@ class HandlePricesUpdate
             $this->stripe->prices->update($pricesToUpdate[$price['id']]->stripe_id,['active' => false]);
             $stripePrice        = $this->stripe->prices->create([
                 'unit_amount' => $price['cost'] ?? 0,
-                'currency'    => 'gbp',
+                'currency'    => 'usd',
                 'product'     => $this->service->stripe_id,
             ]);
 
@@ -113,7 +113,7 @@ class HandlePricesUpdate
         $pricesToCreate = $prices->map(function ($price) {
             $stripePrice        = $this->stripe->prices->create([
                 'unit_amount' => $price['cost'] ?? 0,
-                'currency'    => 'gbp',
+                'currency'    => 'usd',
                 'product'     => $this->service->stripe_id,
             ]);
             $price['stripe_id'] = $stripePrice->id;
