@@ -124,7 +124,7 @@ properties:
       type: string
       example: 'cus_HpyQPawZU9Nw16'
       nullable: true
-  business_timezone_id:
+  business_time_zone_id:
     type: integer
     nullable: true
     example: 98

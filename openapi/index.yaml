@@ -1357,7 +1357,7 @@ paths:
                   stripe_id:
                     type: string
                     example: cus_HpyQPawZU9Nw16
-                  business_timezone_id:
+                  business_time_zone_id:
                     type: integer
                     example: 98
                   access_token:
@@ -1459,7 +1459,7 @@ paths:
                 last_name:
                   type: string
                   example: Doe
-                business_timezone_id:
+                business_time_zone_id:
                   type: integer
                   example: 98
       responses:
