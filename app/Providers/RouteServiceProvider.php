@@ -60,7 +60,7 @@ class RouteServiceProvider extends ServiceProvider {
 
         Route::bind('booking', function($value) {
             return Booking::where('id', $value)
-                          ->orWhere('reference', $value)
+                          ->orWhere('reference', $value)->whereNull('cancelled_at')
                           ->firstOrFail();
         });
 

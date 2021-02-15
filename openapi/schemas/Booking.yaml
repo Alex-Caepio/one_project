@@ -36,3 +36,6 @@ properties:
     type: string
   purchase_id:
     type: integer
+  cancelled_at:
+    type: string
+    format: date-time

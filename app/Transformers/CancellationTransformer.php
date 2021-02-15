@@ -17,7 +17,7 @@ class CancellationTransformer extends TransformerAbstract {
         'user',
         'practitioner',
         'booking',
-        'purchases'
+        'purchase'
     ];
 
     /**

@@ -70,6 +70,10 @@ class Purchase extends Model {
         return $this->hasMany(Cancellation::class);
     }
 
+    public function bookings(): HasMany {
+        return $this->hasMany(Booking::class);
+    }
+
     public function scopeFilter(Builder $builder, QueryFilter $filters): Builder {
         return $filters->apply($builder);
     }

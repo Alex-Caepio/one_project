@@ -46,7 +46,6 @@ class SavePromotionRequest extends Request {
 
     public function withValidator(Validator $validator) {
         $validator->after(function($validator) {
-            
             $spendMax = $this->get('spend_max', 0);
             $spendMin = $this->get('spend_min', 0);
             if ($spendMax > 0 && $spendMin > $spendMax) {

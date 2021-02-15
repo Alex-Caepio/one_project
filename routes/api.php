@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\CancellationController;
 use App\Http\Controllers\MainPageController;
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\PriceController;
@@ -94,6 +95,7 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
         Route::post('services/{service}/publish', [ServiceController::class, 'publish']);
         Route::post('services/{service}/unpublish', [ServiceController::class, 'unpublish']);
         Route::delete('services/{service}', [ServiceController::class, 'destroy']);
+
     });
 
     Route::post('/articles/{article}/favourite', [ArticleController::class, 'storeFavorite']);
@@ -175,6 +177,9 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::post('/payment-methods/default-fee', [PaymentMethodController::class, 'defaultFee']);
     Route::put('/payment-methods', [PaymentMethodController::class, 'update']);
     Route::delete('/payment-methods', [PaymentMethodController::class, 'detach']);
+    /* Cancellation */
+    Route::get('/cancellations', [CancellationController::class, 'index']);
+    Route::post('/cancellations/{booking}', [CancellationController::class, 'cancelBooking']);
 
     Route::post('/images', [ImageController::class, 'upload']);
 });

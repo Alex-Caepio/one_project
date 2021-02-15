@@ -13,6 +13,7 @@ return [
     */
     'platform_name' => env('PLATFORM_NAME', 'Oneness'),
     'platform_email' => env('PLATFORM_EMAIL', 'hello@holistify.me'),
+    'platform_cancenllation_fee' => env('PLATFORM_CANCELLATION_FEE', 0),
 
 
     /*
