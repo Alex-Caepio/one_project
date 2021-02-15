@@ -464,7 +464,7 @@ class ScheduleTest extends TestCase
         $client = app()->make(StripeClient::class);
         return $client->prices->create([
             'unit_amount' => '1000',
-            'currency'    => 'usd',
+            'currency'    => 'gbp',
             'product'     => $product,
         ]);
     }

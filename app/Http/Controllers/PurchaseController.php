@@ -106,7 +106,7 @@ class PurchaseController extends Controller
             $payment_method_id = run_action(GetViablePaymentMethod::class, $practitoner, $request->payment_method_id);
 
             $paymentIntent =  $stripe->paymentIntents->create([
-                'amount'               => $cost,
+                'amount'               => $cost * 100,
                 'currency'             => $price->name,
                 'payment_method_types' => ['card'],
                 'customer'             => Auth::user()->stripe_customer_id,

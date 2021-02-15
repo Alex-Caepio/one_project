@@ -32,6 +32,12 @@ class BookingController extends Controller
 
     }
 
+    public function show(Booking $booking, Request $request)
+    {
+        return fractal($booking, new BookingTransformer())->parseIncludes($request->getIncludes())
+            ->toArray();
+    }
+
     public function reschedule(RescheduleRequestRequest $request, Booking $booking)
     {
         $rescheduleRequest = new RescheduleRequest();

@@ -53,8 +53,8 @@ class PlanController extends Controller
             ]);
 
             $planStripe = $stripe->prices->create([
-                'unit_amount' => $request->get('is_free') ? 0 : $request->get('price'),
-                'currency' => 'usd',
+                'unit_amount' => $request->get('is_free') ? 0 : $request->get('price') * 100,
+                'currency' => 'gbp',
                 'recurring' => ['interval' => 'month'],
                 'product' => $product->id
             ]);
@@ -91,7 +91,7 @@ class PlanController extends Controller
     {
         $price = $stripe->prices->retrieve($plan->stripe_id);
 
-        $data = $request->except(['stripe_id']);
+        $data = $request->except(['stripe_id', 'price']);
 
         $product_id = $price->product;
 

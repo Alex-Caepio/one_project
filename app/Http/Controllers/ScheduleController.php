@@ -43,7 +43,7 @@ class ScheduleController extends Controller
             foreach  ($prices as $key => $price ){
                 $stripePrice = $stripe->prices->create([
                     'unit_amount' => $prices[$key]['cost'],
-                    'currency' => 'usd',
+                    'currency' => 'gbp',
                     'product' => $service->stripe_id,
                 ]);
 

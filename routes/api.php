@@ -163,6 +163,7 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::get('/schedule-freezes', [ScheduleFreezesController::class, 'index']);
 
     Route::get('/bookings', [BookingController::class, 'index']);
+    Route::get('/bookings/{booking}', [BookingController::class, 'show']);
     Route::post('/bookings/{booking}/reschedule', [BookingController::class, 'reschedule']);
     Route::post('/bookings/reschedule', [BookingController::class, 'allReschedule']);
 

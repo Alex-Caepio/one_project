@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Actions\Auth\GetUsersPermissions;
 use App\Actions\Stripe\CreateStripeUserByEmail;
 use App\Actions\User\CreateUserFromRequest;
 use App\Events\PasswordChanged;
@@ -83,7 +84,9 @@ class AuthController extends Controller
     public function login(LoginRequest $request)
     {
         $user = User::where('email', $request->get('email'))->first();
-        $user->withAccessToken($user->createToken('access-token'));
+
+        $permissions = run_action(GetUsersPermissions::class, $user);
+        $user->withAccessToken($user->createToken('access-token', $permissions));
 
         return fractal($user, new UserTransformer())
             ->parseIncludes('access_token')
@@ -97,7 +100,7 @@ class AuthController extends Controller
             ->respond();
     }
 
-    public function update(UpdateRequest $request)
+    public function update(UpdateRequest $request , StripeClient $stripe)
     {
         $user = $request->user();
         if ($request->is_published === true)
@@ -106,11 +109,21 @@ class AuthController extends Controller
             $user->save();
         }
 
+        if( $request->has('email'))
+        {
+            if (auth()->user()->email != $request->get('email')) {
+                $stripe->customers->update(
+                    auth()->user()->stripe_customer_id,
+                    ['email' => $request->get('email')]
+                );
+            }
+        }
+
         $user->update($request->all());
         if ($request->filled('password')) {
             $user->password = Hash::make($request->get('password'));
             $user->save();
-            event(new PasswordChanged($user));
+//            event(new PasswordChanged($user));
         }
 
         if ($request->filled('disciplines')) {
