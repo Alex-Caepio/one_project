@@ -35,15 +35,6 @@ class EmailVariables {
         return $this->replace($newBody);
     }
 
-
-    /**
-     * @return string
-     */
-    public function getFirst_name(): string {
-        return $this->event->user->first_name;
-    }
-
-
     /**
      * @return string
      */
@@ -51,6 +42,12 @@ class EmailVariables {
         return config('app.platform_name');
     }
 
+    /**
+     * @return string
+     */
+    public function getFirst_name(): string {
+        return $this->event->user->first_name;
+    }
 
     /**
      * @return string

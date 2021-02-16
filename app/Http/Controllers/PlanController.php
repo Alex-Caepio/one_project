@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\SubscriptionConfirmationPaid;
 use App\Http\Requests\Plans\PlanRequest;
 use App\Events\SubscriptionConfirmation;
 use App\Models\Plan;
@@ -11,6 +10,7 @@ use App\Transformers\PlanTransformer;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Stripe\Exception\ApiErrorException;
 use Stripe\StripeClient;
 
 class PlanController extends Controller
@@ -48,8 +48,9 @@ class PlanController extends Controller
             $user->plan_from  = Carbon::now();
             $user->account_type = 'practitioner';
             $user->save();
+            event(new SubscriptionConfirmation($user, $plan));
 
-        } catch (\Stripe\Exception\ApiErrorException $e) {
+        } catch (ApiErrorException $e) {
 
             Log::channel('stripe_plans_errors')->info('Error purchasing a plan', [
                 'user_id' => $user->id ?? null,
@@ -73,12 +74,5 @@ class PlanController extends Controller
             'payment_method_id' => $request->payment_method_id,
             'price_stripe_id' => $plan->stripe_id
         ]);
-
-//        event(new SubscriptionConfirmationPaid($user));
-
-        $user = run_action(PlanPurchase::class, $plan, $stripe);
-        $type = $plan->is_free ? 'free' : 'paid';
-        event(new SubscriptionConfirmation($user, $plan, $type));
-        return response(null, 204);
     }
 }

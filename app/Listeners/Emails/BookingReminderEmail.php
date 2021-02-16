@@ -4,7 +4,6 @@ namespace App\Listeners\Emails;
 
 use App\EmailVariables\EmailVariables;
 use App\Events\BookingReminder;
-use App\Events\UserRegistered;
 use App\Models\CustomEmail;
 use Illuminate\Support\Facades\Mail;
 

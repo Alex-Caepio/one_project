@@ -13,7 +13,6 @@ class SubscriptionConfirmation {
 
     public const DEFAULT_TEMPLATE = 'free';
 
-
     private static array $types = [
         'paid' => 'Subscription confirmation - Paid',
         'free' => 'Subscription confirmation - Free',
@@ -22,12 +21,13 @@ class SubscriptionConfirmation {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public User $user;
-    public ?Plan $plan;
+    public Plan $plan;
     public string $template;
 
-    public function __construct(User $user, ?Plan $plan, string $type) {
+    public function __construct(User $user, Plan $plan) {
         $this->user = $user;
         $this->plan = $plan;
+        $type = $this->plan->is_free ? 'free' : 'paid';
         $this->template = self::$types[$type] ?? self::$types[self::DEFAULT_TEMPLATE];
     }
 }

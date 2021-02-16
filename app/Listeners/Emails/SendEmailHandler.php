@@ -3,6 +3,7 @@
 namespace App\Listeners\Emails;
 
 use App\EmailVariables\EmailVariables;
+use App\Events\CustomEmailEvent;
 use App\Models\CustomEmail;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -13,8 +14,6 @@ abstract class SendEmailHandler {
     protected string $toEmail;
     protected object $event;
 
-    abstract public function handler(): void;
-
     protected function sendCustomEmail(): void {
         try {
             $emailData = CustomEmail::where('name', $this->templateName)->first();
@@ -22,7 +21,7 @@ abstract class SendEmailHandler {
                 $body = $emailData->text;
                 $emailVariables = new EmailVariables($this->event);
                 $bodyReplaced = $emailVariables->replace($body);
-                Mail::raw($bodyReplaced, function($message) {
+                Mail::html($bodyReplaced, function($message) {
                     $message->to($this->toEmail);
                 });
             } else {
