@@ -61,7 +61,7 @@ class PlanController extends Controller
             ]);
 
 
-            return response()->json(['payment_method_id' => 'could not process that payment method'], 422);
+            return response()->json(['payment_method_id' => 'The payment could not be processed. Please check with your bank or choose another payment option.'], 422);
         }
 
         Log::channel('stripe_plans_success')->info('Plan successfully purchased', [
