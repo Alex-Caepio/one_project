@@ -13,8 +13,8 @@ class ArticleUnpublished
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $article;
-    public $user;
+    public Article $article;
+    public User $user;
 
     public function __construct(Article $article,User $user)
     {

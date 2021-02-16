@@ -7,7 +7,6 @@ use App\Filters\UserFiltrator;
 use App\Models\User;
 use App\Mail\VerifyEmail;
 use App\Http\Requests\Request;
-use App\Events\AccountDeleted;
 use App\Http\Controllers\Controller;
 use App\Transformers\UserTransformer;
 use App\Http\Requests\Auth\RegisterRequest;
@@ -72,7 +71,6 @@ class PractitionerController extends Controller {
 
     public function destroy(User $practitioner, PractitionerDestroyRequest $request) {
         run_action(DeleteUser::class, $practitioner, $request);
-        event(new AccountDeleted($practitioner));
         return response(null, 204);
     }
 

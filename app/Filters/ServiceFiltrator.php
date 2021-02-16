@@ -43,7 +43,7 @@ class ServiceFiltrator {
 
         $searchString = $request->get('search');
 
-        if($searchString){
+        if ($searchString) {
             $queryBuilder->where('title', 'like', "%{$searchString}%");
         }
 

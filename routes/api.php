@@ -12,6 +12,7 @@ use App\Http\Controllers\ScheduleFreezesController;
 use App\Http\Controllers\SchedulePriceController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\StripeAccountController;
+use App\Http\Controllers\TestController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ArticleController;

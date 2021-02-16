@@ -24,11 +24,14 @@ class ArticleController extends Controller {
         $articleFilter = new ArticleFiltrator();
         $articleFilter->apply($query, $request);
 
-        $paginator = $query->with($request->getIncludesWithTrashed(['user']))->paginate($request->getLimit());
+        $paginator = $query->with($request->getIncludesWithTrashed(['user']))
+                           ->paginate($request->getLimit());
 
         $article = $paginator->getCollection();
 
-        return response(fractal($article, new ArticleTransformer())->parseIncludes($request->getIncludes())->toArray())->withPaginationHeaders($paginator);
+        return response(fractal($article, new ArticleTransformer())
+                            ->parseIncludes($request->getIncludes())
+                            ->toArray())->withPaginationHeaders($paginator);
     }
 
 

@@ -16,14 +16,14 @@ class PasswordResetEmail
 
     public function handle(PasswordReset $event): void
     {
-        $user = $event->user;
+        $reset = $event->reset;
         $emailVerification = CustomEmail::where('name', 'Password Reset')->first();
         $body = $emailVerification->text;
         $emailVariables = new EmailVariables($event);
         $bodyReplaced = $emailVariables->replace($body);
 
-        Mail::raw($bodyReplaced, function ($message) use ($user){
-            $message->to($user->email);
+        Mail::raw($bodyReplaced, function ($message) use ($reset){
+            $message->to($reset->email);
         });
     }
 }

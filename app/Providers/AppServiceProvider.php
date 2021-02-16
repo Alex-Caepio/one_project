@@ -26,9 +26,8 @@ use App\Observers\BookingObserver;
 use App\Observers\PromotionCodeObserver;
 use App\Observers\PromotionObserver;
 use App\Observers\PurchaseObserver;
+use App\Observers\ServiceObserver;
 use App\Observers\UserObserver;
-use App\ScarryClass;
-use App\FakeStripeClient;
 use Stripe\StripeClient;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -67,6 +66,7 @@ class AppServiceProvider extends ServiceProvider
         Promotion::observe(PromotionObserver::class);
         PromotionCode::observe(PromotionCodeObserver::class);
         User::observe(UserObserver::class);
+        Service::observe(ServiceObserver::class);
         Booking::observe(BookingObserver::class);
         Purchase::observe(PurchaseObserver::class);
 

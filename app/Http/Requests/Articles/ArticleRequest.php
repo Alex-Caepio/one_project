@@ -50,8 +50,10 @@ class ArticleRequest extends Request {
         $validator->after(function($validator) {
             $isPublished = $this->getBoolFromRequest('is_published');
             if (!Auth::user()->is_published && $isPublished) {
-                $validator->errors()->add('name',
-                                          "Article not Published. Please publish your Business Profile before publishing the Article");
+                $validator
+                    ->errors()
+                    ->add('name',
+                          'Article not Published. Please publish your Business Profile before publishing the Article');
             }
         });
     }

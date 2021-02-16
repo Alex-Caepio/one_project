@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Models\User;
-use App\Mail\PasswordResetLink;
+use App\Events\PasswordChanged;
+use App\Models\PasswordReset;
 use App\Http\Controllers\Controller;
-use App\Mail\PasswordHasBeenChanged;
 use App\Transformers\UserTransformer;
 use App\Http\Requests\Auth\ResetPasswordAsk;
-use App\Http\Requests\Password\ResetRequest;
 use App\Http\Requests\Auth\ResetPasswordClaim;
 use DB;
 use Hash;
@@ -16,31 +14,20 @@ use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use App\Events\PasswordReset as ResetEvent;
 
-class ResetPasswordController extends Controller
-{
-    public function askForReset(ResetPasswordAsk $request)
-    {
+class ResetPasswordController extends Controller {
+
+    public function askForReset(ResetPasswordAsk $request) {
         $email = strtolower($request->email);
 
-        $token             = hash('md5', Str::random(60));
-        $frontendUrl       = config('app.frontend_reset_password_form_url');
-        $passwordResetLink = "{$frontendUrl}?token={$token}";
+        $token = hash('md5', Str::random(60));
 
-        DB::table('password_resets')
-            ->where('email', $email)
-            ->delete();
-        DB::table('password_resets')
-            ->insert(
-                [
-                    'email'      => $email,
-                    'token'      => $token,
-                    'created_at' => Carbon::now(),
-                ]
-            );
-        Mail::to([
-            'email' => $email
-        ])->send(new PasswordResetLink($passwordResetLink));
+        PasswordReset::where('email', $email)->delete();
+        $resetModel = PasswordReset::create(['email' => $email, 'token' => $token]);
+        $resetModel->load('user');
+
+        event(new ResetEvent($resetModel));
 
         return response(null, 200);
     }
@@ -51,38 +38,24 @@ class ResetPasswordController extends Controller
      * @param ResetPasswordClaim $request
      * @return \Illuminate\Http\Response
      */
-    public function claimReset(ResetPasswordClaim $request)
-    {
+    public function claimReset(ResetPasswordClaim $request) {
         if (!$request->token) {
             return response(null, 500);
         }
+        $resetModel = PasswordReset::where('token', $request->token)->with('user')->first();
+        $user = $resetModel->user;
+        $user->update(['password' => Hash::make($request->password)]);
+        $resetModel->delete();
 
-        $resetData = DB::table('password_resets')
-            ->where('token', $request->token)
-            ->first();
+        event(new PasswordChanged($user));
 
-        User::where('email', $resetData->email)
-            ->update(['password' => Hash::make($request->password)]);
-
-        DB::table('password_resets')
-            ->where('email', $resetData->email)
-            ->delete();
-
-        Mail::to([
-            'email' => $resetData->email
-        ])->send(new PasswordHasBeenChanged());
-
-        $user = User::where('email', $resetData->email)->first();
         $user->withAccessToken($user->createToken('access-token'));
 
-        return fractal($user, new UserTransformer())
-            ->parseIncludes('access_token')
-            ->respond();
+        return fractal($user, new UserTransformer())->parseIncludes('access_token')->respond();
     }
 
-    public function verifyToken(Request $request)
-    {
-        $validToken = DB::table('password_resets')->where('token', $request->token)->first();
+    public function verifyToken(Request $request) {
+        $validToken = PasswordReset::where('token', $request->token)->with('user')->first();
         if (!$validToken) {
             return response(null, 422);
         }

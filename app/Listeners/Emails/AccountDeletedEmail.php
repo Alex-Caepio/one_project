@@ -2,8 +2,8 @@
 
 namespace App\Listeners\Emails;
 
+use App\Events\AccountDeleted;
 use App\Models\CustomEmail;
-use App\Events\UserRegistered;
 use App\EmailVariables\EmailVariables;
 use Illuminate\Support\Facades\Mail;
 
@@ -13,7 +13,7 @@ class AccountDeletedEmail
     {
     }
 
-    public function handle(UserRegistered $event): void
+    public function handle(AccountDeleted $event): void
     {
         $user = $event->user;
 

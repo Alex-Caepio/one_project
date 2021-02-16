@@ -52,7 +52,9 @@ class SavePromotionRequest extends Request {
                 $validator->errors()->add('spend_max', 'The value must be greater than spend min');
             }
 
-            if ($this->get('discount_type') === Promotion::TYPE_PERCENTAGE && $this->get('discount_value') > 100) {
+            $discountType = $this->get('discount_type');
+            $discountValue = $this->get('discount_value');
+            if ($discountType === Promotion::TYPE_PERCENTAGE && $discountValue > 100) {
                 $validator->errors()
                           ->add('discount_value', 'For percentage discount max value can be lower or equal 100');
             }
@@ -64,10 +66,14 @@ class SavePromotionRequest extends Request {
                               ->add('promocode_names', 'Please, fill all of the requested count of promocodes');
                 }
                 $promoCodes =
-                    PromotionCode::withTrashed()->whereIn('name', $filledPromocodes)->pluck('name')->toArray();
+                    PromotionCode::withTrashed()
+                                 ->whereIn('name', $filledPromocodes)
+                                 ->pluck('name')
+                                 ->toArray();
                 if (count($promoCodes)) {
                     $validator->errors()->add('promocode_names',
-                                              'These codes are already in use: ' . (implode(', ', $promoCodes)));
+                                              'These codes are already in use: '
+                                              . (implode(', ', $promoCodes)));
                 }
             }
         });

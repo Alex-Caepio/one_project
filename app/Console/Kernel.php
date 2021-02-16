@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Console\Commands\BookingNotifierTomorrow;
 use App\Console\Commands\InstalmentsNotifier;
 use App\Console\Commands\MarkExpiredPromocodes;
 use App\Console\Commands\ScheduleFreezesByCron;
@@ -19,6 +20,7 @@ class Kernel extends ConsoleKernel {
         ScheduleFreezesTruncate::class,
         MarkExpiredPromocodes::class,
         ScheduleFreezesByCron::class,
+        BookingNotifierTomorrow::class,
         InstalmentsNotifier::class,
     ];
 
@@ -32,6 +34,7 @@ class Kernel extends ConsoleKernel {
         // $schedule->command('inspire')->hourly();
         $schedule->command('schedule-freezes:cleanup')->everyFifteenMinutes();
         $schedule->command('mark-expired-promo')->everyFifteenMinutes();
+        $schedule->command('bookings:notifier')->daily();
         $schedule->command('instalments:notify')->daily();
     }
 

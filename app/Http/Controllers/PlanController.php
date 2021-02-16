@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\SubscriptionConfirmationPaid;
 use App\Http\Requests\Plans\PlanRequest;
+use App\Events\SubscriptionConfirmation;
 use App\Models\Plan;
 use App\Http\Requests\Request;
 use App\Transformers\PlanTransformer;
@@ -75,6 +76,9 @@ class PlanController extends Controller
 
 //        event(new SubscriptionConfirmationPaid($user));
 
+        $user = run_action(PlanPurchase::class, $plan, $stripe);
+        $type = $plan->is_free ? 'free' : 'paid';
+        event(new SubscriptionConfirmation($user, $plan, $type));
         return response(null, 204);
     }
 }
