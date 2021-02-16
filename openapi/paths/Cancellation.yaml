@@ -1,0 +1,35 @@
+cancellations:
+  get:
+      tags:
+       - Cancellation
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '../schemas/Cancellation.yaml'
+
+cancellations/{booking}:
+  post:
+    tags:
+      - Cancellation
+    parameters:
+      - $ref: "#/parameters/booking"
+    responses:
+      '204':
+        description: OK
+
+parameters:
+  booking:
+    name: booking
+    in: path
+    description: Booking ID
+    required: true
+    schema:
+      type: integer
+
+
+

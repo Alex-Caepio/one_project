@@ -32,3 +32,5 @@ Country:
   $ref: "./Country.yaml"
 Booking:
   $ref: "./Booking.yaml"
+Cancellation:
+  $ref: "./Cancellation.yaml"
