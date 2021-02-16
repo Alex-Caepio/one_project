@@ -13,7 +13,7 @@ class PasswordChanged
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
 
-    public $user;
+    public User $user;
 
     public function __construct(User $user)
     {

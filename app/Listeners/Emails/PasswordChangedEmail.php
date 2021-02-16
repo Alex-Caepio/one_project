@@ -11,6 +11,5 @@ class PasswordChangedEmail extends SendEmailHandler {
         $this->templateName = 'Password Changed';
         $this->event = $event;
         $this->sendCustomEmail();
-
     }
 }
