@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Events\PasswordChanged;
 use App\Models\User;
 use App\Http\Requests\Request;
 use App\Http\Controllers\Controller;

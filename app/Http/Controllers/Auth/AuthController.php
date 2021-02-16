@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Auth;
 use App\Actions\Auth\GetUsersPermissions;
 use App\Actions\Stripe\CreateStripeUserByEmail;
 use App\Actions\User\CreateUserFromRequest;
-use App\Events\PasswordChanged;
 use App\Events\UserRegistered;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
