@@ -35,6 +35,7 @@ class BookingTransformer extends Transformer {
             'purchase_id'     => $booking->purchase_id,
             'created_at'      => $booking->created_at,
             'updated_at'      => $booking->updated_at,
+            'cancelled_at'    => $booking->cancelled_at,
         ];
     }
 

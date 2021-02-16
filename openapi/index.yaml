@@ -935,7 +935,7 @@ schemas:
         type: string
         example: cus_HpyQPawZU9Nw16
         nullable: true
-      business_timezone_id:
+      business_time_zone_id:
         type: integer
         nullable: true
         example: 98
@@ -1239,6 +1239,38 @@ schemas:
         type: string
       purchase_id:
         type: integer
+      cancelled_at:
+        type: string
+        format: date-time
+  Cancellation:
+    type: object
+    properties:
+      id:
+        type: integer
+      user_id:
+        type: integer
+      booking_id:
+        type: integer
+      purchase_id:
+        type: integer
+      practitioner_id:
+        type: integer
+      amount:
+        type: number
+        format: double
+      fee:
+        type: number
+        format: double
+      stripe_id:
+        type: string
+      cancelled_by_client:
+        type: string
+      created_at:
+        type: string
+        format: date-time
+      updated_at:
+        type: string
+        format: date-time
 paths:
   /api/auth/register:
     post:
@@ -3206,6 +3238,33 @@ paths:
                   url:
                     type: string
                     example: https://s3.amazonaws.com/bucketname/foldername/imagename.jpg
+  /cancellations:
+    get:
+      tags:
+        - Cancellation
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/schemas/Cancellation"
+  "/cancellations/{booking}":
+    post:
+      tags:
+        - Cancellation
+      parameters:
+        - name: booking
+          in: path
+          description: Booking ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: OK
   /admin/profile:
     get:
       operationId: get-profile

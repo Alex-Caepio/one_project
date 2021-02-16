@@ -1,0 +1,28 @@
+type: object
+properties:
+  id:
+    type: integer
+  user_id:
+    type: integer
+  booking_id:
+    type: integer
+  purchase_id:
+    type: integer
+  practitioner_id:
+    type: integer
+  amount:
+    type: number
+    format: double
+  fee:
+    type: number
+    format: double
+  stripe_id:
+    type: string
+  cancelled_by_client:
+    type: string
+  created_at:
+    type: string
+    format: date-time
+  updated_at:
+    type: string
+    format: date-time

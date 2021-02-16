@@ -52,7 +52,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-       $this->app->instance(StripeClient::class, new StripeClient(env('STRIPE_SECRET')));
+       $this->app->instance(StripeClient::class,
+                            new StripeClient(config('services.stripe.secret')));
 
         Relation::morphMap([
             'service'    => Service::class,

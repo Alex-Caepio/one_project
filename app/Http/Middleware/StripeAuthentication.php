@@ -24,7 +24,7 @@ class StripeAuthentication {
                 [$key, $value] = explode('=', $part);
                 if ($key === 'v1')  {
                     $signature = $value;
-                } else if  ($key === 't') {
+                } elseif  ($key === 't') {
                     $timestamp = $value;
                 }
             }

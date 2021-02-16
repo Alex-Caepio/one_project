@@ -34,7 +34,7 @@ class TransferFundsWithCommissions
         try {
             $stripe->transfers->create([
                 'amount'      => $amount,
-                'currency'    => 'usd',
+                'currency'    => config('app.platform_currency'),
                 'destination' => $practitoner->stripe_account_id,
             ]);
 
@@ -44,7 +44,7 @@ class TransferFundsWithCommissions
             $transfer->status            = 'success';
             $transfer->amount            = $amount;
             $transfer->amount_original   = $cost;
-            $transfer->currency          = 'usd';
+            $transfer->currency          = config('app.platform_currency');
             $transfer->schedule_id       = $schedule->id ?? null;
             $transfer->description       = 'transfer for a schedule purchase';
             $transfer->save();
@@ -55,7 +55,7 @@ class TransferFundsWithCommissions
             $transfer->status            = 'fail';
             $transfer->amount            = $amount;
             $transfer->amount_original   = $cost;
-            $transfer->currency          = 'usd';
+            $transfer->currency          = config('app.platform_currency');
             $transfer->schedule_id       = $schedule->id ?? null;
             $transfer->description       = 'transfer for a schedule purchase';
             $transfer->save();

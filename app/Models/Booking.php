@@ -30,6 +30,7 @@ class Booking extends Model
         'promocode_id',
         'created_at',
         'updated_at',
+        'cancelled_at',
         'purchase_id'
     ];
 

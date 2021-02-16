@@ -131,6 +131,11 @@
 #images
 /images:
   $ref: "./Image.yaml#/images"
+# Cancellation
+/cancellations:
+  $ref: "./Cancellation.yaml#/cancellations"
+/cancellations/{booking}:
+  $ref: "./Cancellation.yaml#/cancellations~1{booking}"
 
 ## ADMIN ENDPOINTS
 /admin/profile:
