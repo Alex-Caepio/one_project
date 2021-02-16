@@ -12,7 +12,7 @@ use App\Models\PasswordReset as ResetModel;
 class PasswordReset {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $reset;
+    public ResetModel $reset;
     public $user;
 
     public function __construct(ResetModel $reset) {

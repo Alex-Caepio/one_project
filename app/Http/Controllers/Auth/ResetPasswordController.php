@@ -13,7 +13,6 @@ use Hash;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
 use App\Events\PasswordReset as ResetEvent;
 
 class ResetPasswordController extends Controller {
@@ -36,11 +35,11 @@ class ResetPasswordController extends Controller {
      * Save new password.
      *
      * @param ResetPasswordClaim $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function claimReset(ResetPasswordClaim $request) {
         if (!$request->token) {
-            return response(null, 500);
+            abort(500);
         }
         $resetModel = PasswordReset::where('token', $request->token)->with('user')->first();
         $user = $resetModel->user;
