@@ -334,7 +334,9 @@ You can also upgrade your subscription at any time from your Account section.
                 'logo'       => Str::random(5),
                 'text'       => 'Hi {{first_name}} <br/>
 We are confirming your {{platform_name}} Subscription Plan has now been changed to {{subscription_tier_name}}, effective from {{subscription_start_date}}
-<br/><a href="{{my_account}}" target="_blank">Go To My Account</a><br/>We are excited to empower you in your business. <br/><br/>Thank you<br/> The {{platform_name}}  Team<br/>',
+<br/><a href="{{my_account}}" target="_blank">Go To My Account</a><br/>
+We are excited to empower you in your business. <br/><br/>
+Thank you<br/> The {{platform_name}}  Team<br/>',
                 'delay'      => random_int(5, 20)
             ],
             //20

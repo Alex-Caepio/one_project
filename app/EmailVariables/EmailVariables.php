@@ -87,13 +87,6 @@ class EmailVariables {
     /**
      * @return string
      */
-    public function getSubscription_tier_name(): string {
-        return $this->event->plan->name;
-    }
-
-    /**
-     * @return string
-     */
     public function getMy_account(): string {
         return config('app.frontend_profile_link');
     }
@@ -250,8 +243,28 @@ class EmailVariables {
         return '';
     }
 
+    /**
+     *
+     *
+     * SCHEDULE VARIABLES END
+     *
+     *
+     */
 
+    /**
+     *
+     *
+     * SUBSCRIPTION VARIABLES START
+     *
+     *
+     */
 
+    /**
+     * @return string
+     */
+    public function getSubscription_tier_name(): string {
+        return $this->event->plan->name;
+    }
 
     /**
      * @return string
@@ -265,7 +278,7 @@ class EmailVariables {
      * Will be reworked to the new field or new model PlanPurchases
      */
     public function getSubscription_start_date(): string {
-        return Carbon::now()->format('d.m.Y');
+        return Carbon::parse($this->event->user->plan_from)->format('d.m.Y');
     }
 
     /**
@@ -274,6 +287,15 @@ class EmailVariables {
     public function getSubscription_end_date(): string {
         return Carbon::parse($this->event->user->plan_until)->format('d.m.Y');
     }
+
+    /**
+     *
+     *
+     * SUBSCRIPTION VARIABLES START
+     *
+     *
+     */
+
 
     /**
      * @return string

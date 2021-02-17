@@ -3,7 +3,6 @@
 namespace App\Events;
 
 use App\Models\Plan;
-use App\Models\Schedule;
 use App\Models\User;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;

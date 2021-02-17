@@ -9,15 +9,13 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class ChangeOfSubscription
-{
+class ChangeOfSubscription {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public User $user;
     public Plan $plan;
 
-    public function __construct(User $user, Plan $plan)
-    {
+    public function __construct(User $user, Plan $plan) {
         $this->user = $user;
         $this->plan = $plan;
     }
