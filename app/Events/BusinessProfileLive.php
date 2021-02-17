@@ -10,7 +10,7 @@ use Illuminate\Queue\SerializesModels;
 class BusinessProfileLive {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $user;
+    public User $user;
 
     public function __construct(User $user) {
         $this->user = $user;

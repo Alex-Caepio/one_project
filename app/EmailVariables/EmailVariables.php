@@ -93,6 +93,25 @@ class EmailVariables {
     /**
      * @return string
      */
+    public function getPractitioner_URL(): string {
+        return $this->event->user->public_link;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMy_services(): string {
+        return config('app.frontend_practitioner_services');
+    }
+
+
+
+
+
+
+    /**
+     * @return string
+     */
     public function getSubscription_cost(): string {
         return number_format($this->event->plan->price, 2);
     }
@@ -115,22 +134,8 @@ class EmailVariables {
     /**
      * @return string
      */
-    public function getPractitioner_URL(): string {
-        return $this->event->user->public_link;
-    }
-
-    /**
-     * @return string
-     */
     public function getPractitioner_business_name(): string {
         return $this->event->practitioner->business_name ?? $this->event->user->business_name;
-    }
-
-    /**
-     * @return string
-     */
-    public function getMy_services(): string {
-        return config('app.frontend_practitioner_services');
     }
 
     /**
