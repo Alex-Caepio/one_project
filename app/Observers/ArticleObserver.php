@@ -19,14 +19,10 @@ class ArticleObserver {
      */
     public function saved(Article $article) {
         if ($article->isDirty('is_published')) {
-            try {
-                if (!$article->is_published && !$article->wasRecentlyCreated) {
-                    event(new ArticleUnpublished($article, Auth::user()));
-                } elseif ($article->is_published) {
-                    event(new ArticlePublished($article, Auth::user()));
-                }
-            } catch (\Exception $e) {
-                Log::error(__METHOD__.': '.$e->getMessage().'-'.$e->getFile().':'.$e->getLine());
+            if (!$article->is_published && !$article->wasRecentlyCreated) {
+                event(new ArticleUnpublished($article, Auth::user()));
+            } elseif ($article->is_published) {
+                event(new ArticlePublished($article, Auth::user()));
             }
         }
     }

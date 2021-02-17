@@ -4,7 +4,7 @@ namespace App\Listeners\Emails;
 
 use App\Events\ChangeOfSubscription;
 
-class ChangeOfSubscriptionEmail {
+class ChangeOfSubscriptionEmail extends SendEmailHandler {
 
     public function handle(ChangeOfSubscription $event): void {
         $this->toEmail = $event->user->email;

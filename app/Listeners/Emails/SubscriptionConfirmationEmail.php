@@ -4,7 +4,7 @@ namespace App\Listeners\Emails;
 
 use App\Events\SubscriptionConfirmation;
 
-class SubscriptionConfirmationEmail {
+class SubscriptionConfirmationEmail extends SendEmailHandler {
 
     public function handle(SubscriptionConfirmation $event): void {
         $this->toEmail = $event->user->email;

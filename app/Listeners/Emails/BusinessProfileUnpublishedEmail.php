@@ -4,7 +4,7 @@ namespace App\Listeners\Emails;
 
 use App\Events\BusinessProfileUnpublished;
 
-class BusinessProfileUnpublishedEmail {
+class BusinessProfileUnpublishedEmail extends SendEmailHandler {
 
     public function handle(BusinessProfileUnpublished $event): void {
         $this->toEmail = $event->user->email;

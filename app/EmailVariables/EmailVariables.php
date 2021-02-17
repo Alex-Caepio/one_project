@@ -296,6 +296,13 @@ class EmailVariables {
      *
      */
 
+    /**
+     *
+     *
+     * ARTICLES VARIABLES START
+     *
+     *
+     */
 
     /**
      * @return string
@@ -317,6 +324,15 @@ class EmailVariables {
     public function getArticle_name(): string {
         return $this->event->article->title;
     }
+
+    /**
+     *
+     *
+     * ARTICLES VARIABLES END
+     *
+     *
+     */
+
 
     /**
      * @return string

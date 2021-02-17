@@ -349,7 +349,9 @@ Thank you<br/> The {{platform_name}}  Team<br/>',
                 'logo'       => Str::random(5),
                 'text'       => 'Hi {{first_name}}<br/>
  Congratulations! Your Article: {{article_name}} is live on {{platform_name}}  and visible to potential clients.
- The unique website address is for this service is: {{article_url}}. Make sure to share it on your Social Media!<br/> <a href="{{my_articles}}" target="_blank">Go to My Articles</a><br/> We are excited to be empowering your business.
+ The unique website address is for this service is: <a href="{{article_url}}" target="_blank">{{article_url}}</a>.<br/>
+ Make sure to share it on your Social Media!<br/> <a href="{{my_articles}}" target="_blank">Go to My Articles</a><br/>
+ We are excited to be empowering your business.
  <br/><br/>Thank you<br/> The {{platform_name}}  Team<br/>',
                 'delay'      => random_int(5, 20)
             ],
@@ -361,10 +363,15 @@ Thank you<br/> The {{platform_name}}  Team<br/>',
                 'from_title' => Str::random(8),
                 'subject'    => '{{article_name}} Unpublished',
                 'logo'       => Str::random(5),
-                'text'       => 'Hi {{first_name}}<br/> This is to confirm {{article_name}} is now unpublished on {{platform_name}}  and no longer viewable. You can republish it at any time by going to your Article Page and clicking the PUBLISH button.
-<br/><a href="{{my_articles}}" target="_blank">Go to My Articles</a><br/><br/> Thank you <br/>The {{platform_name}}  Team<br/>',
+                'text'       => 'Hi {{first_name}}<br/> This is to confirm {{article_name}} is now unpublished on {{platform_name}}
+and no longer viewable. You can republish it at any time by going to your Article Page and clicking the PUBLISH button.
+<br/><a href="{{my_articles}}" target="_blank">Go to My Articles</a>
+<br/><br/> Thank you
+<br/>The {{platform_name}} Team<br/>',
                 'delay'      => random_int(5, 20)
             ],
+
+
             /*
              *
              * CRON REMINDERS
