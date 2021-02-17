@@ -41,9 +41,7 @@ class BookingController extends Controller
     public function reschedule(RescheduleRequestRequest $request, Booking $booking)
     {
         $rescheduleRequest = new RescheduleRequest();
-
-        $bookingsId = $request->get('booking_ids');
-        RescheduleRequest::whereIn('booking_id', $bookingsId)->delete();
+        RescheduleRequest::where('booking_id', $booking->id)->delete();
 
         $rescheduleRequest->forceFill(
             [
