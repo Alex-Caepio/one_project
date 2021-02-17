@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Actions\Schedule\CreateRescheduleRequestsOnScheduleUpdate;
 use App\Actions\Schedule\HandlePricesUpdate;
-use App\Events\ServiceScheduleWentLive;
+use App\Events\ServiceScheduleLive;
 use App\Models\Service;
 use App\Models\Schedule;
 use App\Models\ScheduleUser;
@@ -99,7 +99,7 @@ class ScheduleController extends Controller
 
         run_action(CreateRescheduleRequestsOnScheduleUpdate::class, $request, $schedule);
 
-        event(new ServiceScheduleWentLive($schedule->service, $request->user(), $schedule));
+        event(new ServiceScheduleLive($schedule, $request->user()));
 
         return fractal($schedule, new ScheduleTransformer())
             ->parseIncludes($request->getIncludes())

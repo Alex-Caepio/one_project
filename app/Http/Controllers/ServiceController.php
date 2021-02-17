@@ -104,7 +104,6 @@ class ServiceController extends Controller {
         $service->published_at = NOW();
         $service->save();
         $service->fresh();
-        event(new ServiceListingLive($service, $request->user()));
         return response(null, 204);
     }
 

@@ -2,10 +2,7 @@
 
 namespace App\Listeners\Emails;
 
-use App\EmailVariables\EmailVariables;
 use App\Events\BusinessProfileUnpublished;
-use App\Models\CustomEmail;
-use Illuminate\Support\Facades\Mail;
 
 class BusinessProfileUnpublishedEmail {
 

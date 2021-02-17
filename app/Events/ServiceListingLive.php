@@ -12,8 +12,8 @@ use Illuminate\Queue\SerializesModels;
 class ServiceListingLive {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $service;
-    public $user;
+    public Service $service;
+    public User $user;
 
     public function __construct(Service $service, User $user) {
         $this->service = $service;

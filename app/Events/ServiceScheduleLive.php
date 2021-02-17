@@ -26,12 +26,13 @@ class ServiceScheduleLive {
     public Service $service;
     public User $user;
     public Schedule $schedule;
-    public string $type;
+    public string $template;
 
-    public function __construct(Service $service, User $user, Schedule $schedule) {
+    public function __construct(Schedule $schedule, User $user) {
         $this->schedule = $schedule;
-        $this->service = $service;
+        $this->service = $schedule->service;
         $this->user = $user;
-        $this->type = self::$typesMatching[$service->service_type_id] ?? self::$typesMatching[self::DEFAULT_EMAIL_TYPE];
+        $this->template =
+            self::$typesMatching[$this->service->service_type_id] ?? self::$typesMatching[self::DEFAULT_EMAIL_TYPE];
     }
 }

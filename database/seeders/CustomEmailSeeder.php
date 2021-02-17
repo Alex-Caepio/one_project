@@ -177,8 +177,10 @@ You can republish Business Profile at any time by going to your Profile Page and
 Your Booking Schedule is live for {{service_name}} on {{platform_name}} and is ready for Clients to book. The unique website address for this service is:
 <a href="{{service_url}}" target="_blank">{{service_url}}</a>. Make sure to promote it on Social Media to get more bookings!<br />
 {{service_name}} - {{schedule_name}}<br />
-From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}}<br />
-Location: {{schedule_venue}} {{schedule_city}}, {{schedule_postcode}}, {{schedule_country}}<br /> <a href="{{add_to_calendar}}" target="_blank">Add to calendar</a> <br />
+From: {{schedule_start_date}}, {{schedule_start_time}}<br/>
+To: {{schedule_end_date}}, {{schedule_end_time}}<br />
+Location: {{schedule_venue}} {{schedule_city}}, {{schedule_postcode}}, {{schedule_country}}<br />
+<a href="{{add_to_calendar}}" target="_blank">Add to calendar</a> <br />
 We are excited to be empowering your business.<br/><br/>
 Thank you<br/> The {{platform_name}} Team<br/>',
                 'delay'      => random_int(5, 20)
@@ -192,10 +194,12 @@ Thank you<br/> The {{platform_name}} Team<br/>',
                 'subject'    => '{{service_name}} Booking Schedule is Live!',
                 'logo'       => Str::random(5),
                 'text'       => 'Hi {{first_name}}<br/> Your Booking Schedule is live for {{service_name}} on {{platform_name}} and is ready for Clients to book.
-The unique website address for this service is: <a href="{{service_url}}" target="_blank">{{service_url}}</a>. Make sure to promote it on Social Media to get more bookings!<br/>
+The unique website address for this service is: <a href="{{service_url}}" target="_blank">{{service_url}}</a>.
+Make sure to promote it on Social Media to get more bookings!<br/>
 {{service_name}} - {{schedule_name}}<br />
-From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}}<br/>
-Virtual Location: <a href="{{schedule_hosting_url}}" target="_blank">Virtual Location</a>><br/>
+From: {{schedule_start_date}}, {{schedule_start_time}}<br />
+To: {{schedule_end_date}}, {{schedule_end_time}}<br/>
+Virtual Location: <a href="{{schedule_hosting_url}}" target="_blank">Virtual Location</a><br/>
 <a href="{{add_to_calendar}}" target="_blank">Add to calendar</a>
 <br/> We are excited to be empowering your business.<br/><br/>
 Thank you <br/>The {{platform_name}} Team<br/>',
@@ -209,11 +213,16 @@ Thank you <br/>The {{platform_name}} Team<br/>',
                 'from_title' => Str::random(8),
                 'subject'    => 'Retreat Booking Schedule Live for {{service_name}}!',
                 'logo'       => Str::random(5),
-                'text'       => 'Hi {{first_name}}<br/> Your Retreat\'s Booking Schedule is live for {{service_name}} on {{platform_name}} and is ready for Clients to book.
-The unique website address for this service is: {{Service_URL}}. Make sure to promote it on Social Media to get more bookings!<br/>
-{{service_name}} - {{schedule_name}} From: {{schedule_start_date}} To: {{schedule_end_date}}<br/>
+                'text'       => 'Hi {{first_name}}<br/> Your Retreat\'s Booking Schedule is live for {{service_name}}
+on {{platform_name}} and is ready for Clients to book.
+The unique website address for this service is: <a href="{{service_url}}" target="_blank">{{service_url}}</a>.
+Make sure to promote it on Social Media to get more bookings!<br/>
+{{service_name}} - {{schedule_name}}<br />
+From: {{schedule_start_date}}<br />
+To: {{schedule_end_date}}<br/>
 Location: {{schedule_city}}, {{schedule_country}}<br />
-<a href="{{add_to_calendar}}" target="_blank">Add to calendar</a><br/> We are excited to be empowering your business.<br/><br/>
+<a href="{{add_to_calendar}}" target="_blank">Add to calendar</a><br/>
+We are excited to be empowering your business.<br/><br/>
 Thank you <br/>
 The {{platform_name}} Team<br/>',
                 'delay'      => random_int(5, 20)
@@ -226,9 +235,13 @@ The {{platform_name}} Team<br/>',
                 'from_title' => Str::random(8),
                 'subject'    => '{{service_name}} Schedule is Live!',
                 'logo'       => Str::random(5),
-                'text'       => 'Hi {{first_name}} <br/> Your Booking Schedule {{schedule_name}} is live for {{service_name}} on {{platform_name}} and is ready for Clients to book.
-The unique website address for this service is: <a href="{{service_url}}" target="_blank">{{service_url}}</a>. Make sure to promote it on Social Media to get more bookings!
-We are excited to be empowering your business. <br/> <br/>Thank you <br/> The {{platform_name}} Team <br/>',
+                'text'       => 'Hi {{first_name}} <br/>
+Your Booking Schedule {{schedule_name}} is live for {{service_name}} on {{platform_name}} and is ready for Clients to book.
+The unique website address for this service is: <a href="{{service_url}}" target="_blank">{{service_url}}</a>.
+Make sure to promote it on Social Media to get more bookings!
+We are excited to be empowering your business. <br/>
+<br/>Thank you <br/>
+ The {{platform_name}} Team <br/>',
                 'delay'      => random_int(5, 20)
             ],
             //14
@@ -241,7 +254,8 @@ We are excited to be empowering your business. <br/> <br/>Thank you <br/> The {{
                 'logo'       => Str::random(5),
                 'text'       => 'Hi {{first_name}} <br/>
 Your Schedule {{schedule_name}} is live for {{service_name}} on {{platform_name}} and is ready for Clients to buy.
-The unique website address for this service is: <a href="{{service_url}}" target="_blank">{{service_url}}</a>. Make sure to promote it on Social Media to get more sales!
+The unique website address for this service is: <a href="{{service_url}}" target="_blank">{{service_url}}</a>.
+Make sure to promote it on Social Media to get more sales!
 We are excited to be empowering your business. <br/> <br/> Thank you  <br/>The {{platform_name}} Team <br/>',
                 'delay'      => random_int(5, 20)
             ],
@@ -253,8 +267,10 @@ We are excited to be empowering your business. <br/> <br/> Thank you  <br/>The {
                 'from_title' => Str::random(8),
                 'subject'    => '{{service_name}} Unpublished',
                 'logo'       => Str::random(5),
-                'text'       => 'Hi {{first_name}}<br/> This is to confirm {{service_name}} is now unpublished on {{platform_name}} and and you can no longer receive new Client Bookings for it.
-If you have existing Client Bookings, you will need to honour them, unless you choose to cancel them. You can republish it at any time by going to your Service Listing and clicking the PUBLISH button.
+                'text'       => 'Hi {{first_name}}<br/>
+This is to confirm {{service_name}} is now unpublished on {{platform_name}} and and you can no longer receive new Client Bookings for it.
+If you have existing Client Bookings, you will need to honour them, unless you choose to cancel them.
+You can republish it at any time by going to your Service Listing and clicking the PUBLISH button.
 <br/><br /><a href="{{my_services}}" target="_blank">Go To My Services</a><br /><br/><br/> Thank you<br/> The {{platform_name}} Team<br/>',
                 'delay'      => random_int(5, 20)
             ],
@@ -267,7 +283,8 @@ If you have existing Client Bookings, you will need to honour them, unless you c
                 'subject'    => 'Service Listing Live on {{platform_name}}!',
                 'logo'       => Str::random(5),
                 'text'       => 'Hi {{first_name}}<br/>
-Congratulations! Your Service Listing {{service_name}} is live on {{platform_name}}. The unique website address for this service is: <a href="{{service_url}}" target="_blank">{{service_url}}</a>
+Congratulations! Your Service Listing {{service_name}} is live on {{platform_name}}.
+The unique website address for this service is: <a href="{{service_url}}" target="_blank">{{service_url}}</a>
  You can use this to promote your service directly on flyers, social media posts and more!<br/>
 The next step in gaining new clients is to add your Service Schedule if you have not yet done so. Here is a guide to help you do this.
 <br /><a href="{{my_services}}" target="_blank">Go To My Services</a><br /> We are excited to be empowering your business.<br/><br/>

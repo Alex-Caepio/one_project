@@ -43,6 +43,14 @@ class EmailVariables {
     }
 
     /**
+     *
+     *
+     * USER VARIABLES START
+     *
+     *
+     */
+
+    /**
      * @return string
      */
     public function getFirst_name(): string {
@@ -114,36 +122,23 @@ class EmailVariables {
     }
 
 
+    /**
+     *
+     *
+     * USER VARIABLES END
+     *
+     *
+     */
 
 
     /**
-     * @return string
+     *
+     *
+     * SERVICE VARIABLES START
+     *
+     *
      */
-    public function getSubscription_cost(): string {
-        return number_format($this->event->plan->price, 2);
-    }
 
-    /**
-     * @return string
-     * Will be reworked to the new field or new model PlanPurchases
-     */
-    public function getSubscription_start_date(): string {
-        return Carbon::now()->format('d.m.Y');
-    }
-
-    /**
-     * @return string
-     */
-    public function getSubscription_end_date(): string {
-        return Carbon::parse($this->event->user->plan_until)->format('d.m.Y');
-    }
-
-    /**
-     * @return string
-     */
-    public function getMy_articles(): string {
-        return config('app.frontend_practitioner_services');
-    }
 
     /**
      * @return string
@@ -159,12 +154,31 @@ class EmailVariables {
         return $this->event->service->url;
     }
 
+
     /**
      * @return string
      */
     public function getAdd_to_calendar(): string {
         return '';
     }
+
+
+    /**
+     *
+     *
+     * SERVICE VARIABLES END
+     *
+     *
+     */
+
+
+    /**
+     *
+     *
+     * SCHEDULE VARIABLES START
+     *
+     *
+     */
 
     /**
      * @return string
@@ -233,10 +247,42 @@ class EmailVariables {
      * @return string
      */
     public function getSchedule_hosting_url(): string {
-        return $this->event->schedule->url;
+        return '';
+    }
+
+
+
+
+    /**
+     * @return string
+     */
+    public function getSubscription_cost(): string {
+        return number_format($this->event->plan->price, 2);
     }
 
     /**
+     * @return string
+     * Will be reworked to the new field or new model PlanPurchases
+     */
+    public function getSubscription_start_date(): string {
+        return Carbon::now()->format('d.m.Y');
+    }
+
+    /**
+     * @return string
+     */
+    public function getSubscription_end_date(): string {
+        return Carbon::parse($this->event->user->plan_until)->format('d.m.Y');
+    }
+
+    /**
+     * @return string
+     */
+    public function getMy_articles(): string {
+        return config('app.frontend_practitioner_services');
+    }
+
+     /**
      * @return string
      */
     public function getArticle_url(): string {
