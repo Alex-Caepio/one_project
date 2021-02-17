@@ -54,7 +54,7 @@ class PlanController extends Controller
 
             $planStripe = $stripe->prices->create([
                 'unit_amount' => $request->get('is_free') ? 0 : $request->get('price') * 100,
-                'currency' => 'usd',
+                'currency' => config('app.platform_currency'),
                 'recurring' => ['interval' => 'month'],
                 'product' => $product->id
             ]);

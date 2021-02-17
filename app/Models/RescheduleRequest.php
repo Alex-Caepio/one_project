@@ -21,7 +21,9 @@ class RescheduleRequest extends Model
         'old_start_date',
         'new_start_date',
         'old_end_date',
-        'new_end_date'
+        'new_end_date',
+        'old_price_id',
+        'requested_by',
     ];
 
     public function old_schedule(){
@@ -43,5 +45,9 @@ class RescheduleRequest extends Model
     public function schedule()
     {
         return $this->belongsTo(Schedule::class);
+    }
+
+    public function old_price() {
+        return $this->belongsTo(Price::class, 'old_price_id');
     }
 }
