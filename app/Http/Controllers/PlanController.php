@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\AccountUpgradedToPractitioner;
 use App\Http\Requests\Plans\PlanRequest;
 use App\Events\SubscriptionConfirmation;
 use App\Models\Plan;
@@ -48,6 +49,7 @@ class PlanController extends Controller
             $user->plan_from  = Carbon::now();
             $user->account_type = 'practitioner';
             $user->save();
+            event(new AccountUpgradedToPractitioner($user, $plan));
             event(new SubscriptionConfirmation($user, $plan));
 
         } catch (ApiErrorException $e) {

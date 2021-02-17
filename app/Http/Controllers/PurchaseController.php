@@ -10,8 +10,6 @@ use App\Http\Requests\PromotionCode\ValidatePromocodeRequest;
 use App\Http\Requests\Request;
 use App\Http\Requests\Schedule\PurchaseScheduleRequest;
 use App\Models\Booking;
-use App\Models\Plan;
-use App\Models\PractitionerCommission;
 use App\Models\PromotionCode;
 use App\Models\Purchase;
 use App\Models\Schedule;

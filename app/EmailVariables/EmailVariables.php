@@ -86,6 +86,13 @@ class EmailVariables {
     /**
      * @return string
      */
+    public function getMy_account(): string {
+        return config('app.frontend_profile_link');
+    }
+
+    /**
+     * @return string
+     */
     public function getSubscription_cost(): string {
         return number_format($this->event->plan->price, 2);
     }
@@ -103,13 +110,6 @@ class EmailVariables {
      */
     public function getSubscription_end_date(): string {
         return Carbon::parse($this->event->user->plan_until)->format('d.m.Y');
-    }
-
-    /**
-     * @return string
-     */
-    public function getMy_account(): string {
-        return config('app.frontend_profile_link');
     }
 
     /**
