@@ -104,7 +104,14 @@ class EmailVariables {
         return config('app.frontend_practitioner_services');
     }
 
-
+    /**
+     * @return string
+     */
+    public function getPractitioner_business_name(): string {
+        return $this->event->user->isPractitioner()
+            ? $this->event->user->business_name
+            : $this->event->practitioner->business_name;
+    }
 
 
 
@@ -129,13 +136,6 @@ class EmailVariables {
      */
     public function getSubscription_end_date(): string {
         return Carbon::parse($this->event->user->plan_until)->format('d.m.Y');
-    }
-
-    /**
-     * @return string
-     */
-    public function getPractitioner_business_name(): string {
-        return $this->event->practitioner->business_name ?? $this->event->user->business_name;
     }
 
     /**

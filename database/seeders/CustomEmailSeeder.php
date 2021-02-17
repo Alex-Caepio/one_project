@@ -156,9 +156,12 @@ The {{platform_name}} Team<br/>',
                 'from_title' => Str::random(8),
                 'subject'    => '{{platform_name}} Business Profile Unpublished',
                 'logo'       => Str::random(5),
-                'text'       => 'Hi {{first_name}}<br/> As requested, your {{platform_name}} Business Profile page for {{practitioner_business_name}} is now unpublished.
-Your Service Listings are also unpublished and you can no longer receive new Client Bookings. If you have existing Client Bookings, you will need to honour them, unless you choose to cancel them.
-You can republish Business Profile at any time by going to your Profile Page and clicking the PUBLISH button. <br/><a href="{{my_account}}" target="_blank">Go To My Profile</a><br/><br/>
+                'text'       => 'Hi {{first_name}}<br/> As requested, your {{platform_name}} Business Profile page
+for {{practitioner_business_name}} is now unpublished.
+Your Service Listings are also unpublished and you can no longer receive new Client Bookings.
+If you have existing Client Bookings, you will need to honour them, unless you choose to cancel them.
+You can republish Business Profile at any time by going to your Profile Page and clicking the PUBLISH button. <br/>
+<a href="{{my_account}}" target="_blank">Go To My Profile</a><br/><br/>
  Thank you<br/> The {{platform_name}} Team<br/>',
                 'delay'      => random_int(5, 20)
             ],
