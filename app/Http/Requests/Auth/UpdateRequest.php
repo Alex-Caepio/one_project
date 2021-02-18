@@ -71,7 +71,7 @@ class UpdateRequest extends Request
 
         $user = $this->user();
         $validator->after(function ($validator) use($user){
-            if ($this->getBoolFromRequest('is_published') === true){
+            if ($this->getBoolFromRequest('is_published') === true || $user->is_published){
                 if (!$user->business_name && !$this->business_name) {
                     $validator->errors()->add(
                         'business_name',
