@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\Filters\QueryFilter;
 use App\Scopes\PublishedScope;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -50,6 +52,11 @@ class Service extends Model {
         'updated_at' => 'datetime',
         'deleted_at' => 'datetime',
     ];
+
+    public function scopeFilter(Builder $builder, QueryFilter $filters)
+    {
+        return $filters->apply($builder);
+    }
 
     public function media_images() {
         return $this->morphMany(MediaImage::class, 'morphesTo', 'model_name', 'model_id');
