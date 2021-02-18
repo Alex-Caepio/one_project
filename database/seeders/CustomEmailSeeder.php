@@ -370,6 +370,23 @@ and no longer viewable. You can republish it at any time by going to your Articl
 <br/>The {{platform_name}} Team<br/>',
                 'delay'      => random_int(5, 20)
             ],
+            //21
+            [
+                'name'       => 'Service Schedule Cancelled',
+                'user_type'  => 'practitioner',
+                'from_email' => Str::random(10) . '@gmail.com',
+                'from_title' => Str::random(8),
+                'subject'    => 'Service Schedule Cancelled on {{platform_name}}',
+                'logo'       => Str::random(5),
+                'text'       => 'Hi {{first_name}}<br/>
+ {{schedule_name}} has now been cancelled for {{service_name}}.<br/><br/> Thank you<br/> The {{platform_name}} Team<br/>',
+                'delay'      => random_int(5, 20)
+            ],
+
+
+
+
+
 
 
             /*
@@ -451,18 +468,7 @@ Location: {{booking_venue_name}} {{booking_venue_address}} {{booking_city}}, {{b
 
 
 
-            //15
-            [
-                'name'       => 'Service Schedule Cancelled',
-                'user_type'  => 'practitioner',
-                'from_email' => Str::random(10) . '@gmail.com',
-                'from_title' => Str::random(8),
-                'subject'    => 'Service Schedule Cancelled on {{platform_name}}',
-                'logo'       => Str::random(5),
-                'text'       => 'Hi {{first_name}}<br/>
- {{schedule_name}} has now been cancelled for {{service_name}}.<br/><br/> Thank you<br/> The {{platform_name}} Team<br/>',
-                'delay'      => random_int(5, 20)
-            ],
+
             //16
             [
                 'name'       => 'Booking Cancelled by Practitioner',
