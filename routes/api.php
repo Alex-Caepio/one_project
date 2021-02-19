@@ -63,6 +63,14 @@ Route::get('/plans', [PlanController::class, 'index']);
 
 Route::get('/service-types', [ServiceTypeController::class, 'index']);
 
+Route::get('disciplines', [DisciplineController::class, 'index']);
+Route::get('disciplines/{discipline}', [DisciplineController::class, 'show']);
+
+//Route::get('/focus-areas/{focusArea}/images', [FocusAreaController::class, 'indexImage']);
+//Route::get('/focus-areas/{focusArea}/videos', [FocusAreaController::class, 'indexVideo']);
+Route::get('/focus-areas', [FocusAreaController::class, 'index']);
+Route::get('/focus-areas/{focusArea}', [FocusAreaController::class, 'show']);
+
 Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::get('auth/profile', [AuthController::class, 'profile']);
     Route::put('auth/profile', [AuthController::class, 'update']);
@@ -104,9 +112,6 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::post('/articles/{article}/publish', [ArticleController::class, 'publish']);
     Route::post('/articles/{article}/unpublish', [ArticleController::class, 'unpublish']);
 
-    Route::get('disciplines', [DisciplineController::class, 'index']);
-    Route::get('disciplines/{discipline}', [DisciplineController::class, 'show']);
-
     Route::get('keywords', [KeywordController::class, 'index']);
     Route::get('keywords/list', [KeywordController::class, 'list']);
     Route::get('keywords/filter', [KeywordController::class, 'filter']);
@@ -146,11 +151,6 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
 
     Route::get('/disciplines/{discipline}/images', [DisciplineController::class, 'indexImage']);
     Route::get('/disciplines/{discipline}/videos', [DisciplineController::class, 'indexVideo']);
-
-    Route::get('/focus-areas/{focusArea}/images', [FocusAreaController::class, 'indexImage']);
-    Route::get('/focus-areas/{focusArea}/videos', [FocusAreaController::class, 'indexVideo']);
-    Route::get('/focus-areas', [FocusAreaController::class, 'index']);
-    Route::get('/focus-areas/{focusArea}', [FocusAreaController::class, 'show']);
 
     Route::post('messages/users/{user}', [MessageController::class, 'store']);
     Route::get('/messages', [MessageController::class, 'index']);
