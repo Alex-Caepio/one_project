@@ -96,6 +96,12 @@ class UpdateRequest extends Request
                         'You have not filled in the field "Business introduction"'
                     );
                 }
+                if (!$user->business_country && !$this->business_country) {
+                    $validator->errors()->add(
+                        'business_country',
+                        'You have not filled in the field "Business Country"'
+                    );
+                }
                 if (!$user->business_time_zone_id && !$this->business_time_zone_id) {
                     $validator->errors()->add(
                         'business_time_zone_id',
