@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\BookingMyClientController;
 use App\Http\Controllers\CancellationController;
 use App\Http\Controllers\MainPageController;
 use App\Http\Controllers\PaymentMethodController;
@@ -163,6 +164,8 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::get('/users', [UserController::class, 'search']);
 
     Route::get('/schedule-freezes', [ScheduleFreezesController::class, 'index']);
+
+    Route::get('/bookings/my-clients', [BookingMyClientController::class, 'index']);
 
     Route::get('/bookings', [BookingController::class, 'index']);
     Route::get('/bookings/{booking}', [BookingController::class, 'show']);
