@@ -102,6 +102,12 @@ class UpdateRequest extends Request
                         'You have not filled in the field "Business Country"'
                     );
                 }
+                if (!$user->business_city && !$this->business_city) {
+                    $validator->errors()->add(
+                        'business_city',
+                        'You have not filled in the field "Business City"'
+                    );
+                }
                 if (!$user->business_time_zone_id && !$this->business_time_zone_id) {
                     $validator->errors()->add(
                         'business_time_zone_id',
