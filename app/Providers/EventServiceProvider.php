@@ -7,6 +7,7 @@ use App\Events\AccountTerminatedByAdmin;
 use App\Events\AccountUpgradedToPractitioner;
 use App\Events\ArticlePublished;
 use App\Events\ArticleUnpublished;
+use App\Events\BookingCancelledByPractitioner;
 use App\Events\BookingCancelledByClient;
 use App\Events\BookingConfirmation;
 use App\Events\BookingEventVirtualWithDeposit;
@@ -99,7 +100,10 @@ class EventServiceProvider extends ServiceProvider {
         ArticleUnpublished::class                               => [
             ArticleUnpublishedEmail::class
         ],
-        BookingCancelledByClient::class                         => [
+        BookingCancelledByPractitioner::class => [
+            BookingCancelledByPractitioner::class,
+        ],
+        BookingCancelledByClient::class => [
             BookingCancelledByClientEmail::class,
         ],
         BookingConfirmation::class                              => [

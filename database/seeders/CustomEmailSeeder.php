@@ -382,11 +382,241 @@ and no longer viewable. You can republish it at any time by going to your Articl
  {{schedule_name}} has now been cancelled for {{service_name}}.<br/><br/> Thank you<br/> The {{platform_name}} Team<br/>',
                 'delay'      => random_int(5, 20)
             ],
+            //22
+            [
+                'name'       => 'Booking Cancelled by Practitioner',
+                'user_type'  => 'client',
+                'from_email' => Str::random(10) . '@gmail.com',
+                'from_title' => Str::random(8),
+                'subject'    => 'Booking Cancelled – {{booking_reference}} - {{practitioner_business_name}',
+                'logo'       => Str::random(5),
+                'text'       => 'Hi {{first_name}}<br/>
+Unfortunately, {{practitioner_business_name}} has had to cancel your booking for {{service_name}}.You will be refunded fully for any amount you have paid.
+Cancelled Service: <br/>
+Booking Reference: {{booking_reference}}<br/>
+{{service_name}} - {{schedule_name}}
+From: {{schedule_start_date}}, {{schedule_start_time}}
+To: {{schedule_end_date}}, {{schedule_end_time}}
+Cost: {{total_paid}}<br/><br/>
+ Thank you<br/> The {{platform_name}} Team<br/>',
+                'delay'      => random_int(5, 20)
+            ],
+            //30
+            [
+                'name'       => 'Booking Cancelled by Client with Refund',
+                'user_type'  => 'client',
+                'from_email' => Str::random(10) . '@gmail.com',
+                'from_title' => Str::random(8),
+                'subject'    => 'Booking Cancelled – {{booking_reference}} - {{service_name}}',
+                'logo'       => Str::random(5),
+                'text'       => 'Hi {{first_name}} <br/>
+Your booking for {{service_name}} with {{practitioner_business_name}} has now been cancelled. You do not need to take any further action as we will advise the practitioner.
+You will be fully refunded. Please allow up to 10 days for the refund to reach you. <br/> <br/>
+Cancelled Service: {{service_name}} - {{schedule_name}}<br/>
+Booking Reference: {{booking_reference}} <br/>
+Cost: {{total_paid}}<br/><br/>
+Thank you<br/>
+The {{platform_name}} Team<br/>',
+                'delay'      => random_int(5, 20)
+            ],
+            //31
+            [
+                'name'       => 'Booking Cancelled by Client with Refund',
+                'user_type'  => 'practitioner',
+                'from_email' => Str::random(10) . '@gmail.com',
+                'from_title' => Str::random(8),
+                'subject'    => 'Booking Cancelled – {{service_name}}',
+                'logo'       => Str::random(5),
+                'text'       => 'Hi {{first_name}}<br/>
+Unfortunately, {{client_name}} has had to cancel their booking with you for {{service_name}} - {{schedule_name}}.
+Their place will be reopened in your service schedule for resale. As per your cancellation terms, they will be refunded
+fully for any amount they have paid to date for this service.
+Please make sure you have funds are available to cover this refund.<br/><br/> Thank you <br/>The {{platform_name}} Team<br/>',
+                'delay'      => random_int(5, 20)
+            ],
+            //32
+            [
+                'name'       => 'Booking Cancelled by Client NO Refund',
+                'user_type'  => 'client',
+                'from_email' => Str::random(10) . '@gmail.com',
+                'from_title' => Str::random(8),
+                'subject'    => 'Booking Cancelled – {{service_name}}',
+                'logo'       => Str::random(5),
+                'text'       => 'Hi {{first_name}}<br/> Your booking for {{service_name}} with {{practitioner_business_name}}
+has now been cancelled. You do not need to take any further action as we will advise the practitioner.
+Unfortunately, you will not be refunded based on the cancellation terms set by the Practitioner.<br/><br/>
+Cancelled Service: {{service_name}} - {{schedule_name}} <br/>
+Booking Reference: {{booking_reference}}<br/><br/>
+ Thank you <br/> The {{platform_name}} Team <br/>',
+                'delay'      => random_int(5, 20)
+            ],
+            //32
+            [
+                'name'       => 'Booking Cancelled by Client NO Refund',
+                'user_type'  => 'practitioner',
+                'from_email' => Str::random(10) . '@gmail.com',
+                'from_title' => Str::random(8),
+                'subject'    => 'Booking Cancelled – {{service_name}}',
+                'logo'       => Str::random(5),
+                'text'       => 'Hi {{first_name}} <br/> Unfortunately, {{client_name}} has had to cancel their booking with you for {{service_name}} {{schedule_name}}.
+Their place will be reopened in your service schedule for resale.
+As per your cancellation terms, they will not be refunded for this service. <br/> <br/>
+Thank you <br/> The {{platform_name}} Team <br/>',
+                'delay'      => random_int(5, 20)
+            ],
 
 
+            //51
+            [
+                'name'       => 'Booking Confirmation - Event/Appt Virtual',
+                'user_type'  => 'client',
+                'from_email' => Str::random(10) . '@gmail.com',
+                'from_title' => Str::random(8),
+                'subject'    => 'Booking Confirmation - {{booking_reference}} - {{service_name}}',
+                'logo'       => Str::random(5),
+                'text'       => 'Hi {{first_name}}<br/>
+Your booking for {{service_name}} is now confirmed with {{practitioner_business_name}}<br/>
+Booking Details: {{service_name}} - {{schedule_name}}<br/>
+Booking Reference: {{booking_reference}} <br/>
+Cost: {{total_paid}} <br/>
+From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}} <br/>
+Location: {{schedule_hosting_url}} <br/><a href="{{add_to_calendar}}" target="_blank">Add to calendar</a> <br/> <a href="{{view_my_booking}}" target="_blank">View My Bookings</a>
+Your Practitioner may have also added some attachments to this email for you.<br/><br/>
+Thank you<br/> The {{platform_name}} Team<br/>',
+                'delay'      => random_int(5, 20)
+            ],
+            //52
+            [
+                'name'       => 'Booking Confirmation - DateLess Virtual',
+                'user_type'  => 'client',
+                'from_email' => Str::random(10) . '@gmail.com',
+                'from_title' => Str::random(8),
+                'subject'    => 'Order Confirmation - {{booking_reference}} - {{service_name}}',
+                'logo'       => Str::random(5),
+                'text'       => 'Hi {{first_name}}<br/>
+ Your Purchase for {{service_name}} from {{practitioner_business_name}} is confirmed. <br/>
+ Purchase Details: {{service_name}} - {{schedule_name}}<br/>
+Order Reference: {{booking_reference}} <br/>
+Cost: {{total_paid}} <br/>
+Location: {{schedule_hosting_url}} <br/>{{view_my_purchase}} <br/>
+Message from {{practitioner_business_name}}<br/>
+{{practitioner_booking_message}} <br/>Your Practitioner may have also added some attachments to this email for you and should be in touch with you via {{platform_name}} email message to confirm further details.
+ <br/><br/>Thank you <br/>The {{platform_name}}  Team<br/>',
+                'delay'      => random_int(5, 20)
+            ],
+            //57
+            [
+                'name'       => 'Booking Confirmation - Event Virtual',
+                'user_type'  => 'practitioner',
+                'from_email' => Str::random(10) . '@gmail.com',
+                'from_title' => Str::random(8),
+                'subject'    => 'Booking Confirmation - {{service_name}}',
+                'logo'       => Str::random(5),
+                'text'       => 'Hi {{first_name}} <br/>
+Congratulations! {{client_name}} has booked with you for {{service_name}}. <br/>
+Booking Details: {{service_name}} - {{schedule_name}}<br/>
+Booking Reference: {{booking_reference}} <br/>
+Cost: {{total_paid}} <br/>
+From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}}<br/>
+Location: {{schedule_hosting_url}}<br/> {{view_client_booking}} <br/><br/>
+Thank you <br/>The {{platform_name}}  Team<br/>',
+                'delay'      => random_int(5, 20)
+            ],
+            //58
+            [
+                'name'       => 'Booking Confirmation Dateless Virtual',
+                'user_type'  => 'practitioner',
+                'from_email' => Str::random(10) . '@gmail.com',
+                'from_title' => Str::random(8),
+                'subject'    => 'Purchase Confirmation - {{service_name}}',
+                'logo'       => Str::random(5),
+                'text'       => 'Hi {{first_name}} <br/>
+ Congratulations! {{client_name}} has purchased {{service_name}}. <br/>
+ Purchase Details: {{service_name}} - {{schedule_name}}<br/>
+Order Reference: {{booking_reference}} <br/>
+Cost: {{total_paid}} <br/>
+Location: {{schedule_hosting_url}} <br/>{{view_client_booking}}<br/>
+ We recommend getting in touch with {{client_name}} directly via {{platform_name}} email message to welcome them and provide any further information they may need for {{service_name}}.
+ <br/><br/>Thank you <br/>The {{platform_name}}  Team<br/>',
+                'delay'      => random_int(5, 20)
+            ],
 
-
-
+            [
+                'name'       => 'Booking Confirmation - Date/Apt Physical',
+                'user_type'  => 'client',
+                'from_email' => Str::random(10) . '@gmail.com',
+                'from_title' => Str::random(8),
+                'subject'    => 'Booking Confirmation - {{booking_reference}} - {{service_name}}',
+                'logo'       => Str::random(5),
+                'text'       => 'Hi {{first_name}} <br/>
+ Your booking for {{service_name}} is now confirmed with {{practitioner_business_name}} <br/> <br/>
+ Booking Details: {{service_name}} - {{schedule_name}} <br/>
+ Booking Reference: {{booking_reference}} <br/>
+ Cost: {{total_paid}} <br/>
+ From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}} <br/>
+ Location:  {{schedule_venue}} {{schedule_city}}, {{schedule_postcode}} {{schedule_country}} <br/>
+<a href="{{add_to_calendar}}" target="_blank">Add to calendar</a> {{see_on_map}} <br/>
+Message from {{practitioner_business_name}} <br/>
+ {{practitioner_booking_message}} <br/>
+ Your Practitioner may have also added some attachments to this email for you. <br/> <br/>
+Thank you  <br/> The {{platform_name}} Team <br/>',
+                'delay'      => random_int(5, 20)
+            ],
+            //35
+            [
+                'name'       => 'Booking Confirmation - Date/Apt Physical',
+                'user_type'  => 'practitioner',
+                'from_email' => Str::random(10) . '@gmail.com',
+                'from_title' => Str::random(8),
+                'subject'    => 'Booking Confirmation - {{service_name}}',
+                'logo'       => Str::random(5),
+                'text'       => 'Hi {{first_name}} <br/> Congratulations! {{client_name}} has booked with you for {{service_name}}. <br/>
+ Booking Details: {{service_name}} - {{schedule_name}} <br/>
+ Booking Reference: {{booking_reference}} <br/>
+ Cost: {{total_paid}} <br/>
+From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}}  <br/>
+Location:  {{schedule_venue}} {{schedule_city}}, {{schedule_postcode}} {{schedule_country}} <br/>
+{{view_client_booking}} <br/> <br/>
+ Thank you <br/> The {{platform_name}} Team <br/>',
+                'delay'      => random_int(5, 20)
+            ],
+            //36
+            [
+                'name'       => 'Booking Confirmation - Dateless Physical',
+                'user_type'  => 'client',
+                'from_email' => Str::random(10) . '@gmail.com',
+                'from_title' => Str::random(8),
+                'subject'    => 'Purchase Confirmation - {{booking_reference}} - {{service_name}}',
+                'logo'       => Str::random(5),
+                'text'       => 'Hi {{first_name}} <br/>
+Your Purchase for {{service_name}} from {{practitioner_business_name}} is confirmed. <br/>
+Purchase Details: {{service_name}} - {{schedule_name}} <br/>
+Booking Reference: {{booking_reference}}  <br/>
+Cost: {{total_paid}} <br/>
+Location: {{schedule_city}}, {{schedule_country}} <br/>
+{{view_my_purchase}} <br/>
+Message from {{practitioner_business_name}} <br/> {{practitioner_booking_message}} <br/>
+Your Practitioner may have also added some attachments to this email for you and should also be in touch with you via {{platform_name}} messaging to confirm further details.
+ <br/> <br/>Thank you  <br/>The {{platform_name}} Team <br/>',
+                'delay'      => random_int(5, 20)
+            ],
+            //37
+            [
+                'name'       => 'Booking Confirmation - Date-Less Physical',
+                'user_type'  => 'practitioner',
+                'from_email' => Str::random(10) . '@gmail.com',
+                'from_title' => Str::random(8),
+                'subject'    => 'Purchase Confirmation - {{service_name}}',
+                'logo'       => Str::random(5),
+                'text'       => 'Hi {{first_name}} <br/> Congratulations! {{client_name}} has purchased {{service_name}}. <br/>
+ Purchase Details: {{service_name}} - {{schedule_name}} <br/>
+ Booking Reference: {{booking_reference}} <br/>
+ Cost: {{total_paid}} <br/>
+ Location: {{schedule_city}}, {{schedule_country}} <br/>
+We recommend getting in touch with {{client_name}} directly via {{platform_name}} messaging to welcome them and provide any further information they may need for {{service_name}}.
+ <br/>{{view_client_purchase}} <br/> <br/>  Thank you <br/> The {{platform_name}} Team <br/> <br/>',
+                'delay'      => random_int(5, 20)
+            ],
 
 
             /*
@@ -394,25 +624,6 @@ and no longer viewable. You can republish it at any time by going to your Articl
              * CRON REMINDERS
              *
              */
-            //21
-            [
-                'name'       => 'Instalment Payment Reminder',
-                'user_type'  => 'client',
-                'from_email' => Str::random(10) . '@gmail.com',
-                'from_title' => Str::random(8),
-                'subject'    => 'Payment Reminder {{booking_reference}} - {{service_name}}',
-                'logo'       => Str::random(5),
-                'text'       => 'Hi {{first_name}} <br/>
-This is to remind you that your next instalment payment for {{service_name}} from {{practitioner_business_name}} is due in 7 days.
-The Instalment Payment Schedule is charged to your card provided as follows:
-<br/>{{instalments}}<br />
-Service: {{service_name}} - {{schedule_name}} <br/>
-Booking Reference: {{booking_reference}} <br/>
-<a href="{{view_my_booking}}" target="_blank">View My Booking</a><br/><br/>
-Thank you<br/>
-The {{platform_name}} Team<br/>',
-                'delay'      => random_int(5, 20)
-            ],
             //45
             [
                 'name'       => 'Booking Reminder - WS/Event',
@@ -425,8 +636,8 @@ The {{platform_name}} Team<br/>',
 Your booking for {{service_name}} with {{practitioner_business_name}} is just one week away. <br/>
 Booking Details: {{service_name}} - {{schedule_name}} <br/>
 Booking Reference: {{booking_reference}} <br/>
-From: {{booking_start_date}}, {{booking_start_time}} To: {{booking_end_date}}, {{booking_end_time}}<br/>
-Location: {{booking_venue_name}} {{booking_venue_address}} {{booking_city}}, {{booking_postcode}}, {{booking_country}} <br/> {{see_on_map}}<br/>
+From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}}<br/>
+Location:  {{schedule_venue}} {{schedule_city}}, {{schedule_postcode}}, {{schedule_country}} <br/> {{see_on_map}}<br/>
 <a href="{{view_my_booking}}" target="_blank">View My Bookings</a><br/><br/>
 Thank you<br/> The {{platform_name}} Team <br/>',
                 'delay'      => random_int(5, 20)
@@ -442,8 +653,8 @@ Thank you<br/> The {{platform_name}} Team <br/>',
                 'text'       => 'Hi {{first_name}} <br/>Your Retreat, {{service_name}} with {{practitioner_business_name}} is just two weeks away. <br/>
 Booking Details: {{service_name}} - {{schedule_name}}<br/>
 Booking Reference: {{booking_reference}} <br/>
-From: {{booking_start_date}} To: {{booking_end_date}} <br/>
-Location: {{booking_city}}, {{booking_country}}<br/>
+From: {{schedule_start_date}} To: {{schedule_end_date}} <br/>
+Location: {{schedule_city}}, {{schedule_country}}<br/>
 <a href="{{view_my_booking}}" target="_blank">View My Bookings</a><br/><br/> Thank you<br/> The {{platform_name}} Team<br/>',
                 'delay'      => random_int(5, 20)
             ],
@@ -459,28 +670,9 @@ Location: {{booking_city}}, {{booking_country}}<br/>
 Your booking for {{service_name}} with {{practitioner_business_name}} is tomorrow.  <br/>
 Booking Details: {{service_name}} - {{schedule_name}} <br/>
 Booking Reference: {{booking_reference}} <br/>
-From: {{booking_start_date}}, {{booking_start_time}} To: {{booking_end_date}}, {{booking_end_time}} <br/>
-Location: {{booking_venue_name}} {{booking_venue_address}} {{booking_city}}, {{booking_postcode}} {{booking_country}}
+From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}} <br/>
+Location:  {{schedule_venue}} {{schedule_city}}, {{schedule_postcode}} {{schedule_country}}
 <br/>{{see_on_map}}<br/> <a href="{{view_my_booking}}" target="_blank">View My Bookings</a><br/><br/> Thank you <br/>The {{platform_name}} Team<br/>',
-                'delay'      => random_int(5, 20)
-            ],
-
-
-
-
-
-            //16
-            [
-                'name'       => 'Booking Cancelled by Practitioner',
-                'user_type'  => 'client',
-                'from_email' => Str::random(10) . '@gmail.com',
-                'from_title' => Str::random(8),
-                'subject'    => 'Booking Cancelled – {{Booking Reference}} - {{Practitioner_Business_Name}',
-                'logo'       => Str::random(5),
-                'text'       => 'Hi {{first_name}}<br/> Unfortunately, {{practitioner_business_name}} has had to cancel your booking for {{service_name}}.You will be refunded fully for any amount you have paid.
-Cancelled Service: Booking Reference: {{booking_reference}}<br/>
- {{service_name}} - {{schedule_name}} From: {{cancelled_start_date}}, {{cancelled_start_time}}
-To: {{cancelled_end_date}}, {{cancelled_end_time}} Cost: {{total_paid}}<br/><br/> Thank you<br/> The {{platform_name}} Team<br/>',
                 'delay'      => random_int(5, 20)
             ],
             //17
@@ -489,9 +681,9 @@ To: {{cancelled_end_date}}, {{cancelled_end_time}} Cost: {{total_paid}}<br/><br/
                 'user_type'  => 'client',
                 'from_email' => Str::random(10) . '@gmail.com',
                 'from_title' => Str::random(8),
-                'subject'    => 'Booking Reschedule Request – {{booking_reference}} - {{Practitioner_Business_Name}}',
+                'subject'    => 'Booking Reschedule Request – {{booking_reference}} - {{practitioner_business_name}}',
                 'logo'       => Str::random(5),
-                'text'       => 'Hi {{first_name}}<br/> You are currently booked with {{practitioner_business_name}} for {{service_name}} on the {{booking_start_date}}.<br/>
+                'text'       => 'Hi {{first_name}}<br/> You are currently booked with {{practitioner_business_name}} for {{service_name}} on the {{schedule_start_date}}.<br/>
 Booking Reference: {{booking_reference}} {{practitioner_business_name}} would like to reschedule your booking as follows:<br/>
 Reschedule Requested:{{service_name}} - {{schedule_name}}<br/>
 From: {{reschedule_start_date}}, {{reschedule_start_time}}<br/>
@@ -500,10 +692,10 @@ Location: {{reschedule_venue}} {{service_schedule_reschedule_url}} {{reschedule_
 Message from {{practitioner_business_name}} {{practitioner_reschedule_message}} {{accept_button}} {{decline_button}} <a href="{{view_my_booking}}" target="_blank">View My Bookings</a><br/><br/>
 You will not be charged for this reschedule. Please note, if you decline or do not respond, the Practitioner may still cancel your booking and if so, you will be refunded.<br/>
 Current Booking: {{service_name}} - {{schedule_name}}<br/>
-From: {{booking_start_date}}, {{booking_start_time}}<br/>
-To: {{booking_end_date}}, {{booking_end_time}}<br/>
-Location: {{booking_venue_name}} {{service_schedule_booking_url}} {{booking_venue_address}}
-{{booking_city}}, {{booking_postcode}}, {{booking_country}}<br/><br/>
+From: {{schedule_start_date}}, {{schedule_start_time}}<br/>
+To: {{schedule_end_date}}, {{schedule_end_time}}<br/>
+Location:  {{schedule_hosting_url}} {{schedule_venue}}
+{{schedule_city}}, {{schedule_postcode}}, {{schedule_country}}<br/><br/>
 Thank you<br/> The {{platform_name}} Team<br/>',
                 'delay'      => random_int(5, 20)
             ],
@@ -553,8 +745,8 @@ Thank you<br/> The {{platform_name}} Team<br/>',
 Their original booking will remain. If you are not able to deliver the booking, you can still cancel it and the client will be refunded.<br/><br/>
 Booking Reference: {{booking_reference}}<br/>
 Current Booking - MAINTAINED {{service_name}} - {{schedule_name}}<br/>
-From: {{booking_start_date}}, {{booking_start_time}} To: {{booking_end_date}}, {{booking_end_time}}<br/>
-Location: {{booking_venue_name}} {{service_schedule_booking_url}} {{booking_venue_address}} {{booking_city}}, {{booking_postcode}}, {{booking_country}}
+From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}}<br/>
+Location:  {{schedule_hosting_url}} {{schedule_venue}} {{schedule_city}}, {{schedule_postcode}}, {{schedule_country}}
 <br/>{{view_client_booking}}<br/><br/>
 Reschedule - DECLINED {{service_name}} - {{schedule_name}}<br/>
 From: {{reschedule_start_date}}, {{reschedule_start_time}} To: {{reschedule_end_date}}, {{reschedule_end_time}}<br/>
@@ -576,8 +768,8 @@ Unfortunately, your Client {{client_name}} has not responded to the request to r
 Their original booking will remain. If you are not able to deliver the booking, you can still cancel it and the client will be refunded.<br/><br/>
 Booking Reference: {{booking_reference}}<br/>
 Current Booking - MAINTAINED {{service_name}} - {{schedule_name}}<br/>
-From: {{booking_start_date}}, {{booking_start_time}} To: {{booking_end_date}}, {{booking_end_time}}<br/>
-Location: {{booking_venue_name}} {{service_schedule_booking_url}} {{booking_venue_address}} {{booking_city}}, {{booking_postcode}}, {{booking_country}}
+From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}}<br/>
+Location:  {{schedule_hosting_url}} {{schedule_venue}} {{schedule_city}}, {{schedule_postcode}}, {{schedule_country}}
 <br/>{{view_client_booking}}<br/><br/>
 Reschedule - NO RESPONSE {{service_name}} - {{schedule_name}}<br/>
 From: {{reschedule_start_date}}, {{reschedule_start_time}} To: {{reschedule_end_date}}, {{reschedule_end_time}}<br/>
@@ -598,9 +790,9 @@ This does not change your Booking which is still as listed below, though the cha
 <br/>{{view_the_service}}<br/> {{view_my_booking]<br/><br/>
 Your current booking: {{service_name}} - {{schedule_name}}<br/>
 Booking Reference: {{booking_reference}}<br/>
-From: {{booking_start_date}}, {{booking_start_time}} To: {{booking_end_date}}, {{booking_end_time}}<br/>
-Location: {{booking_venue_name}} {{service_schedule_booking_url}}
-{{booking_venue_address}} {{booking_city}}, {{booking_postcode}}, {{booking_country}} <br/>{{see_on_map}} <br/><br/>Thank you <br/>The {{platform_name}} Team<br/>',
+From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}}<br/>
+Location:  {{schedule_hosting_url}}
+{{schedule_venue}} {{schedule_city}}, {{schedule_postcode}}, {{schedule_country}} <br/>{{see_on_map}} <br/><br/>Thank you <br/>The {{platform_name}} Team<br/>',
                 'delay'      => random_int(5, 20)
             ],
             //23
@@ -636,14 +828,13 @@ Cost: {{total_paid}} <br/> <br/>
 Thank you <br/> The {{platform_name}} Team <br/>',
                 'delay'      => random_int(5, 20)
             ],
-            //25
             //26
             [
                 'name'       => 'Booking Reschedule Client to Select - Appt',
                 'user_type'  => 'client',
                 'from_email' => Str::random(10) . '@gmail.com',
                 'from_title' => Str::random(8),
-                'subject'    => 'Booking Reschedule Request – {{Practitioner_Business_Name}}',
+                'subject'    => 'Booking Reschedule Request – {{practitioner_business_name}}',
                 'logo'       => Str::random(5),
                 'text'       => 'Hi {{first_name}} <br/> {{practitioner_business_name}} will not be able to make your exiting appointment for {{service_name}}. Instead they would like to offer you another appointment at a time of your choosing.
 You can either Accept this request and book a new time or Decline this request. If you decline or do not respond, the Practitioner may still cancel your current appointment and if so, you will be refunded.
@@ -652,9 +843,9 @@ You can either Accept this request and book a new time or Decline this request. 
 Message from {{practitioner_business_name}} <br/> {{practitioner_reschedule_message}} <br/> <br/>
 Your current booking: {{service_name}} - {{schedule_name}} <br/>
 Booking Reference: {{booking_reference}} <br/>
-From: {{booking_start_date}}, {{booking_start_time}} To: {{booking_end_date}}, {{booking_end_time}} <br/>
-Location: {{booking_venue_name}} {{service_schedule_booking_url}} {{booking_venue_address}}
-{{booking_city}}, {{booking_postcode}}, {{booking_country}} <br/> <br/>
+From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}} <br/>
+Location:  {{schedule_hosting_url}} {{schedule_venue}}
+{{schedule_city}}, {{schedule_postcode}}, {{schedule_country}} <br/> <br/>
 Thank you The {{platform_name}} Team',
                 'delay'      => random_int(5, 20)
             ],
@@ -664,96 +855,24 @@ Thank you The {{platform_name}} Team',
                 'user_type'  => 'client',
                 'from_email' => Str::random(10) . '@gmail.com',
                 'from_title' => Str::random(8),
-                'subject'    => 'Booking Reschedule Request – {{Practitioner_Business_Name}}',
+                'subject'    => 'Booking Reschedule Request – {{practitioner_business_name}}',
                 'logo'       => Str::random(5),
                 'text'       => 'Hi {{first_name}} <br/>
- You are currently booked with {{practitioner_business_name}} for {{service_name}}, on the {{booking_start_date}}. <br/>
+ You are currently booked with {{practitioner_business_name}} for {{service_name}}, on the {{schedule_start_date}}. <br/>
 Booking Reference: {{booking_reference}} {{practitioner_business_name}} would like to reschedule your booking as follows: <br/>
 New Appointment: {{service_name}} - {{schedule_name}} <br/>
 From: {{reschedule_start_date}}, {{reschedule_start_time}} To: {{reschedule_end_date}}, {{reschedule_end_time}} <br/>
 Location: {{reschedule_venue}} {{service_schedule_reschedule_url}} {{reschedule_address}} {{reschedule_city}}, {{reschedule_postcode}}, {{reschedule_country}} <br/> <br/>
-Message from {{practitioner_business_name}} <br/> {{practitioner_reschedule_message}} <br/> <br/>
+Message from {{practitioner_business_name}} <br/> <br/>
 You can either Accept or Decline this request. If you decline or do not respond, the Practitioner may still cancel your current appointment and if so, you will be refunded.
  <br/>{{accept}} {{decline}} <br/> <a href="{{view_my_booking}}" target="_blank">View My Bookings</a> <br/> <br/>
 Current Booking {{service_name}} - {{schedule_name}} <br/>
-From: {{booking_start_date}}, {{booking_start_time}} To: {{booking_end_date}}, {{booking_end_time}} <br/>
-Location: {{booking_venue_name}} {{service_schedule_booking_url}} {{booking_venue_address}} {{booking_city}}, {{booking_postcode}}, {{booking_country}} <br/> <br/>
+From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}} <br/>
+Location:  {{schedule_hosting_url}} {{schedule_venue}} {{schedule_city}}, {{schedule_postcode}}, {{schedule_country}} <br/> <br/>
 Thank you <br/> The {{platform_name}} Team <br/>',
                 'delay'      => random_int(5, 20)
             ],
             //28
-
-            //29
-            [
-                'name'       => 'Purchase Cancelled by Practitioner',
-                'user_type'  => 'client',
-                'from_email' => Str::random(10) . '@gmail.com',
-                'from_title' => Str::random(8),
-                'subject'    => 'Purchase Cancelled – {{Booking Reference}} - {{Practitioner_Business_Name}}',
-                'logo'       => Str::random(5),
-                'text'       => 'Hi {{first_name}} <br/> Unfortunately, {{practitioner_business_name}} has had to cancel your purchase for {{service_name}}.
-You will be refunded fully for any amount you have paid. Please allow up to 10 days for the refund to reach you. <br/> <br/>
-Cancelled Service: {{service_name}} - {{schedule_name}} <br/>
-Booking Reference: {{booking_reference}}  <br/>
-Cost: {{total_paid}} <br/> <br/> Thank you <br/> The {{platform_name}} Team <br/>',
-                'delay'      => random_int(5, 20)
-            ],
-            //30
-            [
-                'name'       => 'Booking Cancelled by Client with Refund',
-                'user_type'  => 'client',
-                'from_email' => Str::random(10) . '@gmail.com',
-                'from_title' => Str::random(8),
-                'subject'    => 'Booking Cancelled – {{booking_reference}} - {{service_name}}',
-                'logo'       => Str::random(5),
-                'text'       => 'Hi {{first_name}} <br/>
-Your booking for {{service_name}} with {{practitioner_business_name}} has now been cancelled. You do not need to take any further action as we will advise the practitioner.
-You will be refunded, less an admin fee of {{client_admin_fee_percent}}%. Please allow up to 10 days for the refund to reach you. <br/> <br/>
-Cancelled Service: {{service_name}} - {{schedule_name}}<br/>
-Booking Reference: {{booking_reference}} <br/>  Cost: {{total_paid}}<br/><br/> Thank you<br/> The {{platform_name}} Team<br/>',
-                'delay'      => random_int(5, 20)
-            ],
-            //31
-            [
-                'name'       => 'Booking Cancelled by Client with Refund',
-                'user_type'  => 'practitioner',
-                'from_email' => Str::random(10) . '@gmail.com',
-                'from_title' => Str::random(8),
-                'subject'    => 'Booking Cancelled – {{service_name}}',
-                'logo'       => Str::random(5),
-                'text'       => 'Hi {{first_name}}<br/>
-Unfortunately, {{client_name}} has had to cancel their booking with you for {{service_name}} - {{schedule_name}}.
-Their place will be reopened in your service schedule for resale. As per your cancellation terms, they will be refunded fully for any amount they have paid to date for this service.
-Please make sure you have funds are available to cover this refund.<br/><br/> Thank you <br/>The {{platform_name}} Team<br/>',
-                'delay'      => random_int(5, 20)
-            ],
-            //32
-            [
-                'name'       => 'Booking Cancelled by Client NO Refund',
-                'user_type'  => 'client',
-                'from_email' => Str::random(10) . '@gmail.com',
-                'from_title' => Str::random(8),
-                'subject'    => 'Booking Cancelled – {{service_name}}',
-                'logo'       => Str::random(5),
-                'text'       => 'Hi {{first_name}}<br/> Your booking for {{service_name}} with {{practitioner_business_name}} has now been cancelled. You do not need to take any further action as we will advise the practitioner.
-Unfortunately, you will not be refunded based on the cancellation terms set by the Practitioner.<br/><br/>
-Cancelled Service: {{service_name}} - {{schedule_name}} <br/>Booking Reference: {{booking_reference}}<br/><br/>
- Thank you <br/> The {{platform_name}} Team <br/>',
-                'delay'      => random_int(5, 20)
-            ],
-            //32
-            [
-                'name'       => 'Booking Cancelled by Client NO Refund',
-                'user_type'  => 'practitioner',
-                'from_email' => Str::random(10) . '@gmail.com',
-                'from_title' => Str::random(8),
-                'subject'    => 'Booking Cancelled – {{service_name}}',
-                'logo'       => Str::random(5),
-                'text'       => 'Hi {{first_name}} <br/> Unfortunately, {{client_name}} has had to cancel their booking with you for {{service_name}} {{schedule_name}}.
-Their place will be reopened in your service schedule for resale. As per your cancellation terms, they will not be refunded for this service. <br/> <br/>
-Thank you <br/> The {{platform_name}} Team <br/>',
-                'delay'      => random_int(5, 20)
-            ],
             //33
             [
                 'name'       => 'Client Rescheduled FYI',
@@ -769,88 +888,12 @@ From: {{reschedule_start_date}}, {{reschedule_start_time}} To: {{reschedule_end_
 Location: {{reschedule_venue}} {{service_schedule_reschedule_url}} {{reschedule_address}} {{reschedule_city}}, {{reschedule_postcode}}, {{reschedule_country}} <br/>
  Their original booking will be reopened in your service schedule for resale. <br/> <br/>
  Original Booking: {{service_name}} - {{schedule_name}} <br/>
-  From: {{booking_start_date}}, {{booking_start_time}} To: {{booking_end_date}}, {{booking_end_time}} <br/>
-Location: {{booking_venue_name}} {{service_schedule_booking_url}} {{booking_venue_address}} {{booking_city}}, {{booking_postcode}}, {{booking_country}} <br/> <br/>
+  From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}} <br/>
+Location:  {{schedule_hosting_url}} {{schedule_venue}} {{schedule_city}}, {{schedule_postcode}}, {{schedule_country}} <br/> <br/>
 Thank you <br/> The {{platform_name}} Team <br/>',
                 'delay'      => random_int(5, 20)
             ],
             //34
-            [
-                'name'       => 'Booking Confirmation - Date/Apt Physical',
-                'user_type'  => 'client',
-                'from_email' => Str::random(10) . '@gmail.com',
-                'from_title' => Str::random(8),
-                'subject'    => 'Booking Confirmation - {{booking_reference}} - {{service_name}}',
-                'logo'       => Str::random(5),
-                'text'       => 'Hi {{first_name}} <br/>
- Your booking for {{service_name}} is now confirmed with {{practitioner_business_name}} <br/> <br/>
- Booking Details: {{service_name}} - {{schedule_name}} <br/>
- Booking Reference: {{booking_reference}} <br/>
- Cost: {{total_paid}} <br/>
- From: {{booking_start_date}}, {{booking_start_time}} To: {{booking_end_date}}, {{booking_end_time}} <br/>
- Location: {{booking_venue_name}} {{booking_venue_address}} {{booking_city}}, {{booking_postcode}} {{booking_country}} <br/>
-<a href="{{add_to_calendar}}" target="_blank">Add to calendar</a> {{see_on_map}} <br/>
-Message from {{practitioner_business_name}} <br/>
- {{practitioner_booking_message}} <br/>
- Your Practitioner may have also added some attachments to this email for you. <br/> <br/>
-Thank you  <br/> The {{platform_name}} Team <br/>',
-                'delay'      => random_int(5, 20)
-            ],
-            //35
-            [
-                'name'       => 'Booking Confirmation - Date/Apt Physical',
-                'user_type'  => 'practitioner',
-                'from_email' => Str::random(10) . '@gmail.com',
-                'from_title' => Str::random(8),
-                'subject'    => 'Booking Confirmation - {{service_name}}',
-                'logo'       => Str::random(5),
-                'text'       => 'Hi {{first_name}} <br/> Congratulations! {{client_name}} has booked with you for {{service_name}}. <br/>
- Booking Details: {{service_name}} - {{schedule_name}} <br/>
- Booking Reference: {{booking_reference}} <br/>
- Cost: {{total_paid}} <br/>
-From: {{booking_start_date}}, {{booking_start_time}} To: {{booking_end_date}}, {{booking_end_time}}  <br/>
-Location: {{booking_venue_name}} {{booking_venue_address}} {{booking_city}}, {{booking_postcode}} {{booking_country}} <br/>
-{{view_client_booking}} <br/> <br/>
- Thank you <br/> The {{platform_name}} Team <br/>',
-                'delay'      => random_int(5, 20)
-            ],
-            //36
-            [
-                'name'       => 'Booking Confirmation - Dateless Physical',
-                'user_type'  => 'client',
-                'from_email' => Str::random(10) . '@gmail.com',
-                'from_title' => Str::random(8),
-                'subject'    => 'Purchase Confirmation - {{booking_reference}} - {{service_name}}',
-                'logo'       => Str::random(5),
-                'text'       => 'Hi {{first_name}} <br/>
-Your Purchase for {{service_name}} from {{practitioner_business_name}} is confirmed. <br/>
-Purchase Details: {{service_name}} - {{schedule_name}} <br/>
-Booking Reference: {{booking_reference}}  <br/>
-Cost: {{total_paid}} <br/>
-Location: {{booking_city}}, {{booking_country}} <br/>
-{{view_my_purchase}} <br/>
-Message from {{practitioner_business_name}} <br/> {{practitioner_booking_message}} <br/>
-Your Practitioner may have also added some attachments to this email for you and should also be in touch with you via {{platform_name}} messaging to confirm further details.
- <br/> <br/>Thank you  <br/>The {{platform_name}} Team <br/>',
-                'delay'      => random_int(5, 20)
-            ],
-            //37
-            [
-                'name'       => 'Booking Confirmation - Date-Less Physical',
-                'user_type'  => 'practitioner',
-                'from_email' => Str::random(10) . '@gmail.com',
-                'from_title' => Str::random(8),
-                'subject'    => 'Purchase Confirmation - {{service_name}}',
-                'logo'       => Str::random(5),
-                'text'       => 'Hi {{first_name}} <br/> Congratulations! {{client_name}} has purchased {{service_name}}. <br/>
- Purchase Details: {{service_name}} - {{schedule_name}} <br/>
- Booking Reference: {{booking_reference}} <br/>
- Cost: {{total_paid}} <br/>
- Location: {{booking_city}}, {{booking_country}} <br/>
-We recommend getting in touch with {{client_name}} directly via {{platform_name}} messaging to welcome them and provide any further information they may need for {{service_name}}.
- <br/>{{view_client_purchase}} <br/> <br/>  Thank you <br/> The {{platform_name}} Team <br/> <br/>',
-                'delay'      => random_int(5, 20)
-            ],
             //38
             [
                 'name'       => 'Account Terminated by Admin',
@@ -880,258 +923,201 @@ Unfortunately, your {{platform_name}} account has been terminated and your exist
 <br/><br/>Thank you <br/>The {{platform_name}} Team<br/>',
                 'delay'      => random_int(5, 20)
             ],
-            //40
-            [
-                'name'       => 'Booking Confirmation - Date Physical - with Deposit',
-                'user_type'  => 'client',
-                'from_email' => Str::random(10) . '@gmail.com',
-                'from_title' => Str::random(8),
-                'subject'    => 'Booking Confirmation - {{booking_reference}} - {{service_name}}',
-                'logo'       => Str::random(5),
-                'text'       => 'Hi {{first_name}}<br/> Your booking for {{service_name}} is now confirmed with {{practitioner_business_name}}<br/>
- Booking Details: {{service_name}} - {{schedule_name}}<br/>
- Booking Reference: {{booking_reference}} <br/>
- From: {{booking_start_date}}, {{booking_start_time}} To: {{booking_end_date}}, {{booking_end_time}}<br/>
- Location: {{booking_venue_name}} {{booking_venue_address}} {{booking_city}}, {{booking_postcode}} {{booking_country}}
-<br/><a href="{{add_to_calendar}}" target="_blank">Add to calendar</a> {{see_on_map}}<br/>
- Message from {{practitioner_business_name}}<br/>
- {{practitioner_booking_message}} <br/>
- Your Practitioner may have also added some attachments to this email for you. <br/>Payment Deposit Paid: {{deposit_paid]} <br/>
- The balance for this service will be charged to your card provided as follows:<br/>
-{{instalment_date_1}} – {{instalment_amount_1}}<br/>
-{{instalment_date_2}} – {{instalment_amount_2}}<br/>
-{{etc_for_number_of_instalments}}<br/>
-Please make sure you have funds available for each instalment or your Booking may be cancelled. <br/><br/>
-Thank you <br/>The {{platform_name}} Team<br/>',
-                'delay'      => random_int(5, 20)
-            ],
-            //41
-            [
-                'name'       => 'Booking Confirmation - Date Physical - with Deposit',
-                'user_type'  => 'practitioner',
-                'from_email' => Str::random(10) . '@gmail.com',
-                'from_title' => Str::random(8),
-                'subject'    => 'Booking Confirmation - {{service_name}}',
-                'logo'       => Str::random(5),
-                'text'       => 'Hi {{first_name}} <br/>
-Congratulations! {{client_name}}  has booked with you for {{service_name}}. <br/>
-Booking Details: {{service_name}} - {{schedule_name}}<br/>
-Booking Reference: {{booking_reference}} <br/>
-From: {{booking_start_date}}, {{booking_start_time}} To: {{booking_end_date}}, {{booking_end_time}} <br/>
-Location: {{booking_venue_name}} {{booking_venue_address}} {{booking_city}}, {{booking_postcode}} {{booking_country}}<br/>
-{{view_client_booking}} <br/>
-The Client has paid a deposit of {{deposit_paid}} and will pay the remaining over instalments as follows:<br/>
-{{instalment_date_1}} – {{instalment_amount_1}}<br/>
-{{instalment_date_2}} – {{instalment_amount_2}}<br/>
-{{etc_for_number_of_instalments}}<br/><br/>
-Thank you <br/>The {{platform_name}} Team<br/>',
-                'delay'      => random_int(5, 20)
-            ],
-            //42
-            [
-                'name'       => 'Booking Confirmation - DateLess Physical - with Deposit',
-                'user_type'  => 'practitioner',
-                'from_email' => Str::random(10) . '@gmail.com',
-                'from_title' => Str::random(8),
-                'subject'    => 'Purchase Confirmation - {{booking_reference}} - {{service_name}}',
-                'logo'       => Str::random(5),
-                'text'       => 'Hi {{first_name}}<br/>
-Your purchase for {{service_name}} is now confirmed with {{practitioner_business_name}}<br/><br/>
-Purchase Details: {{service_name}} - {{schedule_name}} <br/>
-Booking Reference: {{booking_reference}}<br/>
-Location: {{booking_city}}, {{booking_country}} <br/>{{view_my_purchase}} <br/>
-Message from {{practitioner_business_name}}<br/>
-{{practitioner_booking_message}} <br/>
-Your Practitioner may have also added some attachments to this email for you.<br/>
-Payment Deposit Paid: {{deposit_paid}} <br/>
-The balance for this service will be charged to your card provided as follows:<br/>
-{{instalment_date_1}} – {{instalment_amount_1}}<br/>
-{{instalment_date_2}} – {{instalment_amount_2}}<br/>
-{{etc_for_number_of_instalments}}<br/>
-Please make sure you have funds available for each instalment or your purchase may be cancelled.<br/><br/>
-Thank you <br/>The {{platform_name}} Team<br/>',
-                'delay'      => random_int(5, 20)
-            ],
-            //43
-            [
-                'name'       => 'Booking Confirmation - DateLess Physical - with Deposit',
-                'user_type'  => 'client',
-                'from_email' => Str::random(10) . '@gmail.com',
-                'from_title' => Str::random(8),
-                'subject'    => 'Purchase Confirmation - {{service_name}}',
-                'logo'       => Str::random(5),
-                'text'       => 'Hi {{first_name}} <br/>
-Congratulations! {{client_name}} has purchased {{service_name}}. <br/><br/>
-Purchase Details: {{service_name}} - {{schedule_name}}<br/>
-Booking Reference: {{booking_reference}} <br/>
-Location: {{booking_city}}, {{booking_country}} {{view_client_purchase}} <br/>
-The Client has paid a deposit of {{deposit_paid]} and will pay the remaining over instalments as follows:<br/>
-{{instalment_date_1}} – {{instalment_amount_1}}<br/>
-{{instalment_date_2}} – {{instalment_amount_2}}<br/>
-{{etc_for_number_of_instalments}}<br/><br/>
-Thank you <br/>The {{platform_name}} Team<br/>',
-                'delay'      => random_int(5, 20)
-            ],
+            /**
+             * [
+             * 'name'       => 'Booking Confirmation - DateLess Physical - with Deposit',
+             * 'user_type'  => 'client',
+             * 'from_email' => Str::random(10) . '@gmail.com',
+             * 'from_title' => Str::random(8),
+             * 'subject'    => 'Purchase Confirmation - {{service_name}}',
+             * 'logo'       => Str::random(5),
+             * 'text'       => 'Hi {{first_name}} <br/>
+             * Congratulations! {{client_name}} has purchased {{service_name}}. <br/><br/>
+             * Purchase Details: {{service_name}} - {{schedule_name}}<br/>
+             * Booking Reference: {{booking_reference}} <br/>
+             * Location: {{schedule_city}}, {{schedule_country}} {{view_client_purchase}} <br/>
+             * The Client has paid a deposit of {{deposit_paid]} and will pay the remaining over instalments as follows:<br/>
+             * {{instalment_date_1}} – {{instalment_amount_1}}<br/>
+             * {{instalment_date_2}} – {{instalment_amount_2}}<br/>
+             * {{etc_for_number_of_instalments}}<br/><br/>
+             * Thank you <br/>The {{platform_name}} Team<br/>',
+             * 'delay'      => random_int(5, 20)
+             * ],
+             *             //60
+             * [
+             * 'name'       => 'Booking Confirmation Dateless Virtual – with Deposit',
+             * 'user_type'  => 'practitioner',
+             * 'from_email' => Str::random(10) . '@gmail.com',
+             * 'from_title' => Str::random(8),
+             * 'subject'    => 'Purchase Confirmation - {{service_name}}',
+             * 'logo'       => Str::random(5),
+             * 'text'       => 'Hi {{first_name}} <br/>
+             * Congratulations! {{client_name}} has purchased {{service_name}}.<br/>
+             * Purchase Details: {{service_name}} - {{schedule_name}}<br/>
+             * Order Reference: {{booking_reference}} <br/>
+             * Location: {{schedule_hosting_url}} <br/>{{view_client_purchase}}<br/>
+             * The Client has paid a deposit of {{deposit_paid]} and will pay the remaining over instalments as follows:<br/>
+             * {{instalment_date_1}} – {{instalment_amount_1}}<br/>
+             * {{instalment_date_2}} – {{instalment_amount_2}}<br/>
+             * {{etc_for_number_of_instalments}}<br/><br/> Thank you<br/> The {{platform_name}}  Team<br/>',
+             * 'delay'      => random_int(5, 20)
+             * ],
+             * //21
+             * [
+             * 'name'       => 'Instalment Payment Reminder',
+             * 'user_type'  => 'client',
+             * 'from_email' => Str::random(10) . '@gmail.com',
+             * 'from_title' => Str::random(8),
+             * 'subject'    => 'Payment Reminder {{booking_reference}} - {{service_name}}',
+             * 'logo'       => Str::random(5),
+             * 'text'       => 'Hi {{first_name}} <br/>
+             * This is to remind you that your next instalment payment for {{service_name}} from {{practitioner_business_name}} is due in 7 days.
+             * The Instalment Payment Schedule is charged to your card provided as follows:
+             * <br/>{{instalments}}<br />
+             * Service: {{service_name}} - {{schedule_name}} <br/>
+             * Booking Reference: {{booking_reference}} <br/>
+             * <a href="{{view_my_booking}}" target="_blank">View My Booking</a><br/><br/>
+             * Thank you<br/>
+             * The {{platform_name}} Team<br/>',
+             * 'delay'      => random_int(5, 20)
+             * ],
+             * //59
+             * [
+             * 'name'       => 'Booking Event Virtual - with Deposit',
+             * 'user_type'  => 'practitioner',
+             * 'from_email' => Str::random(10) . '@gmail.com',
+             * 'from_title' => Str::random(8),
+             * 'subject'    => 'Booking Confirmation - {{service_name}}',
+             * 'logo'       => Str::random(5),
+             * 'text'       => 'Hi {{first_name}} <br/>Congratulations! {{client_name}} has booked with you for {{service_name}}. <br/>
+             * Booking Details: {{service_name}} - {{schedule_name}}<br/>
+             * Booking Reference: {{booking_reference}} <br/>
+             * From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}}<br/>
+             * Location: {{schedule_hosting_url}}<br/> {{view_client_booking}}<br/>
+             * The Client has paid a deposit of {{deposit_paid]} and will pay the remaining over instalments as follows:<br/>
+             * {{instalment_date_1}} – {{instalment_amount_1}}<br/>
+             * {{instalment_date_2}} – {{instalment_amount_2}}<br/>
+             * {{etc_for_number_of_instalments}}<br/><br/> Thank you <br/>The {{platform_name}}  Team<br/>',
+             * 'delay'      => random_int(5, 20)
+             * ],
+             * //56
+             * [
+             * 'name'       => 'Booking Confirmation - DateLess Virtual with Deposit',
+             * 'user_type'  => 'client',
+             * 'from_email' => Str::random(10) . '@gmail.com',
+             * 'from_title' => Str::random(8),
+             * 'subject'    => 'Order Confirmation - {{booking_reference}} - {{service_name}}',
+             * 'logo'       => Str::random(5),
+             * 'text'       => 'Hi {{first_name}} <br/>
+             * Your booking for {{service_name}} is now confirmed with {{practitioner_business_name}}  <br/>
+             * Purchase Details: {{service_name}} - {{schedule_name}}<br/>
+             * Order Reference: {{booking_reference}} <br/>
+             * Location: {{schedule_hosting_url}} <br/>{{view_my_purchase}} <br/>
+             * Message from {{practitioner_business_name}}
+             * <br/>{{practitioner_booking_message}} <br/>
+             * Your Practitioner may have also added some attachments to this email for you and should also be in touch with you via {{platform_name}} email message to confirm further details.
+             * <br/>Payment Deposit Paid: {{deposit_paid}} <br/>
+             * The balance for this service will be charged to your card proved as follows:<br/>
+             * {{instalment_date_1}} – {{instalment_amount_1}}<br/>
+             * {{instalment_date_2}} – {{instalment_amount_2}}<br/>
+             * {{etc_for_number_of_instalments}} <br/>Please make sure you have funds available for each instalment or your purchase may be cancelled. <br/><br/>
+             * Thank you <br/>The {{platform_name}}  Team<br/>',
+             * 'delay'      => random_int(5, 20)
+             * ],
+             * //53
+             * [
+             * 'name'       => 'Booking Confirmation - Event Virtual With Deposit',
+             * 'user_type'  => 'client',
+             * 'from_email' => Str::random(10) . '@gmail.com',
+             * 'from_title' => Str::random(8),
+             * 'subject'    => 'Booking Confirmation - {{booking_reference}} - {{service_name}}',
+             * 'logo'       => Str::random(5),
+             * 'text'       => 'Hi {{first_name}}<br/>
+             * Your booking for {{service_name}} is now confirmed with {{practitioner_business_name}}. <br/>
+             * Booking Details: {{service_name}} - {{schedule_name}} <br/>
+             * Booking Reference: {{booking_reference}} <br/>
+             * From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}} <br/>
+             * Location: {{schedule_hosting_url}} <br/><a href="{{add_to_calendar}}" target="_blank">Add to calendar</a> <br/> <a href="{{view_my_booking}}" target="_blank">View My Bookings</a> <br/>
+             * Message from {{practitioner_business_name}} <br/>{{practitioner_booking_message}} <br/>
+             * Your Practitioner may have also added some attachments to this email for you. Payment Deposit Paid: {{deposit_paid}} The balance for this service will be charged to your card proved as follows:<br/>
+             * {{instalment_date_1}} – {{instalment_amount_1}}<br/>
+             * {{instalment_date_2}} – {{instalment_amount_2}}<br/>
+             * {{etc_for_number_of_instalments}} <br/>
+             * Please make sure you have funds available for each instalment or your Booking may be cancelled. <br/><br/>Thank you<br/> The {{platform_name}}  Team<br/>',
+             * 'delay'      => random_int(5, 20)
+             * ],
+             * //40
+             * [
+             * 'name'       => 'Booking Confirmation - Date Physical - with Deposit',
+             * 'user_type'  => 'client',
+             * 'from_email' => Str::random(10) . '@gmail.com',
+             * 'from_title' => Str::random(8),
+             * 'subject'    => 'Booking Confirmation - {{booking_reference}} - {{service_name}}',
+             * 'logo'       => Str::random(5),
+             * 'text'       => 'Hi {{first_name}}<br/> Your booking for {{service_name}} is now confirmed with {{practitioner_business_name}}<br/>
+             * Booking Details: {{service_name}} - {{schedule_name}}<br/>
+             * Booking Reference: {{booking_reference}} <br/>
+             * From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}}<br/>
+             * Location:  {{schedule_venue}} {{schedule_city}}, {{schedule_postcode}} {{schedule_country}}
+             * <br/><a href="{{add_to_calendar}}" target="_blank">Add to calendar</a>{{see_on_map}}<br/>
+             * Message from {{practitioner_business_name}}<br/>
+             * {{practitioner_booking_message}} <br/>
+             * Your Practitioner may have also added some attachments to this email for you. <br/>Payment Deposit Paid: {{deposit_paid]} <br/>
+             * The balance for this service will be charged to your card provided as follows:<br/>
+             * {{installments}}<br/>
+             * Please make sure you have funds available for each instalment or your Booking may be cancelled. <br/><br/>
+             * Thank you <br/>The {{platform_name}} Team<br/>',
+             * 'delay'      => random_int(5, 20)
+             * ],
+             * //41
+             * [
+             * 'name'       => 'Booking Confirmation - Date Physical - with Deposit',
+             * 'user_type'  => 'practitioner',
+             * 'from_email' => Str::random(10) . '@gmail.com',
+             * 'from_title' => Str::random(8),
+             * 'subject'    => 'Booking Confirmation - {{service_name}}',
+             * 'logo'       => Str::random(5),
+             * 'text'       => 'Hi {{first_name}} <br/>
+             * Congratulations! {{client_name}}  has booked with you for {{service_name}}. <br/>
+             * Booking Details: {{service_name}} - {{schedule_name}}<br/>
+             * Booking Reference: {{booking_reference}} <br/>
+             * From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}} <br/>
+             * Location:  {{schedule_venue}} {{schedule_city}}, {{schedule_postcode}} {{schedule_country}}<br/>
+             * {{view_client_booking}} <br/>
+             * The Client has paid a deposit of {{deposit_paid}} and will pay the remaining over instalments as follows:<br/>
+             * {{instalment_date_1}} – {{instalment_amount_1}}<br/>
+             * {{instalment_date_2}} – {{instalment_amount_2}}<br/>
+             * {{etc_for_number_of_instalments}}<br/><br/>
+             * Thank you <br/>The {{platform_name}} Team<br/>',
+             * 'delay'      => random_int(5, 20)
+             * ],
+             * //42
+             * [
+             * 'name'       => 'Booking Confirmation - DateLess Physical - with Deposit',
+             * 'user_type'  => 'practitioner',
+             * 'from_email' => Str::random(10) . '@gmail.com',
+             * 'from_title' => Str::random(8),
+             * 'subject'    => 'Purchase Confirmation - {{booking_reference}} - {{service_name}}',
+             * 'logo'       => Str::random(5),
+             * 'text'       => 'Hi {{first_name}}<br/>
+             * Your purchase for {{service_name}} is now confirmed with {{practitioner_business_name}}<br/><br/>
+             * Purchase Details: {{service_name}} - {{schedule_name}} <br/>
+             * Booking Reference: {{booking_reference}}<br/>
+             * Location: {{schedule_city}}, {{schedule_country}} <br/>{{view_my_purchase}} <br/>
+             * Message from {{practitioner_business_name}}<br/>
+             * {{practitioner_booking_message}} <br/>
+             * Your Practitioner may have also added some attachments to this email for you.<br/>
+             * Payment Deposit Paid: {{deposit_paid}} <br/>
+             * The balance for this service will be charged to your card provided as follows:<br/>
+             * {{instalment_date_1}} – {{instalment_amount_1}}<br/>
+             * {{instalment_date_2}} – {{instalment_amount_2}}<br/>
+             * {{etc_for_number_of_instalments}}<br/>
+             * Please make sure you have funds available for each instalment or your purchase may be cancelled.<br/><br/>
+             * Thank you <br/>The {{platform_name}} Team<br/>',
+             * 'delay'      => random_int(5, 20)
+             * ],
+             **/
 
-
-            //51
-            [
-                'name'       => 'Booking Confirmation - Event/Appt Virtual',
-                'user_type'  => 'client',
-                'from_email' => Str::random(10) . '@gmail.com',
-                'from_title' => Str::random(8),
-                'subject'    => 'Booking Confirmation - {{booking_reference}} - {{service_name}}',
-                'logo'       => Str::random(5),
-                'text'       => 'Hi {{first_name}}<br/>
-Your booking for {{service_name}} is now confirmed with {{practitioner_business_name}}<br/>
-Booking Details: {{service_name}} - {{schedule_name}}<br/>
-Booking Reference: {{booking_reference}} <br/>
-Cost: {{total_paid}} <br/>
-From: {{booking_start_date}}, {{booking_start_time}} To: {{booking_end_date}}, {{booking_end_time}} <br/>
-Location: {{service_schedule_booking_url}} <br/><a href="{{add_to_calendar}}" target="_blank">Add to calendar</a> <br/> <a href="{{view_my_booking}}" target="_blank">View My Bookings</a> <br/>Message from {{practitioner_business_name}}<br/>
-{{practitioner_booking_message}}<br/> Your Practitioner may have also added some attachments to this email for you.<br/><br/>
-Thank you<br/> The {{platform_name}} Team<br/>',
-                'delay'      => random_int(5, 20)
-            ],
-            //52
-            [
-                'name'       => 'Booking Confirmation - DateLess Virtual',
-                'user_type'  => 'client',
-                'from_email' => Str::random(10) . '@gmail.com',
-                'from_title' => Str::random(8),
-                'subject'    => 'Order Confirmation - {{booking_reference}} - {{service_name}}',
-                'logo'       => Str::random(5),
-                'text'       => 'Hi {{first_name}}<br/>
- Your Purchase for {{service_name}} from {{practitioner_business_name}} is confirmed. <br/>
- Purchase Details: {{service_name}} - {{schedule_name}}<br/>
-Order Reference: {{booking_reference}} <br/>
-Cost: {{total_paid}} <br/>
-Location: {{service_schedule_booking_url}} <br/>{{view_my_purchase}} <br/>
-Message from {{practitioner_business_name}}<br/>
-{{practitioner_booking_message}} <br/>Your Practitioner may have also added some attachments to this email for you and should be in touch with you via {{platform_name}} email message to confirm further details.
- <br/><br/>Thank you <br/>The {{platform_name}}  Team<br/>',
-                'delay'      => random_int(5, 20)
-            ],
-            //53
-            [
-                'name'       => 'Booking Confirmation - Event Virtual With Deposit',
-                'user_type'  => 'client',
-                'from_email' => Str::random(10) . '@gmail.com',
-                'from_title' => Str::random(8),
-                'subject'    => 'Booking Confirmation - {{booking_reference}} - {{service_name}}',
-                'logo'       => Str::random(5),
-                'text'       => 'Hi {{first_name}}<br/>
-Your booking for {{service_name}} is now confirmed with {{practitioner_business_name}}. <br/>
-Booking Details: {{service_name}} - {{schedule_name}} <br/>
-Booking Reference: {{booking_reference}} <br/>
-From: {{booking_start_date}}, {{booking_start_time}} To: {{booking_end_date}}, {{booking_end_time}} <br/>
-Location: {{service_schedule_booking_url}} <br/><a href="{{add_to_calendar}}" target="_blank">Add to calendar</a> <br/> <a href="{{view_my_booking}}" target="_blank">View My Bookings</a> <br/>
-Message from {{practitioner_business_name}} <br/>{{practitioner_booking_message}} <br/>
-Your Practitioner may have also added some attachments to this email for you. Payment Deposit Paid: {{deposit_paid}} The balance for this service will be charged to your card proved as follows:<br/>
-{{instalment_date_1}} – {{instalment_amount_1}}<br/>
-{{instalment_date_2}} – {{instalment_amount_2}}<br/>
-{{etc_for_number_of_instalments}} <br/>
- Please make sure you have funds available for each instalment or your Booking may be cancelled. <br/><br/>Thank you<br/> The {{platform_name}}  Team<br/>',
-                'delay'      => random_int(5, 20)
-            ],
-            //56
-            [
-                'name'       => 'Booking Confirmation - DateLess Virtual with Deposit',
-                'user_type'  => 'client',
-                'from_email' => Str::random(10) . '@gmail.com',
-                'from_title' => Str::random(8),
-                'subject'    => 'Order Confirmation - {{booking_reference}} - {{service_name}}',
-                'logo'       => Str::random(5),
-                'text'       => 'Hi {{first_name}} <br/>
-Your booking for {{service_name}} is now confirmed with {{practitioner_business_name}}  <br/>
-Purchase Details: {{service_name}} - {{schedule_name}}<br/>
-Order Reference: {{booking_reference}} <br/>
-Location: {{service_schedule_booking_url}} <br/>{{view_my_purchase}} <br/>
-Message from {{practitioner_business_name}}
-<br/>{{practitioner_booking_message}} <br/>
-Your Practitioner may have also added some attachments to this email for you and should also be in touch with you via {{platform_name}} email message to confirm further details.
- <br/>Payment Deposit Paid: {{deposit_paid}} <br/>
- The balance for this service will be charged to your card proved as follows:<br/>
-{{instalment_date_1}} – {{instalment_amount_1}}<br/>
-{{instalment_date_2}} – {{instalment_amount_2}}<br/>
-{{etc_for_number_of_instalments}} <br/>Please make sure you have funds available for each instalment or your purchase may be cancelled. <br/><br/>
-Thank you <br/>The {{platform_name}}  Team<br/>',
-                'delay'      => random_int(5, 20)
-            ],
-            //57
-            [
-                'name'       => 'Booking Confirmation - Event Virtual',
-                'user_type'  => 'practitioner',
-                'from_email' => Str::random(10) . '@gmail.com',
-                'from_title' => Str::random(8),
-                'subject'    => 'Booking Confirmation - {{service_name}}',
-                'logo'       => Str::random(5),
-                'text'       => 'Hi {{first_name}} <br/>
-Congratulations! {{client_name}} has booked with you for {{service_name}}. <br/>
-Booking Details: {{service_name}} - {{schedule_name}}<br/>
-Booking Reference: {{booking_reference}} <br/>
-Cost: {{total_paid}} <br/>
-From: {{booking_start_date}}, {{booking_start_time}} To: {{booking_end_date}}, {{booking_end_time}}<br/>
-Location: {{service_schedule_booking_url}}<br/> {{view_client_booking}} <br/><br/>
-Thank you <br/>The {{platform_name}}  Team<br/>',
-                'delay'      => random_int(5, 20)
-            ],
-            //58
-            [
-                'name'       => 'Booking Confirmation Dateless Virtual',
-                'user_type'  => 'practitioner',
-                'from_email' => Str::random(10) . '@gmail.com',
-                'from_title' => Str::random(8),
-                'subject'    => 'Purchase Confirmation - {{service_name}}',
-                'logo'       => Str::random(5),
-                'text'       => 'Hi {{first_name}} <br/>
- Congratulations! {{client_name}} has purchased {{service_name}}. <br/>
- Purchase Details: {{service_name}} - {{schedule_name}}<br/>
-Order Reference: {{booking_reference}} <br/>
-Cost: {{total_paid}} <br/>
-Location: {{service_schedule_booking_url}} <br/>{{view_client_booking}}<br/>
- We recommend getting in touch with {{client_name}} directly via {{platform_name}} email message to welcome them and provide any further information they may need for {{service_name}}.
- <br/><br/>Thank you <br/>The {{platform_name}}  Team<br/>',
-                'delay'      => random_int(5, 20)
-            ],
-            //59
-            [
-                'name'       => 'Booking Event Virtual - with Deposit',
-                'user_type'  => 'practitioner',
-                'from_email' => Str::random(10) . '@gmail.com',
-                'from_title' => Str::random(8),
-                'subject'    => 'Booking Confirmation - {{service_name}}',
-                'logo'       => Str::random(5),
-                'text'       => 'Hi {{first_name}} <br/>Congratulations! {{client_name}} has booked with you for {{service_name}}. <br/>
-Booking Details: {{service_name}} - {{schedule_name}}<br/>
-Booking Reference: {{booking_reference}} <br/>
-From: {{booking_start_date}}, {{booking_start_time}} To: {{booking_end_date}}, {{booking_end_time}}<br/>
-Location: {{service_schedule_booking_url}}<br/> {{view_client_booking}}<br/>
-The Client has paid a deposit of {{deposit_paid]} and will pay the remaining over instalments as follows:<br/>
-{{instalment_date_1}} – {{instalment_amount_1}}<br/>
-{{instalment_date_2}} – {{instalment_amount_2}}<br/>
-{{etc_for_number_of_instalments}}<br/><br/> Thank you <br/>The {{platform_name}}  Team<br/>',
-                'delay'      => random_int(5, 20)
-            ],
-            //60
-            [
-                'name'       => 'Booking Confirmation Dateless Virtual – with Deposit',
-                'user_type'  => 'practitioner',
-                'from_email' => Str::random(10) . '@gmail.com',
-                'from_title' => Str::random(8),
-                'subject'    => 'Purchase Confirmation - {{service_name}}',
-                'logo'       => Str::random(5),
-                'text'       => 'Hi {{first_name}} <br/>
-Congratulations! {{client_name}} has purchased {{service_name}}.<br/>
-Purchase Details: {{service_name}} - {{schedule_name}}<br/>
-Order Reference: {{booking_reference}} <br/>
-Location: {{service_schedule_booking_url}} <br/>{{view_client_purchase}}<br/>
-The Client has paid a deposit of {{deposit_paid]} and will pay the remaining over instalments as follows:<br/>
-{{instalment_date_1}} – {{instalment_amount_1}}<br/>
-{{instalment_date_2}} – {{instalment_amount_2}}<br/>
-{{etc_for_number_of_instalments}}<br/><br/> Thank you<br/> The {{platform_name}}  Team<br/>',
-                'delay'      => random_int(5, 20)
-            ],
         ];
         DB::table('custom_emails')->insert($data);
     }

@@ -54,7 +54,7 @@ class EmailVariables {
      * @return string
      */
     public function getFirst_name(): string {
-        return $this->event->user->first_name;
+        return $this->event->recipient->first_name ?? $this->event->user->first_name;
     }
 
     /**
@@ -333,6 +333,13 @@ class EmailVariables {
      *
      */
 
+    /**
+     *
+     *
+     * BOOKINGS VARIABLES START
+     *
+     *
+     */
 
     /**
      * @return string
@@ -355,6 +362,33 @@ class EmailVariables {
         return config('app.frontend_booking_url');
     }
 
+
+    /**
+     * @return float
+     */
+    public function getTotal_paid(): float {
+        return (float)$this->event->booking->cost;
+    }
+
+    /**
+     * @return float
+     */
+    public function getClient_name(): float {
+        return $this->event->client->first_name.' '.$this->event->client->last_name;
+    }
+
+
+    /**
+     *
+     *
+     * BOOKING VARIABLES END
+     *
+     *
+     */
+
+
+
+
     /**
      * @return string
      */
@@ -367,41 +401,6 @@ class EmailVariables {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-    public function getAdmin_termination_message() {
-        return 'Administrator attribution notification';
-    }
-
-    public function getTotal_paid() {
-        return $this->event->user->email;
-    }
-
-    public function getCancelled_start_date() {
-        return $this->event->user->email;
-    }
-
-    public function getCancelled_start_time() {
-        return $this->event->user->email;
-    }
-
-    public function getCancelled_end_date() {
-        return $this->event->user->email;
-    }
-
-    public function getCancelled_end_time() {
-        return $this->event->user->email;
-    }
 
     public function getReschedule_start_date() {
         return $this->event->user->email;
