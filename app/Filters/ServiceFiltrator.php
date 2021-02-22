@@ -4,6 +4,7 @@
 namespace App\Filters;
 
 use App\Http\Requests\Request;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Log;
 
@@ -69,6 +70,23 @@ class ServiceFiltrator {
                     break;
             }
         });
+
+        if ($request->getBoolFromRequest('for_free') !== null) {
+            $queryBuilder->whereHas('schedules', function($query) use ($request) {
+                $query->whereHas('prices', function($q) use ($request) {
+                    $q->where('is_free', $request->getBoolFromRequest('for_free'));
+                });
+            });
+        }
+
+        if ($request->has('starting_soon')) {
+            $queryBuilder->whereHas('schedules', function($query) use ($request) {
+                $nextWeek = Carbon::now()->addDays(7)->toDateString();
+                $query->where('start_date', '>=', NOW())
+                ->orWhere('start_date', '<=', $nextWeek);
+            });
+        }
+
         return $queryBuilder;
     }
 
