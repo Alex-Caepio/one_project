@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-
-use App\Http\Requests\Request;
-use App\Models\Booking;
 use App\Models\User;
-use App\Transformers\BookingTransformer;
+use App\Models\Purchase;
+use App\Http\Requests\Request;
+use App\Transformers\MyClientPurchaseTransformer;
 use App\Transformers\MyClientTransformer;
 use Illuminate\Support\Facades\DB;
 
@@ -15,7 +14,7 @@ class BookingMyClientController extends Controller
 
     public function index(Request $request)
     {
-        $paginator = User::query()->selectRaw(
+        $query = User::query()->selectRaw(
             'users.*,
             count(distinct live_bookings.id) live_bookings,
             count(distinct attended_bookings.id) attended_bookings,
@@ -38,12 +37,45 @@ class BookingMyClientController extends Controller
             ->join('schedules', 'schedules.id', '=', 'bookings.schedule_id')
             ->join('services', 'services.id', '=', 'schedules.service_id')
             ->where('services.user_id', $request->user()->id)
-            ->groupBy('users.id')
-            ->paginate($request->getLimit());
+            ->groupBy('users.id');
 
-        $myClients    = $paginator->getCollection();
+        if ($request->hasOrderBy()) {
+            $order = $request->getOrderBy();
+            $query->orderBy($order['column'], $order['direction']);
+        }
+
+        $paginator = $query->paginate($request->getLimit());
+        $myClients = $paginator->getCollection();
 
         return response(fractal($myClients, new MyClientTransformer())
+            ->parseIncludes($request->getIncludes()))
+            ->withPaginationHeaders($paginator);
+    }
+
+    public function purchases(Request $request)
+    {
+        $paginator = Purchase::query()
+            ->selectRaw(implode(', ', [
+                'purchases.id as id',
+                'services.title as service_name',
+                'service_types.name as service_type',
+                'schedules.title as schedule_name',
+                'purchases.created_at as purchase_date',
+                'concat(users.first_name, " ", users.last_name) as client',
+                'purchases.price as paid',
+                'schedules.location_displayed as location',
+                'schedules.refund_terms as refund_terms',
+            ]))
+            ->join('services', 'services.id', '=', 'purchases.service_id')
+            ->join('service_types', 'service_types.id', '=', 'services.service_type_id')
+            ->join('schedules', 'schedules.id', '=', 'purchases.schedule_id')
+            ->join('users', 'users.id', '=', 'purchases.user_id')
+            ->where('services.user_id', $request->user()->id)
+            ->paginate($request->getLimit());
+
+        $purchases = $paginator->getCollection();
+
+        return response(fractal($purchases, new MyClientPurchaseTransformer())
             ->parseIncludes($request->getIncludes()))
             ->withPaginationHeaders($paginator);
     }
