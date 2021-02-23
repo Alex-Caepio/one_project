@@ -27,12 +27,12 @@ class BookingMyClientController extends Controller
             ->join('bookings', 'bookings.user_id', '=', 'users.id')
             ->leftJoin('bookings as live_bookings',
                 function ($q) {
-                    $q->on('live_bookings.user_id', '=', 'users.id')
+                    $q->on('live_bookings.id', '=', 'bookings.id')
                         ->on('live_bookings.datetime_from', '>', DB::raw('now()'));
                 })
             ->leftJoin('bookings as attended_bookings',
                 function ($q) {
-                    $q->on('attended_bookings.user_id', '=', 'users.id')
+                    $q->on('attended_bookings.id', '=', 'bookings.id')
                         ->on('attended_bookings.datetime_from', '<=', DB::raw('now()'));
                 })
             ->join('schedules', 'schedules.id', '=', 'bookings.schedule_id')

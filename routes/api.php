@@ -78,6 +78,7 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::post('auth/resend-verification', [AuthController::class, 'resendVerification']);
     Route::post('auth/profile/avatar', [AuthController::class, 'avatar']);
     Route::post('auth/profile/background', [AuthController::class, 'background']);
+    Route::get('auth/quotes/articles', [AuthController::class, 'quotesArticles']);
 
     Route::get('stripe/link', [StripeAccountController::class, 'link']);
     Route::get('stripe/account', [StripeAccountController::class, 'account']);

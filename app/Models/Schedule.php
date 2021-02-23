@@ -58,7 +58,8 @@ class Schedule extends Model
         'notice_min_period',
         'buffer_time',
         'buffer_period',
-        'is_virtual'
+        'address',
+        'appointment',
     ];
 
     public function location()

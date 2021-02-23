@@ -2,9 +2,7 @@
 
 namespace App\Http\Requests\Schedule;
 
-use App\Http\Requests\Request;
-
-class ProductScheduleRequest extends Request implements CreateScheduleInterface
+class ProductScheduleRequest extends GenericSchedule
 {
     /**
      * Determine if the user is authorized to make this request.

@@ -56,7 +56,8 @@ class ScheduleTransformer extends Transformer
             'notice_min_period'             => $schedule->notice_min_period,
             'buffer_time'                   => $schedule->buffer_time,
             'buffer_period'                 => $schedule->bubuffer_periodfbuffer_periodfer_period,
-            'is_virtual'                    => $schedule->is_virtual,
+            'address'                       => $schedule->address,
+            'appointment'                   => $schedule->appointment,
             'created_at'                    => $schedule->created_at,
             'updated_at'                    => $schedule->updated_at,
         ];
