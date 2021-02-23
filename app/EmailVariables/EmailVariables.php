@@ -349,21 +349,6 @@ class EmailVariables {
     }
 
     /**
-     * @return string
-     */
-    public function getView_my_booking(): string {
-        return config('app.frontend_booking_url').$this->event->booking->reference;
-    }
-
-    /**
-     * @return string
-     */
-    public function getView_my_bookings(): string {
-        return config('app.frontend_booking_url');
-    }
-
-
-    /**
      * @return float
      */
     public function getTotal_paid(): float {
@@ -371,10 +356,34 @@ class EmailVariables {
     }
 
     /**
-     * @return float
+     * @return string
      */
-    public function getClient_name(): float {
+    public function getClient_name(): string {
         return $this->event->client->first_name.' '.$this->event->client->last_name;
+    }
+
+
+    public function getSee_on_map(): string {
+        return '';
+    }
+
+    public function getApply(): string {
+        return '';
+    }
+
+    public function getDecline(): string {
+        return '';
+    }
+
+    public function getView_booking(): string {
+        return config('app.frontend_booking_url').$this->event->booking->reference;
+    }
+
+    /**
+     * @return string
+     */
+    public function getView_bookings(): string {
+        return config('app.frontend_booking_url');
     }
 
 

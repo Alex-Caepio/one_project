@@ -450,7 +450,7 @@ Booking Reference: {{booking_reference}}<br/><br/>
  Thank you <br/> The {{platform_name}} Team <br/>',
                 'delay'      => random_int(5, 20)
             ],
-            //32
+            //33
             [
                 'name'       => 'Booking Cancelled by Client NO Refund',
                 'user_type'  => 'practitioner',
@@ -464,11 +464,9 @@ As per your cancellation terms, they will not be refunded for this service. <br/
 Thank you <br/> The {{platform_name}} Team <br/>',
                 'delay'      => random_int(5, 20)
             ],
-
-
-            //51
+            //34
             [
-                'name'       => 'Booking Confirmation - Event/Appt Virtual',
+                'name'       => 'Booking Confirmation - Event Virtual',
                 'user_type'  => 'client',
                 'from_email' => Str::random(10) . '@gmail.com',
                 'from_title' => Str::random(8),
@@ -480,31 +478,12 @@ Booking Details: {{service_name}} - {{schedule_name}}<br/>
 Booking Reference: {{booking_reference}} <br/>
 Cost: {{total_paid}} <br/>
 From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}} <br/>
-Location: {{schedule_hosting_url}} <br/><a href="{{add_to_calendar}}" target="_blank">Add to calendar</a> <br/> <a href="{{view_my_booking}}" target="_blank">View My Bookings</a>
+Location: {{schedule_hosting_url}} <br/><a href="{{add_to_calendar}}" target="_blank">Add to calendar</a> <br/> <a href="{{view_booking}}" target="_blank">View My Bookings</a>
 Your Practitioner may have also added some attachments to this email for you.<br/><br/>
 Thank you<br/> The {{platform_name}} Team<br/>',
                 'delay'      => random_int(5, 20)
             ],
-            //52
-            [
-                'name'       => 'Booking Confirmation - DateLess Virtual',
-                'user_type'  => 'client',
-                'from_email' => Str::random(10) . '@gmail.com',
-                'from_title' => Str::random(8),
-                'subject'    => 'Order Confirmation - {{booking_reference}} - {{service_name}}',
-                'logo'       => Str::random(5),
-                'text'       => 'Hi {{first_name}}<br/>
- Your Purchase for {{service_name}} from {{practitioner_business_name}} is confirmed. <br/>
- Purchase Details: {{service_name}} - {{schedule_name}}<br/>
-Order Reference: {{booking_reference}} <br/>
-Cost: {{total_paid}} <br/>
-Location: {{schedule_hosting_url}} <br/>{{view_my_purchase}} <br/>
-Message from {{practitioner_business_name}}<br/>
-{{practitioner_booking_message}} <br/>Your Practitioner may have also added some attachments to this email for you and should be in touch with you via {{platform_name}} email message to confirm further details.
- <br/><br/>Thank you <br/>The {{platform_name}}  Team<br/>',
-                'delay'      => random_int(5, 20)
-            ],
-            //57
+            //35
             [
                 'name'       => 'Booking Confirmation - Event Virtual',
                 'user_type'  => 'practitioner',
@@ -518,13 +497,33 @@ Booking Details: {{service_name}} - {{schedule_name}}<br/>
 Booking Reference: {{booking_reference}} <br/>
 Cost: {{total_paid}} <br/>
 From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}}<br/>
-Location: {{schedule_hosting_url}}<br/> {{view_client_booking}} <br/><br/>
-Thank you <br/>The {{platform_name}}  Team<br/>',
+Location: {{schedule_hosting_url}}<br/> {{view_booking}} <br/><br/>
+Thank you <br/>The {{platform_name}} Team<br/>',
                 'delay'      => random_int(5, 20)
             ],
-            //58
+            //36
             [
-                'name'       => 'Booking Confirmation Dateless Virtual',
+                'name'       => 'Booking Confirmation - DateLess Virtual',
+                'user_type'  => 'client',
+                'from_email' => Str::random(10) . '@gmail.com',
+                'from_title' => Str::random(8),
+                'subject'    => 'Order Confirmation - {{booking_reference}} - {{service_name}}',
+                'logo'       => Str::random(5),
+                'text'       => 'Hi {{first_name}}<br/>
+ Your Purchase for {{service_name}} from {{practitioner_business_name}} is confirmed. <br/>
+ Purchase Details: {{service_name}} - {{schedule_name}}<br/>
+Order Reference: {{booking_reference}} <br/>
+Cost: {{total_paid}} <br/>
+Location: {{schedule_hosting_url}} <br/>{{view_booking}} <br/>
+Message from {{practitioner_business_name}}<br/>
+Your Practitioner may have also added some attachments to this email for you and should be in touch
+with you via {{platform_name}} email message to confirm further details.
+ <br/><br/>Thank you <br/>The {{platform_name}}  Team<br/>',
+                'delay'      => random_int(5, 20)
+            ],
+            //37
+            [
+                'name'       => 'Booking Confirmation - Dateless Virtual',
                 'user_type'  => 'practitioner',
                 'from_email' => Str::random(10) . '@gmail.com',
                 'from_title' => Str::random(8),
@@ -535,12 +534,12 @@ Thank you <br/>The {{platform_name}}  Team<br/>',
  Purchase Details: {{service_name}} - {{schedule_name}}<br/>
 Order Reference: {{booking_reference}} <br/>
 Cost: {{total_paid}} <br/>
-Location: {{schedule_hosting_url}} <br/>{{view_client_booking}}<br/>
+Location: {{schedule_hosting_url}} <br/>{{view_booking}}<br/>
  We recommend getting in touch with {{client_name}} directly via {{platform_name}} email message to welcome them and provide any further information they may need for {{service_name}}.
  <br/><br/>Thank you <br/>The {{platform_name}}  Team<br/>',
                 'delay'      => random_int(5, 20)
             ],
-
+            //38
             [
                 'name'       => 'Booking Confirmation - Date/Apt Physical',
                 'user_type'  => 'client',
@@ -555,14 +554,13 @@ Location: {{schedule_hosting_url}} <br/>{{view_client_booking}}<br/>
  Cost: {{total_paid}} <br/>
  From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}} <br/>
  Location:  {{schedule_venue}} {{schedule_city}}, {{schedule_postcode}} {{schedule_country}} <br/>
-<a href="{{add_to_calendar}}" target="_blank">Add to calendar</a> {{see_on_map}} <br/>
-Message from {{practitioner_business_name}} <br/>
- {{practitioner_booking_message}} <br/>
- Your Practitioner may have also added some attachments to this email for you. <br/> <br/>
+<a href="{{add_to_calendar}}" target="_blank">Add to calendar</a>
+<br/> {{see_on_map}} <br/>
+Your Practitioner may have also added some attachments to this email for you. <br/> <br/>
 Thank you  <br/> The {{platform_name}} Team <br/>',
                 'delay'      => random_int(5, 20)
             ],
-            //35
+            //39
             [
                 'name'       => 'Booking Confirmation - Date/Apt Physical',
                 'user_type'  => 'practitioner',
@@ -576,11 +574,11 @@ Thank you  <br/> The {{platform_name}} Team <br/>',
  Cost: {{total_paid}} <br/>
 From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}}  <br/>
 Location:  {{schedule_venue}} {{schedule_city}}, {{schedule_postcode}} {{schedule_country}} <br/>
-{{view_client_booking}} <br/> <br/>
+{{view_booking}} <br/> <br/>
  Thank you <br/> The {{platform_name}} Team <br/>',
                 'delay'      => random_int(5, 20)
             ],
-            //36
+            //40
             [
                 'name'       => 'Booking Confirmation - Dateless Physical',
                 'user_type'  => 'client',
@@ -594,27 +592,27 @@ Purchase Details: {{service_name}} - {{schedule_name}} <br/>
 Booking Reference: {{booking_reference}}  <br/>
 Cost: {{total_paid}} <br/>
 Location: {{schedule_city}}, {{schedule_country}} <br/>
-{{view_my_purchase}} <br/>
-Message from {{practitioner_business_name}} <br/> {{practitioner_booking_message}} <br/>
+{{view_booking}} <br/>
 Your Practitioner may have also added some attachments to this email for you and should also be in touch with you via {{platform_name}} messaging to confirm further details.
  <br/> <br/>Thank you  <br/>The {{platform_name}} Team <br/>',
                 'delay'      => random_int(5, 20)
             ],
-            //37
+            //41
             [
-                'name'       => 'Booking Confirmation - Date-Less Physical',
+                'name'       => 'Booking Confirmation - Dateless Physical',
                 'user_type'  => 'practitioner',
                 'from_email' => Str::random(10) . '@gmail.com',
                 'from_title' => Str::random(8),
                 'subject'    => 'Purchase Confirmation - {{service_name}}',
                 'logo'       => Str::random(5),
-                'text'       => 'Hi {{first_name}} <br/> Congratulations! {{client_name}} has purchased {{service_name}}. <br/>
+                'text'       => 'Hi {{first_name}} <br/>
+Congratulations! {{client_name}} has purchased {{service_name}}. <br/>
  Purchase Details: {{service_name}} - {{schedule_name}} <br/>
  Booking Reference: {{booking_reference}} <br/>
  Cost: {{total_paid}} <br/>
  Location: {{schedule_city}}, {{schedule_country}} <br/>
 We recommend getting in touch with {{client_name}} directly via {{platform_name}} messaging to welcome them and provide any further information they may need for {{service_name}}.
- <br/>{{view_client_purchase}} <br/> <br/>  Thank you <br/> The {{platform_name}} Team <br/> <br/>',
+ <br/>{{view_booking}} <br/> <br/>  Thank you <br/> The {{platform_name}} Team <br/> <br/>',
                 'delay'      => random_int(5, 20)
             ],
 
@@ -638,7 +636,7 @@ Booking Details: {{service_name}} - {{schedule_name}} <br/>
 Booking Reference: {{booking_reference}} <br/>
 From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}}<br/>
 Location:  {{schedule_venue}} {{schedule_city}}, {{schedule_postcode}}, {{schedule_country}} <br/> {{see_on_map}}<br/>
-<a href="{{view_my_booking}}" target="_blank">View My Bookings</a><br/><br/>
+<a href="{{view_booking}}" target="_blank">View My Bookings</a><br/><br/>
 Thank you<br/> The {{platform_name}} Team <br/>',
                 'delay'      => random_int(5, 20)
             ],
@@ -655,7 +653,7 @@ Booking Details: {{service_name}} - {{schedule_name}}<br/>
 Booking Reference: {{booking_reference}} <br/>
 From: {{schedule_start_date}} To: {{schedule_end_date}} <br/>
 Location: {{schedule_city}}, {{schedule_country}}<br/>
-<a href="{{view_my_booking}}" target="_blank">View My Bookings</a><br/><br/> Thank you<br/> The {{platform_name}} Team<br/>',
+<a href="{{view_booking}}" target="_blank">View My Bookings</a><br/><br/> Thank you<br/> The {{platform_name}} Team<br/>',
                 'delay'      => random_int(5, 20)
             ],
             //47
@@ -672,9 +670,16 @@ Booking Details: {{service_name}} - {{schedule_name}} <br/>
 Booking Reference: {{booking_reference}} <br/>
 From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}} <br/>
 Location:  {{schedule_venue}} {{schedule_city}}, {{schedule_postcode}} {{schedule_country}}
-<br/>{{see_on_map}}<br/> <a href="{{view_my_booking}}" target="_blank">View My Bookings</a><br/><br/> Thank you <br/>The {{platform_name}} Team<br/>',
+<br/>{{see_on_map}}<br/>
+<a href="{{view_booking}}" target="_blank">View My Bookings</a><br/><br/> Thank you <br/>The {{platform_name}} Team<br/>',
                 'delay'      => random_int(5, 20)
             ],
+            /*
+             *
+             * CRON REMINDERS END
+             *
+             */
+
             //17
             [
                 'name'       => 'Booking Reschedule Offered by Practitioner - Date',
@@ -689,7 +694,7 @@ Reschedule Requested:{{service_name}} - {{schedule_name}}<br/>
 From: {{reschedule_start_date}}, {{reschedule_start_time}}<br/>
 To: {{reschedule_end_date}}, {{reschedule_end_time}}<br/>
 Location: {{reschedule_venue}} {{service_schedule_reschedule_url}} {{reschedule_address}} {{reschedule_city}}, {{reschedule_postcode}}, {{reschedule_country}}<br/>
-Message from {{practitioner_business_name}} {{practitioner_reschedule_message}} {{accept_button}} {{decline_button}} <a href="{{view_my_booking}}" target="_blank">View My Bookings</a><br/><br/>
+Message from {{practitioner_business_name}} {{practitioner_reschedule_message}} {{accept_button}} {{decline_button}} <a href="{{view_booking}}" target="_blank">View My Bookings</a><br/><br/>
 You will not be charged for this reschedule. Please note, if you decline or do not respond, the Practitioner may still cancel your booking and if so, you will be refunded.<br/>
 Current Booking: {{service_name}} - {{schedule_name}}<br/>
 From: {{schedule_start_date}}, {{schedule_start_time}}<br/>
@@ -715,7 +720,7 @@ To: {{reschedule_end_date}}, {{reschedule_end_time}}<br/>
 Location: {{reschedule_venue}} {{service_schedule_reschedule_url}}
 {{reschedule_address}} {{reschedule_city}}, {{reschedule_postcode}}, {{reschedule_country}}
 {{see_on_map}}<br/>
- <a href="{{add_to_calendar}}" target="_blank">Add to calendar</a> <a href="{{view_my_booking}}" target="_blank">View My Bookings</a><br/><br/>  Thank you<br/> The {{platform_name}} Team<br/>',
+ <a href="{{add_to_calendar}}" target="_blank">Add to calendar</a> <a href="{{view_booking}}" target="_blank">View My Bookings</a><br/><br/>  Thank you<br/> The {{platform_name}} Team<br/>',
                 'delay'      => random_int(5, 20)
             ],
             //19
@@ -747,7 +752,7 @@ Booking Reference: {{booking_reference}}<br/>
 Current Booking - MAINTAINED {{service_name}} - {{schedule_name}}<br/>
 From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}}<br/>
 Location:  {{schedule_hosting_url}} {{schedule_venue}} {{schedule_city}}, {{schedule_postcode}}, {{schedule_country}}
-<br/>{{view_client_booking}}<br/><br/>
+<br/>{{view_booking}}<br/><br/>
 Reschedule - DECLINED {{service_name}} - {{schedule_name}}<br/>
 From: {{reschedule_start_date}}, {{reschedule_start_time}} To: {{reschedule_end_date}}, {{reschedule_end_time}}<br/>
 Location: {{reschedule_venue}} {{service_schedule_reschedule_url}}
@@ -770,7 +775,7 @@ Booking Reference: {{booking_reference}}<br/>
 Current Booking - MAINTAINED {{service_name}} - {{schedule_name}}<br/>
 From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}}<br/>
 Location:  {{schedule_hosting_url}} {{schedule_venue}} {{schedule_city}}, {{schedule_postcode}}, {{schedule_country}}
-<br/>{{view_client_booking}}<br/><br/>
+<br/>{{view_booking}}<br/><br/>
 Reschedule - NO RESPONSE {{service_name}} - {{schedule_name}}<br/>
 From: {{reschedule_start_date}}, {{reschedule_start_time}} To: {{reschedule_end_date}}, {{reschedule_end_time}}<br/>
 Location:{{reschedule_venue}} {{service_schedule_reschedule_url}} {{reschedule_address}}
@@ -787,7 +792,8 @@ Location:{{reschedule_venue}} {{service_schedule_reschedule_url}} {{reschedule_a
                 'logo'       => Str::random(5),
                 'text'       => 'Hi {{first_name}}<br/> We thought you may like to know that {{service_name}} which you have booked with {{practitioner_business_name}} has been updated.
 This does not change your Booking which is still as listed below, though the changes may include an updated venue/location details or additional information which may be of interest you.
-<br/>{{view_the_service}}<br/> {{view_my_booking]<br/><br/>
+<br/>{{view_the_service}}<br/>
+ {{view_my_booking}}<br/><br/>
 Your current booking: {{service_name}} - {{schedule_name}}<br/>
 Booking Reference: {{booking_reference}}<br/>
 From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}}<br/>
@@ -808,7 +814,7 @@ Location:  {{schedule_hosting_url}}
 From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}}<br/>
 Location: {{schedule_venue}} {{service_schedule_url}} {{schedule_city}}, {{schedule_postcode}}, {{schedule_country}}<br/>
 You can either Accept or Decline this change. This will not impact the price you have paid for the service. If you Decline, your booking will be cancelled and you will be refunded in full.
-Please note, if you do not reply, this will be considered as accepting the change.<br/>  {{accept}} {{decline}} <br/>{{view_the_service}}<br/> <a href="{{view_my_booking}}" target="_blank">View My Bookings</a><br/><br/>
+Please note, if you do not reply, this will be considered as accepting the change.<br/>  {{accept}} {{decline}} <br/>{{view_the_service}}<br/> <a href="{{view_booking}}" target="_blank">View My Bookings</a><br/><br/>
 Thank you<br/> The {{platform_name}} Team<br/>',
                 'delay'      => random_int(5, 20)
             ],
@@ -839,7 +845,7 @@ Thank you <br/> The {{platform_name}} Team <br/>',
                 'text'       => 'Hi {{first_name}} <br/> {{practitioner_business_name}} will not be able to make your exiting appointment for {{service_name}}. Instead they would like to offer you another appointment at a time of your choosing.
 You can either Accept this request and book a new time or Decline this request. If you decline or do not respond, the Practitioner may still cancel your current appointment and if so, you will be refunded.
  <br/>{{accept_rebook}} {{decline}} <br/>
- <a href="{{view_my_booking}}" target="_blank">View My Bookings</a> <br/>
+ <a href="{{view_booking}}" target="_blank">View My Bookings</a> <br/>
 Message from {{practitioner_business_name}} <br/> {{practitioner_reschedule_message}} <br/> <br/>
 Your current booking: {{service_name}} - {{schedule_name}} <br/>
 Booking Reference: {{booking_reference}} <br/>
@@ -865,7 +871,7 @@ From: {{reschedule_start_date}}, {{reschedule_start_time}} To: {{reschedule_end_
 Location: {{reschedule_venue}} {{service_schedule_reschedule_url}} {{reschedule_address}} {{reschedule_city}}, {{reschedule_postcode}}, {{reschedule_country}} <br/> <br/>
 Message from {{practitioner_business_name}} <br/> <br/>
 You can either Accept or Decline this request. If you decline or do not respond, the Practitioner may still cancel your current appointment and if so, you will be refunded.
- <br/>{{accept}} {{decline}} <br/> <a href="{{view_my_booking}}" target="_blank">View My Bookings</a> <br/> <br/>
+ <br/>{{accept}} {{decline}} <br/> <a href="{{view_booking}}" target="_blank">View My Bookings</a> <br/> <br/>
 Current Booking {{service_name}} - {{schedule_name}} <br/>
 From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}} <br/>
 Location:  {{schedule_hosting_url}} {{schedule_venue}} {{schedule_city}}, {{schedule_postcode}}, {{schedule_country}} <br/> <br/>
@@ -935,7 +941,7 @@ Unfortunately, your {{platform_name}} account has been terminated and your exist
              * Congratulations! {{client_name}} has purchased {{service_name}}. <br/><br/>
              * Purchase Details: {{service_name}} - {{schedule_name}}<br/>
              * Booking Reference: {{booking_reference}} <br/>
-             * Location: {{schedule_city}}, {{schedule_country}} {{view_client_purchase}} <br/>
+             * Location: {{schedule_city}}, {{schedule_country}} {{view_booking}} <br/>
              * The Client has paid a deposit of {{deposit_paid]} and will pay the remaining over instalments as follows:<br/>
              * {{instalment_date_1}} – {{instalment_amount_1}}<br/>
              * {{instalment_date_2}} – {{instalment_amount_2}}<br/>
@@ -955,7 +961,7 @@ Unfortunately, your {{platform_name}} account has been terminated and your exist
              * Congratulations! {{client_name}} has purchased {{service_name}}.<br/>
              * Purchase Details: {{service_name}} - {{schedule_name}}<br/>
              * Order Reference: {{booking_reference}} <br/>
-             * Location: {{schedule_hosting_url}} <br/>{{view_client_purchase}}<br/>
+             * Location: {{schedule_hosting_url}} <br/>{{view_booking}}<br/>
              * The Client has paid a deposit of {{deposit_paid]} and will pay the remaining over instalments as follows:<br/>
              * {{instalment_date_1}} – {{instalment_amount_1}}<br/>
              * {{instalment_date_2}} – {{instalment_amount_2}}<br/>
@@ -976,7 +982,7 @@ Unfortunately, your {{platform_name}} account has been terminated and your exist
              * <br/>{{instalments}}<br />
              * Service: {{service_name}} - {{schedule_name}} <br/>
              * Booking Reference: {{booking_reference}} <br/>
-             * <a href="{{view_my_booking}}" target="_blank">View My Booking</a><br/><br/>
+             * <a href="{{view_booking}}" target="_blank">View My Booking</a><br/><br/>
              * Thank you<br/>
              * The {{platform_name}} Team<br/>',
              * 'delay'      => random_int(5, 20)
@@ -993,7 +999,7 @@ Unfortunately, your {{platform_name}} account has been terminated and your exist
              * Booking Details: {{service_name}} - {{schedule_name}}<br/>
              * Booking Reference: {{booking_reference}} <br/>
              * From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}}<br/>
-             * Location: {{schedule_hosting_url}}<br/> {{view_client_booking}}<br/>
+             * Location: {{schedule_hosting_url}}<br/> {{view_booking}}<br/>
              * The Client has paid a deposit of {{deposit_paid]} and will pay the remaining over instalments as follows:<br/>
              * {{instalment_date_1}} – {{instalment_amount_1}}<br/>
              * {{instalment_date_2}} – {{instalment_amount_2}}<br/>
@@ -1012,7 +1018,7 @@ Unfortunately, your {{platform_name}} account has been terminated and your exist
              * Your booking for {{service_name}} is now confirmed with {{practitioner_business_name}}  <br/>
              * Purchase Details: {{service_name}} - {{schedule_name}}<br/>
              * Order Reference: {{booking_reference}} <br/>
-             * Location: {{schedule_hosting_url}} <br/>{{view_my_purchase}} <br/>
+             * Location: {{schedule_hosting_url}} <br/>{{view_booking}} <br/>
              * Message from {{practitioner_business_name}}
              * <br/>{{practitioner_booking_message}} <br/>
              * Your Practitioner may have also added some attachments to this email for you and should also be in touch with you via {{platform_name}} email message to confirm further details.
@@ -1037,7 +1043,7 @@ Unfortunately, your {{platform_name}} account has been terminated and your exist
              * Booking Details: {{service_name}} - {{schedule_name}} <br/>
              * Booking Reference: {{booking_reference}} <br/>
              * From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}} <br/>
-             * Location: {{schedule_hosting_url}} <br/><a href="{{add_to_calendar}}" target="_blank">Add to calendar</a> <br/> <a href="{{view_my_booking}}" target="_blank">View My Bookings</a> <br/>
+             * Location: {{schedule_hosting_url}} <br/><a href="{{add_to_calendar}}" target="_blank">Add to calendar</a> <br/> <a href="{{view_booking}}" target="_blank">View My Bookings</a> <br/>
              * Message from {{practitioner_business_name}} <br/>{{practitioner_booking_message}} <br/>
              * Your Practitioner may have also added some attachments to this email for you. Payment Deposit Paid: {{deposit_paid}} The balance for this service will be charged to your card proved as follows:<br/>
              * {{instalment_date_1}} – {{instalment_amount_1}}<br/>
@@ -1083,7 +1089,7 @@ Unfortunately, your {{platform_name}} account has been terminated and your exist
              * Booking Reference: {{booking_reference}} <br/>
              * From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}} <br/>
              * Location:  {{schedule_venue}} {{schedule_city}}, {{schedule_postcode}} {{schedule_country}}<br/>
-             * {{view_client_booking}} <br/>
+             * {{view_booking}} <br/>
              * The Client has paid a deposit of {{deposit_paid}} and will pay the remaining over instalments as follows:<br/>
              * {{instalment_date_1}} – {{instalment_amount_1}}<br/>
              * {{instalment_date_2}} – {{instalment_amount_2}}<br/>
@@ -1103,7 +1109,7 @@ Unfortunately, your {{platform_name}} account has been terminated and your exist
              * Your purchase for {{service_name}} is now confirmed with {{practitioner_business_name}}<br/><br/>
              * Purchase Details: {{service_name}} - {{schedule_name}} <br/>
              * Booking Reference: {{booking_reference}}<br/>
-             * Location: {{schedule_city}}, {{schedule_country}} <br/>{{view_my_purchase}} <br/>
+             * Location: {{schedule_city}}, {{schedule_country}} <br/>{{view_booking}} <br/>
              * Message from {{practitioner_business_name}}<br/>
              * {{practitioner_booking_message}} <br/>
              * Your Practitioner may have also added some attachments to this email for you.<br/>

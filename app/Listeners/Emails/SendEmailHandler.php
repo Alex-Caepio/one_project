@@ -25,8 +25,10 @@ abstract class SendEmailHandler {
                 $body = $emailData->text;
                 $emailVariables = new EmailVariables($this->event);
                 $bodyReplaced = $emailVariables->replace($body);
-                Mail::html($bodyReplaced, function($message) {
-                    $message->to($this->toEmail);
+                Mail::html($bodyReplaced, function($message) use($emailData) {
+                    $message->to($this->toEmail)
+                            ->subject($emailData->subject)
+                            ->from($emailData->from_email, $emailData->from_title);
                 });
             } else {
                 throw new \RuntimeException('Email template #' . $this->templateName . ' was not found');

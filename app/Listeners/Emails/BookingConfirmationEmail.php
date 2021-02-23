@@ -7,32 +7,39 @@ use App\Events\BookingConfirmation;
 use App\Models\CustomEmail;
 use Illuminate\Support\Facades\Mail;
 
-class BookingConfirmationEmail
-{
-    public function __construct()
-    {
-    }
+class BookingConfirmationEmail extends SendEmailHandler {
 
-    public function handle(BookingConfirmation $event): void
-    {
-        $user = $event->user;
-        $emailVerification = CustomEmail::where('name', '??????')->first();
-        $body = $emailVerification->text;
-        $emailVariables = new EmailVariables($event);
-        $bodyReplaced = $emailVariables->replace($body);
+    /**
+     * @var string[]
+     */
+    private static array $eventTemplates = [
+        'events'      => 'Booking Confirmation - Event Virtual',
+        //'Booking Confirmation - DateLess Virtual',
+        'retreat'     => 'Booking Confirmation - Date/Apt Physical',
+        'appointment' => 'Booking Confirmation - Date/Apt Physical',
+        'workshop'    => 'Booking Confirmation - Date/Apt Physical',
+        'courses'     => 'Booking Confirmation - Dateless Physical'
+    ];
 
-        Mail::raw($bodyReplaced, function ($message) use ($user){
-            $message->to($user->email);
-        });
-        //LIST OF EMAILS HERE
-        //Date Apt Physical Email
-        //Dateless Physical Email
-        //Dateless Physical With Deposit Email
-        //Dateless Virtual Email
-        //Dateless Virtual With Deposit Email
-        //Date Physical With Deposit Email
-        //Event Appt Virtual Email
-        //Event Virtual Email
-        //Event Virtual With Deposit Email
+    /**
+     * @param \App\Events\BookingConfirmation $event
+     */
+    public function handle(BookingConfirmation $event): void {
+
+        $this->templateName = self::$eventTemplates[$event->service->service_type_id];
+        $this->event = $event;
+
+        // client
+        $this->toEmail = $event->user->email;
+        $this->type = 'client';
+        $this->event->recipient = $event->user;
+        $this->sendCustomEmail();
+
+
+        //practitioner
+        $this->toEmail = $event->practitioner->email;
+        $this->type = 'practitioner';
+        $this->event->recipient = $event->practitioner;
+        $this->sendCustomEmail();
     }
 }
