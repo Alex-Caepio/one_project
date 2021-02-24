@@ -615,6 +615,154 @@ We recommend getting in touch with {{client_name}} directly via {{platform_name}
  <br/>{{view_booking}} <br/> <br/>  Thank you <br/> The {{platform_name}} Team <br/> <br/>',
                 'delay'      => random_int(5, 20)
             ],
+            //42
+            [
+                'name'       => 'Account Terminated by Admin',
+                'user_type'  => 'practitioner',
+                'from_email' => Str::random(10) . '@gmail.com',
+                'from_title' => Str::random(8),
+                'subject'    => '{{platform_name}} Account Termination',
+                'logo'       => Str::random(5),
+                'text'       => 'Hi {{first_name}}<br/>
+Unfortunately, your {{platform_name}} account has been terminated and your existing bookings with Practitioners or from Clients have been cancelled.<br/>
+Reason for Termination: {{admin_termination_message}}<br/>
+We are sorry that you will no longer be able to use our platform. If you have any questions, please contact us at {{platform_email}}.<br/><br/>
+Thank you <br/>The {{platform_name}} Team<br/>',
+                'delay'      => random_int(5, 20)
+            ],
+            //43
+            [
+                'name'       => 'Account Terminated by Admin',
+                'user_type'  => 'client',
+                'from_email' => Str::random(10) . '@gmail.com',
+                'from_title' => Str::random(8),
+                'subject'    => '{{platform_name}} Account Termination',
+                'logo'       => Str::random(5),
+                'text'       => 'Hi {{first_name}}<br/>
+Unfortunately, your {{platform_name}} account has been terminated and your existing bookings with Practitioners have been cancelled.<br/> Reason for Termination:
+{{admin_termination_message}}<br/> We are sorry that you will no longer be able to use our platform. If you have any questions, please contact us at {{platform_email}}.
+<br/><br/>Thank you <br/>The {{platform_name}} Team<br/>',
+                'delay'      => random_int(5, 20)
+            ],
+            //44
+            [
+                'name'       => 'Service Updated by Practitioner (Non-Contractual)',
+                'user_type'  => 'client',
+                'from_email' => Str::random(10) . '@gmail.com',
+                'from_title' => Str::random(8),
+                'subject'    => 'A Service You Have Booked is Updated - {{booking_reference}}',
+                'logo'       => Str::random(5),
+                'text'       => 'Hi {{first_name}}<br/> We thought you may like to know that {{service_name}} which you have booked with {{practitioner_business_name}} has been updated.
+This does not change your Booking which is still as listed below, though the changes may include an updated venue/location details or additional information which may be of interest you.
+<br/>{{view_the_service}}<br/>
+ {{view_booking}}<br/><br/>
+Your current booking: {{service_name}} - {{schedule_name}}<br/>
+Booking Reference: {{booking_reference}}<br/>
+From: {{schedule_start_date}}, {{schedule_start_time}}<br/>
+To: {{schedule_end_date}}, {{schedule_end_time}}<br/>
+Location:  {{schedule_hosting_url}}
+{{schedule_venue}} {{schedule_city}}, {{schedule_postcode}}, {{schedule_country}}
+<br/>{{see_on_map}} <br/>
+<br/>Thank you <br/>The {{platform_name}} Team<br/>',
+                'delay'      => random_int(5, 20)
+            ],
+
+            //44
+            [
+                'name'       => 'Booking Reschedule Offered by Practitioner - Date',
+                'user_type'  => 'client',
+                'from_email' => Str::random(10) . '@gmail.com',
+                'from_title' => Str::random(8),
+                'subject'    => 'Booking Reschedule Request – {{booking_reference}} - {{practitioner_business_name}}',
+                'logo'       => Str::random(5),
+                'text'       => 'Hi {{first_name}}<br/> You are currently booked with {{practitioner_business_name}} for {{service_name}} on the {{schedule_start_date}}.<br/>
+Booking Reference: {{booking_reference}} {{practitioner_business_name}} would like to reschedule your booking as follows:<br/>
+Reschedule Requested:{{service_name}} - {{schedule_name}}<br/>
+From: {{reschedule_start_date}}, {{reschedule_start_time}}<br/>
+To: {{reschedule_end_date}}, {{reschedule_end_time}}<br/>
+Location: {{reschedule_venue}} {{service_schedule_reschedule_url}} {{reschedule_address}} {{reschedule_city}}, {{reschedule_postcode}}, {{reschedule_country}}<br/>
+{{accept}} <br/>{{decline}} <a href="{{view_booking}}" target="_blank">View My Booking</a><br/><br/>
+You will not be charged for this reschedule. Please note, if you decline or do not respond, the Practitioner may still cancel your booking and if so, you will be refunded.<br/>
+Current Booking: {{service_name}} - {{schedule_name}}<br/>
+From: {{schedule_start_date}}, {{schedule_start_time}}<br/>
+To: {{schedule_end_date}}, {{schedule_end_time}}<br/>
+Location:  {{schedule_hosting_url}} {{schedule_venue}}
+{{schedule_city}}, {{schedule_postcode}}, {{schedule_country}}<br/><br/>
+Thank you<br/> The {{platform_name}} Team<br/>',
+                'delay'      => random_int(5, 20)
+            ],
+            //45
+            [
+                'name'       => 'Booking Reschedule Offered by Practitioner - Appt',
+                'user_type'  => 'client',
+                'from_email' => Str::random(10) . '@gmail.com',
+                'from_title' => Str::random(8),
+                'subject'    => 'Booking Reschedule Request – {{practitioner_business_name}}',
+                'logo'       => Str::random(5),
+                'text'       => 'Hi {{first_name}} <br/>
+ You are currently booked with {{practitioner_business_name}} for {{service_name}}, on the {{schedule_start_date}}. <br/>
+Booking Reference: {{booking_reference}} {{practitioner_business_name}} would like to reschedule your booking as follows: <br/>
+New Appointment: {{service_name}} - {{schedule_name}} <br/>
+From: {{reschedule_start_date}}, {{reschedule_start_time}} To: {{reschedule_end_date}}, {{reschedule_end_time}} <br/>
+Location: {{reschedule_venue}} {{service_schedule_reschedule_url}} {{reschedule_address}} {{reschedule_city}}, {{reschedule_postcode}}, {{reschedule_country}} <br/> <br/>
+Message from {{practitioner_business_name}} <br/> <br/>
+You can either Accept or Decline this request. If you decline or do not respond, the Practitioner may still cancel your current appointment and if so, you will be refunded.
+ <br/>{{accept}} {{decline}} <br/> <a href="{{view_booking}}" target="_blank">View My Bookings</a> <br/> <br/>
+Current Booking {{service_name}} - {{schedule_name}} <br/>
+From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}} <br/>
+Location:  {{schedule_hosting_url}} {{schedule_venue}} {{schedule_city}}, {{schedule_postcode}}, {{schedule_country}} <br/> <br/>
+Thank you <br/> The {{platform_name}} Team <br/>',
+                'delay'      => random_int(5, 20)
+            ],
+            //46
+            [
+                'name'       => 'Booking Reschedule Client to Select - Appt',
+                'user_type'  => 'client',
+                'from_email' => Str::random(10) . '@gmail.com',
+                'from_title' => Str::random(8),
+                'subject'    => 'Booking Reschedule Request – {{practitioner_business_name}}',
+                'logo'       => Str::random(5),
+                'text'       => 'Hi {{first_name}} <br/> {{practitioner_business_name}} will not be able to make your exiting appointment for {{service_name}}.<br/>
+ Instead they would like to offer you another appointment at a time of your choosing.
+You can either Accept this request and book a new time or Decline this request. If you decline or do not respond,
+the Practitioner may still cancel your current appointment and if so, you will be refunded.
+ <br/>{{accept_rebook}} {{decline}} <br/>
+ <a href="{{view_booking}}" target="_blank">View My Bookings</a> <br/>
+Message from {{practitioner_business_name}} <br/> {{practitioner_reschedule_message}} <br/> <br/>
+Your current booking: {{service_name}} - {{schedule_name}} <br/>
+Booking Reference: {{booking_reference}} <br/>
+From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}} <br/>
+Location:  {{schedule_hosting_url}} {{schedule_venue}}
+{{schedule_city}}, {{schedule_postcode}}, {{schedule_country}} <br/> <br/>
+Thank you The {{platform_name}} Team',
+                'delay'      => random_int(5, 20)
+            ],
+            //47
+            [
+                'name'       => 'Service Updated by Practitioner (Contractual)',
+                'user_type'  => 'client',
+                'from_email' => Str::random(10) . '@gmail.com',
+                'from_title' => Str::random(8),
+                'subject'    => 'Important! Your Booking Has Been Changed – {{service_name}}',
+                'logo'       => Str::random(5),
+                'text'       => 'Hi {{first_name}}<br/> You are currently booked with {{practitioner_business_name}} for {{service_name}}.
+<br /> Booking Reference: {{booking_reference}}<br />
+{{practitioner_business_name}} has had to change the booking as follows: {{service_name}} - {{schedule_name}}<br/>
+From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}}<br/>
+Location: {{schedule_venue}} {{service_schedule_url}} {{schedule_city}}, {{schedule_postcode}}, {{schedule_country}}<br/>
+You can either Accept or Decline this change. This will not impact the price you have paid for the service. If you Decline, your booking will be cancelled and you will be refunded in full.
+Please note, if you do not reply, this will be considered as accepting the change.<br/>  {{accept}} <br />{{decline}} <br/>
+<a href="{{service_url}}" target="_blank">View the service</a><br/>
+<a href="{{view_booking}}" target="_blank">View My Booking</a><br/><br/>
+Thank you<br/> The {{platform_name}} Team<br/>',
+                'delay'      => random_int(5, 20)
+            ],
+
+
+
+
+
+
 
 
             /*
@@ -680,30 +828,8 @@ Location:  {{schedule_venue}} {{schedule_city}}, {{schedule_postcode}} {{schedul
              *
              */
 
-            //17
-            [
-                'name'       => 'Booking Reschedule Offered by Practitioner - Date',
-                'user_type'  => 'client',
-                'from_email' => Str::random(10) . '@gmail.com',
-                'from_title' => Str::random(8),
-                'subject'    => 'Booking Reschedule Request – {{booking_reference}} - {{practitioner_business_name}}',
-                'logo'       => Str::random(5),
-                'text'       => 'Hi {{first_name}}<br/> You are currently booked with {{practitioner_business_name}} for {{service_name}} on the {{schedule_start_date}}.<br/>
-Booking Reference: {{booking_reference}} {{practitioner_business_name}} would like to reschedule your booking as follows:<br/>
-Reschedule Requested:{{service_name}} - {{schedule_name}}<br/>
-From: {{reschedule_start_date}}, {{reschedule_start_time}}<br/>
-To: {{reschedule_end_date}}, {{reschedule_end_time}}<br/>
-Location: {{reschedule_venue}} {{service_schedule_reschedule_url}} {{reschedule_address}} {{reschedule_city}}, {{reschedule_postcode}}, {{reschedule_country}}<br/>
-Message from {{practitioner_business_name}} {{practitioner_reschedule_message}} {{accept_button}} {{decline_button}} <a href="{{view_booking}}" target="_blank">View My Bookings</a><br/><br/>
-You will not be charged for this reschedule. Please note, if you decline or do not respond, the Practitioner may still cancel your booking and if so, you will be refunded.<br/>
-Current Booking: {{service_name}} - {{schedule_name}}<br/>
-From: {{schedule_start_date}}, {{schedule_start_time}}<br/>
-To: {{schedule_end_date}}, {{schedule_end_time}}<br/>
-Location:  {{schedule_hosting_url}} {{schedule_venue}}
-{{schedule_city}}, {{schedule_postcode}}, {{schedule_country}}<br/><br/>
-Thank you<br/> The {{platform_name}} Team<br/>',
-                'delay'      => random_int(5, 20)
-            ],
+
+
             //18
             [
                 'name'       => 'Booking Reschedule Accepted by Client',
@@ -782,42 +908,6 @@ Location:{{reschedule_venue}} {{service_schedule_reschedule_url}} {{reschedule_a
 {{reschedule_city}}, {{reschedule_postcode}}, {{reschedule_country}}<br/><br/> Thank you<br/> The {{platform_name}} Team<br/>',
                 'delay'      => random_int(5, 20)
             ],
-            //22
-            [
-                'name'       => 'Service Updated by Practitioner (Non-Contractual)',
-                'user_type'  => 'client',
-                'from_email' => Str::random(10) . '@gmail.com',
-                'from_title' => Str::random(8),
-                'subject'    => 'A Service You Have Booked is Updated - {{booking_reference}}',
-                'logo'       => Str::random(5),
-                'text'       => 'Hi {{first_name}}<br/> We thought you may like to know that {{service_name}} which you have booked with {{practitioner_business_name}} has been updated.
-This does not change your Booking which is still as listed below, though the changes may include an updated venue/location details or additional information which may be of interest you.
-<br/>{{view_the_service}}<br/>
- {{view_my_booking}}<br/><br/>
-Your current booking: {{service_name}} - {{schedule_name}}<br/>
-Booking Reference: {{booking_reference}}<br/>
-From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}}<br/>
-Location:  {{schedule_hosting_url}}
-{{schedule_venue}} {{schedule_city}}, {{schedule_postcode}}, {{schedule_country}} <br/>{{see_on_map}} <br/><br/>Thank you <br/>The {{platform_name}} Team<br/>',
-                'delay'      => random_int(5, 20)
-            ],
-            //23
-            [
-                'name'       => 'Service Updated by Practitioner (Contractual)',
-                'user_type'  => 'client',
-                'from_email' => Str::random(10) . '@gmail.com',
-                'from_title' => Str::random(8),
-                'subject'    => 'Important! Your Booking Has Been Changed – {{service_name}}',
-                'logo'       => Str::random(5),
-                'text'       => 'Hi {{first_name}}<br/> You are currently booked with {{practitioner_business_name}} for {{service_name}}. Booking Reference: {{booking_reference}}
-{{practitioner_business_name}} has had to change the booking as follows: {{service_name}} - {{schedule_name}}<br/>
-From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}}<br/>
-Location: {{schedule_venue}} {{service_schedule_url}} {{schedule_city}}, {{schedule_postcode}}, {{schedule_country}}<br/>
-You can either Accept or Decline this change. This will not impact the price you have paid for the service. If you Decline, your booking will be cancelled and you will be refunded in full.
-Please note, if you do not reply, this will be considered as accepting the change.<br/>  {{accept}} {{decline}} <br/>{{view_the_service}}<br/> <a href="{{view_booking}}" target="_blank">View My Bookings</a><br/><br/>
-Thank you<br/> The {{platform_name}} Team<br/>',
-                'delay'      => random_int(5, 20)
-            ],
             //24
             [
                 'name'       => 'Contractual Service Update Declined - Booking Cancelled',
@@ -834,51 +924,6 @@ Cost: {{total_paid}} <br/> <br/>
 Thank you <br/> The {{platform_name}} Team <br/>',
                 'delay'      => random_int(5, 20)
             ],
-            //26
-            [
-                'name'       => 'Booking Reschedule Client to Select - Appt',
-                'user_type'  => 'client',
-                'from_email' => Str::random(10) . '@gmail.com',
-                'from_title' => Str::random(8),
-                'subject'    => 'Booking Reschedule Request – {{practitioner_business_name}}',
-                'logo'       => Str::random(5),
-                'text'       => 'Hi {{first_name}} <br/> {{practitioner_business_name}} will not be able to make your exiting appointment for {{service_name}}. Instead they would like to offer you another appointment at a time of your choosing.
-You can either Accept this request and book a new time or Decline this request. If you decline or do not respond, the Practitioner may still cancel your current appointment and if so, you will be refunded.
- <br/>{{accept_rebook}} {{decline}} <br/>
- <a href="{{view_booking}}" target="_blank">View My Bookings</a> <br/>
-Message from {{practitioner_business_name}} <br/> {{practitioner_reschedule_message}} <br/> <br/>
-Your current booking: {{service_name}} - {{schedule_name}} <br/>
-Booking Reference: {{booking_reference}} <br/>
-From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}} <br/>
-Location:  {{schedule_hosting_url}} {{schedule_venue}}
-{{schedule_city}}, {{schedule_postcode}}, {{schedule_country}} <br/> <br/>
-Thank you The {{platform_name}} Team',
-                'delay'      => random_int(5, 20)
-            ],
-            //27
-            [
-                'name'       => 'Booking Reschedule Offered by Practitioner - Appt',
-                'user_type'  => 'client',
-                'from_email' => Str::random(10) . '@gmail.com',
-                'from_title' => Str::random(8),
-                'subject'    => 'Booking Reschedule Request – {{practitioner_business_name}}',
-                'logo'       => Str::random(5),
-                'text'       => 'Hi {{first_name}} <br/>
- You are currently booked with {{practitioner_business_name}} for {{service_name}}, on the {{schedule_start_date}}. <br/>
-Booking Reference: {{booking_reference}} {{practitioner_business_name}} would like to reschedule your booking as follows: <br/>
-New Appointment: {{service_name}} - {{schedule_name}} <br/>
-From: {{reschedule_start_date}}, {{reschedule_start_time}} To: {{reschedule_end_date}}, {{reschedule_end_time}} <br/>
-Location: {{reschedule_venue}} {{service_schedule_reschedule_url}} {{reschedule_address}} {{reschedule_city}}, {{reschedule_postcode}}, {{reschedule_country}} <br/> <br/>
-Message from {{practitioner_business_name}} <br/> <br/>
-You can either Accept or Decline this request. If you decline or do not respond, the Practitioner may still cancel your current appointment and if so, you will be refunded.
- <br/>{{accept}} {{decline}} <br/> <a href="{{view_booking}}" target="_blank">View My Bookings</a> <br/> <br/>
-Current Booking {{service_name}} - {{schedule_name}} <br/>
-From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}} <br/>
-Location:  {{schedule_hosting_url}} {{schedule_venue}} {{schedule_city}}, {{schedule_postcode}}, {{schedule_country}} <br/> <br/>
-Thank you <br/> The {{platform_name}} Team <br/>',
-                'delay'      => random_int(5, 20)
-            ],
-            //28
             //33
             [
                 'name'       => 'Client Rescheduled FYI',
@@ -900,35 +945,7 @@ Thank you <br/> The {{platform_name}} Team <br/>',
                 'delay'      => random_int(5, 20)
             ],
             //34
-            //38
-            [
-                'name'       => 'Account Terminated by Admin',
-                'user_type'  => 'practitioner',
-                'from_email' => Str::random(10) . '@gmail.com',
-                'from_title' => Str::random(8),
-                'subject'    => '{{platform_name}} Account Termination',
-                'logo'       => Str::random(5),
-                'text'       => 'Hi {{first_name}}<br/>
-Unfortunately, your {{platform_name}} account has been terminated and your existing bookings with Practitioners or from Clients have been cancelled.<br/>
-Reason for Termination: {{admin_termination_message}}<br/>
-We are sorry that you will no longer be able to use our platform. If you have any questions, please contact us at {{platform_email}}.<br/><br/>
-Thank you <br/>The {{platform_name}} Team<br/>',
-                'delay'      => random_int(5, 20)
-            ],
-            //39
-            [
-                'name'       => 'Account Terminated by Admin',
-                'user_type'  => 'client',
-                'from_email' => Str::random(10) . '@gmail.com',
-                'from_title' => Str::random(8),
-                'subject'    => '{{platform_name}} Account Termination',
-                'logo'       => Str::random(5),
-                'text'       => 'Hi {{first_name}}<br/>
-Unfortunately, your {{platform_name}} account has been terminated and your existing bookings with Practitioners have been cancelled.<br/> Reason for Termination:
-{{admin_termination_message}}<br/> We are sorry that you will no longer be able to use our platform. If you have any questions, please contact us at {{platform_email}}.
-<br/><br/>Thank you <br/>The {{platform_name}} Team<br/>',
-                'delay'      => random_int(5, 20)
-            ],
+
             /**
              * [
              * 'name'       => 'Booking Confirmation - DateLess Physical - with Deposit',

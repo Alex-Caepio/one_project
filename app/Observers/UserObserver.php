@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Events\AccountDeleted;
+use App\Events\AccountTerminatedByAdmin;
 use App\Events\BusinessProfileLive;
 use App\Events\BusinessProfileUnpublished;
 use App\Models\Article;
@@ -52,6 +53,10 @@ class UserObserver {
                                                              'is_published' => false
                                                          ]);
         }
-        event(new AccountDeleted($user));
+        if (Auth::user()->is_admin !== true) {
+            event(new AccountDeleted($user));
+        } else {
+            event(new AccountTerminatedByAdmin($user));
+        }
     }
 }

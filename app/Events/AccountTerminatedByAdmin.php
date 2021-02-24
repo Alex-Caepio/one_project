@@ -8,14 +8,12 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class AccountTerminatedByAdmin
-{
+class AccountTerminatedByAdmin {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $user;
+    public User $user;
 
-    public function __construct(User $user )
-    {
+    public function __construct(User $user) {
         $this->user = $user;
     }
 }

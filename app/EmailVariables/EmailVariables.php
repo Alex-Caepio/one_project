@@ -7,6 +7,11 @@ namespace App\EmailVariables;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\URL;
 
+/**
+ * Class EmailVariables
+ *
+ * @package App\EmailVariables
+ */
 class EmailVariables {
 
     public function __construct($event) {
@@ -114,6 +119,13 @@ class EmailVariables {
             : $this->event->practitioner->business_name;
     }
 
+
+    /**
+     * @return string
+     */
+    public function getAdmin_termination_message(): string {
+        return $this->event->user->termintaion_message;
+    }
 
     /**
      *
@@ -275,7 +287,6 @@ class EmailVariables {
 
     /**
      * @return string
-     * Will be reworked to the new field or new model PlanPurchases
      */
     public function getSubscription_start_date(): string {
         return Carbon::parse($this->event->user->plan_from)->format('d.m.Y');
@@ -363,18 +374,30 @@ class EmailVariables {
     }
 
 
+    /**
+     * @return string
+     */
     public function getSee_on_map(): string {
         return '';
     }
 
-    public function getApply(): string {
+    /**
+     * @return string
+     */
+    public function getAccept(): string {
         return '';
     }
 
+    /**
+     * @return string
+     */
     public function getDecline(): string {
         return '';
     }
 
+    /**
+     * @return string
+     */
     public function getView_booking(): string {
         return config('app.frontend_booking_url').$this->event->booking->reference;
     }
@@ -394,8 +417,6 @@ class EmailVariables {
      *
      *
      */
-
-
 
 
     /**
