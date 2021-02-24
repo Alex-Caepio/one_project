@@ -32,7 +32,6 @@ class ScheduleController extends Controller
         $data               = $request->all();
         $data['service_id'] = $service->id;
         $schedule           = Schedule::create($data);
-        $request->user();
 
         if ($request->filled('media_files')) {
             $schedule->media_files()->createMany($request->get('media_files'));
@@ -63,6 +62,8 @@ class ScheduleController extends Controller
         if ($request->filled('schedule_hidden_files')) {
             $schedule->schedule_hidden_files()->createMany($request->get('schedule_hidden_files'));
         }
+
+        event(new ServiceScheduleLive($schedule, $request->user()));
 
         return fractal($schedule, new ScheduleTransformer())
             ->parseIncludes($request->getIncludes())
@@ -98,8 +99,6 @@ class ScheduleController extends Controller
         }
 
         run_action(CreateRescheduleRequestsOnScheduleUpdate::class, $request, $schedule);
-
-        event(new ServiceScheduleLive($schedule, $request->user()));
 
         return fractal($schedule, new ScheduleTransformer())
             ->parseIncludes($request->getIncludes())

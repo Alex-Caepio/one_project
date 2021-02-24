@@ -355,7 +355,7 @@ Thank you<br/> The {{platform_name}}  Team<br/>',
  <br/><br/>Thank you<br/> The {{platform_name}}  Team<br/>',
                 'delay'      => random_int(5, 20)
             ],
-            //20
+            //21
             [
                 'name'       => 'Article Unpublished',
                 'user_type'  => 'practitioner',
@@ -370,7 +370,7 @@ and no longer viewable. You can republish it at any time by going to your Articl
 <br/>The {{platform_name}} Team<br/>',
                 'delay'      => random_int(5, 20)
             ],
-            //21
+            //22
             [
                 'name'       => 'Service Schedule Cancelled',
                 'user_type'  => 'practitioner',
@@ -382,7 +382,7 @@ and no longer viewable. You can republish it at any time by going to your Articl
  {{schedule_name}} has now been cancelled for {{service_name}}.<br/><br/> Thank you<br/> The {{platform_name}} Team<br/>',
                 'delay'      => random_int(5, 20)
             ],
-            //22
+            //23
             [
                 'name'       => 'Booking Cancelled by Practitioner',
                 'user_type'  => 'client',
@@ -401,7 +401,7 @@ Cost: {{total_paid}}<br/><br/>
  Thank you<br/> The {{platform_name}} Team<br/>',
                 'delay'      => random_int(5, 20)
             ],
-            //30
+            //24
             [
                 'name'       => 'Booking Cancelled by Client with Refund',
                 'user_type'  => 'client',
@@ -419,7 +419,7 @@ Thank you<br/>
 The {{platform_name}} Team<br/>',
                 'delay'      => random_int(5, 20)
             ],
-            //31
+            //25
             [
                 'name'       => 'Booking Cancelled by Client with Refund',
                 'user_type'  => 'practitioner',
@@ -434,7 +434,7 @@ fully for any amount they have paid to date for this service.
 Please make sure you have funds are available to cover this refund.<br/><br/> Thank you <br/>The {{platform_name}} Team<br/>',
                 'delay'      => random_int(5, 20)
             ],
-            //32
+            //26
             [
                 'name'       => 'Booking Cancelled by Client NO Refund',
                 'user_type'  => 'client',
@@ -450,7 +450,7 @@ Booking Reference: {{booking_reference}}<br/><br/>
  Thank you <br/> The {{platform_name}} Team <br/>',
                 'delay'      => random_int(5, 20)
             ],
-            //33
+            //27
             [
                 'name'       => 'Booking Cancelled by Client NO Refund',
                 'user_type'  => 'practitioner',
@@ -464,7 +464,7 @@ As per your cancellation terms, they will not be refunded for this service. <br/
 Thank you <br/> The {{platform_name}} Team <br/>',
                 'delay'      => random_int(5, 20)
             ],
-            //34
+            //28
             [
                 'name'       => 'Booking Confirmation - Event Virtual',
                 'user_type'  => 'client',
@@ -483,7 +483,7 @@ Your Practitioner may have also added some attachments to this email for you.<br
 Thank you<br/> The {{platform_name}} Team<br/>',
                 'delay'      => random_int(5, 20)
             ],
-            //35
+            //29
             [
                 'name'       => 'Booking Confirmation - Event Virtual',
                 'user_type'  => 'practitioner',
@@ -501,7 +501,7 @@ Location: {{schedule_hosting_url}}<br/> {{view_booking}} <br/><br/>
 Thank you <br/>The {{platform_name}} Team<br/>',
                 'delay'      => random_int(5, 20)
             ],
-            //36
+            //30
             [
                 'name'       => 'Booking Confirmation - DateLess Virtual',
                 'user_type'  => 'client',
@@ -521,7 +521,7 @@ with you via {{platform_name}} email message to confirm further details.
  <br/><br/>Thank you <br/>The {{platform_name}}  Team<br/>',
                 'delay'      => random_int(5, 20)
             ],
-            //37
+            //31
             [
                 'name'       => 'Booking Confirmation - Dateless Virtual',
                 'user_type'  => 'practitioner',
@@ -539,7 +539,7 @@ Location: {{schedule_hosting_url}} <br/>{{view_booking}}<br/>
  <br/><br/>Thank you <br/>The {{platform_name}}  Team<br/>',
                 'delay'      => random_int(5, 20)
             ],
-            //38
+            //32
             [
                 'name'       => 'Booking Confirmation - Date/Apt Physical',
                 'user_type'  => 'client',
@@ -560,7 +560,7 @@ Your Practitioner may have also added some attachments to this email for you. <b
 Thank you  <br/> The {{platform_name}} Team <br/>',
                 'delay'      => random_int(5, 20)
             ],
-            //39
+            //33
             [
                 'name'       => 'Booking Confirmation - Date/Apt Physical',
                 'user_type'  => 'practitioner',
@@ -578,7 +578,7 @@ Location:  {{schedule_venue}} {{schedule_city}}, {{schedule_postcode}} {{schedul
  Thank you <br/> The {{platform_name}} Team <br/>',
                 'delay'      => random_int(5, 20)
             ],
-            //40
+            //34
             [
                 'name'       => 'Booking Confirmation - Dateless Physical',
                 'user_type'  => 'client',
@@ -597,7 +597,7 @@ Your Practitioner may have also added some attachments to this email for you and
  <br/> <br/>Thank you  <br/>The {{platform_name}} Team <br/>',
                 'delay'      => random_int(5, 20)
             ],
-            //41
+            //35
             [
                 'name'       => 'Booking Confirmation - Dateless Physical',
                 'user_type'  => 'practitioner',
@@ -615,7 +615,7 @@ We recommend getting in touch with {{client_name}} directly via {{platform_name}
  <br/>{{view_booking}} <br/> <br/>  Thank you <br/> The {{platform_name}} Team <br/> <br/>',
                 'delay'      => random_int(5, 20)
             ],
-            //42
+            //36
             [
                 'name'       => 'Account Terminated by Admin',
                 'user_type'  => 'practitioner',
@@ -630,7 +630,7 @@ We are sorry that you will no longer be able to use our platform. If you have an
 Thank you <br/>The {{platform_name}} Team<br/>',
                 'delay'      => random_int(5, 20)
             ],
-            //43
+            //37
             [
                 'name'       => 'Account Terminated by Admin',
                 'user_type'  => 'client',
@@ -644,7 +644,7 @@ Unfortunately, your {{platform_name}} account has been terminated and your exist
 <br/><br/>Thank you <br/>The {{platform_name}} Team<br/>',
                 'delay'      => random_int(5, 20)
             ],
-            //44
+            //38
             [
                 'name'       => 'Service Updated by Practitioner (Non-Contractual)',
                 'user_type'  => 'client',
@@ -655,15 +655,37 @@ Unfortunately, your {{platform_name}} account has been terminated and your exist
                 'text'       => 'Hi {{first_name}}<br/> We thought you may like to know that {{service_name}} which you have booked with {{practitioner_business_name}} has been updated.
 This does not change your Booking which is still as listed below, though the changes may include an updated venue/location details or additional information which may be of interest you.
 <br/>{{view_the_service}}<br/>
- {{view_booking}}<br/><br/>
+{{view_booking}}<br/><br/>
 Your current booking: {{service_name}} - {{schedule_name}}<br/>
 Booking Reference: {{booking_reference}}<br/>
 From: {{schedule_start_date}}, {{schedule_start_time}}<br/>
 To: {{schedule_end_date}}, {{schedule_end_time}}<br/>
-Location:  {{schedule_hosting_url}}
+Location: {{schedule_hosting_url}}
 {{schedule_venue}} {{schedule_city}}, {{schedule_postcode}}, {{schedule_country}}
 <br/>{{see_on_map}} <br/>
 <br/>Thank you <br/>The {{platform_name}} Team<br/>',
+                'delay'      => random_int(5, 20)
+            ],
+            //39
+            [
+                'name'       => 'Service Updated by Practitioner (Contractual)',
+                'user_type'  => 'client',
+                'from_email' => Str::random(10) . '@gmail.com',
+                'from_title' => Str::random(8),
+                'subject'    => 'Important! Your Booking Has Been Changed – {{service_name}}',
+                'logo'       => Str::random(5),
+                'text'       => 'Hi {{first_name}}<br/> You are currently booked with {{practitioner_business_name}} for {{service_name}}.
+<br /> Booking Reference: {{booking_reference}}<br />
+{{practitioner_business_name}} has had to change the booking as follows: {{service_name}} - {{schedule_name}}<br/>
+From: {{schedule_start_date}}, {{schedule_start_time}}<br/>
+To: {{schedule_end_date}}, {{schedule_end_time}}<br/>
+Location: {{schedule_hosting_url}} {{schedule_venue}} {{schedule_city}}, {{schedule_postcode}}, {{schedule_country}}<br/>
+You can either Accept or Decline this change. This will not impact the price you have paid for the service.
+If you Decline, your booking will be cancelled and you will be refunded in full.
+Please note, if you do not reply, this will be considered as accepting the change.<br/>  {{accept}} <br />{{decline}} <br/>
+<a href="{{service_url}}" target="_blank">View the service</a><br/>
+<a href="{{view_booking}}" target="_blank">View My Booking</a><br/><br/>
+Thank you<br/> The {{platform_name}} Team<br/>',
                 'delay'      => random_int(5, 20)
             ],
 
@@ -737,27 +759,6 @@ Location:  {{schedule_hosting_url}} {{schedule_venue}}
 Thank you The {{platform_name}} Team',
                 'delay'      => random_int(5, 20)
             ],
-            //47
-            [
-                'name'       => 'Service Updated by Practitioner (Contractual)',
-                'user_type'  => 'client',
-                'from_email' => Str::random(10) . '@gmail.com',
-                'from_title' => Str::random(8),
-                'subject'    => 'Important! Your Booking Has Been Changed – {{service_name}}',
-                'logo'       => Str::random(5),
-                'text'       => 'Hi {{first_name}}<br/> You are currently booked with {{practitioner_business_name}} for {{service_name}}.
-<br /> Booking Reference: {{booking_reference}}<br />
-{{practitioner_business_name}} has had to change the booking as follows: {{service_name}} - {{schedule_name}}<br/>
-From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}}<br/>
-Location: {{schedule_venue}} {{service_schedule_url}} {{schedule_city}}, {{schedule_postcode}}, {{schedule_country}}<br/>
-You can either Accept or Decline this change. This will not impact the price you have paid for the service. If you Decline, your booking will be cancelled and you will be refunded in full.
-Please note, if you do not reply, this will be considered as accepting the change.<br/>  {{accept}} <br />{{decline}} <br/>
-<a href="{{service_url}}" target="_blank">View the service</a><br/>
-<a href="{{view_booking}}" target="_blank">View My Booking</a><br/><br/>
-Thank you<br/> The {{platform_name}} Team<br/>',
-                'delay'      => random_int(5, 20)
-            ],
-
 
 
 
