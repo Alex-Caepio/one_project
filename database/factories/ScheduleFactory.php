@@ -27,7 +27,6 @@ class ScheduleFactory extends Factory
             'url'                => $this->faker->url,
             'location_displayed' => $this->faker->address,
             'refund_terms'       => 20,
-            'is_virtual'         => false,
             'post_code'          => $this->faker->postcode,
             'buffer_period'      => 'mins',
             'buffer_time'        => 60,
