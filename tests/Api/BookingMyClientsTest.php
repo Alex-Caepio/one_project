@@ -72,4 +72,17 @@ class BookingMyClientsTest extends TestCase
         $response = $this->json('get', '/api/bookings/my-clients-upcoming');
         $response->assertOk();
     }
+
+    public function test_practitioner_can_see_his_clients_closed_bookings(): void
+    {
+        $serviceType = ServiceType::factory()->create();
+        $client      = User::factory()->create();
+        $service     = Service::factory()->create(['user_id' => $this->user->id, 'service_type_id' => $serviceType->id]);
+        $schedule    = Schedule::factory()->create(['service_id' => $service->id]);
+        $purchase = Purchase::factory()->create(['user_id' => $client->id, 'schedule_id' => $schedule->id, 'service_id' => $service->id]);
+        Booking::factory()->create(['user_id' => $client->id, 'schedule_id' => $schedule->id, 'datetime_from' => Carbon::now()->subDays(1), 'purchase_id' => $purchase->id]);
+
+        $response = $this->json('get', '/api/bookings/my-clients-closed');
+        $response->assertOk();
+    }
 }

@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Booking;
 use App\Models\Schedule;
 use App\Models\User;
 use App\Models\Purchase;
 use App\Http\Requests\Request;
+use App\Transformers\MyClientClosedTransformer;
 use App\Transformers\MyClientPurchaseTransformer;
 use App\Transformers\MyClientTransformer;
 use App\Transformers\MyClientUpcomingTransformer;
@@ -77,6 +79,37 @@ class BookingMyClientController extends Controller
         $schedules = $paginator->getCollection();
 
         return response(fractal($schedules, new MyClientUpcomingTransformer())
+            ->parseIncludes($request->getIncludes())->toArray())
+            ->withPaginationHeaders($paginator);
+    }
+
+    public function closed(Request $request)
+    {
+        $paginator = Booking::query()
+            ->selectRaw(implode(', ', [
+                'schedules.id as id',
+                'services.title as service_name',
+                'service_types.name as service_type',
+                'schedules.title as schedule_name',
+                'purchases.created_at as purchase_date',
+                'concat(users.first_name, " ", users.last_name) as client',
+                'bookings.reference as reference',
+                'purchases.price as paid',
+                'bookings.datetime_to as closure_date',
+                '"Complete" as status',
+            ]))
+            ->join('schedules', 'schedules.id', '=', 'bookings.schedule_id')
+            ->join('services', 'services.id', '=', 'schedules.service_id')
+            ->join('service_types', 'service_types.id', '=', 'services.service_type_id')
+            ->join('purchases', 'purchases.id', '=', 'bookings.purchase_id')
+            ->join('users', 'users.id', '=', 'bookings.user_id')
+            ->where('services.user_id', $request->user()->id)
+            ->where('bookings.datetime_from', '<=', DB::raw('now()'))
+            ->paginate($request->getLimit());
+
+        $bookings = $paginator->getCollection();
+
+        return response(fractal($bookings, new MyClientClosedTransformer())
             ->parseIncludes($request->getIncludes())->toArray())
             ->withPaginationHeaders($paginator);
     }

@@ -169,6 +169,7 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::get('/bookings/my-clients', [BookingMyClientController::class, 'index']);
     Route::get('/bookings/my-clients-purchases', [BookingMyClientController::class, 'purchases']);
     Route::get('/bookings/my-clients-upcoming', [BookingMyClientController::class, 'upcoming']);
+    Route::get('/bookings/my-clients-closed', [BookingMyClientController::class, 'closed']);
 
     Route::get('/bookings', [BookingController::class, 'index']);
     Route::get('/bookings/{booking}', [BookingController::class, 'show']);
