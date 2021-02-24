@@ -74,6 +74,7 @@ class BookingMyClientController extends Controller
             ->join('bookings', 'bookings.schedule_id', '=', 'schedules.id')
             ->where('services.user_id', $request->user()->id)
             ->where('bookings.datetime_from', '>', DB::raw('now()'))
+            ->groupBy('schedules.id')
             ->paginate($request->getLimit());
 
         $schedules = $paginator->getCollection();
