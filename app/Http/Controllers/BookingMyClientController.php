@@ -52,6 +52,31 @@ class BookingMyClientController extends Controller
             ->withPaginationHeaders($paginator);
     }
 
+    public function upcoming(Request $request)
+    {
+        $paginator = Schedule::query()
+            ->selectRaw(implode(', ', [
+                'purchases.id as id',
+                'services.title as service_name',
+                'service_types.name as service_type',
+                'schedules.title as schedule_name',
+                'as start_datetime',
+//                'as bookings',
+                'schedules.refund_terms as refund_terms',
+            ]))
+            ->join('services', 'services.id', '=', 'schedules.service_id')
+            ->join('service_types', 'service_types.id', '=', 'services.service_type_id')
+            ->join('bookings', 'bookings.schedule_id', '=', 'schedules.id')
+            ->where('services.user_id', $request->user()->id)
+            ->paginate($request->getLimit());
+
+        $purchases = $paginator->getCollection();
+
+        return response(fractal($purchases, new MyClientPurchaseTransformer())
+            ->parseIncludes($request->getIncludes()))
+            ->withPaginationHeaders($paginator);
+    }
+
     public function purchases(Request $request)
     {
         $paginator = Purchase::query()
