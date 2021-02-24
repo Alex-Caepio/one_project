@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\BookingMyClientController;
 use App\Http\Controllers\CancellationController;
 use App\Http\Controllers\MainPageController;
 use App\Http\Controllers\PaymentMethodController;
@@ -64,12 +65,21 @@ Route::get('/plans', [PlanController::class, 'index']);
 
 Route::get('/service-types', [ServiceTypeController::class, 'index']);
 
+Route::get('disciplines', [DisciplineController::class, 'index']);
+Route::get('disciplines/{discipline}', [DisciplineController::class, 'show']);
+
+//Route::get('/focus-areas/{focusArea}/images', [FocusAreaController::class, 'indexImage']);
+//Route::get('/focus-areas/{focusArea}/videos', [FocusAreaController::class, 'indexVideo']);
+Route::get('/focus-areas', [FocusAreaController::class, 'index']);
+Route::get('/focus-areas/{focusArea}', [FocusAreaController::class, 'show']);
+
 Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::get('auth/profile', [AuthController::class, 'profile']);
     Route::put('auth/profile', [AuthController::class, 'update']);
     Route::post('auth/resend-verification', [AuthController::class, 'resendVerification']);
     Route::post('auth/profile/avatar', [AuthController::class, 'avatar']);
     Route::post('auth/profile/background', [AuthController::class, 'background']);
+    Route::get('auth/quotes/articles', [AuthController::class, 'quotesArticles']);
 
     Route::get('stripe/link', [StripeAccountController::class, 'link']);
     Route::get('stripe/account', [StripeAccountController::class, 'account']);
@@ -104,9 +114,6 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::get('/articles/favourites', [UserController::class, 'articleFavorites']);
     Route::post('/articles/{article}/publish', [ArticleController::class, 'publish']);
     Route::post('/articles/{article}/unpublish', [ArticleController::class, 'unpublish']);
-
-    Route::get('disciplines', [DisciplineController::class, 'index']);
-    Route::get('disciplines/{discipline}', [DisciplineController::class, 'show']);
 
     Route::get('keywords', [KeywordController::class, 'index']);
     Route::get('keywords/list', [KeywordController::class, 'list']);
@@ -148,11 +155,6 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::get('/disciplines/{discipline}/images', [DisciplineController::class, 'indexImage']);
     Route::get('/disciplines/{discipline}/videos', [DisciplineController::class, 'indexVideo']);
 
-    Route::get('/focus-areas/{focusArea}/images', [FocusAreaController::class, 'indexImage']);
-    Route::get('/focus-areas/{focusArea}/videos', [FocusAreaController::class, 'indexVideo']);
-    Route::get('/focus-areas', [FocusAreaController::class, 'index']);
-    Route::get('/focus-areas/{focusArea}', [FocusAreaController::class, 'show']);
-
     Route::post('messages/users/{user}', [MessageController::class, 'store']);
     Route::get('/messages', [MessageController::class, 'index']);
     Route::get('/messages/receiver/{user}', [MessageController::class, 'showByReceiver']);
@@ -164,6 +166,9 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::get('/users', [UserController::class, 'search']);
 
     Route::get('/schedule-freezes', [ScheduleFreezesController::class, 'index']);
+
+    Route::get('/bookings/my-clients', [BookingMyClientController::class, 'index']);
+    Route::get('/bookings/my-clients-purchases', [BookingMyClientController::class, 'purchases']);
 
     Route::get('/bookings', [BookingController::class, 'index']);
     Route::get('/bookings/{booking}', [BookingController::class, 'show']);

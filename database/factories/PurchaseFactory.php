@@ -16,15 +16,15 @@ class PurchaseFactory extends Factory {
             'user_id'        => $this->faker->randomNumber(3),
             'schedule_id'    => $this->faker->randomNumber(2),
             'service_id'     => $this->faker->randomNumber(2),
-            'promocode_id'   => $this->faker->randomNumber(2),
-            'price_id'       => $this->faker->randomNumber(1),
-            'reference'      => Str::upper($this->faker->randomAscii),
-            'price'          => $this->faker->randomFloat(),
-            'price_original' => $this->faker->randomFloat(),
+            'promocode_id'   => null,
+            'price_id'       => null,
+            'reference'      => Str::random(6),
+            'price'          => $this->faker->randomFloat(2, 5, 400),
+            'price_original' => $this->faker->randomFloat(2, 5, 400),
             'created_at'     => $this->faker->date("Y-m-d H:i:s"),
             'updated_at'     => $this->faker->date("Y-m-d H:i:s"),
-            'is_deposit'     => $this->faker->boolean,
-            'deposit_amount' => $this->faker->randomFloat(),
+            'is_deposit'     => false,
+            'deposit_amount' => $this->faker->randomFloat(2, 5, 400),
         ];
     }
 }

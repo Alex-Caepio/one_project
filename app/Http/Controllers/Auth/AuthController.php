@@ -205,4 +205,45 @@ class AuthController extends Controller
                                                 ]);
     }
 
+    public function quotesArticles(Request $request)
+    {
+        if($request->user()->account_type == 'practitioner' && $request->user()->plan){
+
+            if ($request->user()->plan->article_publishing_unlimited) {
+                $quotes = [
+                    'allowed' => true,
+                    'current' => $request->user()->articles()->count(),
+                    'max'     => null,
+                    'message' => null
+                ];
+
+            } elseif($request->user()->articles()->count() < $request->user()->plan->article_publishing) {
+                $quotes = [
+                    'allowed' => true,
+                    'current' => $request->user()->articles()->count(),
+                    'max'     => $request->user()->plan->article_publishing,
+                    'message' => null
+                ];
+            } elseif ($request->user()->articles()->count() >= $request->user()->plan->article_publishing) {
+                $quotes = [
+                    'allowed' => false,
+                    'current' => $request->user()->articles()->count(),
+                    'max'     => $request->user()->plan->article_publishing,
+                    'message' => 'You\'ve already reached your limit of 10 articles'
+                ];
+            }
+
+            return $quotes;
+
+        } else {
+            return [
+                'allowed' => false,
+                'current' => $request->user()->articles()->count(),
+                'max'     => null,
+                'message' => 'You\'re no allowed to publish an article'
+            ];
+        }
+
+    }
+
 }

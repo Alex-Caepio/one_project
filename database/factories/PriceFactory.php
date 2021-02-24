@@ -16,7 +16,7 @@ class PriceFactory extends Factory
         return [
             'cost'              => 500,
             'schedule_id'       => $this->faker->randomNumber(3),
-            'name'              => 'gbp',
+            'name'              => config('app.platform_currency'),
             'is_free'           => $this->faker->boolean,
             'available_till'    => $this->faker->date(),
             'min_purchase'      => $this->faker->randomDigit,

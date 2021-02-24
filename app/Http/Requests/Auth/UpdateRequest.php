@@ -71,7 +71,7 @@ class UpdateRequest extends Request
 
         $user = $this->user();
         $validator->after(function ($validator) use($user){
-            if ($this->getBoolFromRequest('is_published') === true){
+            if ($this->getBoolFromRequest('is_published') === true || $user->is_published){
                 if (!$user->business_name && !$this->business_name) {
                     $validator->errors()->add(
                         'business_name',
@@ -94,6 +94,18 @@ class UpdateRequest extends Request
                     $validator->errors()->add(
                         'business_introduction',
                         'You have not filled in the field "Business introduction"'
+                    );
+                }
+                if (!$user->business_country && !$this->business_country) {
+                    $validator->errors()->add(
+                        'business_country',
+                        'You have not filled in the field "Business Country"'
+                    );
+                }
+                if (!$user->business_city && !$this->business_city) {
+                    $validator->errors()->add(
+                        'business_city',
+                        'You have not filled in the field "Business City"'
                     );
                 }
                 if (!$user->business_time_zone_id && !$this->business_time_zone_id) {

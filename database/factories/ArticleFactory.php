@@ -19,6 +19,7 @@ class ArticleFactory extends Factory
             'is_published' => $this->faker->boolean,
             'introduction' => $this->faker->text,
             'url' => $this->faker->url,
+            'published_at' => $this->faker->dateTime,
         ];
     }
 }

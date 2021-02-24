@@ -2,9 +2,7 @@
 
 namespace App\Http\Requests\Schedule;
 
-use App\Http\Requests\Request;
-
-class TrainingProgramScheduleRequest extends Request implements CreateScheduleInterface
+class TrainingProgramScheduleRequest extends GenericSchedule
 {
     /**
      * Determine if the user is authorized to make this request.

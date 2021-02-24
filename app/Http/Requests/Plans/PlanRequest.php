@@ -31,8 +31,14 @@ class PlanRequest extends FormRequest
     public function withValidator($validator)
     {
         $stripe = app()->make(StripeClient::class);
+
+        if(!$this->payment_method_id && !$this->user()->default_payment_method){
+            $validator->errors()->add('payment_method_id', 'Please, specify the card');
+            return;
+        }
+
         $payment_method = $stripe->paymentMethods->retrieve(
-            $this->payment_method_id,
+            $this->payment_method_id ?? $this->user()->default_payment_method,
             []
         );
 

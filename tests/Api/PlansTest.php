@@ -79,7 +79,7 @@ class PlansTest extends TestCase
         $client = app()->make(StripeClient::class);
         return $client->prices->create([
             'unit_amount' => '1000',
-            'currency'    => 'gbp',
+            'currency'    => config('app.platform_currency'),
             'product'     => $stripeProductId,
             'recurring' => ['interval' => 'month'],
         ]);

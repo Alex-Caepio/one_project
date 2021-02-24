@@ -14,24 +14,29 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
-class ArticleController extends Controller {
+class ArticleController extends Controller
+{
 
     /**
      * @param \App\Http\Requests\Request $request
      * @return mixed
      */
-    public function index(Request $request) {
+    public function index(Request $request)
+    {
         $paginator = $this->getArticleList($request);
-        return response(fractal($paginator->getCollection(),
-                                new ArticleTransformer())->parseIncludes($request->getIncludes()))->withPaginationHeaders($paginator);
+        $articles = $paginator->getCollection();
+
+        return response(fractal($articles, new ArticleTransformer())->parseIncludes($request->getIncludes()))
+            ->withPaginationHeaders($paginator);
     }
 
     /**
-     * @param \App\Models\Article $publicArticle
+     * @param \App\Models\Article        $publicArticle
      * @param \App\Http\Requests\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Article $publicArticle, Request $request) {
+    public function show(Article $publicArticle, Request $request)
+    {
         return fractal($publicArticle, new ArticleTransformer())->parseIncludes($request->getIncludes())->respond();
     }
 
@@ -39,17 +44,19 @@ class ArticleController extends Controller {
      * @param \App\Http\Requests\Articles\ArticleRequest $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(ArticleRequest $request) {
+    public function store(ArticleRequest $request)
+    {
         $article = run_action(ArticleStore::class, $request);
         return fractal($article, new ArticleTransformer())->respond();
     }
 
     /**
      * @param \App\Http\Requests\Articles\ArticleRequest $request
-     * @param \App\Models\Article $article
+     * @param \App\Models\Article                        $article
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(ArticleRequest $request, Article $article) {
+    public function update(ArticleRequest $request, Article $article)
+    {
         $article = run_action(ArticleUpdate::class, $request, $article);
         return fractal($article, new ArticleTransformer())->respond();
     }
@@ -58,7 +65,8 @@ class ArticleController extends Controller {
      * @param \App\Models\Article $article
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
      */
-    public function storeFavorite(Article $article) {
+    public function storeFavorite(Article $article)
+    {
         if ($article->articlefavorite()) {
             return response(null, 200);
         }
@@ -71,7 +79,8 @@ class ArticleController extends Controller {
      * @param \App\Models\Article $article
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
      */
-    public function deleteFavorite(Article $article) {
+    public function deleteFavorite(Article $article)
+    {
         Auth::user()->favourite_articles()->detach($article->id);
         return response(null, 204);
     }
@@ -81,54 +90,66 @@ class ArticleController extends Controller {
      * @param Request $request
      * @return \Illuminate\Http\Response
      */
-    public function practitionerArticleList(Request $request) {
+    public function practitionerArticleList(Request $request)
+    {
         $paginator = $this->getArticleList($request, Auth::user()->id, false);
         return response(fractal($paginator->getCollection(),
-                                new ArticleTransformer())->parseIncludes($request->getIncludes()))->withPaginationHeaders($paginator);
+            new ArticleTransformer())->parseIncludes($request->getIncludes()))->withPaginationHeaders($paginator);
     }
 
 
-    public function practitionerArticleShow(Article $article, ArticleActionRequest $request) {
+    public function practitionerArticleShow(Article $article, ArticleActionRequest $request)
+    {
         return fractal($article, new ArticleTransformer())->parseIncludes($request->getIncludes())->respond();
     }
 
     /**
      * @param ArticleActionRequest $request
-     * @param \App\Models\Article $article
+     * @param \App\Models\Article  $article
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
      * @throws \Exception
      */
-    public function destroy(ArticleActionRequest $request, Article $article) {
+    public function destroy(ArticleActionRequest $request, Article $article)
+    {
         $article->delete();
         return response(null, 204);
     }
 
     /**
      * @param \App\Http\Requests\Request $request
-     * @param int|null $userId
-     * @param bool $isPublished
+     * @param int|null                   $userId
+     * @param bool                       $isPublished
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
     private function getArticleList(Request $request, ?int $userId = null,
-                                    bool $isPublished = true): LengthAwarePaginator {
+                                    bool $isPublished = true): LengthAwarePaginator
+    {
         $queryBuilder = Article::with($request->getIncludes());
+
         if ($userId !== null) {
             $queryBuilder->where('user_id', $userId);
         }
+
+        if ($request->has('recently_published')) {
+            $queryBuilder->orderByDesc('published_at');
+        }
+
         if ($isPublished) {
-            $queryBuilder->published()->whereHas('user', function($query) {
+            $queryBuilder->published()->whereHas('user', function ($query) {
                 $query->published();
             });
         }
+
         return $queryBuilder->paginate($request->getLimit());
     }
 
     /**
-     * @param \App\Models\Article $article
+     * @param \App\Models\Article                            $article
      * @param \App\Http\Requests\Admin\ArticlePublishRequest $publishRequest
      * @return \Illuminate\Http\Response
      */
-    public function publish(Article $article, ArticlePublishRequest $publishRequest): Response {
+    public function publish(Article $article, ArticlePublishRequest $publishRequest): Response
+    {
         $article->forceFill([
             'is_published' => true,
             'published_at' => now()
@@ -142,7 +163,8 @@ class ArticleController extends Controller {
      * @param \App\Models\Article $article
      * @return \Illuminate\Http\Response
      */
-    public function unpublish(Article $article): Response {
+    public function unpublish(Article $article): Response
+    {
         $article->forceFill(['is_published' => false]);
         $article->save();
         return response(null, 204);

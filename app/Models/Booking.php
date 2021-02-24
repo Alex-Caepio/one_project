@@ -72,5 +72,19 @@ class Booking extends Model
     {
         return $filters->apply($builder);
     }
+
+    public function reschedule_requests(): HasMany {
+        return $this->hasMany(RescheduleRequest::class);
+    }
+
+    public function client_reschedule_request(): HasOne {
+        return $this->hasOne(RescheduleRequest::class)->where('requested_by', 'client');
+    }
+
+    public function practitioner_reschedule_request(): HasOne {
+        return $this->hasOne(RescheduleRequest::class)->where('requested_by', 'practitioner');
+    }
+
+
 }
 

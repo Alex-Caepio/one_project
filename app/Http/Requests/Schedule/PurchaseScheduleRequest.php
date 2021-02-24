@@ -3,13 +3,11 @@
 namespace App\Http\Requests\Schedule;
 
 use App\Http\Requests\PromotionCode\ValidatePromotionCode;
-use App\Http\Requests\Request;
-use App\Models\PromotionCode;
 use App\Models\ScheduleAvailability;
 use App\Models\ScheduleUnavailability;
 use Illuminate\Validation\Rule;
 
-class PurchaseScheduleRequest extends Request {
+class PurchaseScheduleRequest extends GenericSchedule {
 
     /**
      * Determine if the user is authorized to make this request.
@@ -26,6 +24,7 @@ class PurchaseScheduleRequest extends Request {
      * @return array
      */
     public function rules() {
+
         $idValue = $this->schedule->prices->pluck('id');
 
         $rules = [
@@ -45,6 +44,9 @@ class PurchaseScheduleRequest extends Request {
     }
 
     public function withValidator($validator): void {
+
+        parent::withValidator($validator);
+
         $validator->after(function($validator) {
             $schedule = $this->schedule;
             $priceId = $this->price_id;

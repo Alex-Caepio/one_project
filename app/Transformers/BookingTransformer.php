@@ -12,7 +12,10 @@ class BookingTransformer extends Transformer {
         'price',
         'schedule_availability',
         'purchase',
-        'cancellation'
+        'cancellation',
+        'reschedule_requests',
+        'client_reschedule_request',
+        'practitioner_reschedule_request',
     ];
 
     /**
@@ -65,5 +68,17 @@ class BookingTransformer extends Transformer {
 
     public function includeCancellation(Booking $booking) {
         return $this->itemOrNull($booking->cancellation, new CancellationTransformer());
+    }
+
+    public function includeRescheduleRequests(Booking $booking) {
+        return $this->collectionOrNull($booking->reschedule_requests, new RescheduleRequestTransformer());
+    }
+
+    public function includePractitionerRescheduleRequest(Booking $booking) {
+        return $this->itemOrNull($booking->practitioner_reschedule_request, new RescheduleRequestTransformer());
+    }
+
+    public function includeClientRescheduleRequest(Booking $booking) {
+        return $this->itemOrNull($booking->client_reschedule_request, new RescheduleRequestTransformer());
     }
 }
