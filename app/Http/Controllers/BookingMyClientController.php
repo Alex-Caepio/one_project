@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Schedule;
 use App\Models\User;
 use App\Models\Purchase;
 use App\Http\Requests\Request;
 use App\Transformers\MyClientPurchaseTransformer;
 use App\Transformers\MyClientTransformer;
+use App\Transformers\MyClientUpcomingTransformer;
 use Illuminate\Support\Facades\DB;
 
 class BookingMyClientController extends Controller
@@ -56,24 +58,26 @@ class BookingMyClientController extends Controller
     {
         $paginator = Schedule::query()
             ->selectRaw(implode(', ', [
-                'purchases.id as id',
+                'schedules.id as id',
                 'services.title as service_name',
                 'service_types.name as service_type',
                 'schedules.title as schedule_name',
-                'as start_datetime',
-//                'as bookings',
+                'schedules.start_date as start_datetime',
+                'concat(count(bookings.id), " of ", schedules.attendees) as bookings',
+                'concat(count(bookings.id), " of ", count(bookings.id)) as full_paid',
                 'schedules.refund_terms as refund_terms',
             ]))
             ->join('services', 'services.id', '=', 'schedules.service_id')
             ->join('service_types', 'service_types.id', '=', 'services.service_type_id')
             ->join('bookings', 'bookings.schedule_id', '=', 'schedules.id')
             ->where('services.user_id', $request->user()->id)
+            ->where('bookings.datetime_from', '>', DB::raw('now()'))
             ->paginate($request->getLimit());
 
-        $purchases = $paginator->getCollection();
+        $schedules = $paginator->getCollection();
 
-        return response(fractal($purchases, new MyClientPurchaseTransformer())
-            ->parseIncludes($request->getIncludes()))
+        return response(fractal($schedules, new MyClientUpcomingTransformer())
+            ->parseIncludes($request->getIncludes())->toArray())
             ->withPaginationHeaders($paginator);
     }
 
