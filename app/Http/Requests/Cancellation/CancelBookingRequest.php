@@ -6,6 +6,9 @@ use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * @property Booking booking
+ */
 class CancelBookingRequest extends FormRequest {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,8 +16,8 @@ class CancelBookingRequest extends FormRequest {
      * @return bool
      */
     public function authorize() {
-        $userBooking = Auth::user()->isClient() && $this->booking->user_id === Auth::id();
-        $practitionerBooking = Auth::user()->isPractitioner() && $this->booking->practitioner_id === Auth::id();
+        $userBooking = Auth::id() == $this->booking->user_id;
+        $practitionerBooking = Auth::id() == $this->booking->practitioner_id;
         return $userBooking || $practitionerBooking;
 
     }
