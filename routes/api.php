@@ -75,6 +75,7 @@ Route::get('/focus-areas/{focusArea}', [FocusAreaController::class, 'show']);
 Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::get('auth/profile', [AuthController::class, 'profile']);
     Route::put('auth/profile', [AuthController::class, 'update']);
+    Route::delete('auth/profile', [AuthController::class, 'delete']);
     Route::post('auth/resend-verification', [AuthController::class, 'resendVerification']);
     Route::post('auth/profile/avatar', [AuthController::class, 'avatar']);
     Route::post('auth/profile/background', [AuthController::class, 'background']);

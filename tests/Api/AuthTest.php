@@ -231,4 +231,10 @@ class AuthTest extends TestCase
         $this->assertDatabaseHas('keywords', ['title' => 'Sport']);
         $this->assertDatabaseMissing('keywords', ['title' => 'kekw']);
     }
+
+    public function test_user_can_delete_profile()
+    {
+        $response = $this->json('delete', 'api/auth/profile');
+        $response->assertStatus(204);
+    }
 }
