@@ -17,6 +17,14 @@ class CreateUserFromRequest
             $attributes['password'] = Hash::make($attributes['password']);
         }
 
+        if($request->account_type == 'practitioner') {
+            $plan = Plan::where('is_free', 1)->first();
+
+            if($plan){
+                $attributes['plan_id'] = $plan->id;
+             }
+        }
+
         $attributes = array_merge($attributes, $overrides);
 
         return run_action(CreateUser::class, $attributes);

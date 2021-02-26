@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Auth\QuoteController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\BookingMyClientController;
@@ -24,6 +25,7 @@ use App\Http\Controllers\CardStripeController;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\ServiceTypeController;
 use App\Http\Controllers\ScheduleController;
+use App\Http\Controllers\ScheduleBookingController;
 use App\Http\Controllers\RescheduleRequestController;
 use App\Http\Controllers\FocusAreaController;
 use App\Http\Controllers\MessageController;
@@ -79,7 +81,9 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::post('auth/resend-verification', [AuthController::class, 'resendVerification']);
     Route::post('auth/profile/avatar', [AuthController::class, 'avatar']);
     Route::post('auth/profile/background', [AuthController::class, 'background']);
-    Route::get('auth/quotes/articles', [AuthController::class, 'quotesArticles']);
+    Route::get('auth/quotes/articles', [QuoteController::class, 'quotesArticles']);
+    Route::get('auth/quotes/services/{service}/schedules', [QuoteController::class, 'quotesServices']);
+    Route::get('auth/quotes/schedules/{schedule}/prices', [QuoteController::class, 'quotesPrices']);
 
     Route::get('stripe/link', [StripeAccountController::class, 'link']);
     Route::get('stripe/account', [StripeAccountController::class, 'account']);
@@ -153,6 +157,7 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::post('/schedules/{schedule}/purchase', [PurchaseController::class, 'purchase']);
     /* Payments */
 
+    Route::get('/schedules/{schedule}/upcoming-bookings', [ScheduleBookingController::class, 'index']);
 
     Route::get('/disciplines/{discipline}/images', [DisciplineController::class, 'indexImage']);
     Route::get('/disciplines/{discipline}/videos', [DisciplineController::class, 'indexVideo']);

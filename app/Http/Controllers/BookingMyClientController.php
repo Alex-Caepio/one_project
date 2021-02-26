@@ -128,11 +128,13 @@ class BookingMyClientController extends Controller
                 'purchases.price as paid',
                 'schedules.location_displayed as location',
                 'schedules.refund_terms as refund_terms',
+                'bookings.purchase_id as booking_id',
             ]))
             ->join('services', 'services.id', '=', 'purchases.service_id')
             ->join('service_types', 'service_types.id', '=', 'services.service_type_id')
             ->join('schedules', 'schedules.id', '=', 'purchases.schedule_id')
             ->join('users', 'users.id', '=', 'purchases.user_id')
+            ->join('bookings', 'bookings.purchase_id', '=', 'purchases.id')
             ->where('services.user_id', $request->user()->id)
             ->paginate($request->getLimit());
 

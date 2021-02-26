@@ -55,7 +55,10 @@ class BookingMyClientsTest extends TestCase
         $client      = User::factory()->create();
         $service     = Service::factory()->create(['user_id' => $this->user->id, 'service_type_id' => $serviceType->id]);
         $schedule    = Schedule::factory()->create(['service_id' => $service->id]);
-        Purchase::factory()->count(5)->create(['user_id' => $client->id, 'schedule_id' => $schedule->id, 'service_id' => $service->id]);
+        $purchases = Purchase::factory()->count(5)->create(['user_id' => $client->id, 'schedule_id' => $schedule->id, 'service_id' => $service->id]);
+        foreach($purchases as $purchase){
+            Booking::factory()->create(['user_id' => $client->id, 'schedule_id' => $schedule->id, 'purchase_id'=>$purchase->id]);
+        }
 
         $response = $this->json('get', '/api/bookings/my-clients-purchases');
         $response->assertOk();
