@@ -28,7 +28,8 @@ class CreateRescheduleRequestsOnScheduleUpdate
                     'booking_id' => $booking->id,
                     'schedule_id' => $booking->schedule_id,
                     'new_schedule_id' => $schedule->id,
-                    'created_at' => Carbon::now()->format('Y-m-d H:i:s')
+                    'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                    'requested_by' => 'practitioner'
                 ];
             }
 

@@ -143,6 +143,8 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
 
     Route::post('/schedules/{schedule}/reschedule', [RescheduleRequestController::class, 'store']);
     Route::get('/reschedule-requests', [RescheduleRequestController::class, 'index']);
+    Route::get('/reschedule-requests/inbound', [RescheduleRequestController::class, 'inbound']);
+    Route::get('/reschedule-requests/outbound', [RescheduleRequestController::class, 'outbound']);
     Route::post('reschedule-requests/{rescheduleRequest}/accept', [RescheduleRequestController::class, 'accept']);
     Route::post('reschedule-requests/{rescheduleRequest}/decline', [RescheduleRequestController::class, 'decline']);
 

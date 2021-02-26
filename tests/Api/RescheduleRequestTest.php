@@ -24,12 +24,35 @@ class RescheduleRequestTest extends TestCase
         $this->login($this->user);
     }
 
-    public function test_can_get_all_reschedule_request(): void
+    public function test_user_can_get_all_reschedule_request(): void
     {
-        RescheduleRequest::factory()->count(2)->create();
-        $response = $this->json('get', "/api/reschedule-requests");
+        RescheduleRequest::factory()->count(2)->create(['user_id' => $this->user->id]);
+        $response = $this->json('get', '/api/reschedule-requests');
 
         $response
+            ->assertJsonCount(2)
+            ->assertOk();
+    }
+
+    public function test_user_can_get_all_inbound_reschedule_request(): void
+    {
+        RescheduleRequest::factory()->count(2)->create(['requested_by' => 'practitioner', 'user_id' => $this->user->id]);
+        RescheduleRequest::factory()->count(4)->create(['requested_by' => 'client', 'user_id' => $this->user->id]);
+        $response = $this->json('get', '/api/reschedule-requests/inbound');
+
+        $response
+            ->assertJsonCount(2)
+            ->assertOk();
+    }
+
+    public function test_user_can_get_all_outbound_reschedule_request(): void
+    {
+        RescheduleRequest::factory()->count(2)->create(['requested_by' => 'practitioner', 'user_id' => $this->user->id]);
+        RescheduleRequest::factory()->count(4)->create(['requested_by' => 'client', 'user_id' => $this->user->id]);
+        $response = $this->json('get', '/api/reschedule-requests/outbound');
+
+        $response
+            ->assertJsonCount(4)
             ->assertOk();
     }
 
