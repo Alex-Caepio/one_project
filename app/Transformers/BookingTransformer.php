@@ -50,6 +50,10 @@ class BookingTransformer extends Transformer {
         return $this->itemOrNull($booking->user, new UserTransformer());
     }
 
+    public function includePurchase(Booking $booking) {
+        return $this->itemOrNull($booking->purchase, new PurchaseTransformer());
+    }
+
     public function includePractitioner(Booking $booking) {
         return $this->itemOrNull($booking->practitioner, new UserTransformer());
     }

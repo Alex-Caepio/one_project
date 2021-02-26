@@ -37,8 +37,8 @@ class ScheduleBookingTest extends TestCase
         Booking::factory()->count(3)->create(['user_id' => $client->id, 'schedule_id' => $schedule->id, 'datetime_from' => Carbon::now()->subDays(1)]);
 
         $response = $this->json('get', "/api/schedules/{$schedule->id}/upcoming-bookings");
-        $response->assertJsonCount(3);
         $response->assertOk();
+        $response->assertJsonCount(3);
     }
 
 }
