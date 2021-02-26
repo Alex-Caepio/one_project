@@ -688,6 +688,76 @@ Please note, if you do not reply, this will be considered as accepting the chang
 Thank you<br/> The {{platform_name}} Team<br/>',
                 'delay'      => random_int(5, 20)
             ],
+            /*
+             *
+             * CRON REMINDERS
+             *
+             */
+            //40
+            [
+                'name'       => 'Booking Reminder - WS/Event',
+                'user_type'  => 'client',
+                'from_email' => Str::random(10) . '@gmail.com',
+                'from_title' => Str::random(8),
+                'subject'    => '1 Week to Go - {{service_name}}',
+                'logo'       => Str::random(5),
+                'text'       => 'Hi {{first_name}}<br/>
+Your booking for {{service_name}} with {{practitioner_business_name}} is just one week away. <br/>
+Booking Details: {{service_name}} - {{schedule_name}} <br/>
+Booking Reference: {{booking_reference}} <br/>
+From: {{schedule_start_date}}, {{schedule_start_time}}<br/>
+To: {{schedule_end_date}}, {{schedule_end_time}}<br/>
+Location:  {{schedule_venue}} {{schedule_city}}, {{schedule_postcode}}, {{schedule_country}}
+ <br/> {{see_on_map}}<br/>
+<a href="{{view_bookings}}" target="_blank">View My Bookings</a><br/><br/>
+Thank you<br/> The {{platform_name}} Team <br/>',
+                'delay'      => random_int(5, 20)
+            ],
+            //41
+            [
+                'name'       => 'Booking Reminder - Retreat',
+                'user_type'  => 'client',
+                'from_email' => Str::random(10) . '@gmail.com',
+                'from_title' => Str::random(8),
+                'subject'    => '2 Weeks to Go - {{service_name}}',
+                'logo'       => Str::random(5),
+                'text'       => 'Hi {{first_name}} <br/>Your Retreat, {{service_name}} with {{practitioner_business_name}} is just two weeks away. <br/>
+Booking Details: {{service_name}} - {{schedule_name}}<br/>
+Booking Reference: {{booking_reference}} <br/>
+From: {{schedule_start_date}}<br/>
+To: {{schedule_end_date}} <br/>
+Location: {{schedule_city}}, {{schedule_country}}<br/>
+<a href="{{view_bookings}}" target="_blank">View My Bookings</a>
+<br/><br/> Thank you<br/> The {{platform_name}} Team<br/>',
+                'delay'      => random_int(5, 20)
+            ],
+            //42
+            [
+                'name'       => 'Booking Reminder - WS/Event/Retreat/Appointment',
+                'user_type'  => 'client',
+                'from_email' => Str::random(10) . '@gmail.com',
+                'from_title' => Str::random(8),
+                'subject'    => 'Tomorrow - {{service_name}}',
+                'logo'       => Str::random(5),
+                'text'       => 'Hi {{first_name}} <br/>
+Your booking for {{service_name}} with {{practitioner_business_name}} is tomorrow.  <br/>
+Booking Details: {{service_name}} - {{schedule_name}} <br/>
+Booking Reference: {{booking_reference}} <br/>
+From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}} <br/>
+Location:  {{schedule_venue}} {{schedule_city}}, {{schedule_postcode}} {{schedule_country}}
+<br/>{{see_on_map}}<br/>
+<a href="{{view_bookings}}" target="_blank">View My Bookings</a><br/><br/> Thank you <br/>The {{platform_name}} Team<br/>',
+                'delay'      => random_int(5, 20)
+            ],
+            /*
+             *
+             * CRON REMINDERS END
+             *
+             */
+
+
+
+
 
             //44
             [
@@ -702,8 +772,9 @@ Booking Reference: {{booking_reference}} {{practitioner_business_name}} would li
 Reschedule Requested:{{service_name}} - {{schedule_name}}<br/>
 From: {{reschedule_start_date}}, {{reschedule_start_time}}<br/>
 To: {{reschedule_end_date}}, {{reschedule_end_time}}<br/>
-Location: {{reschedule_venue}} {{service_schedule_reschedule_url}} {{reschedule_address}} {{reschedule_city}}, {{reschedule_postcode}}, {{reschedule_country}}<br/>
-{{accept}} <br/>{{decline}} <a href="{{view_booking}}" target="_blank">View My Booking</a><br/><br/>
+Location: {{reschedule_venue}} {{reschedule_address}} {{reschedule_city}}, {{reschedule_postcode}}, {{reschedule_country}}<br/>
+{{accept}} <br/>{{decline}}<br/>
+ <a href="{{view_booking}}" target="_blank">View My Booking</a><br/><br/>
 You will not be charged for this reschedule. Please note, if you decline or do not respond, the Practitioner may still cancel your booking and if so, you will be refunded.<br/>
 Current Booking: {{service_name}} - {{schedule_name}}<br/>
 From: {{schedule_start_date}}, {{schedule_start_time}}<br/>
@@ -727,15 +798,19 @@ Booking Reference: {{booking_reference}} {{practitioner_business_name}} would li
 New Appointment: {{service_name}} - {{schedule_name}} <br/>
 From: {{reschedule_start_date}}, {{reschedule_start_time}} To: {{reschedule_end_date}}, {{reschedule_end_time}} <br/>
 Location: {{reschedule_venue}} {{service_schedule_reschedule_url}} {{reschedule_address}} {{reschedule_city}}, {{reschedule_postcode}}, {{reschedule_country}} <br/> <br/>
-Message from {{practitioner_business_name}} <br/> <br/>
 You can either Accept or Decline this request. If you decline or do not respond, the Practitioner may still cancel your current appointment and if so, you will be refunded.
- <br/>{{accept}} {{decline}} <br/> <a href="{{view_booking}}" target="_blank">View My Bookings</a> <br/> <br/>
+ <br/>{{accept}} {{decline}} <br/>
+ <a href="{{view_booking}}" target="_blank">View My Bookings</a> <br/> <br/>
 Current Booking {{service_name}} - {{schedule_name}} <br/>
 From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}} <br/>
 Location:  {{schedule_hosting_url}} {{schedule_venue}} {{schedule_city}}, {{schedule_postcode}}, {{schedule_country}} <br/> <br/>
 Thank you <br/> The {{platform_name}} Team <br/>',
                 'delay'      => random_int(5, 20)
             ],
+
+
+
+
             //46
             [
                 'name'       => 'Booking Reschedule Client to Select - Appt',
@@ -766,68 +841,7 @@ Thank you The {{platform_name}} Team',
 
 
 
-            /*
-             *
-             * CRON REMINDERS
-             *
-             */
-            //45
-            [
-                'name'       => 'Booking Reminder - WS/Event',
-                'user_type'  => 'client',
-                'from_email' => Str::random(10) . '@gmail.com',
-                'from_title' => Str::random(8),
-                'subject'    => '1 Week to Go - {{service_name}}',
-                'logo'       => Str::random(5),
-                'text'       => 'Hi {{first_name}}<br/>
-Your booking for {{service_name}} with {{practitioner_business_name}} is just one week away. <br/>
-Booking Details: {{service_name}} - {{schedule_name}} <br/>
-Booking Reference: {{booking_reference}} <br/>
-From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}}<br/>
-Location:  {{schedule_venue}} {{schedule_city}}, {{schedule_postcode}}, {{schedule_country}} <br/> {{see_on_map}}<br/>
-<a href="{{view_booking}}" target="_blank">View My Bookings</a><br/><br/>
-Thank you<br/> The {{platform_name}} Team <br/>',
-                'delay'      => random_int(5, 20)
-            ],
-            //46
-            [
-                'name'       => 'Booking Reminder - Retreat',
-                'user_type'  => 'client',
-                'from_email' => Str::random(10) . '@gmail.com',
-                'from_title' => Str::random(8),
-                'subject'    => '2 Weeks to Go - {{service_name}}',
-                'logo'       => Str::random(5),
-                'text'       => 'Hi {{first_name}} <br/>Your Retreat, {{service_name}} with {{practitioner_business_name}} is just two weeks away. <br/>
-Booking Details: {{service_name}} - {{schedule_name}}<br/>
-Booking Reference: {{booking_reference}} <br/>
-From: {{schedule_start_date}} To: {{schedule_end_date}} <br/>
-Location: {{schedule_city}}, {{schedule_country}}<br/>
-<a href="{{view_booking}}" target="_blank">View My Bookings</a><br/><br/> Thank you<br/> The {{platform_name}} Team<br/>',
-                'delay'      => random_int(5, 20)
-            ],
-            //47
-            [
-                'name'       => 'Booking Reminder - WS/Event Retreat/Appointment',
-                'user_type'  => 'client',
-                'from_email' => Str::random(10) . '@gmail.com',
-                'from_title' => Str::random(8),
-                'subject'    => 'Tomorrow - {{service_name}}',
-                'logo'       => Str::random(5),
-                'text'       => 'Hi {{first_name}} <br/>
-Your booking for {{service_name}} with {{practitioner_business_name}} is tomorrow.  <br/>
-Booking Details: {{service_name}} - {{schedule_name}} <br/>
-Booking Reference: {{booking_reference}} <br/>
-From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}} <br/>
-Location:  {{schedule_venue}} {{schedule_city}}, {{schedule_postcode}} {{schedule_country}}
-<br/>{{see_on_map}}<br/>
-<a href="{{view_booking}}" target="_blank">View My Bookings</a><br/><br/> Thank you <br/>The {{platform_name}} Team<br/>',
-                'delay'      => random_int(5, 20)
-            ],
-            /*
-             *
-             * CRON REMINDERS END
-             *
-             */
+
 
 
 

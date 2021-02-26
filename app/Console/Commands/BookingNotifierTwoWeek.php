@@ -2,7 +2,9 @@
 
 namespace App\Console\Commands;
 
+use App\Events\BookingReminder;
 use App\Models\Booking;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 
 class BookingNotifierTwoWeek extends Command {
@@ -11,7 +13,7 @@ class BookingNotifierTwoWeek extends Command {
      *
      * @var string
      */
-    protected $signature = 'bookings:notifier';
+    protected $signature = 'bookings:notifier-twoweek';
 
     /**
      * The console command description.
@@ -23,9 +25,16 @@ class BookingNotifierTwoWeek extends Command {
     /**
      * Execute the console command.
      *
-     * @return int
+     * @return void
      */
     public function handle(): void {
-        $bookings = Booking::whereNull('reminded_at')->with(['user', 'schedule', 'schedule.service'])->get();
+        $bookings = Booking::whereNull('cancelled_at')->whereRaw("DATE_FORMAT(`datetime_from`, '%Y-%m-%d') = ?",
+                                                                 Carbon::now()->addDays(14)->format('Y-m-d'))
+                           ->whereHas('schedule.service', static function($query) {
+                               $query->where('service_type_id', 'retreat');
+                           })->with(['user', 'schedule', 'schedule.service', 'practitioner'])->get();
+        foreach ($bookings as $booking) {
+            event(new BookingReminder($booking, 'Booking Reminder - Retreat'));
+        }
     }
 }

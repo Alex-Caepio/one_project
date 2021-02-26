@@ -252,7 +252,7 @@ class EmailVariables {
      * @return string
      */
     public function getSchedule_hosting_url(): string {
-        return '';
+        return $this->event->schedule->url;
     }
 
     /**

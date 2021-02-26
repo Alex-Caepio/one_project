@@ -14,8 +14,7 @@ use App\Events\BookingEventVirtualWithDeposit;
 use App\Events\BookingReminder;
 use App\Events\BookingRescheduleAcceptedByClient;
 use App\Events\BookingRescheduleClientToSelectAppt;
-use App\Events\BookingRescheduleOfferedByPractitionerAppt;
-use App\Events\BookingRescheduleOfferedByPractitionerDate;
+use App\Events\BookingRescheduleOfferedByPractitioner;
 use App\Events\BusinessProfileLive;
 use App\Events\BusinessProfileUnpublished;
 use App\Events\ChangeOfSubscription;
@@ -46,8 +45,7 @@ use App\Listeners\Emails\BookingEventVirtualWithDepositEmail;
 use App\Listeners\Emails\BookingReminderEmail;
 use App\Listeners\Emails\BookingRescheduleAcceptedByClientEmail;
 use App\Listeners\Emails\BookingRescheduleClientToSelectApptEmail;
-use App\Listeners\Emails\BookingRescheduleOfferedByPractitionerApptEmail;
-use App\Listeners\Emails\BookingRescheduleOfferedByPractitionerDateEmail;
+use App\Listeners\Emails\BookingRescheduleOfferedByPractitionerEmail;
 use App\Listeners\Emails\BusinessProfileLiveEmail;
 use App\Listeners\Emails\BusinessProfileUnpublishedEmail;
 use App\Listeners\Emails\ChangeOfSubscriptionEmail;
@@ -121,11 +119,8 @@ class EventServiceProvider extends ServiceProvider {
         BookingRescheduleClientToSelectAppt::class              => [
             BookingRescheduleClientToSelectApptEmail::class
         ],
-        BookingRescheduleOfferedByPractitionerAppt::class       => [
-            BookingRescheduleOfferedByPractitionerApptEmail::class
-        ],
-        BookingRescheduleOfferedByPractitionerDate::class       => [
-            BookingRescheduleOfferedByPractitionerDateEmail::class
+        BookingRescheduleOfferedByPractitioner::class => [
+            BookingRescheduleOfferedByPractitionerEmail::class
         ],
         BusinessProfileLive::class                              => [
             BusinessProfileLiveEmail::class

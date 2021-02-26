@@ -18,15 +18,14 @@ class BookingReminder {
     public User $user;
     public User $practitioner;
     public Booking $booking;
-    public string $type;
+    public string $template;
 
-    public function __construct(Booking $booking, User $user, User $practitioner, Schedule $schedule, Service $service,
-                                string $type) {
-        $this->schedule = $schedule;
-        $this->service = $service;
+    public function __construct(Booking $booking, string $template) {
         $this->booking = $booking;
-        $this->user = $user;
-        $this->practitioner = $practitioner;
-        $this->type = $type;
+        $this->schedule = $booking->schedule;
+        $this->service = $booking->schedule->service;
+        $this->user = $booking->user;
+        $this->practitioner = $booking->practitioner;
+        $this->$template = $template;
     }
 }

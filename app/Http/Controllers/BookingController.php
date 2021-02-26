@@ -9,6 +9,7 @@ use App\Models\Booking;
 use App\Models\RescheduleRequest;
 use App\Transformers\BookingTransformer;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class BookingController extends Controller
 {
@@ -52,7 +53,7 @@ class BookingController extends Controller
                 'new_price_id'    => $request->get('new_price_id'),
                 'comment'         => $request->get('comment'),
                 'old_price_id'    => $booking->price_id,
-                'requested_by'    => $request->user()->id == $booking->user_id ? 'client' : 'practitioner',
+                'requested_by'    => $request->user()->id === $booking->user_id ? 'client' : 'practitioner',
             ]
         );
         $rescheduleRequest->save();
@@ -73,7 +74,8 @@ class BookingController extends Controller
                 'new_schedule_id' => $request->get('new_schedule_id'),
                 'new_price_id'    => $request->get('new_price_id'),
                 'comment'         => $request->get('comment'),
-                'created_at'      => Carbon::now()->format('Y-m-d H:i:s')
+                'created_at'      => Carbon::now()->format('Y-m-d H:i:s'),
+                'requested_by'    => Auth::id() === $booking->user_id ? 'client' : 'practitioner'
             ];
         }
         RescheduleRequest::insert($rescheduleRequests);

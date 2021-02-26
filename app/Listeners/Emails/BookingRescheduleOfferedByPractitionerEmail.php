@@ -3,18 +3,20 @@
 namespace App\Listeners\Emails;
 
 use App\EmailVariables\EmailVariables;
+use App\Events\BookingRescheduleOfferedByPractitioner;
 use App\Events\BookingRescheduleOfferedByPractitionerDate;
 use App\Models\CustomEmail;
 use Illuminate\Support\Facades\Mail;
 
-class BookingRescheduleOfferedByPractitionerDateEmail
+class BookingRescheduleOfferedByPractitionerEmail
 {
     public function __construct()
     {
     }
 
-    public function handle(BookingRescheduleOfferedByPractitionerDate $event): void
+    public function handle(BookingRescheduleOfferedByPractitioner $event): void
     {
+        //'Booking Reschedule Offered by Practitioner - Appt'
         $user = $event->user;
         $emailVerification = CustomEmail::where('name', 'Booking Reschedule Offered by Practitioner - Date')->first();
         $body = $emailVerification->text;
