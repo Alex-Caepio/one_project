@@ -173,6 +173,7 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::get('/users', [UserController::class, 'search']);
 
     Route::get('/schedule-freezes', [ScheduleFreezesController::class, 'index']);
+    Route::delete('/schedule-freezes/{scheduleFreeze}', [ScheduleFreezesController::class, 'destroy']);
 
     Route::get('/bookings/my-clients', [BookingMyClientController::class, 'index']);
     Route::get('/bookings/my-clients-purchases', [BookingMyClientController::class, 'purchases']);

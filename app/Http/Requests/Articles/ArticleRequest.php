@@ -28,19 +28,21 @@ class ArticleRequest extends Request {
             return [
                 'title'        => 'required|string|min:5|max:120',
                 'description'  => 'required|string|min:5|max:3000',
-                'is_published' => 'bool',
+                'is_published' => 'required|boolean',
                 'introduction' => 'required|string|min:5|max:200',
                 'url'          => 'required|url|unique:articles,url' . ($this->article ? ',' . $this->article->id : ''),
-                'image_url'    => 'nullable|url'
+                'image_url'    => 'nullable|url',
+                'user_id'      => 'required|exists:users,id|integer|min:0'
             ];
         }
         return [
             'title'        => 'string|min:5|max:120',
             'description'  => 'string|min:5|max:3000',
-            'is_published' => 'bool',
+            'is_published' => 'required|boolean',
             'introduction' => 'string|min:5|max:200',
             'url'          => 'url',
-            'image_url'    => 'nullable|url'
+            'image_url'    => 'nullable|url',
+            'user_id'      => 'required|exists:users,id|integer|min:0'
         ];
 
     }

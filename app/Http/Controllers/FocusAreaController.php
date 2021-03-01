@@ -18,11 +18,37 @@ class FocusAreaController extends Controller
         $allVideos = $focusArea->focus_area_videos;
         return response($allVideos);
     }
+    
     public function index(Request $request)
     {
-        $focusArea = FocusArea::all();
-        return fractal($focusArea, new FocusAreaTransformer())->parseIncludes($request->getIncludes())
-            ->toArray();
+        $query = FocusArea::query();
+
+        if ($request->hasOrderBy()) {
+            $order = $request->getOrderBy();
+            $query->orderBy($order['column'], $order['direction']);
+        }
+
+        if ($request->hasSearch()) {
+            $search = $request->search();
+
+            $query->where(
+                function ($query) use ($search) {
+                    $query->where('name', 'like', "%{$search}%")
+                        ->orWhere('introduction', 'like', "%{$search}%")
+                        ->orWhere('description', 'like', "%{$search}%");
+                }
+            );
+        }
+
+        $includes  = $request->getIncludes();
+        $paginator = $query->with($includes)
+            ->paginate($request->getLimit());
+
+        $focus = $paginator->getCollection();
+
+        return response(fractal($focus, new FocusAreaTransformer())
+            ->parseIncludes($includes)->toArray())
+            ->withPaginationHeaders($paginator);
     }
     public function show(FocusArea $focusArea,Request $request)
     {
