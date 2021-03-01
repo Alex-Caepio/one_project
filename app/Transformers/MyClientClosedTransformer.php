@@ -4,7 +4,7 @@ namespace App\Transformers;
 
 use Carbon\Carbon;
 
-class MyClientPurchaseTransformer extends Transformer
+class MyClientClosedTransformer extends Transformer
 {
     /**
      * A Fractal transformer.
@@ -20,11 +20,10 @@ class MyClientPurchaseTransformer extends Transformer
             'schedule_name' => $myClientPurchase->schedule_name,
             'purchase_date' => new Carbon($myClientPurchase->purchase_date),
             'client'        => $myClientPurchase->client,
+            'reference'     => $myClientPurchase->reference,
             'paid'          => $myClientPurchase->paid,
-            'purchased'     => 1,
-            'location'      => $myClientPurchase->location,
-            'refund_terms'  => $myClientPurchase->refund_terms,
-            'bookind_id'    => $myClientPurchase->booking_id
+            'closure_date'  => new Carbon($myClientPurchase->closure_date),
+            'status'        => $myClientPurchase->status,
         ];
     }
 }

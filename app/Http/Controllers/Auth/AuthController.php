@@ -11,12 +11,7 @@ use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\PublishRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\UpdateRequest;
-use App\Models\Discipline;
-use App\Models\FocusArea;
 use App\Models\Keyword;
-use App\Models\MediaVideo;
-use App\Models\Schedule;
-use App\Models\ServiceType;
 use App\Models\User;
 use App\Traits\hasMediaItems;
 use App\Transformers\UserTransformer;
@@ -24,7 +19,6 @@ use DB;
 use App\Http\Requests\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Stripe\StripeClient;
@@ -39,36 +33,36 @@ class AuthController extends Controller
         try {
 
             $stripeCustomer = run_action(CreateStripeUserByEmail::class, $request->email);
-            $stripeAccount = $stripe->accounts->create([
-                'type' => 'standard',
+            $stripeAccount  = $stripe->accounts->create([
+                'type'  => 'standard',
                 'email' => $request->email,
             ]);
-            $user = run_action(CreateUserFromRequest::class, $request, [
+            $user           = run_action(CreateUserFromRequest::class, $request, [
                 'stripe_customer_id' => $stripeCustomer->id,
-                'stripe_account_id' => $stripeAccount->id
+                'stripe_account_id'  => $stripeAccount->id
             ]);
 
         } catch (\Stripe\Exception\ApiErrorException $e) {
 
             Log::channel('stripe_client_error')->info("Client could not registered in stripe", [
-                'first_name' => $request->first_name,
-                'last_name' => $request->last_name,
-                'business_email' => $request->business_email,
-                'email' => $request->email,
+                'first_name'         => $request->first_name,
+                'last_name'          => $request->last_name,
+                'business_email'     => $request->business_email,
+                'email'              => $request->email,
                 'stripe_customer_id' => $stripeCustomer->id,
                 'stripe_account_id'  => $stripeAccount->id,
-                'message' => $e->getMessage(),
+                'message'            => $e->getMessage(),
             ]);
 
-             return abort(500);
+            return abort(500);
         }
 
         Log::channel('stripe_client_success')->info("Client registered in stripe", [
-            'user_id' => $user->id,
-            'first_name' => $request->first_name,
-            'last_name' => $request->last_name,
-            'business_email' => $request->business_email,
-            'email' => $request->email,
+            'user_id'            => $user->id,
+            'first_name'         => $request->first_name,
+            'last_name'          => $request->last_name,
+            'business_email'     => $request->business_email,
+            'email'              => $request->email,
             'stripe_customer_id' => $stripeCustomer->id,
             'stripe_account_id'  => $stripeAccount->id,
         ]);
@@ -97,17 +91,15 @@ class AuthController extends Controller
             ->respond();
     }
 
-    public function update(UpdateRequest $request , StripeClient $stripe)
+    public function update(UpdateRequest $request, StripeClient $stripe)
     {
         $user = $request->user();
-        if ($request->is_published === true)
-        {
+        if ($request->is_published === true) {
             $user->is_published = true;
             $user->save();
         }
 
-        if( $request->has('email'))
-        {
+        if ($request->has('email')) {
             if (auth()->user()->email != $request->get('email')) {
                 $stripe->customers->update(
                     auth()->user()->stripe_customer_id,
@@ -138,8 +130,8 @@ class AuthController extends Controller
         if ($request->filled('keywords')) {
             $user->keywords()->whereNotIn('title', $request->keywords)->delete();
             foreach ($request->keywords as $keyword) {
-               $ids = Keyword::firstOrCreate(['title' => $keyword])->pluck('id');
-               $keywordIds = collect($ids);
+                $ids        = Keyword::firstOrCreate(['title' => $keyword])->pluck('id');
+                $keywordIds = collect($ids);
             }
 
             if (isset($keywordIds) && !empty($keywordIds)) {
@@ -204,46 +196,4 @@ class AuthController extends Controller
                                                     'email' => ['The provided credentials are incorrect']
                                                 ]);
     }
-
-    public function quotesArticles(Request $request)
-    {
-        if($request->user()->account_type == 'practitioner' && $request->user()->plan){
-
-            if ($request->user()->plan->article_publishing_unlimited) {
-                $quotes = [
-                    'allowed' => true,
-                    'current' => $request->user()->articles()->count(),
-                    'max'     => null,
-                    'message' => null
-                ];
-
-            } elseif($request->user()->articles()->count() < $request->user()->plan->article_publishing) {
-                $quotes = [
-                    'allowed' => true,
-                    'current' => $request->user()->articles()->count(),
-                    'max'     => $request->user()->plan->article_publishing,
-                    'message' => null
-                ];
-            } elseif ($request->user()->articles()->count() >= $request->user()->plan->article_publishing) {
-                $quotes = [
-                    'allowed' => false,
-                    'current' => $request->user()->articles()->count(),
-                    'max'     => $request->user()->plan->article_publishing,
-                    'message' => 'You\'ve already reached your limit of 10 articles'
-                ];
-            }
-
-            return $quotes;
-
-        } else {
-            return [
-                'allowed' => false,
-                'current' => $request->user()->articles()->count(),
-                'max'     => null,
-                'message' => 'You\'re no allowed to publish an article'
-            ];
-        }
-
-    }
-
 }

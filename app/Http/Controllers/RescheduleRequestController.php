@@ -22,6 +22,33 @@ class RescheduleRequestController extends Controller
             ->parseIncludes($request->getIncludes())->toArray();
     }
 
+    public function inbound(Request $request)
+    {
+        $includes = $request->getIncludes();
+
+        $paginator = RescheduleRequest::where('user_id', Auth::id())
+            ->where('requested_by', 'practitioner')
+            ->with($includes)
+            ->paginate($request->getLimit());
+
+        return fractal($paginator->getCollection(), new RescheduleRequestTransformer())
+            ->parseIncludes($includes)
+            ->toArray();
+    }
+
+    public function outbound(Request $request)
+    {
+        $includes = $request->getIncludes();
+        $paginator = RescheduleRequest::where('user_id', Auth::id())
+            ->where('requested_by', 'client')
+            ->with($includes)
+            ->paginate($request->getLimit());
+
+        return fractal($paginator->getCollection(), new RescheduleRequestTransformer())
+            ->parseIncludes($includes)
+            ->toArray();
+    }
+
     public function store(Schedule $schedule, Request $request)
     {
         $user = Auth::id();

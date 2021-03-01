@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Auth\QuoteController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\BookingMyClientController;
@@ -25,6 +26,7 @@ use App\Http\Controllers\CardStripeController;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\ServiceTypeController;
 use App\Http\Controllers\ScheduleController;
+use App\Http\Controllers\ScheduleBookingController;
 use App\Http\Controllers\RescheduleRequestController;
 use App\Http\Controllers\FocusAreaController;
 use App\Http\Controllers\MessageController;
@@ -76,10 +78,13 @@ Route::get('/focus-areas/{focusArea}', [FocusAreaController::class, 'show']);
 Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::get('auth/profile', [AuthController::class, 'profile']);
     Route::put('auth/profile', [AuthController::class, 'update']);
+    Route::delete('auth/profile', [AuthController::class, 'delete']);
     Route::post('auth/resend-verification', [AuthController::class, 'resendVerification']);
     Route::post('auth/profile/avatar', [AuthController::class, 'avatar']);
     Route::post('auth/profile/background', [AuthController::class, 'background']);
-    Route::get('auth/quotes/articles', [AuthController::class, 'quotesArticles']);
+    Route::get('auth/quotes/articles', [QuoteController::class, 'quotesArticles']);
+    Route::get('auth/quotes/services/{service}/schedules', [QuoteController::class, 'quotesServices']);
+    Route::get('auth/quotes/schedules/{schedule}/prices', [QuoteController::class, 'quotesPrices']);
 
     Route::get('stripe/link', [StripeAccountController::class, 'link']);
     Route::get('stripe/account', [StripeAccountController::class, 'account']);
@@ -143,6 +148,8 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
 
     Route::post('/schedules/{schedule}/reschedule', [RescheduleRequestController::class, 'store']);
     Route::get('/reschedule-requests', [RescheduleRequestController::class, 'index']);
+    Route::get('/reschedule-requests/inbound', [RescheduleRequestController::class, 'inbound']);
+    Route::get('/reschedule-requests/outbound', [RescheduleRequestController::class, 'outbound']);
     Route::post('reschedule-requests/{rescheduleRequest}/accept', [RescheduleRequestController::class, 'accept']);
     Route::post('reschedule-requests/{rescheduleRequest}/decline', [RescheduleRequestController::class, 'decline']);
 
@@ -151,6 +158,7 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::post('/schedules/{schedule}/purchase', [PurchaseController::class, 'purchase']);
     /* Payments */
 
+    Route::get('/schedules/{schedule}/upcoming-bookings', [ScheduleBookingController::class, 'index']);
 
     Route::get('/disciplines/{discipline}/images', [DisciplineController::class, 'indexImage']);
     Route::get('/disciplines/{discipline}/videos', [DisciplineController::class, 'indexVideo']);
@@ -169,6 +177,8 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
 
     Route::get('/bookings/my-clients', [BookingMyClientController::class, 'index']);
     Route::get('/bookings/my-clients-purchases', [BookingMyClientController::class, 'purchases']);
+    Route::get('/bookings/my-clients-upcoming', [BookingMyClientController::class, 'upcoming']);
+    Route::get('/bookings/my-clients-closed', [BookingMyClientController::class, 'closed']);
 
     Route::get('/bookings', [BookingController::class, 'index']);
     Route::get('/bookings/{booking}', [BookingController::class, 'show']);
