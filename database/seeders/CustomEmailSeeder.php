@@ -515,7 +515,8 @@ Thank you <br/>The {{platform_name}} Team<br/>',
 Order Reference: {{booking_reference}} <br/>
 Cost: {{total_paid}} <br/>
 Location: {{schedule_hosting_url}} <br/>{{view_booking}} <br/>
-Message from {{practitioner_business_name}}<br/>
+Message from {{practitioner_business_name}}:
+<br/>{{practitioner_schedule_message}}<br/><br/>
 Your Practitioner may have also added some attachments to this email for you and should be in touch
 with you via {{platform_name}} email message to confirm further details.
  <br/><br/>Thank you <br/>The {{platform_name}}  Team<br/>',
@@ -556,6 +557,8 @@ Location: {{schedule_hosting_url}} <br/>{{view_booking}}<br/>
  Location:  {{schedule_venue}} {{schedule_city}}, {{schedule_postcode}} {{schedule_country}} <br/>
 <a href="{{add_to_calendar}}" target="_blank">Add to calendar</a>
 <br/> {{see_on_map}} <br/>
+ Message from {{practitioner_business_name}}:
+<br/>{{practitioner_schedule_message}}<br/><br/>
 Your Practitioner may have also added some attachments to this email for you. <br/> <br/>
 Thank you  <br/> The {{platform_name}} Team <br/>',
                 'delay'      => random_int(5, 20)
@@ -592,6 +595,8 @@ Purchase Details: {{service_name}} - {{schedule_name}} <br/>
 Booking Reference: {{booking_reference}}  <br/>
 Cost: {{total_paid}} <br/>
 Location: {{schedule_city}}, {{schedule_country}} <br/>
+ Message from {{practitioner_business_name}}:
+<br/>{{practitioner_reschedule_message}}<br/><br/>
 {{view_booking}} <br/>
 Your Practitioner may have also added some attachments to this email for you and should also be in touch with you via {{platform_name}} messaging to confirm further details.
  <br/> <br/>Thank you  <br/>The {{platform_name}} Team <br/>',
@@ -754,12 +759,7 @@ Location:  {{schedule_venue}} {{schedule_city}}, {{schedule_postcode}} {{schedul
              * CRON REMINDERS END
              *
              */
-
-
-
-
-
-            //44
+            //43
             [
                 'name'       => 'Booking Reschedule Offered by Practitioner - Date',
                 'user_type'  => 'client',
@@ -772,7 +772,10 @@ Booking Reference: {{booking_reference}} {{practitioner_business_name}} would li
 Reschedule Requested:{{service_name}} - {{schedule_name}}<br/>
 From: {{reschedule_start_date}}, {{reschedule_start_time}}<br/>
 To: {{reschedule_end_date}}, {{reschedule_end_time}}<br/>
-Location: {{reschedule_venue}} {{reschedule_address}} {{reschedule_city}}, {{reschedule_postcode}}, {{reschedule_country}}<br/>
+Location: {{reschedule_venue}} {{reschedule_city}}, {{reschedule_postcode}}, {{reschedule_country}}<br/>
+Message from {{practitioner_business_name}}:
+<br/>{{practitioner_reschedule_message}}<br/><br/>
+
 {{accept}} <br/>{{decline}}<br/>
  <a href="{{view_booking}}" target="_blank">View My Booking</a><br/><br/>
 You will not be charged for this reschedule. Please note, if you decline or do not respond, the Practitioner may still cancel your booking and if so, you will be refunded.<br/>
@@ -784,7 +787,7 @@ Location:  {{schedule_hosting_url}} {{schedule_venue}}
 Thank you<br/> The {{platform_name}} Team<br/>',
                 'delay'      => random_int(5, 20)
             ],
-            //45
+            //44
             [
                 'name'       => 'Booking Reschedule Offered by Practitioner - Appt',
                 'user_type'  => 'client',
@@ -797,9 +800,12 @@ Thank you<br/> The {{platform_name}} Team<br/>',
 Booking Reference: {{booking_reference}} {{practitioner_business_name}} would like to reschedule your booking as follows: <br/>
 New Appointment: {{service_name}} - {{schedule_name}} <br/>
 From: {{reschedule_start_date}}, {{reschedule_start_time}} To: {{reschedule_end_date}}, {{reschedule_end_time}} <br/>
-Location: {{reschedule_venue}} {{service_schedule_reschedule_url}} {{reschedule_address}} {{reschedule_city}}, {{reschedule_postcode}}, {{reschedule_country}} <br/> <br/>
+Location: {{reschedule_venue}} {{reschedule_hosting_url}} {{reschedule_city}}, {{reschedule_postcode}}, {{reschedule_country}} <br/> <br/>
 You can either Accept or Decline this request. If you decline or do not respond, the Practitioner may still cancel your current appointment and if so, you will be refunded.
- <br/>{{accept}} {{decline}} <br/>
+ <br/>
+ Message from {{practitioner_business_name}}:
+<br/>{{practitioner_reschedule_message}}<br/><br/>
+ {{accept}} {{decline}} <br/>
  <a href="{{view_booking}}" target="_blank">View My Bookings</a> <br/> <br/>
 Current Booking {{service_name}} - {{schedule_name}} <br/>
 From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}} <br/>
@@ -807,31 +813,25 @@ Location:  {{schedule_hosting_url}} {{schedule_venue}} {{schedule_city}}, {{sche
 Thank you <br/> The {{platform_name}} Team <br/>',
                 'delay'      => random_int(5, 20)
             ],
-
-
-
-
-            //46
+            //45
             [
-                'name'       => 'Booking Reschedule Client to Select - Appt',
-                'user_type'  => 'client',
+                'name'       => 'Client Rescheduled FYI',
+                'user_type'  => 'practitioner',
                 'from_email' => Str::random(10) . '@gmail.com',
                 'from_title' => Str::random(8),
-                'subject'    => 'Booking Reschedule Request – {{practitioner_business_name}}',
+                'subject'    => 'Booking Rescheduled - {{service_name}}',
                 'logo'       => Str::random(5),
-                'text'       => 'Hi {{first_name}} <br/> {{practitioner_business_name}} will not be able to make your exiting appointment for {{service_name}}.<br/>
- Instead they would like to offer you another appointment at a time of your choosing.
-You can either Accept this request and book a new time or Decline this request. If you decline or do not respond,
-the Practitioner may still cancel your current appointment and if so, you will be refunded.
- <br/>{{accept_rebook}} {{decline}} <br/>
- <a href="{{view_booking}}" target="_blank">View My Bookings</a> <br/>
-Message from {{practitioner_business_name}} <br/> {{practitioner_reschedule_message}} <br/> <br/>
-Your current booking: {{service_name}} - {{schedule_name}} <br/>
-Booking Reference: {{booking_reference}} <br/>
-From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}} <br/>
-Location:  {{schedule_hosting_url}} {{schedule_venue}}
-{{schedule_city}}, {{schedule_postcode}}, {{schedule_country}} <br/> <br/>
-Thank you The {{platform_name}} Team',
+                'text'       => 'Hi {{first_name}} <br/>
+ Your Client, {{client_name}} has rescheduled their booking for {{service_name}}. They are now booked in for:
+{{service_name}} - {{schedule_name}}  <br/>
+From: {{reschedule_start_date}}, {{reschedule_start_time}} To: {{reschedule_end_date}}, {{reschedule_end_time}} <br/>
+Location: {{reschedule_venue}} {{reschedule_hosting_url}} {{reschedule_city}}, {{reschedule_postcode}}, {{reschedule_country}} <br/>
+ Their original booking will be reopened in your service schedule for resale. <br/> <br/>
+ Original Booking: {{service_name}} - {{schedule_name}} <br/>
+ From: {{schedule_start_date}}, {{schedule_start_time}}<br/>
+ To: {{schedule_end_date}}, {{schedule_end_time}} <br/>
+Location:  {{schedule_hosting_url}} {{schedule_venue}} {{schedule_city}}, {{schedule_postcode}}, {{schedule_country}} <br/> <br/>
+Thank you <br/> The {{platform_name}} Team <br/>',
                 'delay'      => random_int(5, 20)
             ],
 
@@ -858,8 +858,7 @@ Thank you The {{platform_name}} Team',
 Booking Reference: {{booking_reference}} {{service_name}} - {{schedule_name}}<br/>
 From: {{reschedule_start_date}}, {{reschedule_start_time}}<br/>
 To: {{reschedule_end_date}}, {{reschedule_end_time}}<br/>
-Location: {{reschedule_venue}} {{service_schedule_reschedule_url}}
-{{reschedule_address}} {{reschedule_city}}, {{reschedule_postcode}}, {{reschedule_country}}
+Location: {{reschedule_venue}} {{service_schedule_reschedule_url}} {{reschedule_city}}, {{reschedule_postcode}}, {{reschedule_country}}
 {{see_on_map}}<br/>
  <a href="{{add_to_calendar}}" target="_blank">Add to calendar</a> <a href="{{view_booking}}" target="_blank">View My Bookings</a><br/><br/>  Thank you<br/> The {{platform_name}} Team<br/>',
                 'delay'      => random_int(5, 20)
@@ -939,29 +938,33 @@ Cost: {{total_paid}} <br/> <br/>
 Thank you <br/> The {{platform_name}} Team <br/>',
                 'delay'      => random_int(5, 20)
             ],
-            //33
-            [
-                'name'       => 'Client Rescheduled FYI',
-                'user_type'  => 'practitioner',
-                'from_email' => Str::random(10) . '@gmail.com',
-                'from_title' => Str::random(8),
-                'subject'    => 'Booking Rescheduled - {{service_name}}',
-                'logo'       => Str::random(5),
-                'text'       => 'Hi {{first_name}} <br/>
- Your Client, {{client_name}} has rescheduled their booking for {{service_name}}. They are now booked in for:
-{{service_name}} - {{schedule_name}}  <br/>
-From: {{reschedule_start_date}}, {{reschedule_start_time}} To: {{reschedule_end_date}}, {{reschedule_end_time}} <br/>
-Location: {{reschedule_venue}} {{service_schedule_reschedule_url}} {{reschedule_address}} {{reschedule_city}}, {{reschedule_postcode}}, {{reschedule_country}} <br/>
- Their original booking will be reopened in your service schedule for resale. <br/> <br/>
- Original Booking: {{service_name}} - {{schedule_name}} <br/>
-  From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}} <br/>
-Location:  {{schedule_hosting_url}} {{schedule_venue}} {{schedule_city}}, {{schedule_postcode}}, {{schedule_country}} <br/> <br/>
-Thank you <br/> The {{platform_name}} Team <br/>',
-                'delay'      => random_int(5, 20)
-            ],
+
             //34
 
             /**
+            //46
+            [
+            'name'       => 'Booking Reschedule Client to Select - Appt',
+            'user_type'  => 'client',
+            'from_email' => Str::random(10) . '@gmail.com',
+            'from_title' => Str::random(8),
+            'subject'    => 'Booking Reschedule Request – {{practitioner_business_name}}',
+            'logo'       => Str::random(5),
+            'text'       => 'Hi {{first_name}} <br/> {{practitioner_business_name}} will not be able to make your exiting appointment for {{service_name}}.<br/>
+            Instead they would like to offer you another appointment at a time of your choosing.
+            You can either Accept this request and book a new time or Decline this request. If you decline or do not respond,
+            the Practitioner may still cancel your current appointment and if so, you will be refunded.
+            <br/>{{accept_rebook}} {{decline}} <br/>
+            <a href="{{view_booking}}" target="_blank">View My Bookings</a> <br/>
+            Message from {{practitioner_business_name}} <br/> {{practitioner_reschedule_message}} <br/> <br/>
+            Your current booking: {{service_name}} - {{schedule_name}} <br/>
+            Booking Reference: {{booking_reference}} <br/>
+            From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}} <br/>
+            Location:  {{schedule_hosting_url}} {{schedule_venue}}
+            {{schedule_city}}, {{schedule_postcode}}, {{schedule_country}} <br/> <br/>
+            Thank you The {{platform_name}} Team',
+            'delay'      => random_int(5, 20)
+            ],
              * [
              * 'name'       => 'Booking Confirmation - DateLess Physical - with Deposit',
              * 'user_type'  => 'client',

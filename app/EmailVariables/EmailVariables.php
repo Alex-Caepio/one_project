@@ -119,6 +119,14 @@ class EmailVariables {
             : $this->event->practitioner->business_name;
     }
 
+    /**
+     * @return string
+     */
+    public function getPractitioner_email_address(): string {
+        return $this->event->user->isPractitioner()
+            ? $this->event->user->email
+            : $this->event->practitioner->email;
+    }
 
     /**
      * @return string
@@ -256,6 +264,13 @@ class EmailVariables {
     }
 
     /**
+     * @return string
+     */
+    public function getPractitioner_schedule_message(): string {
+        return $this->event->schedule->comments;
+    }
+
+    /**
      *
      *
      * SCHEDULE VARIABLES END
@@ -377,6 +392,13 @@ class EmailVariables {
     /**
      * @return string
      */
+    public function getClient_email_address(): string {
+        return $this->event->client->email ?? '';
+    }
+
+    /**
+     * @return string
+     */
     public function getSee_on_map(): string {
         return '';
     }
@@ -418,57 +440,92 @@ class EmailVariables {
      *
      */
 
+    /**
+     * RESCHEDULES START
+     *
+     */
+
+    /**
+     * @return string
+     */
+    public function getReschedule_start_date(): string {
+        return Carbon::parse($this->event->reschedule_schedule->start_date)->toDateString();
+    }
+
+    /**
+     * @return string
+     */
+    public function getReschedule_start_time(): string {
+        return Carbon::parse($this->event->reschedule_schedule->start_date)->toTimeString();
+    }
+
+    /**
+     * @return string
+     */
+    public function getReschedule_end_date(): string {
+        return Carbon::parse($this->event->reschedule_schedule->end_date)->toDateString();
+    }
+
+    /**
+     * @return string
+     */
+    public function getReschedule_end_time(): string {
+        return Carbon::parse($this->event->reschedule_schedule->end_date)->toTimeString();
+    }
+
+    /**
+     * @return string
+     */
+    public function getReschedule_venue(): string {
+        return $this->event->reschedule_schedule->venue;
+    }
+
+    /**
+     * @return string
+     */
+    public function getReschedule_city(): string {
+        return $this->event->reschedule_schedule->city;
+    }
+
+    /**
+     * @return string
+     */
+    public function getReschedule_country(): string {
+        return $this->event->reschedule_schedule->country;
+    }
+
+    /**
+     * @return string
+     */
+    public function getReschedule_postcode(): string {
+        return $this->event->reschedule_schedule->post_code;
+    }
+
+    /**
+     * @return string
+     */
+    public function getReschedule_hosting_url(): string {
+        return $this->event->reschedule_schedule->url;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPractitioner_reschedule_message(): string {
+        return $this->event->reschedule->comment;
+    }
+
+    /**
+     * RESCHEDULES END
+     *
+     */
+
 
     /**
      * @return string
      */
     public function getInstalments(): string {
-        $result = '';
-        foreach ($this->event->installments as $instalment) {
-
-        }
-        return $result;
+        return '';
     }
 
-
-
-    public function getReschedule_start_date() {
-        return $this->event->user->email;
-    }
-
-    public function getReschedule_start_time() {
-        return $this->event->user->email;
-    }
-
-    public function getReschedule_end_date() {
-        return $this->event->user->email;
-    }
-
-    public function getReschedule_end_time() {
-        return $this->event->user->email;
-    }
-
-    public function getReschedule_venue_name() {
-        return $this->event->user->email;
-    }
-
-    public function getService_schedule_reschedule_url() {
-        return $this->event->user->email;
-    }
-
-    public function getReschedule_venue_address() {
-        return $this->event->user->email;
-    }
-
-    public function getReschedule_city() {
-        return $this->event->user->email;
-    }
-
-    public function getReschedule_postcode() {
-        return $this->event->user->email;
-    }
-
-    public function getReschedule_country() {
-        return $this->event->user->email;
-    }
 }

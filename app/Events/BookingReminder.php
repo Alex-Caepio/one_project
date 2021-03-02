@@ -26,6 +26,6 @@ class BookingReminder {
         $this->service = $booking->schedule->service;
         $this->user = $booking->user;
         $this->practitioner = $booking->practitioner;
-        $this->$template = $template;
+        $this->template = $template;
     }
 }

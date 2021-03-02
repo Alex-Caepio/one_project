@@ -32,7 +32,6 @@ class MarkExpiredPromocodes extends Command {
     public function handle(): int {
         $promotions = Promotion::where('status', Promotion::STATUS_ACTIVE)->with('promotion_codes')->get();
         foreach ($promotions as $promo) {
-            Log::info(__METHOD__.': Processing promotion: ' . $promo->name);
             if (Carbon::parse($promo->expiry_date) > Carbon::now()) {
                 $cntPromocodes = $promo->promotion_codes->count();
                 $cntLimit =  $cntPromocodes > 0 ? $promo->promotion_codes->first()->uses_per_code * $cntPromocodes : 0;

@@ -146,12 +146,17 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::put('/price/{price}', [PriceController::class, 'update']);
     Route::delete('/price/{price}', [PriceController::class, 'destroy']);
 
-    Route::post('/schedules/{schedule}/reschedule', [RescheduleRequestController::class, 'store']);
     Route::get('/reschedule-requests', [RescheduleRequestController::class, 'index']);
     Route::get('/reschedule-requests/inbound', [RescheduleRequestController::class, 'inbound']);
     Route::get('/reschedule-requests/outbound', [RescheduleRequestController::class, 'outbound']);
     Route::post('reschedule-requests/{rescheduleRequest}/accept', [RescheduleRequestController::class, 'accept']);
     Route::post('reschedule-requests/{rescheduleRequest}/decline', [RescheduleRequestController::class, 'decline']);
+
+    Route::post('/bookings/{booking}/reschedule', [RescheduleRequestController::class, 'reschedule']);
+    Route::post('/bookings/reschedule', [RescheduleRequestController::class, 'allReschedule']);
+    //Route::post('/schedules/{schedule}/reschedule', [RescheduleRequestController::class, 'store']);
+
+
 
     /* Payments */
     Route::post('/schedules/{schedule}/promoсode', [PurchaseController::class, 'validatePromocode']);
@@ -182,8 +187,6 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
 
     Route::get('/bookings', [BookingController::class, 'index']);
     Route::get('/bookings/{booking}', [BookingController::class, 'show']);
-    Route::post('/bookings/{booking}/reschedule', [BookingController::class, 'reschedule']);
-    Route::post('/bookings/reschedule', [BookingController::class, 'allReschedule']);
 
     Route::get('/purchases', [PurchaseController::class, 'index']);
 
