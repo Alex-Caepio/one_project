@@ -9,17 +9,17 @@ pipeline{
     agent{
         label "master"
     }
-
-    stage('Hello AWS') {
-        steps {
-            withAWS(credentials: 'oneness-ecr-creds', region: 'eu-west-2') {
-				sh 'aws iam get-user'
-			}
-        }
-    }
     
     stages{
         
+        stage('Hello AWS') {
+            steps {
+                withAWS(credentials: 'oneness-ecr-creds', region: 'eu-west-2') {
+				    sh 'aws iam get-user'
+			    }
+            }
+        }
+
         stage("Build docker image"){
             steps{
                 configFileProvider([configFile(fileId: 'oneness_envconfig_prod', targetLocation: '.env')]){
