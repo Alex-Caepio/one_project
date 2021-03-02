@@ -15,8 +15,8 @@ pipeline{
         stage('Hello AWS') {
             steps {
                 withAWS(credentials: 'oneness-ecr-creds', region: 'eu-west-2') {
-				    sh 'aws iam get-user'
-			    }
+                    sh 'aws iam get-user'
+                }
             }
         }
 
