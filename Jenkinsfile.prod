@@ -11,14 +11,6 @@ pipeline{
     }
     
     stages{
-        
-        stage('Hello AWS') {
-            steps {
-                withAWS(credentials: 'oneness-ecr-creds', region: 'eu-west-2') {
-                    sh 'aws iam get-user'
-                }
-            }
-        }
 
         stage("Build docker image"){
             steps{
@@ -43,6 +35,14 @@ pipeline{
         stage("Clean from docker images"){
             steps{
                 sh '''docker rmi -f $(docker images --filter=reference=${projectName} -q) >/dev/null 2>&1'''
+            }
+        }
+                
+        stage('ECS Service update') {
+            steps {
+                withAWS(credentials: 'oneness-ecr-creds', region: 'eu-west-2') {
+                    sh 'aws ecs update-service --cluster stage-app --service back --task-definition backend-prod --force-new-deployment'
+                }
             }
         }
     }
