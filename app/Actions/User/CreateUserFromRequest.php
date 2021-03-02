@@ -2,8 +2,9 @@
 
 namespace App\Actions\User;
 
-use Illuminate\Http\Request;
+use App\Models\Plan;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class CreateUserFromRequest
