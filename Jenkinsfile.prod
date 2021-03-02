@@ -9,6 +9,14 @@ pipeline{
     agent{
         label "master"
     }
+
+    stage('Hello AWS') {
+        steps {
+            withAWS(credentials: 'oneness-ecr-creds', region: 'eu-west-2') {
+				sh 'aws iam get-user'
+			}
+        }
+    }
     
     stages{
         
