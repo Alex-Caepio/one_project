@@ -2,20 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Request;
 use App\Models\Schedule;
+use App\Http\Requests\Request;
 use App\Transformers\BookingTransformer;
 
 class ScheduleBookingController extends Controller
 {
     public function index(Schedule $schedule, Request $request)
     {
-        $scheduleBookings = $schedule->bookings()
+        $paginator = $schedule->bookings()
             ->where('datetime_from', '>', now())
-            ->with($request->getIncludes())->get();
+            ->with($request->getIncludes())
+            ->paginate($request->getLimit());
 
-        return fractal($scheduleBookings, new BookingTransformer())
-            ->parseIncludes($request->getIncludes())
-            ->toArray();
+        $scheduleBookings = $paginator->getCollection();
+
+        return response(fractal($scheduleBookings, new BookingTransformer())
+            ->parseIncludes($request->getIncludes()))
+            ->withPaginationHeaders($paginator);
     }
 }
