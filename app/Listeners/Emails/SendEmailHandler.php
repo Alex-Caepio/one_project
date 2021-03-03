@@ -24,7 +24,7 @@ abstract class SendEmailHandler {
             if ($emailData) {
                 $body = $emailData->text;
                 $emailVariables = new EmailVariables($this->event);
-                $bodyReplaced = $emailVariables->replace($body);
+                $bodyReplaced = '<html>'.$emailVariables->replace($body).'</html>';
                 Mail::html($bodyReplaced, function($message) use($emailData) {
                     $message->to($this->toEmail)
                             ->subject($emailData->subject)

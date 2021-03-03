@@ -28,7 +28,7 @@ class BookingRescheduleOfferedByPractitioner {
                                     'practitioner'
                                 ]);
         $this->booking = $reschedule->booking;
-        $this->fillEvent($reschedule->booking);
+        $this->fillEvent();
         $this->recipient = $reschedule->user;
     }
 }

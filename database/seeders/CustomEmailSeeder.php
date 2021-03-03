@@ -856,11 +856,13 @@ Thank you <br/> The {{platform_name}} Team <br/>',
                 'text'       => 'Hi {{first_name}}<br/>
  We are pleased to confirm your booking with {{practitioner_business_name}} for {{service_name}} has now been changed.<br/><br/>
 Booking Reference: {{booking_reference}} {{service_name}} - {{schedule_name}}<br/>
-From: {{reschedule_start_date}}, {{reschedule_start_time}}<br/>
-To: {{reschedule_end_date}}, {{reschedule_end_time}}<br/>
-Location: {{reschedule_venue}} {{service_schedule_reschedule_url}} {{reschedule_city}}, {{reschedule_postcode}}, {{reschedule_country}}
+From: {{schedule_start_date}}, {{schedule_start_time}}<br/>
+To: {{schedule_end_date}}, {{schedule_end_time}}<br/>
+Location: {{schedule_venue}} {{schedule_hosting_url}} {{schedule_city}}, {{schedule_postcode}}, {{schedule_country}}<br/>
 {{see_on_map}}<br/>
- <a href="{{add_to_calendar}}" target="_blank">Add to calendar</a> <a href="{{view_booking}}" target="_blank">View My Bookings</a><br/><br/>  Thank you<br/> The {{platform_name}} Team<br/>',
+ <a href="{{add_to_calendar}}" target="_blank">Add to calendar</a>
+ <a href="{{view_booking}}" target="_blank">View My Bookings</a><br/><br/>
+  Thank you<br/> The {{platform_name}} Team<br/>',
                 'delay'      => random_int(5, 20)
             ],
             //19
@@ -873,8 +875,9 @@ Location: {{reschedule_venue}} {{service_schedule_reschedule_url}} {{reschedule_
                 'logo'       => Str::random(5),
                 'text'       => 'Hi {{first_name}}<br/> We are pleased to confirm your Client {{client_name}} has accepted the change for {{service_name}}.<br/><br/>
 Booking Reference: {{booking_reference}} They are now booked in for: {{service_name}} - {{schedule_name}}<br/>
-From: {{reschedule_start_date}}, {{reschedule_start_time}} To: {{reschedule_end_date}}, {{reschedule_end_time}}<br/>
-Location: {{reschedule_venue}} {{service_schedule_reschedule_url}} {{reschedule_address}} {{reschedule_city}}, {{reschedule_postcode}}, {{reschedule_country}}<br/><br/>
+From: {{schedule_start_date}}, {{schedule_start_time}}<br/>
+To: {{schedule_end_date}}, {{schedule_end_time}}<br/>
+Location: {{schedule_venue}} {{schedule_hosting_url}} {{schedule_city}}, {{schedule_postcode}}, {{schedule_country}}<br/>
 Thank you<br/> The {{platform_name}} Team<br/>',
                 'delay'      => random_int(5, 20)
             ],

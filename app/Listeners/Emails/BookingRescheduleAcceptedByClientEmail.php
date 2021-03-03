@@ -7,22 +7,24 @@ use App\Events\BookingRescheduleAcceptedByClient;
 use App\Models\CustomEmail;
 use Illuminate\Support\Facades\Mail;
 
-class BookingRescheduleAcceptedByClientEmail
-{
-    public function __construct()
-    {
-    }
+class BookingRescheduleAcceptedByClientEmail extends SendEmailHandler {
 
-    public function handle(BookingRescheduleAcceptedByClient $event): void
-    {
-        $user = $event->user;
-        $emailVerification = CustomEmail::where('name', 'Booking Reschedule Accepted by Client')->where('user_type', $user->account_type)->first();
-        $body = $emailVerification->text;
-        $emailVariables = new EmailVariables($event);
-        $bodyReplaced = $emailVariables->replace($body);
+    public function handle(BookingRescheduleAcceptedByClient $event): void {
+        $this->templateName = 'Booking Reschedule Accepted by Client';
+        $this->event = $event;
 
-        Mail::raw($bodyReplaced, function ($message) use ($user){
-            $message->to($user->email);
-        });
+        // client
+        $this->toEmail = $event->client->email;
+        $this->type = 'client';
+        $this->event->recipient = $event->client;
+        $this->sendCustomEmail();
+
+
+        //practitioner
+        $this->toEmail = $event->practitioner->email;
+        $this->type = 'practitioner';
+        $this->event->recipient = $event->practitioner;
+        $this->sendCustomEmail();
+
     }
 }

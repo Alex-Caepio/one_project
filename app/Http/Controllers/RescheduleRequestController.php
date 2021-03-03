@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\BookingRescheduleAcceptedByClient;
 use App\Http\Requests\Reschedule\RescheduleRequestRequest;
 use App\Models\Booking;
 use App\Http\Requests\Request;
@@ -62,6 +63,7 @@ class RescheduleRequestController extends Controller {
         $booking->datetime_to = $rescheduleRequest->new_end_date;
 
         $booking->update();
+        event(new BookingRescheduleAcceptedByClient($booking));
         $rescheduleRequest->delete();
 
         return response(null, 204);

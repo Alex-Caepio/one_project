@@ -21,7 +21,8 @@ class ServiceUpdatedByPractitionerContractualEmail {
                                                                                        'schedule.service'
                                                                                    ])->get();
         foreach ($upcomingBookings as $booking) {
-            $this->event->fillEvent($booking);
+            $this->event->booking = $booking;
+            $this->event->fillEvent();
             $this->toEmail = $this->event->user->email;
             $this->sendCustomEmail();
         }

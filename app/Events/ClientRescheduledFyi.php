@@ -15,7 +15,6 @@ class ClientRescheduledFyi {
     public RescheduleRequest $reschedule;
     public Schedule  $reschedule_schedule;
     public User $recipient;
-    public User $client;
 
     public function __construct(RescheduleRequest $reschedule) {
         $this->reschedule = $reschedule;
@@ -28,8 +27,7 @@ class ClientRescheduledFyi {
                                     'practitioner'
                                 ]);
         $this->booking = $reschedule->booking;
-        $this->client = $reschedule->user;
-        $this->fillEvent($reschedule->booking);
+        $this->fillEvent();
         $this->recipient = $this->booking->practitioner;
     }
 }
