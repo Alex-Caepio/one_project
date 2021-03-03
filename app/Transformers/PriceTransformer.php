@@ -18,6 +18,7 @@ class PriceTransformer extends Transformer
             'name'              => $price->name,
             'is_free'           => $price->is_free,
             'available_till'    => $price->available_till,
+            'duration'          => $price->duration,
             'min_purchase'      => $price->min_purchase,
             'number_available'  => $price->number_available,
             'stripe_id'         => $price->stripe_id,
