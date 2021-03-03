@@ -16,7 +16,7 @@ class GenericSchedule extends Request implements CreateScheduleInterface
      */
     public function authorize()
     {
-        return true;
+        return (bool) $this->user()->plan;
     }
 
     /**
@@ -31,15 +31,14 @@ class GenericSchedule extends Request implements CreateScheduleInterface
 
    public function withValidator($validator): void {
        $validator->after(function($validator) {
-           $unlimitedBookings = $this->user()->plan->unlimited_bookings;
-           $listPaidServices = $this->user()->plan->list_paid_services;
+           $plan = $this->user()->plan;
 
-           if ($unlimitedBookings == 0) {
+           if (!$plan->unlimited_bookings) {
                 $this->validate(['attendees' => "max:{$this->user()->plan->amount_bookings}"]);
            }
 
-            if($this->user()->account_type == 'practitioner' && $listPaidServices == 0) {
-                $this->validate(['prices.*.cost' => Rule::in(['null', 0])]);
+            if(!$plan->list_paid_services) {
+                $this->validate(['prices.*.cost' => Rule::in([null, 0])]);
             }
 
        });

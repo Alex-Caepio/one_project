@@ -4,6 +4,8 @@ namespace App\Http\Requests\Schedule;
 
 use App\Http\Requests\PromotionCode\ValidatePromotionCode;
 use App\Models\ScheduleAvailability;
+use App\Models\Booking;
+use App\Models\Price;
 use App\Models\ScheduleUnavailability;
 use Illuminate\Validation\Rule;
 
@@ -51,6 +53,9 @@ class PurchaseScheduleRequest extends GenericSchedule {
             $schedule = $this->schedule;
             $priceId = $this->price_id;
 
+            $bookingsCount = Booking::where('price_id', $this->price_id)->count();
+            $price = Price::find($this->price_id);
+
             if ($this->has('availabilities')) {
                 $this->validateAvailabilities($validator);
             }
@@ -65,6 +70,10 @@ class PurchaseScheduleRequest extends GenericSchedule {
 
             if (!$schedule->prices()->where('id', $priceId)->exists()) {
                 $validator->errors()->add('price_id', 'Price does not belong to the schedule');
+            }
+
+            if($bookingsCount >= $price->number_available){
+                $validator->errors()->add('price_id', 'All schedules for that price were sold out');
             }
         });
     }
