@@ -98,7 +98,7 @@ class ScheduleTransformer extends Transformer
         return $this->collectionOrNull($schedule->schedule_unavailabilities, new ScheduleUnavailabilityTransformer());
     }
 
-    public function includeScheduleFils(Schedule $schedule)
+    public function includeScheduleFiles(Schedule $schedule)
     {
         return $this->collectionOrNull($schedule->schedule_files, new ScheduleFileTransformer());
     }
