@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\BookingRescheduleAcceptedByClient;
+use App\Events\RescheduleRequestDeclinedByClient;
 use App\Http\Requests\Reschedule\RescheduleRequestRequest;
 use App\Models\Booking;
 use App\Http\Requests\Request;
@@ -70,6 +71,7 @@ class RescheduleRequestController extends Controller {
     }
 
     public function decline(RescheduleRequest $rescheduleRequest) {
+        event(new RescheduleRequestDeclinedByClient($rescheduleRequest));
         $rescheduleRequest->delete();
         return response(null, 204);
     }

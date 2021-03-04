@@ -172,6 +172,9 @@ class EmailVariables {
      * @return string
      */
     public function getAdd_to_calendar(): string {
+        /*
+        https://www.google.com/calendar/render?action=TEMPLATE&text=TestTitle&details=TestDescription&location=59+Pairc+Na+Ri&dates=20210301T135700Z%2F20210304T135700Z
+        */
         return '';
     }
 

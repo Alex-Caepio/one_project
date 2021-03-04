@@ -29,5 +29,6 @@ class ClientRescheduledFyi {
         $this->booking = $reschedule->booking;
         $this->fillEvent();
         $this->recipient = $this->booking->practitioner;
+        $this->reschedule_schedule = $this->reschedule->new_schedule;
     }
 }

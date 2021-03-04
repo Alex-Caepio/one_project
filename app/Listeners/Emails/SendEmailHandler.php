@@ -6,6 +6,7 @@ use App\EmailVariables\EmailVariables;
 use App\Models\CustomEmail;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 abstract class SendEmailHandler {
 
@@ -24,11 +25,17 @@ abstract class SendEmailHandler {
             if ($emailData) {
                 $body = $emailData->text;
                 $emailVariables = new EmailVariables($this->event);
-                $bodyReplaced = '<html>'.$emailVariables->replace($body).'</html>';
-                Mail::html($bodyReplaced, function($message) use($emailData) {
-                    $message->to($this->toEmail)
-                            ->subject($emailData->subject)
+                $bodyReplaced = '<html>' . $emailVariables->replace($body) . '</html>';
+                Mail::html($bodyReplaced, function($message) use ($emailData) {
+                    $message->to($this->toEmail)->subject($emailData->subject)
                             ->from($emailData->from_email, $emailData->from_title);
+                    //Attach calendar file
+                    if ($this->event->calendar) {
+                        $message->attach($this->event->calendar, [
+                            'as'   => Str::slug($this->event->calendar_event_name) . '.ics',
+                            'mime' => 'text/calendar',
+                        ]);
+                    }
                 });
             } else {
                 throw new \RuntimeException('Email template #' . $this->templateName . ' was not found');

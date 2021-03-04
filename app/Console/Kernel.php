@@ -41,6 +41,7 @@ class Kernel extends ConsoleKernel {
         $schedule->command('bookings:notifier-week')->daily();
         $schedule->command('bookings:notifier-twoweek')->daily();
         $schedule->command('bookings:notifier-tomorrow')->daily();
+        $schedule->command('reschedule:noreply')->daily();
         //$schedule->command('instalments:notify')->daily();
     }
 

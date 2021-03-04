@@ -834,18 +834,7 @@ Location:  {{schedule_hosting_url}} {{schedule_venue}} {{schedule_city}}, {{sche
 Thank you <br/> The {{platform_name}} Team <br/>',
                 'delay'      => random_int(5, 20)
             ],
-
-
-
-
-
-
-
-
-
-
-
-            //18
+            //46
             [
                 'name'       => 'Booking Reschedule Accepted by Client',
                 'user_type'  => 'client',
@@ -865,7 +854,7 @@ Location: {{schedule_venue}} {{schedule_hosting_url}} {{schedule_city}}, {{sched
   Thank you<br/> The {{platform_name}} Team<br/>',
                 'delay'      => random_int(5, 20)
             ],
-            //19
+            //47
             [
                 'name'       => 'Booking Reschedule Accepted by Client',
                 'user_type'  => 'practitioner',
@@ -881,7 +870,7 @@ Location: {{schedule_venue}} {{schedule_hosting_url}} {{schedule_city}}, {{sched
 Thank you<br/> The {{platform_name}} Team<br/>',
                 'delay'      => random_int(5, 20)
             ],
-            //20
+            //48
             [
                 'name'       => 'Reschedule Request Declined by Client',
                 'user_type'  => 'practitioner',
@@ -898,12 +887,28 @@ Location:  {{schedule_hosting_url}} {{schedule_venue}} {{schedule_city}}, {{sche
 <br/>{{view_booking}}<br/><br/>
 Reschedule - DECLINED {{service_name}} - {{schedule_name}}<br/>
 From: {{reschedule_start_date}}, {{reschedule_start_time}} To: {{reschedule_end_date}}, {{reschedule_end_time}}<br/>
-Location: {{reschedule_venue}} {{service_schedule_reschedule_url}}
+Location: {{reschedule_venue}} {{reschedule_hosting_url}}
 {{reschedule_address}} {{reschedule_city}}, {{reschedule_postcode}}, {{reschedule_country}}<br/><br/>
 Thank you<br/> The {{platform_name}} Team<br/>',
                 'delay'      => random_int(5, 20)
             ],
-            //21
+            //49
+            [
+                'name'       => 'Contractual Service Update Declined - Booking Cancelled',
+                'user_type'  => 'client',
+                'from_email' => Str::random(10) . '@gmail.com',
+                'from_title' => Str::random(8),
+                'subject'    => 'Booking Cancelled - {{booking_reference}}',
+                'logo'       => Str::random(5),
+                'text'       => 'Hi {{first_name}}<br/> Unfortunately, {{practitioner_business_name}} had to change the booking details for {{service_name}} - {{schedule_name}}.
+As you declined the change, your booking has been cancelled. You will be refunded for this booking. Please allow up to 10 days for the refund to reach you.<br/>
+Cancelled Service:{{service_name}} - {{schedule_name}} <br/>
+Booking Reference: {{booking_reference}} <br/>
+Cost: {{total_paid}} <br/> <br/>
+Thank you <br/> The {{platform_name}} Team <br/>',
+                'delay'      => random_int(5, 20)
+            ],
+            //50
             [
                 'name'       => 'Reschedule Request No Reply from Client',
                 'user_type'  => 'practitioner',
@@ -921,28 +926,11 @@ Location:  {{schedule_hosting_url}} {{schedule_venue}} {{schedule_city}}, {{sche
 <br/>{{view_booking}}<br/><br/>
 Reschedule - NO RESPONSE {{service_name}} - {{schedule_name}}<br/>
 From: {{reschedule_start_date}}, {{reschedule_start_time}} To: {{reschedule_end_date}}, {{reschedule_end_time}}<br/>
-Location:{{reschedule_venue}} {{service_schedule_reschedule_url}} {{reschedule_address}}
-{{reschedule_city}}, {{reschedule_postcode}}, {{reschedule_country}}<br/><br/> Thank you<br/> The {{platform_name}} Team<br/>',
-                'delay'      => random_int(5, 20)
-            ],
-            //24
-            [
-                'name'       => 'Contractual Service Update Declined - Booking Cancelled',
-                'user_type'  => 'client',
-                'from_email' => Str::random(10) . '@gmail.com',
-                'from_title' => Str::random(8),
-                'subject'    => 'Booking Cancelled - {{booking_reference}}',
-                'logo'       => Str::random(5),
-                'text'       => 'Hi {{first_name}}<br/> Unfortunately, {{practitioner_business_name}} had to change the booking details for {{service_name}} - {{schedule_name}}.
-As you declined the change, your booking has been cancelled. You will be refunded for this booking. Please allow up to 10 days for the refund to reach you.<br/>
-Cancelled Service:{{service_name}} - {{schedule_name}} <br/>
-Booking Reference: {{booking_reference}} <br/>
-Cost: {{total_paid}} <br/> <br/>
-Thank you <br/> The {{platform_name}} Team <br/>',
+Location:{{reschedule_venue}} {{reschedule_hosting_url}} {{reschedule_city}}, {{reschedule_postcode}}, {{reschedule_country}}<br/>
+<br/> Thank you<br/> The {{platform_name}} Team<br/>',
                 'delay'      => random_int(5, 20)
             ],
 
-            //34
 
             /**
             //46
