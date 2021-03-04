@@ -24,7 +24,7 @@ class CourceProgramScheduleRequest extends GenericSchedule
         return [
             'title'              => 'required|string|min:5',
             'location_displayed' => 'required|string',
-            'prices'             => 'required',
+            'prices'             => 'required|array',
             'prices.*.name'      => 'required',
             'prices.*.cost'      => 'required',
             'prices.*.is_free'   => 'required',

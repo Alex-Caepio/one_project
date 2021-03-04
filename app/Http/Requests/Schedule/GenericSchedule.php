@@ -32,15 +32,24 @@ class GenericSchedule extends Request implements CreateScheduleInterface
    public function withValidator($validator): void {
        $validator->after(function($validator) {
            $plan = $this->user()->plan;
+           $totalSchedules = $this->service->schedules()->count();
 
            if (!$plan->unlimited_bookings) {
                 $this->validate(['attendees' => "max:{$this->user()->plan->amount_bookings}"]);
            }
 
-            if(!$plan->list_paid_services) {
-                $this->validate(['prices.*.cost' => Rule::in([null, 0])]);
-            }
+//            if(!$plan->list_paid_services) {
+//                $validator->errors()->add('prices.*.cost', 'Your plan restricts you from publishing paid services.');
+//            }
+//
+//            if(!$plan->list_free_services) {
+//                $this->validate(['prices.*.cost' => 'min:0|not_in:0']);
+//                $validator->errors()->add('prices.*.cost', 'Your plan restricts you from publishing free services.');
+//            }
 
+            if(!$plan->schedules_per_service_unlimited && $totalSchedules >= $plan->schedules_per_service){
+                $validator->errors()->add('service_id', 'The schedules limit on the service has been exceeded.');
+            }
        });
    }
 }

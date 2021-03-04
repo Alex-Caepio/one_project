@@ -143,4 +143,10 @@ class ScheduleController extends Controller
         return fractal($reschedule, new UserTransformer())->respond();
     }
 
+    public function destroy(Schedule $schedule)
+    {
+        $schedule->delete();
+        return response(null, 204);
+    }
+
 }

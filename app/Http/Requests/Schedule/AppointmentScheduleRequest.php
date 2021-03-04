@@ -22,7 +22,7 @@ class AppointmentScheduleRequest extends GenericSchedule
     public function rules()
     {
         return [
-            'prices'                        => 'required',
+            'prices'                        => 'required|array',
             'prices.*.name'                 => 'required',
             'prices.*.duration'             => 'required',
             'prices.*.cost'                 => 'required',
@@ -38,7 +38,7 @@ class AppointmentScheduleRequest extends GenericSchedule
             'schedule_unavailabilities.*.start_date' => 'required_with:unavailabilities',
             'schedule_unavailabilities.*.end_date'   => 'required_with:unavailabilities',
 
-            'schedule_availabilities'                => 'required',
+            'schedule_availabilities'                => 'required|array',
         ];
     }
 }

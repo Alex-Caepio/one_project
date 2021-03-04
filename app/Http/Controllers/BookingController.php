@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Filters\BookingFilters;
+use App\Http\Requests\Bookings\BookingCompleteRequest;
 use App\Http\Requests\Reschedule\RescheduleRequestRequest;
 use App\Http\Requests\Request;
 use App\Models\Booking;
@@ -77,6 +78,13 @@ class BookingController extends Controller
             ];
         }
         RescheduleRequest::insert($rescheduleRequests);
+
+        return response(null, 200);
+    }
+
+    public function complete(Booking $booking, BookingCompleteRequest $request) {
+        $booking->status = 'completed';
+        $booking->save();
 
         return response(null, 200);
     }
