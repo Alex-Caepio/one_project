@@ -36,21 +36,21 @@ class RescheduleRequestTransformer extends Transformer
 
     public function includeUsers(RescheduleRequest $rescheduleRequest)
     {
-        return $this->collectionOrNull($rescheduleRequest->user, new UserTransformer());
+        return $this->itemOrNull($rescheduleRequest->user, new UserTransformer());
     }
 
     public function includeBooking(RescheduleRequest $rescheduleRequest)
     {
-        return $this->collectionOrNull($rescheduleRequest->booking, new BookingTransformer());
+        return $this->itemOrNull($rescheduleRequest->booking, new BookingTransformer());
     }
 
     public function includeOldSchedule(RescheduleRequest $rescheduleRequest)
     {
-        return $this->collectionOrNull($rescheduleRequest->old_schedule, new ScheduleTransformer());
+        return $this->itemOrNull($rescheduleRequest->old_schedule, new ScheduleTransformer());
     }
 
     public function includeNewSchedule(RescheduleRequest $rescheduleRequest)
     {
-        return $this->collectionOrNull($rescheduleRequest->new_schedule, new ScheduleTransformer());
+        return $this->itemOrNull($rescheduleRequest->new_schedule, new ScheduleTransformer());
     }
 }
