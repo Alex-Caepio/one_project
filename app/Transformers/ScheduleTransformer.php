@@ -26,7 +26,6 @@ class ScheduleTransformer extends Transformer
             'attendees'                     => $schedule->attendees,
             'cost'                          => $schedule->cost,
             'comments'                      => $schedule->comments,
-            'venue'                         => $schedule->venue,
             'city'                          => $schedule->city,
             'country'                       => $schedule->country,
             'post_code'                     => $schedule->post_code,
@@ -60,6 +59,9 @@ class ScheduleTransformer extends Transformer
             'appointment'                   => $schedule->appointment,
             'created_at'                    => $schedule->created_at,
             'updated_at'                    => $schedule->updated_at,
+            'venue_name'                    => $schedule->venue_name,
+            'venue_address'                 => $schedule->venue_address,
+            'within_kilometers'             => $schedule->within_kilometers,
         ];
     }
 
@@ -88,21 +90,21 @@ class ScheduleTransformer extends Transformer
         return $this->collectionOrNull($schedule->media_files, new MediaFileTransformer());
     }
 
-    public function includeScheduleAvailability(Schedule $schedule)
+    public function includeScheduleAvailabilities(Schedule $schedule)
     {
         return $this->collectionOrNull($schedule->schedule_availabilities, new ScheduleAvailabilityTransformer());
     }
 
-    public function includeScheduleUnavailability(Schedule $schedule)
+    public function includeScheduleUnavailabilities(Schedule $schedule)
     {
         return $this->collectionOrNull($schedule->schedule_unavailabilities, new ScheduleUnavailabilityTransformer());
     }
 
-    public function includeScheduleFile(Schedule $schedule)
+    public function includeScheduleFiles(Schedule $schedule)
     {
         return $this->collectionOrNull($schedule->schedule_files, new ScheduleFileTransformer());
     }
-    public function includeScheduleHiddenFile(Schedule $schedule)
+    public function includeScheduleHiddenFiles(Schedule $schedule)
     {
         return $this->collectionOrNull($schedule->schedule_hidden_files, new ScheduleHiddenFileTransformer());
     }

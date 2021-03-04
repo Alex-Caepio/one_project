@@ -12,6 +12,7 @@ class MediaFileTransformer extends Transformer
     {
         return [
             'url' => $file->url,
+            'name' => $file->name,
         ];
     }
 }

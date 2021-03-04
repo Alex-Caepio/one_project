@@ -35,7 +35,7 @@ class StoreServiceRequest extends Request
                 'description'     => 'nullable|string|min:5|max:1000',
                 'is_published'    => 'bool',
                 'introduction'    => 'required|string|min:5|max:500',
-                'url'             => 'required',
+                'url'             => 'required|url',
                 'service_type_id' => 'required|exists:service_types,id',
                 'image_url'       => 'nullable|url',
                 'icon_url'        => 'nullable|url',
@@ -46,8 +46,8 @@ class StoreServiceRequest extends Request
             'description'     => 'nullable|string|min:5|max:1000',
             'is_published'    => 'boolean',
             'introduction'    => 'required|string|min:5|max:500',
-            'url'             => 'required',
-            'service_type_id' => 'required|exists:service_types,id'
+            'url'             => 'required|url',
+            'service_type_id' => 'required|exists:service_types,id',
         ];
     }
 

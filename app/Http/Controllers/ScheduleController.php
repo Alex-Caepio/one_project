@@ -130,6 +130,7 @@ class ScheduleController extends Controller
                 'user_id'     => Auth::id(),
                 'schedule_id' => $schedule->id,
                 'quantity'    => $request->get('quantity') ?? 1,
+                'price_id'    => $request->price_id
             ]);
             $freeze->save();
         }
@@ -139,6 +140,12 @@ class ScheduleController extends Controller
     {
         $reschedule = $schedule->users()->get();
         return fractal($reschedule, new UserTransformer())->respond();
+    }
+
+    public function destroy(Schedule $schedule)
+    {
+        $schedule->delete();
+        return response(null, 204);
     }
 
 }

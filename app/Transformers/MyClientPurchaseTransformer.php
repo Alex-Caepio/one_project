@@ -24,7 +24,8 @@ class MyClientPurchaseTransformer extends Transformer
             'purchased'     => 1,
             'location'      => $myClientPurchase->location,
             'refund_terms'  => $myClientPurchase->refund_terms,
-            'bookind_id'    => $myClientPurchase->booking_id
+            'booking_id'    => $myClientPurchase->booking_id,
+            'reference'     => $myClientPurchase->reference
         ];
     }
 }

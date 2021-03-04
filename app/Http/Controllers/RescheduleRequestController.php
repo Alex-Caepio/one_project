@@ -6,6 +6,8 @@ use App\Events\BookingRescheduleAcceptedByClient;
 use App\Events\RescheduleRequestDeclinedByClient;
 use App\Http\Requests\Reschedule\RescheduleRequestRequest;
 use App\Models\Booking;
+use App\Http\Requests\Reschedule\AcceptRescheduleRequestRequest;
+use App\Http\Requests\Reschedule\DeclineRescheduleRequestRequest;
 use App\Http\Requests\Request;
 use App\Models\RescheduleRequest;
 use App\Actions\RescheduleRequest\RescheduleRequestStore;
@@ -57,7 +59,8 @@ class RescheduleRequestController extends Controller {
         return response(null, 200);
     }
 
-    public function accept(RescheduleRequest $rescheduleRequest) {
+    public function accept(AcceptRescheduleRequestRequest $request, RescheduleRequest $rescheduleRequest)
+    {
         $booking = $rescheduleRequest->booking;
         $booking->schedule_id = $rescheduleRequest->new_schedule_id;
         $booking->datetime_from = $rescheduleRequest->new_start_date;
@@ -70,8 +73,8 @@ class RescheduleRequestController extends Controller {
         return response(null, 204);
     }
 
-    public function decline(RescheduleRequest $rescheduleRequest) {
-        event(new RescheduleRequestDeclinedByClient($rescheduleRequest));
+    public function decline(DeclineRescheduleRequestRequest $request, RescheduleRequest $rescheduleRequest)
+    {
         $rescheduleRequest->delete();
         return response(null, 204);
     }

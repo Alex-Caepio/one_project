@@ -27,6 +27,7 @@ class RescheduleRequestRequest extends FormRequest
     {
         return [
             'new_schedule_id' => 'required|exists:schedules,id',
+            'comment'         => 'max:150'
         ];
     }
 

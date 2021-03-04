@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Filters\BookingFilters;
+use App\Http\Requests\Bookings\BookingCompleteRequest;
 use App\Http\Requests\Reschedule\RescheduleRequestRequest;
 use App\Http\Requests\Request;
 use App\Models\Booking;

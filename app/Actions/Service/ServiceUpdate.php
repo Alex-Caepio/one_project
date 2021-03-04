@@ -14,7 +14,9 @@ class ServiceUpdate extends ServiceAction {
      * @return \App\Models\Service
      */
     public function execute(StoreServiceRequest $request, Service $service): Service {
-        $this->saveService($service, $request);
+        $request->has('service_type') 
+            ?  $this->saveService($service, $request->except(['service_type']))
+            :  $this->saveService($service, $data);
 
         return $service;
     }

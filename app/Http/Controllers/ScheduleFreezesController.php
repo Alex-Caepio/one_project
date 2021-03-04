@@ -24,4 +24,10 @@ class ScheduleFreezesController extends Controller {
         return fractal($paginator->getCollection(), new ScheduleFreezeTransformer())
             ->parseIncludes($request->getIncludes())->toArray();
     }
+
+    public function destroy(ScheduleFreeze $scheduleFreeze)
+    {
+        $scheduleFreeze->delete();
+        return response(null, 204);
+    }
 }

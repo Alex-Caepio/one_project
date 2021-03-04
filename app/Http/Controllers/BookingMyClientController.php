@@ -129,6 +129,7 @@ class BookingMyClientController extends Controller
                 'schedules.location_displayed as location',
                 'schedules.refund_terms as refund_terms',
                 'bookings.purchase_id as booking_id',
+                'bookings.reference as reference',
             ]))
             ->join('services', 'services.id', '=', 'purchases.service_id')
             ->join('service_types', 'service_types.id', '=', 'services.service_type_id')

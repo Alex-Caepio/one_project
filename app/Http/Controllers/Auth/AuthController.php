@@ -196,4 +196,11 @@ class AuthController extends Controller
                                                     'email' => ['The provided credentials are incorrect']
                                                 ]);
     }
+
+    public function delete(Request $request)
+    {
+        $request->user()->delete();
+
+        return response(null, 204);
+    }
 }

@@ -28,7 +28,6 @@ class Schedule extends Model
         'attendees',
         'cost',
         'comments',
-        'venue',
         'city',
         'country',
         'post_code',
@@ -60,6 +59,9 @@ class Schedule extends Model
         'buffer_period',
         'address',
         'appointment',
+        'venue_name',
+        'venue_address',
+        'within_kilometers',
     ];
 
     public function location()
