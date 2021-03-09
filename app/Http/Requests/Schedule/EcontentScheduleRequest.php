@@ -30,7 +30,7 @@ class EcontentScheduleRequest extends GenericSchedule
             'end_date' => 'date',
             'attendees' => 'integer',
             'cost' => 'integer',
-            'comments' => 'string',
+            'comments' => 'nullable|string',
             'venue_address' => 'required_if:appointment,physical',
             'city' => 'string',
             'country' => 'string',

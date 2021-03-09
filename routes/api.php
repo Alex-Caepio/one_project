@@ -7,6 +7,7 @@ use App\Http\Controllers\BookingController;
 use App\Http\Controllers\BookingMyClientController;
 use App\Http\Controllers\CancellationController;
 use App\Http\Controllers\MainPageController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\PriceController;
 use App\Http\Controllers\PurchaseController;
@@ -201,4 +202,6 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::post('/cancellations/{booking}', [CancellationController::class, 'cancelBooking']);
 
     Route::post('/images', [ImageController::class, 'upload']);
+
+    Route::get('/notifications/practitioner', [NotificationController::class, 'index']);
 });
