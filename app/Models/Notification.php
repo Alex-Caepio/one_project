@@ -19,8 +19,7 @@ class Notification extends Model {
         'price_payed' ,
         'price_refunded',
         'read_at',
-        'created_at',
-        'updated_at' ,
+        'type',
     ];
 
     protected $casts = [

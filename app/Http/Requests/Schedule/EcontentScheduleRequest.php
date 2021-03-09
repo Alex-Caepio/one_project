@@ -31,7 +31,7 @@ class EcontentScheduleRequest extends GenericSchedule
             'attendees' => 'integer',
             'cost' => 'integer',
             'comments' => 'nullable|string',
-            'venue_address' => 'required_if:appointment,physical',
+            'venue_address' => 'required_if:appointment,physical|max:255',
             'city' => 'string',
             'country' => 'string',
             'location_displayed' => 'string',
