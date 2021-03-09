@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use App\Actions\Cancellation\CancelBooking;
 use App\Http\Requests\Cancellation\CancelBookingRequest;
+use App\Http\Requests\Cancellation\CancelManyBookingsRequest;
 use App\Http\Requests\Request;
 use App\Models\Booking;
 use App\Models\Cancellation;
@@ -33,7 +34,17 @@ class CancellationController extends Controller {
 
     public function cancelBooking(Booking $booking, CancelBookingRequest $request) {
         return run_action(CancelBooking::class, $booking);
+    }
 
+    public function cancelManyBookings(CancelManyBookingsRequest $request)
+    {
+        $bookings = Booking::find($this->booking_ids);
+
+        foreach ($bookings as $booking) {
+            return run_action(CancelBooking::class, $booking);
+        }
+
+        return response(null, 204);
     }
 
 }

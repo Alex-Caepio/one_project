@@ -201,6 +201,7 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::delete('/payment-methods', [PaymentMethodController::class, 'detach']);
     /* Cancellation */
     Route::get('/cancellations', [CancellationController::class, 'index']);
+    Route::post('/cancellations/bookings', [CancellationController::class, 'cancelManyBookings']);
     Route::post('/cancellations/{booking}', [CancellationController::class, 'cancelBooking']);
 
     Route::post('/images', [ImageController::class, 'upload']);

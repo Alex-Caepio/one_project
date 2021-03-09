@@ -12,6 +12,7 @@ class ScheduleFileTransformer extends Transformer
             'id'            => $scheduleFile->id,
             'schedule_id'   => $scheduleFile->schedule_id,
             'url'           => $scheduleFile->url,
+            'name'          => $scheduleFile->name,
         ];
     }
 }

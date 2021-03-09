@@ -26,8 +26,9 @@ class RescheduleRequestTest extends TestCase
 
     public function test_user_can_get_all_reschedule_request(): void
     {
-        RescheduleRequest::factory()->count(2)->create(['user_id' => $this->user->id]);
-        $response = $this->json('get', '/api/reschedule-requests');
+        $booking = Booking::factory()->create();
+        RescheduleRequest::factory()->count(2)->create(['user_id' => $this->user->id, 'booking_id' => $booking->id]);
+        $response = $this->json('get', '/api/reschedule-requests?with=booking');
 
         $response
             ->assertJsonCount(2)

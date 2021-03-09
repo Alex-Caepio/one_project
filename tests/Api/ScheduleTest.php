@@ -5,6 +5,7 @@ namespace Tests\Api;
 use App\Models\Booking;
 use App\Models\Discipline;
 use App\Models\FocusArea;
+use App\Models\Plan;
 use App\Models\Price;
 use App\Models\Promotion;
 use App\Models\PromotionCode;
@@ -49,10 +50,10 @@ class ScheduleTest extends TestCase
     {
         Event::fake();
         $stripeProduct = $this->createStripeProduct();
-        $serviceType = ServiceType::factory()->create(['id' => 'training_program']);
-        $service     = Service::factory()->create(['service_type_id' => $serviceType->id, 'stripe_id' => $stripeProduct->id]);
-        $schedule    = Schedule::factory()->make();
-        $response    = $this->json('post', "api/services/{$service->id}/schedules", [
+        $serviceType   = ServiceType::factory()->create(['id' => 'training_program']);
+        $service       = Service::factory()->create(['service_type_id' => $serviceType->id, 'stripe_id' => $stripeProduct->id]);
+        $schedule      = Schedule::factory()->make();
+        $response      = $this->json('post', "api/services/{$service->id}/schedules", [
             'title'              => $schedule->title,
             'service_id'         => $service->id,
             'start_date'         => $schedule->start_date,
@@ -76,11 +77,11 @@ class ScheduleTest extends TestCase
     public function test_update_schedule(): void
     {
         Event::fake();
-        $stripeProduct       = $this->creteStripeProduct();
-        $serviceType = ServiceType::factory()->create(['id' => 'training_program']);
-        $service     = Service::factory()->create(['service_type_id' => $serviceType->id, 'stripe_id' => $stripeProduct->id]);
-        $schedule    = Schedule::factory()->create(['service_id' => $service->id]);
-        $response    = $this->json('put', "api/schedules/{$schedule->id}", [
+        $stripeProduct = $this->creteStripeProduct();
+        $serviceType   = ServiceType::factory()->create(['id' => 'training_program']);
+        $service       = Service::factory()->create(['service_type_id' => $serviceType->id, 'stripe_id' => $stripeProduct->id]);
+        $schedule      = Schedule::factory()->create(['service_id' => $service->id]);
+        $response      = $this->json('put', "api/schedules/{$schedule->id}", [
             'title' => '123'
         ]);
         $response->assertOk();
@@ -94,12 +95,12 @@ class ScheduleTest extends TestCase
         $stripePriceToDelete = $this->creteStripePrice($stripeProduct->id);
         $stripePriceToUpdate = $this->creteStripePrice($stripeProduct->id);
 
-        $serviceType   = ServiceType::factory()->create(['id' => 'training_program']);
-        $service       = Service::factory()->create([
+        $serviceType = ServiceType::factory()->create(['id' => 'training_program']);
+        $service     = Service::factory()->create([
             'service_type_id' => $serviceType->id,
             'stripe_id'       => $stripeProduct->id
         ]);
-        $schedule      = Schedule::factory()->create(['service_id' => $service->id]);
+        $schedule    = Schedule::factory()->create(['service_id' => $service->id]);
         Price::factory()->create(['schedule_id' => $schedule->id, 'stripe_id' => $stripePriceToDelete->id]);
         $priceToUpdate = Price::factory()->create(['schedule_id' => $schedule->id, 'stripe_id' => $stripePriceToUpdate->id]);
 
@@ -120,10 +121,10 @@ class ScheduleTest extends TestCase
 
     public function test_all_user()
     {
-        $schedule       = Schedule::factory()->create();
-        $user           = User::factory()->create();
+        $schedule      = Schedule::factory()->create();
+        $user          = User::factory()->create();
         $promotionCode = PromotionCode::factory()->create();
-        $response       = $this->json('get', "api/schedules/{$schedule->id}/attendants", [
+        $response      = $this->json('get', "api/schedules/{$schedule->id}/attendants", [
             'user_id'           => $user->id,
             'schedule_id'       => $schedule->id,
             'promotion_code_id' => $promotionCode->id,
@@ -133,22 +134,22 @@ class ScheduleTest extends TestCase
 
     public function test_promo_code()
     {
-        $stripeProduct  = $this->creteStripeProduct();
-        $schedule    = Schedule::factory()->create();
-        $oldCcost    = $schedule->cost;
-        $promotion   = Promotion::factory()->create([
-            'status' => 'active',
+        $stripeProduct = $this->creteStripeProduct();
+        $schedule      = Schedule::factory()->create();
+        $oldCcost      = $schedule->cost;
+        $promotion     = Promotion::factory()->create([
+            'status'      => 'active',
             'expiry_date' => ''
         ]);
-        $service     = Service::factory()->create(['id' => $schedule->service_id, 'stripe_id' => $stripeProduct->id]);
-        $discipline  = Discipline::factory()->create();
-        $serviceType = ServiceType::factory()->create();
-        $focusArea   = FocusArea::factory()->create();
+        $service       = Service::factory()->create(['id' => $schedule->service_id, 'stripe_id' => $stripeProduct->id]);
+        $discipline    = Discipline::factory()->create();
+        $serviceType   = ServiceType::factory()->create();
+        $focusArea     = FocusArea::factory()->create();
         $service->disciplines()->attach($discipline);
         $service->service_type()->associate($serviceType);
         $service->focus_areas()->attach($focusArea);
         $promoCode = PromotionCode::factory()->create(['promotion_id' => $promotion->id]);
-        $response = $this->json('post', "api/schedules/{$schedule->id}/promoсode", ['promo_code' => $promoCode->name]);
+        $response  = $this->json('post', "api/schedules/{$schedule->id}/promoсode", ['promo_code' => $promoCode->name]);
         $response->assertOk();
         $this->assertFalse($oldCcost == $schedule->cost);
     }
@@ -156,6 +157,9 @@ class ScheduleTest extends TestCase
     public function test_validate_request_class_ad_hoc_schedule(): void
     {
         Event::fake();
+        $plan = Plan::factory()->best()->create();
+        $this->user->plan_id = $plan->id;
+        $this->user->save();
         $stripeProduct = $this->creteStripeProduct();
         $serviceType   = ServiceType::factory()->create(['id' => 'class_ad_hoc']);
         $service       = Service::factory()->create(['service_type_id' => $serviceType->id, 'stripe_id' => $stripeProduct->id]);
@@ -176,15 +180,15 @@ class ScheduleTest extends TestCase
     {
         Event::fake();
         $stripeProduct = $this->creteStripeProduct();
-        $serviceType = ServiceType::factory()->create(['id' => 'workshop']);
-        $service     = Service::factory()->create(['service_type_id' => $serviceType->id, 'stripe_id' => $stripeProduct->id]);
-        $schedule    = Schedule::factory()->make();
+        $serviceType   = ServiceType::factory()->create(['id' => 'workshop']);
+        $service       = Service::factory()->create(['service_type_id' => $serviceType->id, 'stripe_id' => $stripeProduct->id]);
+        $schedule      = Schedule::factory()->make();
 
         $payload           = $schedule->toArray();
         $payload['prices'] = [[
-            'name'    => 'test price',
-            'is_free' => false,
-            'cost'    => 100,
+            'name'      => 'test price',
+            'is_free'   => false,
+            'cost'      => 100,
             'stripe_id' => $stripeProduct->id
         ]];
 
@@ -196,15 +200,15 @@ class ScheduleTest extends TestCase
     {
         Event::fake();
         $stripeProduct = $this->creteStripeProduct();
-        $serviceType = ServiceType::factory()->create(['id' => 'econtent']);
-        $service     = Service::factory()->create(['service_type_id' => $serviceType->id, 'stripe_id' => $stripeProduct->id]);
-        $schedule    = Schedule::factory()->make();
+        $serviceType   = ServiceType::factory()->create(['id' => 'econtent']);
+        $service       = Service::factory()->create(['service_type_id' => $serviceType->id, 'stripe_id' => $stripeProduct->id]);
+        $schedule      = Schedule::factory()->make();
 
         $payload           = $schedule->toArray();
         $payload['prices'] = [[
-            'name'    => 'test price',
-            'is_free' => false,
-            'cost'    => 100,
+            'name'      => 'test price',
+            'is_free'   => false,
+            'cost'      => 100,
             'stripe_id' => $stripeProduct->id
         ]];
 
@@ -216,15 +220,15 @@ class ScheduleTest extends TestCase
     {
         Event::fake();
         $stripeProduct = $this->creteStripeProduct();
-        $serviceType = ServiceType::factory()->create(['id' => 'class']);
-        $service     = Service::factory()->create(['service_type_id' => $serviceType->id, 'stripe_id' => $stripeProduct->id]);
-        $schedule    = Schedule::factory()->make();
+        $serviceType   = ServiceType::factory()->create(['id' => 'class']);
+        $service       = Service::factory()->create(['service_type_id' => $serviceType->id, 'stripe_id' => $stripeProduct->id]);
+        $schedule      = Schedule::factory()->make();
 
         $payload           = $schedule->toArray();
         $payload['prices'] = [[
-            'name'    => 'test price',
-            'is_free' => false,
-            'cost'    => 100,
+            'name'      => 'test price',
+            'is_free'   => false,
+            'cost'      => 100,
             'stripe_id' => $stripeProduct->id
         ]];
 
@@ -236,15 +240,15 @@ class ScheduleTest extends TestCase
     {
         Event::fake();
         $stripeProduct = $this->creteStripeProduct();
-        $serviceType = ServiceType::factory()->create(['id' => 'courses']);
-        $service     = Service::factory()->create(['service_type_id' => $serviceType->id, 'stripe_id' => $stripeProduct->id]);
-        $schedule    = Schedule::factory()->make();
+        $serviceType   = ServiceType::factory()->create(['id' => 'courses']);
+        $service       = Service::factory()->create(['service_type_id' => $serviceType->id, 'stripe_id' => $stripeProduct->id]);
+        $schedule      = Schedule::factory()->make();
 
         $payload           = $schedule->toArray();
         $payload['prices'] = [[
-            'name'    => 'test price',
-            'is_free' => false,
-            'cost'    => 100,
+            'name'      => 'test price',
+            'is_free'   => false,
+            'cost'      => 100,
             'stripe_id' => $stripeProduct->id
         ]];
 
@@ -256,15 +260,15 @@ class ScheduleTest extends TestCase
     {
         Event::fake();
         $stripeProduct = $this->creteStripeProduct();
-        $serviceType = ServiceType::factory()->create(['id' => 'events']);
-        $service     = Service::factory()->create(['service_type_id' => $serviceType->id, 'stripe_id' => $stripeProduct->id]);
-        $schedule    = Schedule::factory()->make();
+        $serviceType   = ServiceType::factory()->create(['id' => 'events']);
+        $service       = Service::factory()->create(['service_type_id' => $serviceType->id, 'stripe_id' => $stripeProduct->id]);
+        $schedule      = Schedule::factory()->make();
 
         $payload           = $schedule->toArray();
         $payload['prices'] = [[
-            'name'    => 'test price',
-            'is_free' => false,
-            'cost'    => 100,
+            'name'      => 'test price',
+            'is_free'   => false,
+            'cost'      => 100,
             'stripe_id' => $stripeProduct->id
         ]];
 
@@ -276,15 +280,15 @@ class ScheduleTest extends TestCase
     {
         Event::fake();
         $stripeProduct = $this->creteStripeProduct();
-        $serviceType = ServiceType::factory()->create(['id' => 'product']);
-        $service     = Service::factory()->create(['service_type_id' => $serviceType->id, 'stripe_id' => $stripeProduct->id]);
-        $schedule    = Schedule::factory()->make();
+        $serviceType   = ServiceType::factory()->create(['id' => 'product']);
+        $service       = Service::factory()->create(['service_type_id' => $serviceType->id, 'stripe_id' => $stripeProduct->id]);
+        $schedule      = Schedule::factory()->make();
 
         $payload           = $schedule->toArray();
         $payload['prices'] = [[
-            'name'    => 'test price',
-            'is_free' => false,
-            'cost'    => 100,
+            'name'      => 'test price',
+            'is_free'   => false,
+            'cost'      => 100,
             'stripe_id' => $stripeProduct->id
         ]];
 
@@ -296,15 +300,15 @@ class ScheduleTest extends TestCase
     {
         Event::fake();
         $stripeProduct = $this->creteStripeProduct();
-        $serviceType = ServiceType::factory()->create(['id' => 'retreat']);
-        $service     = Service::factory()->create(['service_type_id' => $serviceType->id, 'stripe_id' => $stripeProduct->id]);
-        $schedule    = Schedule::factory()->make();
+        $serviceType   = ServiceType::factory()->create(['id' => 'retreat']);
+        $service       = Service::factory()->create(['service_type_id' => $serviceType->id, 'stripe_id' => $stripeProduct->id]);
+        $schedule      = Schedule::factory()->make();
 
         $payload           = $schedule->toArray();
         $payload['prices'] = [[
-            'name'    => 'test price',
-            'is_free' => false,
-            'cost'    => 100,
+            'name'      => 'test price',
+            'is_free'   => false,
+            'cost'      => 100,
             'stripe_id' => $stripeProduct->id
         ]];
 
@@ -316,15 +320,15 @@ class ScheduleTest extends TestCase
     {
         Event::fake();
         $stripeProduct = $this->creteStripeProduct();
-        $serviceType = ServiceType::factory()->create(['id' => 'training_program']);
-        $service     = Service::factory()->create(['service_type_id' => $serviceType->id, 'stripe_id' => $stripeProduct->id]);
-        $schedule    = Schedule::factory()->make();
+        $serviceType   = ServiceType::factory()->create(['id' => 'training_program']);
+        $service       = Service::factory()->create(['service_type_id' => $serviceType->id, 'stripe_id' => $stripeProduct->id]);
+        $schedule      = Schedule::factory()->make();
 
         $payload           = $schedule->toArray();
         $payload['prices'] = [[
-            'name'    => 'test price',
-            'is_free' => false,
-            'cost'    => 100,
+            'name'      => 'test price',
+            'is_free'   => false,
+            'cost'      => 100,
             'stripe_id' => $stripeProduct->id
         ]];
 
@@ -336,8 +340,8 @@ class ScheduleTest extends TestCase
     {
         Event::fake();
         $stripeProduct = $this->creteStripeProduct();
-        $serviceType = ServiceType::factory()->create(['id' => 'appointment']);
-        $service     = Service::factory()->create(['service_type_id' => $serviceType->id, 'stripe_id' => $stripeProduct->id]);
+        $serviceType   = ServiceType::factory()->create(['id' => 'appointment']);
+        $service       = Service::factory()->create(['service_type_id' => $serviceType->id, 'stripe_id' => $stripeProduct->id]);
 
         $prices                   = Price::factory()->count(2)->make(['stripe_id' => $stripeProduct->id]);
         $schedule                 = Schedule::factory()->make();
@@ -367,9 +371,9 @@ class ScheduleTest extends TestCase
     {
         Event::fake();
         $stripeProduct = $this->creteStripeProduct();
-        $service  = Service::factory()->create(['stripe_id' => $stripeProduct->id]);
-        $schedule = Schedule::factory()->create(['service_id' => $service->id, 'attendees' => 1]);
-        $bookings = Booking::factory()->create(['schedule_id' => $schedule->id]);
+        $service       = Service::factory()->create(['stripe_id' => $stripeProduct->id]);
+        $schedule      = Schedule::factory()->create(['service_id' => $service->id, 'attendees' => 1]);
+        $bookings      = Booking::factory()->create(['schedule_id' => $schedule->id]);
 
         $rescheduleRequest = RescheduleRequest::factory()->create([
             'booking_id'  => $bookings->id,
@@ -392,8 +396,8 @@ class ScheduleTest extends TestCase
     {
         Event::fake();
         $stripeProduct = $this->creteStripeProduct();
-        $service  = Service::factory()->create(['stripe_id' => $stripeProduct->id]);
-        $schedule = Schedule::factory()->create([
+        $service       = Service::factory()->create(['stripe_id' => $stripeProduct->id]);
+        $schedule      = Schedule::factory()->create([
             'service_id' => $service->id,
             'attendees'  => 1
         ]);
@@ -425,8 +429,8 @@ class ScheduleTest extends TestCase
     {
         Event::fake();
         $stripeProduct = $this->creteStripeProduct();
-        $service  = Service::factory()->create(['stripe_id' => $stripeProduct->id]);
-        $schedule = Schedule::factory()->create([
+        $service       = Service::factory()->create(['stripe_id' => $stripeProduct->id]);
+        $schedule      = Schedule::factory()->create([
             'service_id' => $service->id,
             'attendees'  => 1
         ]);

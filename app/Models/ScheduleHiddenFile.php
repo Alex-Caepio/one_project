@@ -15,6 +15,7 @@ class ScheduleHiddenFile extends Model
     protected $fillable = [
         'schedule_id',
         'url',
+        'name',
     ];
 
     public function  schedules()

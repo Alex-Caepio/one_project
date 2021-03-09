@@ -12,6 +12,7 @@ class ScheduleHiddenFileTransformer extends Transformer
             'id'            => $scheduleHiddenFile->id,
             'schedule_id'   => $scheduleHiddenFile->schedule_id,
             'url'           => $scheduleHiddenFile->url,
+            'name'          => $scheduleHiddenFile->name,
         ];
     }
 }

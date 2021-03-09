@@ -12,7 +12,9 @@ class PractitionerController extends Controller
 {
     public function index(Request $request)
     {
-        $user = User::where('account_type', 'practitioner')->get();
+        $query = User::query()->where('account_type', 'practitioner');
+        $user = $query->get();
+
         return fractal($user, new UserTransformer())->parseIncludes($request->getIncludes())
             ->toArray();
     }
