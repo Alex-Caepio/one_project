@@ -3,7 +3,9 @@ pipeline{
         projectName = "oneness-backend"
         workingEnv = "dev"
         registryName = "214053718704.dkr.ecr.eu-west-2.amazonaws.com"
-        registryCredentials = "oneness_aws_creds"
+        registryURL = "https://262543608829.dkr.ecr.eu-west-1.amazonaws.com"
+        registryCredentials = "oneness-ecr-creds"
+        AWSregion = "eu-west-2"
     }
     
     agent{
@@ -25,7 +27,7 @@ pipeline{
         stage("Deploy docker image to AWS ECR"){
             steps{
                 script{
-                    docker.withRegistry('https://214053718704.dkr.ecr.eu-west-2.amazonaws.com','ecr:eu-west-2:oneness-ecr-creds'){
+                    docker.withRegistry("$registryURL","ecr:$AWSregion:$registryCredentials"){
                         dockerImage.push()
                     }
                 }
@@ -41,7 +43,8 @@ pipeline{
         stage('ECS Service update') {
             steps {
                 withAWS(credentials: 'oneness-ecr-creds', region: 'eu-west-2') {
-                    sh 'aws ecs update-service --cluster stage-app --service back --task-definition backend-prod --force-new-deployment'
+                    sh '''aws ecs update-service --cluster stage-app --service back --task-definition backend-prod --force-new-deployment
+                    aws ecs run-task --cluster stage-app --count 1 --launch-type EC2 --task-definition back-artisan-migrate'''
                 }
             }
         }
