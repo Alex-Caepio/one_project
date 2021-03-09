@@ -13,6 +13,8 @@ properties:
   logo:
     type: string
     format: binary
+  logo_filename:
+    type: string
   text:
     type: string
   delay:

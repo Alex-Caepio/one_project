@@ -179,7 +179,7 @@ Your Booking Schedule is live for {{service_name}} on {{platform_name}} and is r
 {{service_name}} - {{schedule_name}}<br />
 From: {{schedule_start_date}}, {{schedule_start_time}}<br/>
 To: {{schedule_end_date}}, {{schedule_end_time}}<br />
-Location: {{schedule_venue}} {{schedule_city}}, {{schedule_postcode}}, {{schedule_country}}<br />
+Location: {{schedule_venue_name}} {{schedule_venue_address}} {{schedule_city}}, {{schedule_postcode}}, {{schedule_country}}<br />
 <a href="{{add_to_calendar}}" target="_blank">Add to calendar</a> <br />
 We are excited to be empowering your business.<br/><br/>
 Thank you<br/> The {{platform_name}} Team<br/>',
@@ -478,7 +478,8 @@ Booking Details: {{service_name}} - {{schedule_name}}<br/>
 Booking Reference: {{booking_reference}} <br/>
 Cost: {{total_paid}} <br/>
 From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}} <br/>
-Location: {{schedule_hosting_url}} <br/><a href="{{add_to_calendar}}" target="_blank">Add to calendar</a> <br/> <a href="{{view_booking}}" target="_blank">View My Bookings</a>
+Location: {{schedule_hosting_url}} <br/>
+<a href="{{add_to_calendar}}" target="_blank">Add to calendar</a> <br/> <a href="{{view_booking}}" target="_blank">View My Bookings</a>
 Your Practitioner may have also added some attachments to this email for you.<br/><br/>
 Thank you<br/> The {{platform_name}} Team<br/>',
                 'delay'      => random_int(5, 20)
@@ -554,7 +555,7 @@ Location: {{schedule_hosting_url}} <br/>{{view_booking}}<br/>
  Booking Reference: {{booking_reference}} <br/>
  Cost: {{total_paid}} <br/>
  From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}} <br/>
- Location:  {{schedule_venue}} {{schedule_city}}, {{schedule_postcode}} {{schedule_country}} <br/>
+ Location:  {{schedule_venue_name}} {{schedule_venue_address}} {{schedule_city}}, {{schedule_postcode}} {{schedule_country}} <br/>
 <a href="{{add_to_calendar}}" target="_blank">Add to calendar</a>
 <br/> {{see_on_map}} <br/>
  Message from {{practitioner_business_name}}:
@@ -576,7 +577,7 @@ Thank you  <br/> The {{platform_name}} Team <br/>',
  Booking Reference: {{booking_reference}} <br/>
  Cost: {{total_paid}} <br/>
 From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}}  <br/>
-Location:  {{schedule_venue}} {{schedule_city}}, {{schedule_postcode}} {{schedule_country}} <br/>
+Location:  {{schedule_venue_name}} {{schedule_venue_address}} {{schedule_city}}, {{schedule_postcode}} {{schedule_country}} <br/>
 {{view_booking}} <br/> <br/>
  Thank you <br/> The {{platform_name}} Team <br/>',
                 'delay'      => random_int(5, 20)
@@ -666,7 +667,7 @@ Booking Reference: {{booking_reference}}<br/>
 From: {{schedule_start_date}}, {{schedule_start_time}}<br/>
 To: {{schedule_end_date}}, {{schedule_end_time}}<br/>
 Location: {{schedule_hosting_url}}
-{{schedule_venue}} {{schedule_city}}, {{schedule_postcode}}, {{schedule_country}}
+{{schedule_venue_name}} {{schedule_venue_address}} {{schedule_city}}, {{schedule_postcode}}, {{schedule_country}}
 <br/>{{see_on_map}} <br/>
 <br/>Thank you <br/>The {{platform_name}} Team<br/>',
                 'delay'      => random_int(5, 20)
@@ -684,7 +685,7 @@ Location: {{schedule_hosting_url}}
 {{practitioner_business_name}} has had to change the booking as follows: {{service_name}} - {{schedule_name}}<br/>
 From: {{schedule_start_date}}, {{schedule_start_time}}<br/>
 To: {{schedule_end_date}}, {{schedule_end_time}}<br/>
-Location: {{schedule_hosting_url}} {{schedule_venue}} {{schedule_city}}, {{schedule_postcode}}, {{schedule_country}}<br/>
+Location: {{schedule_hosting_url}} {{schedule_venue_name}} {{schedule_venue_address}} {{schedule_city}}, {{schedule_postcode}}, {{schedule_country}}<br/>
 You can either Accept or Decline this change. This will not impact the price you have paid for the service.
 If you Decline, your booking will be cancelled and you will be refunded in full.
 Please note, if you do not reply, this will be considered as accepting the change.<br/>  {{accept}} <br />{{decline}} <br/>
@@ -712,7 +713,7 @@ Booking Details: {{service_name}} - {{schedule_name}} <br/>
 Booking Reference: {{booking_reference}} <br/>
 From: {{schedule_start_date}}, {{schedule_start_time}}<br/>
 To: {{schedule_end_date}}, {{schedule_end_time}}<br/>
-Location:  {{schedule_venue}} {{schedule_city}}, {{schedule_postcode}}, {{schedule_country}}
+Location:  {{schedule_venue_name}} {{schedule_venue_address}} {{schedule_city}}, {{schedule_postcode}}, {{schedule_country}}
  <br/> {{see_on_map}}<br/>
 <a href="{{view_bookings}}" target="_blank">View My Bookings</a><br/><br/>
 Thank you<br/> The {{platform_name}} Team <br/>',
@@ -749,7 +750,7 @@ Your booking for {{service_name}} with {{practitioner_business_name}} is tomorro
 Booking Details: {{service_name}} - {{schedule_name}} <br/>
 Booking Reference: {{booking_reference}} <br/>
 From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}} <br/>
-Location:  {{schedule_venue}} {{schedule_city}}, {{schedule_postcode}} {{schedule_country}}
+Location:  {{schedule_venue_name}} {{schedule_venue_address}} {{schedule_city}}, {{schedule_postcode}} {{schedule_country}}
 <br/>{{see_on_map}}<br/>
 <a href="{{view_bookings}}" target="_blank">View My Bookings</a><br/><br/> Thank you <br/>The {{platform_name}} Team<br/>',
                 'delay'      => random_int(5, 20)
@@ -772,7 +773,7 @@ Booking Reference: {{booking_reference}} {{practitioner_business_name}} would li
 Reschedule Requested:{{service_name}} - {{schedule_name}}<br/>
 From: {{reschedule_start_date}}, {{reschedule_start_time}}<br/>
 To: {{reschedule_end_date}}, {{reschedule_end_time}}<br/>
-Location: {{reschedule_venue}} {{reschedule_city}}, {{reschedule_postcode}}, {{reschedule_country}}<br/>
+Location: {{reschedule_venue_name}} {{reschedule_venue_address}} {{reschedule_city}}, {{reschedule_postcode}}, {{reschedule_country}}<br/>
 Message from {{practitioner_business_name}}:
 <br/>{{practitioner_reschedule_message}}<br/><br/>
 
@@ -782,7 +783,7 @@ You will not be charged for this reschedule. Please note, if you decline or do n
 Current Booking: {{service_name}} - {{schedule_name}}<br/>
 From: {{schedule_start_date}}, {{schedule_start_time}}<br/>
 To: {{schedule_end_date}}, {{schedule_end_time}}<br/>
-Location:  {{schedule_hosting_url}} {{schedule_venue}}
+Location:  {{schedule_hosting_url}} {{schedule_venue_name}} {{schedule_venue_address}}
 {{schedule_city}}, {{schedule_postcode}}, {{schedule_country}}<br/><br/>
 Thank you<br/> The {{platform_name}} Team<br/>',
                 'delay'      => random_int(5, 20)
@@ -800,7 +801,7 @@ Thank you<br/> The {{platform_name}} Team<br/>',
 Booking Reference: {{booking_reference}} {{practitioner_business_name}} would like to reschedule your booking as follows: <br/>
 New Appointment: {{service_name}} - {{schedule_name}} <br/>
 From: {{reschedule_start_date}}, {{reschedule_start_time}} To: {{reschedule_end_date}}, {{reschedule_end_time}} <br/>
-Location: {{reschedule_venue}} {{reschedule_hosting_url}} {{reschedule_city}}, {{reschedule_postcode}}, {{reschedule_country}} <br/> <br/>
+Location: {{reschedule_venue_name}} {{reschedule_venue_address}} {{reschedule_hosting_url}} {{reschedule_city}}, {{reschedule_postcode}}, {{reschedule_country}} <br/> <br/>
 You can either Accept or Decline this request. If you decline or do not respond, the Practitioner may still cancel your current appointment and if so, you will be refunded.
  <br/>
  Message from {{practitioner_business_name}}:
@@ -809,7 +810,7 @@ You can either Accept or Decline this request. If you decline or do not respond,
  <a href="{{view_booking}}" target="_blank">View My Bookings</a> <br/> <br/>
 Current Booking {{service_name}} - {{schedule_name}} <br/>
 From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}} <br/>
-Location:  {{schedule_hosting_url}} {{schedule_venue}} {{schedule_city}}, {{schedule_postcode}}, {{schedule_country}} <br/> <br/>
+Location:  {{schedule_hosting_url}} {{schedule_venue_name}} {{schedule_venue_address}} {{schedule_city}}, {{schedule_postcode}}, {{schedule_country}} <br/> <br/>
 Thank you <br/> The {{platform_name}} Team <br/>',
                 'delay'      => random_int(5, 20)
             ],
@@ -825,12 +826,12 @@ Thank you <br/> The {{platform_name}} Team <br/>',
  Your Client, {{client_name}} has rescheduled their booking for {{service_name}}. They are now booked in for:
 {{service_name}} - {{schedule_name}}  <br/>
 From: {{reschedule_start_date}}, {{reschedule_start_time}} To: {{reschedule_end_date}}, {{reschedule_end_time}} <br/>
-Location: {{reschedule_venue}} {{reschedule_hosting_url}} {{reschedule_city}}, {{reschedule_postcode}}, {{reschedule_country}} <br/>
+Location: {{reschedule_venue_name}} {{reschedule_venue_address}} {{reschedule_hosting_url}} {{reschedule_city}}, {{reschedule_postcode}}, {{reschedule_country}} <br/>
  Their original booking will be reopened in your service schedule for resale. <br/> <br/>
  Original Booking: {{service_name}} - {{schedule_name}} <br/>
  From: {{schedule_start_date}}, {{schedule_start_time}}<br/>
  To: {{schedule_end_date}}, {{schedule_end_time}} <br/>
-Location:  {{schedule_hosting_url}} {{schedule_venue}} {{schedule_city}}, {{schedule_postcode}}, {{schedule_country}} <br/> <br/>
+Location:  {{schedule_hosting_url}} {{schedule_venue_name}} {{schedule_venue_address}} {{schedule_city}}, {{schedule_postcode}}, {{schedule_country}} <br/> <br/>
 Thank you <br/> The {{platform_name}} Team <br/>',
                 'delay'      => random_int(5, 20)
             ],
@@ -847,7 +848,7 @@ Thank you <br/> The {{platform_name}} Team <br/>',
 Booking Reference: {{booking_reference}} {{service_name}} - {{schedule_name}}<br/>
 From: {{schedule_start_date}}, {{schedule_start_time}}<br/>
 To: {{schedule_end_date}}, {{schedule_end_time}}<br/>
-Location: {{schedule_venue}} {{schedule_hosting_url}} {{schedule_city}}, {{schedule_postcode}}, {{schedule_country}}<br/>
+Location: {{schedule_venue_name}} {{schedule_venue_address}} {{schedule_hosting_url}} {{schedule_city}}, {{schedule_postcode}}, {{schedule_country}}<br/>
 {{see_on_map}}<br/>
  <a href="{{add_to_calendar}}" target="_blank">Add to calendar</a>
  <a href="{{view_booking}}" target="_blank">View My Bookings</a><br/><br/>
@@ -866,7 +867,7 @@ Location: {{schedule_venue}} {{schedule_hosting_url}} {{schedule_city}}, {{sched
 Booking Reference: {{booking_reference}} They are now booked in for: {{service_name}} - {{schedule_name}}<br/>
 From: {{schedule_start_date}}, {{schedule_start_time}}<br/>
 To: {{schedule_end_date}}, {{schedule_end_time}}<br/>
-Location: {{schedule_venue}} {{schedule_hosting_url}} {{schedule_city}}, {{schedule_postcode}}, {{schedule_country}}<br/>
+Location: {{schedule_venue_name}} {{schedule_venue_address}} {{schedule_hosting_url}} {{schedule_city}}, {{schedule_postcode}}, {{schedule_country}}<br/>
 Thank you<br/> The {{platform_name}} Team<br/>',
                 'delay'      => random_int(5, 20)
             ],
@@ -883,11 +884,11 @@ Their original booking will remain. If you are not able to deliver the booking, 
 Booking Reference: {{booking_reference}}<br/>
 Current Booking - MAINTAINED {{service_name}} - {{schedule_name}}<br/>
 From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}}<br/>
-Location:  {{schedule_hosting_url}} {{schedule_venue}} {{schedule_city}}, {{schedule_postcode}}, {{schedule_country}}
+Location:  {{schedule_hosting_url}} {{schedule_venue_name}} {{schedule_venue_address}} {{schedule_city}}, {{schedule_postcode}}, {{schedule_country}}
 <br/>{{view_booking}}<br/><br/>
 Reschedule - DECLINED {{service_name}} - {{schedule_name}}<br/>
 From: {{reschedule_start_date}}, {{reschedule_start_time}} To: {{reschedule_end_date}}, {{reschedule_end_time}}<br/>
-Location: {{reschedule_venue}} {{reschedule_hosting_url}}
+Location: {{reschedule_venue_name}} {{reschedule_hosting_url}}
 {{reschedule_address}} {{reschedule_city}}, {{reschedule_postcode}}, {{reschedule_country}}<br/><br/>
 Thank you<br/> The {{platform_name}} Team<br/>',
                 'delay'      => random_int(5, 20)
@@ -922,11 +923,11 @@ Their original booking will remain. If you are not able to deliver the booking, 
 Booking Reference: {{booking_reference}}<br/>
 Current Booking - MAINTAINED {{service_name}} - {{schedule_name}}<br/>
 From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}}<br/>
-Location:  {{schedule_hosting_url}} {{schedule_venue}} {{schedule_city}}, {{schedule_postcode}}, {{schedule_country}}
+Location:  {{schedule_hosting_url}} {{schedule_venue_name}} {{schedule_venue_address}} {{schedule_city}}, {{schedule_postcode}}, {{schedule_country}}
 <br/>{{view_booking}}<br/><br/>
 Reschedule - NO RESPONSE {{service_name}} - {{schedule_name}}<br/>
 From: {{reschedule_start_date}}, {{reschedule_start_time}} To: {{reschedule_end_date}}, {{reschedule_end_time}}<br/>
-Location:{{reschedule_venue}} {{reschedule_hosting_url}} {{reschedule_city}}, {{reschedule_postcode}}, {{reschedule_country}}<br/>
+Location:{{reschedule_venue_name}} {{reschedule_venue_address}} {{reschedule_hosting_url}} {{reschedule_city}}, {{reschedule_postcode}}, {{reschedule_country}}<br/>
 <br/> Thank you<br/> The {{platform_name}} Team<br/>',
                 'delay'      => random_int(5, 20)
             ],
@@ -951,7 +952,7 @@ Location:{{reschedule_venue}} {{reschedule_hosting_url}} {{reschedule_city}}, {{
             Your current booking: {{service_name}} - {{schedule_name}} <br/>
             Booking Reference: {{booking_reference}} <br/>
             From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}} <br/>
-            Location:  {{schedule_hosting_url}} {{schedule_venue}}
+            Location:  {{schedule_hosting_url}} {{schedule_venue_name}}
             {{schedule_city}}, {{schedule_postcode}}, {{schedule_country}} <br/> <br/>
             Thank you The {{platform_name}} Team',
             'delay'      => random_int(5, 20)
@@ -1090,7 +1091,7 @@ Location:{{reschedule_venue}} {{reschedule_hosting_url}} {{reschedule_city}}, {{
              * Booking Details: {{service_name}} - {{schedule_name}}<br/>
              * Booking Reference: {{booking_reference}} <br/>
              * From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}}<br/>
-             * Location:  {{schedule_venue}} {{schedule_city}}, {{schedule_postcode}} {{schedule_country}}
+             * Location:  {{schedule_venue_name}} {{schedule_city}}, {{schedule_postcode}} {{schedule_country}}
              * <br/><a href="{{add_to_calendar}}" target="_blank">Add to calendar</a>{{see_on_map}}<br/>
              * Message from {{practitioner_business_name}}<br/>
              * {{practitioner_booking_message}} <br/>
@@ -1114,7 +1115,7 @@ Location:{{reschedule_venue}} {{reschedule_hosting_url}} {{reschedule_city}}, {{
              * Booking Details: {{service_name}} - {{schedule_name}}<br/>
              * Booking Reference: {{booking_reference}} <br/>
              * From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}} <br/>
-             * Location:  {{schedule_venue}} {{schedule_city}}, {{schedule_postcode}} {{schedule_country}}<br/>
+             * Location:  {{schedule_venue_name}} {{schedule_city}}, {{schedule_postcode}} {{schedule_country}}<br/>
              * {{view_booking}} <br/>
              * The Client has paid a deposit of {{deposit_paid}} and will pay the remaining over instalments as follows:<br/>
              * {{instalment_date_1}} – {{instalment_amount_1}}<br/>
