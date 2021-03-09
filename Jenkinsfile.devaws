@@ -39,6 +39,16 @@ pipeline{
                 sh '''docker rmi -f $(docker images --filter=reference=${projectName} -q) >/dev/null 2>&1'''
             }
         }
+
+        stage('ECS Service update') {
+            steps {
+                withAWS(credentials: 'oneness_dev_partner', region: 'eu-west-1') {
+                    sh '''aws ecs update-service --cluster tom-app-dev --service back --task-definition tom-backend --force-new-deployment
+                    aws ecs run-task --cluster tom-app-dev --count 1 --launch-type EC2 --task-definition back-artisan-migrate'''
+                }
+            }
+        }
+
     }
     post{
         success{
