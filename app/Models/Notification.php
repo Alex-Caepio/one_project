@@ -36,4 +36,20 @@ class Notification extends Model
         'datetime_from' => 'datetime',
         'datetime_to'   => 'datetime',
     ];
+
+    public function client() {
+        return $this->belongsTo(User::class, 'client_id');
+    }
+
+    public function practitioner() {
+        return $this->belongsTo(User::class, 'practitioner_id');
+    }
+
+    public function receiver() {
+        return $this->belongsTo(User::class, 'receiver_id');
+    }
+
+    public function price() {
+        return $this->belongsTo(Price::class, 'price_id');
+    }
 }

@@ -38,6 +38,9 @@ class ClassScheduleRequest extends GenericSchedule
             'prices.*.is_free'   => 'required',
             'repeat_every'       => 'required_if:repeat,monthly',
             'repeat_period'      => 'required_if:repeat,monthly',
+
+            'deposit_amount'     => 'required_if:deposit_accepted,true',
+            'deposit_final_date' => 'required_if:deposit_accepted,true',
         ];
     }
 }
