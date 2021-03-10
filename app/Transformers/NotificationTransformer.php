@@ -27,6 +27,8 @@ class NotificationTransformer extends Transformer
             'created_at'        => $notification->created_at,
             'updated_at'        => $notification->updated_at,
             'type'              => $notification->type,
+            'datetime_from'     => $notification->datetime_from,
+            'datetime_to'       => $notification->datetime_to,
         ];
     }
 

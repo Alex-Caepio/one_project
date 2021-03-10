@@ -31,7 +31,7 @@ class WorkshopScheduleRequest extends GenericSchedule
             'attendees'          => 'required|integer',
             'cost'               => 'integer',
             'comments'           => 'nullable|string',
-            'venue_address'      => 'required|max:255',
+            'venue_address'      => 'required_if:appointment,physical|max:255',
             'city'               => 'required_if:appointment,physical|required|string',
             'country'            => 'required_if:appointment,physical|string',
             'location_displayed' => 'required|string',
