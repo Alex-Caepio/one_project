@@ -12,26 +12,40 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
 class BookingConfirmation {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable, InteractsWithSockets, SerializesModels, EventFillableFromBooking;
 
-    public User $user;
-    public User $practitioner;
-    public User $client;
-    public Booking $booking;
-    public Schedule $schedule;
-    public Service $service;
     public User $recipient;
+    public ?string $template;
 
     /**
-     * @param User $user
      * @param \App\Models\Booking $booking
-     * @param \App\Models\User $practitioner
      */
-    public function __construct(User $user, Booking $booking, User $practitioner) {
-        $this->user = $this->client = $user;
+    public function __construct(Booking $booking) {
         $this->booking = $booking;
-        $this->schedule = $booking->schedule;
-        $this->service = $booking->schedule->service;
-        $this->practitioner = $practitioner;
+        $this->fillEvent();
+        $this->template = $this->getTemplate();
+    }
+
+    /**
+     * @return string
+     */
+    private function getTemplate(): ?string {
+        if ($this->schedule->appointment === 'physical') {
+            if ($this->service->service_type_id === 'courses') {
+                return 'Booking Confirmation - Dateless Physical';
+            }
+
+            return 'Booking Confirmation - Date/Apt Physical';
+        }
+
+        if ($this->schedule->appointment === 'virtual') {
+            if ($this->service->service_type_id === 'courses') {
+                return 'Booking Confirmation - DateLess Virtual';
+            }
+
+            return 'Booking Confirmation - Event Virtual';
+        }
+
+        return null;
     }
 }

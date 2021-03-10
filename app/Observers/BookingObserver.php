@@ -31,6 +31,6 @@ class BookingObserver {
      * @return void
      */
     public function created(Booking $booking): void {
-        event(new BookingConfirmation(Auth::user(), $booking, $booking->practitioner));
+        event(new BookingConfirmation($booking));
     }
 }

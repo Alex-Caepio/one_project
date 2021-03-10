@@ -5,28 +5,19 @@ namespace App\Listeners\Emails;
 use App\EmailVariables\EmailVariables;
 use App\Events\BookingConfirmation;
 use App\Models\CustomEmail;
+use App\Models\Schedule;
 use Illuminate\Support\Facades\Mail;
 
 class BookingConfirmationEmail extends SendEmailHandler {
 
     /**
-     * @var string[]
-     */
-    private static array $eventTemplates = [
-        'events'      => 'Booking Confirmation - Event Virtual',
-        //'Booking Confirmation - DateLess Virtual',
-        'retreat'     => 'Booking Confirmation - Date/Apt Physical',
-        'appointment' => 'Booking Confirmation - Date/Apt Physical',
-        'workshop'    => 'Booking Confirmation - Date/Apt Physical',
-        'courses'     => 'Booking Confirmation - Dateless Physical'
-    ];
-
-    /**
      * @param \App\Events\BookingConfirmation $event
      */
     public function handle(BookingConfirmation $event): void {
-
-        $this->templateName = self::$eventTemplates[$event->service->service_type_id];
+        if ($event->template === null) {
+            return;
+        }
+        $this->templateName = $event->template;
         $this->event = $event;
 
         // client
@@ -42,4 +33,5 @@ class BookingConfirmationEmail extends SendEmailHandler {
         $this->event->recipient = $event->practitioner;
         $this->sendCustomEmail();
     }
+
 }

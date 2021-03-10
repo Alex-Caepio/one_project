@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Actions\Schedule\CreateRescheduleRequestsOnScheduleUpdate;
 use App\Actions\Schedule\HandlePricesUpdate;
+use App\Events\ServiceScheduleCancelled;
 use App\Events\ServiceScheduleLive;
 use App\Models\Service;
 use App\Models\Schedule;
@@ -142,9 +143,9 @@ class ScheduleController extends Controller
         return fractal($reschedule, new UserTransformer())->respond();
     }
 
-    public function destroy(Schedule $schedule)
-    {
+    public function destroy(Schedule $schedule) {
         $schedule->delete();
+        event(new ServiceScheduleCancelled($schedule, Auth::user()));
         return response(null, 204);
     }
 

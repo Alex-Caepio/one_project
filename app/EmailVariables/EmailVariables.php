@@ -3,9 +3,13 @@
 
 namespace App\EmailVariables;
 
-
+use App\Traits\GenerateCalendarLink;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Str;
+use Spatie\IcalendarGenerator\Components\Calendar;
+use Spatie\IcalendarGenerator\Components\Event;
 
 /**
  * Class EmailVariables
@@ -13,6 +17,8 @@ use Illuminate\Support\Facades\URL;
  * @package App\EmailVariables
  */
 class EmailVariables {
+
+    use GenerateCalendarLink;
 
     public function __construct($event) {
         $this->event = $event;
@@ -77,7 +83,7 @@ class EmailVariables {
     /**
      * @return string
      */
-    public function getPlatform_email():string {
+    public function getPlatform_email(): string {
         return config('app.platform_email');
     }
 
@@ -86,7 +92,7 @@ class EmailVariables {
      * @return string
      */
     public function getReset_password_url(): string {
-        return config('app.frontend_reset_password_form_url').'?token='.$this->event->reset->token;
+        return config('app.frontend_reset_password_form_url') . '?token=' . $this->event->reset->token;
     }
 
     /**
@@ -114,18 +120,14 @@ class EmailVariables {
      * @return string
      */
     public function getPractitioner_business_name(): string {
-        return $this->event->user->isPractitioner()
-            ? $this->event->user->business_name
-            : $this->event->practitioner->business_name;
+        return $this->event->user->isPractitioner() ? $this->event->user->business_name : $this->event->practitioner->business_name;
     }
 
     /**
      * @return string
      */
     public function getPractitioner_email_address(): string {
-        return $this->event->user->isPractitioner()
-            ? $this->event->user->email
-            : $this->event->practitioner->email;
+        return $this->event->user->isPractitioner() ? $this->event->user->email : $this->event->practitioner->email;
     }
 
     /**
@@ -172,12 +174,9 @@ class EmailVariables {
      * @return string
      */
     public function getAdd_to_calendar(): string {
-        /*
-        https://www.google.com/calendar/render?action=TEMPLATE&text=TestTitle&details=TestDescription&location=59+Pairc+Na+Ri&dates=20210301T135700Z%2F20210304T135700Z
-        */
-        return '';
+        $this->calendarPresented = true;
+        return $this->generateGoogleLink($this->event->schedule);
     }
-
 
     /**
      *
@@ -234,8 +233,15 @@ class EmailVariables {
     /**
      * @return string
      */
-    public function getSchedule_venue(): string {
-        return $this->event->schedule->venue;
+    public function getSchedule_venue_name(): string {
+        return $this->event->schedule->venue_name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSchedule_venue_address(): string {
+        return $this->event->schedule->venue_address;
     }
 
     /**
@@ -340,7 +346,7 @@ class EmailVariables {
         return config('app.frontend_practitioner_services');
     }
 
-     /**
+    /**
      * @return string
      */
     public function getArticle_url(): string {
@@ -388,7 +394,7 @@ class EmailVariables {
      * @return string
      */
     public function getClient_name(): string {
-        return $this->event->client->first_name.' '.$this->event->client->last_name;
+        return $this->event->client->first_name . ' ' . $this->event->client->last_name;
     }
 
 
@@ -424,7 +430,7 @@ class EmailVariables {
      * @return string
      */
     public function getView_booking(): string {
-        return config('app.frontend_booking_url').$this->event->booking->reference;
+        return config('app.frontend_booking_url') . $this->event->booking->reference;
     }
 
     /**
@@ -479,8 +485,15 @@ class EmailVariables {
     /**
      * @return string
      */
-    public function getReschedule_venue(): string {
-        return $this->event->reschedule_schedule->venue;
+    public function getReschedule_venue_name(): string {
+        return $this->event->reschedule_schedule->venue_name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getReschedule_venue_address(): string {
+        return $this->event->reschedule_schedule->venue_address;
     }
 
     /**
