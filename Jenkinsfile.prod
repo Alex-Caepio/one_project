@@ -27,7 +27,7 @@ pipeline{
         stage("Deploy docker image to AWS ECR"){
             steps{
                 script{
-                    docker.withRegistry("$registryURL","ecr:$AWSregion:$registryCredentials"){
+                    docker.withRegistry('https://262543608829.dkr.ecr.eu-west-1.amazonaws.com','ecr:eu-west-2:oneness-ecr-creds'){
                         dockerImage.push()
                     }
                 }
@@ -44,7 +44,7 @@ pipeline{
             steps {
                 withAWS(credentials: 'oneness-ecr-creds', region: 'eu-west-2') {
                     sh '''aws ecs update-service --cluster stage-app --service back --task-definition backend-prod --force-new-deployment
-                    aws ecs run-task --cluster stage-app --count 1 --launch-type EC2 --task-definition back-artisan-migrate'''
+                    aws ecs run-task --cluster stage-app --count 1 --launch-type EC2 --task-definition back-artisan-stage'''
                 }
             }
         }
