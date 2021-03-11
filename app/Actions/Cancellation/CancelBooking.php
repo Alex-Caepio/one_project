@@ -7,6 +7,7 @@ use App\Events\BookingCancelledByPractitioner;
 use App\Events\BookingCancelledByClient;
 use App\Models\Booking;
 use App\Models\Cancellation;
+use App\Models\Notification;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -101,6 +102,29 @@ class CancelBooking {
             ]);
             return abort(500);
         }
+
+        $notification = new Notification();
+
+        if (Auth::user()->isPractitioner()) {
+            $notification->type = 'booking_canceled_by_practitioner';
+            $notification->receiver_id = $booking->user_id;
+        } else {
+            $notification->type = 'booking_canceled_by_client';
+            $notification->receiver_id = $booking->practitioner_id;
+        }
+
+            $notification->client_id = $booking->user_id;
+            $notification->practitioner_id = $booking->practitioner_id;
+            $notification->title = $booking->schedule->service->title.' '.$booking->schedule->title;
+            $notification->old_address = $booking->schedule->location_displayed;
+            $notification->datetime_from = $booking->datetime_from;
+            $notification->datetime_to = $booking->datetime_to;
+            $notification->price_id = $booking->price_id;
+            $notification->price_refunded = $chargeAmount;
+
+            $notification->save();
+
+
         return response(null, 204);
     }
 

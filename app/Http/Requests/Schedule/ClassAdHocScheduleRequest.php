@@ -27,7 +27,7 @@ class ClassAdHocScheduleRequest extends GenericSchedule
             'end_date'           => 'required|date',
             'venue_address'      => 'required_if:appointment,physical|max:255',
             'city'               => 'required|string',
-            'country'            => 'required|string',
+            'country'            => 'required_if:appointment,physical|string',
             'location_displayed' => 'required|string',
             'attendees'          => 'required|integer',
             'url'                => 'required_if:appointment,virtual|string',
@@ -38,6 +38,9 @@ class ClassAdHocScheduleRequest extends GenericSchedule
             'prices.*.is_free'   => 'required',
             'repeat_every'       => 'required_if:repeat,monthly',
             'repeat_period'      => 'required_if:repeat,monthly',
+
+            'deposit_amount'     => 'required_if:deposit_accepted,true',
+            'deposit_final_date' => 'required_if:deposit_accepted,true',
 
         ];
     }

@@ -28,6 +28,9 @@ class CourceProgramScheduleRequest extends GenericSchedule
             'prices.*.name'      => 'required',
             'prices.*.cost'      => 'required',
             'prices.*.is_free'   => 'required',
+
+            'deposit_amount'     => 'required_if:deposit_accepted,true',
+            'deposit_final_date' => 'required_if:deposit_accepted,true',
         ];
     }
 }

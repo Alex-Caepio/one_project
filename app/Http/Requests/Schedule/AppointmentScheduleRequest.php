@@ -39,6 +39,9 @@ class AppointmentScheduleRequest extends GenericSchedule
             'schedule_unavailabilities.*.end_date'   => 'required_with:unavailabilities',
 
             'schedule_availabilities'                => 'required|array',
+
+            'deposit_amount'                => 'required_if:deposit_accepted,true',
+            'deposit_final_date'            => 'required_if:deposit_accepted,true',
         ];
     }
 }

@@ -26,8 +26,8 @@ class RetreatScheduleRequest extends GenericSchedule
             'start_date'         => 'required|date',
             'end_date'           => 'required|date',
             'venue_address'      => 'required_if:appointment,physical|max:255',
-            'city'               => 'required|string',
-            'country'            => 'required|string',
+            'city'               => 'required_if:appointment,physical|required|string',
+            'country'            => 'required_if:appointment,physical|string',
             'location_displayed' => 'required|string',
             'attendees'          => 'required|integer',
             'refund_terms'       => 'required',
@@ -36,7 +36,8 @@ class RetreatScheduleRequest extends GenericSchedule
             'prices.*.cost'      => 'required',
             'prices.*.is_free'   => 'required',
 
-
+            'deposit_amount'     => 'required_if:deposit_accepted,true',
+            'deposit_final_date' => 'required_if:deposit_accepted,true',
         ];
     }
 }

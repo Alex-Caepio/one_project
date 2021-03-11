@@ -13,8 +13,9 @@ class NotificationController extends Controller
     public function index(Request $request)
     {
         $query = Notification::where('practitioner_id', Auth::id())
-                        ->where('receiver_id', Auth::id())
-                        ->with($request->getIncludes());
+            ->where('receiver_id', Auth::id())
+            ->where('read_at', null)
+            ->with($request->getIncludes());
 
         $paginator = $query->paginate($request->getLimit());
         $notification  = $paginator->getCollection();
@@ -22,6 +23,13 @@ class NotificationController extends Controller
         return response(fractal($notification, new NotificationTransformer())
             ->parseIncludes($request->getIncludes()))
             ->withPaginationHeaders($paginator);
+    }
+
+    public function markAsRead(Notification $notification) {
+        $notification->read_at = now();
+        $notification->save();
+
+        return response(null, 200);
     }
 }
 

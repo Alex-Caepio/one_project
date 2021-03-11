@@ -5,7 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Notification extends Model {
+class Notification extends Model
+{
     use HasFactory;
 
     protected $fillable = [
@@ -20,6 +21,10 @@ class Notification extends Model {
         'price_refunded',
         'read_at',
         'type',
+        'old_datetime',
+        'new_datetime',
+        'datetime_from',
+        'datetime_to',
     ];
 
     protected $casts = [
@@ -28,5 +33,23 @@ class Notification extends Model {
         'read_at'       => 'datetime',
         'created_at'    => 'datetime',
         'updated_at'    => 'datetime',
+        'datetime_from' => 'datetime',
+        'datetime_to'   => 'datetime',
     ];
+
+    public function client() {
+        return $this->belongsTo(User::class, 'client_id');
+    }
+
+    public function practitioner() {
+        return $this->belongsTo(User::class, 'practitioner_id');
+    }
+
+    public function receiver() {
+        return $this->belongsTo(User::class, 'receiver_id');
+    }
+
+    public function price() {
+        return $this->belongsTo(Price::class, 'price_id');
+    }
 }

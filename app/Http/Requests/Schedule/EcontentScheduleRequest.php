@@ -32,13 +32,16 @@ class EcontentScheduleRequest extends GenericSchedule
             'cost' => 'integer',
             'comments' => 'nullable|string',
             'venue_address' => 'required_if:appointment,physical|max:255',
-            'city' => 'string',
-            'country' => 'string',
+            'city' => 'nullable|string',
+            'country' => 'nullable|string',
             'location_displayed' => 'string',
             'prices'             => 'required|array',
             'prices.*.name'      => 'required',
             'prices.*.cost'      => 'required',
             'prices.*.is_free'   => 'required',
+
+            'deposit_amount'     => 'required_if:deposit_accepted,true',
+            'deposit_final_date' => 'required_if:deposit_accepted,true',
         ];
     }
 }

@@ -26,9 +26,9 @@ class EventScheduleRequest extends GenericSchedule
             'start_date'         => 'required|date',
             'end_date'           => 'required|date',
             'venue_address'      => 'required_if:appointment,physical|max:255',
-            'city'               => 'required|string',
-            'country'            => 'required|string',
-            'post_code'          => 'required',
+            'city'               => 'required_if:appointment,physical|string',
+            'country'            => 'required_if:appointment,physical|string',
+            'post_code'          => 'required_if:appointment,physical',
             'location_displayed' => 'required|string',
             'attendees'          => 'required|integer',
             'url'                => 'required_if:appointment,virtual|string',
@@ -38,6 +38,8 @@ class EventScheduleRequest extends GenericSchedule
             'prices.*.cost'      => 'required',
             'prices.*.is_free'   => 'required',
 
+            'deposit_amount'     => 'required_if:deposit_accepted,true',
+            'deposit_final_date' => 'required_if:deposit_accepted,true',
         ];
     }
 }
