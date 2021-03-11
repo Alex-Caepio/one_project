@@ -5,11 +5,9 @@ namespace App\EmailVariables;
 
 use App\Traits\GenerateCalendarLink;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
-use Illuminate\Support\Str;
-use Spatie\IcalendarGenerator\Components\Calendar;
-use Spatie\IcalendarGenerator\Components\Event;
+
 
 /**
  * Class EmailVariables
@@ -32,7 +30,7 @@ class EmailVariables {
 
     public function replace($body) {
         $openBracket = strpos($body, '{{');
-        if (!$openBracket) {
+        if ($openBracket === false) {
             return $body;
         }
 
@@ -50,6 +48,7 @@ class EmailVariables {
      * @return string
      */
     public function getPlatform_name(): string {
+        Log::info('Replace Platform Name: '.config('app.platform_name'));
         return config('app.platform_name');
     }
 

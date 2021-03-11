@@ -15,7 +15,7 @@ abstract class SendEmailHandler {
     protected ?string $templateName;
     protected string $toEmail;
     protected object $event;
-    protected ?string $type;
+    protected ?string $type = null;
 
     protected function sendCustomEmail(): void {
         $attachmentName = null;
@@ -25,11 +25,14 @@ abstract class SendEmailHandler {
                 $emailDataQuery->where('user_type', $this->type);
             }
             $emailData = $emailDataQuery->first();
+
             if ($emailData) {
                 $emailVariables = new EmailVariables($this->event);
                 $bodyReplaced = $this->wrapTemplate($emailData, $emailVariables);
+
                 Mail::html($bodyReplaced, function($message) use ($emailData, $emailVariables) {
-                    $message->to($this->toEmail)->subject($emailVariables->replace($emailData->subject))
+                    $subjectReplaced = $emailVariables->replace($emailData->subject);
+                    $message->to($this->toEmail)->subject($subjectReplaced)
                             ->from($emailData->from_email, $emailData->from_title);
 
                     //Attach calendar file
@@ -42,7 +45,7 @@ abstract class SendEmailHandler {
                     }
                 });
             } else {
-                throw new \RuntimeException('Email template #' . $this->templateName . ' was not found');
+                throw new \Exception('Email template #' . $this->templateName . ' was not found');
             }
         } catch (\Exception $e) {
             Log::channel('emails')->info('Email error: ', [

@@ -16,7 +16,6 @@ class CustomEmailSeeder extends Seeder {
 
     public function run() {
         DB::table('custom_emails')->delete();
-
         $data = [
             //1
             [
