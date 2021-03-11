@@ -7,22 +7,13 @@ use App\Events\ContractualServiceUpdateDeclinedBookingCancelled;
 use App\Models\CustomEmail;
 use Illuminate\Support\Facades\Mail;
 
-class ContractualServiceUpdateDeclinedBookingCancelledEmail
-{
-    public function __construct()
-    {
-    }
+class ContractualServiceUpdateDeclinedBookingCancelledEmail extends SendEmailHandler {
 
-    public function handle(ContractualServiceUpdateDeclinedBookingCancelled $event): void
-    {
-        $user = $event->user;
-        $emailVerification = CustomEmail::where('name', 'Contractual Service Update Declined - Booking Cancelled')->first();
-        $body = $emailVerification->text;
-        $emailVariables = new EmailVariables($event);
-        $bodyReplaced = $emailVariables->replace($body);
+    protected string $templateName = 'Contractual Service Update Declined - Booking Cancelled';
 
-        Mail::raw($bodyReplaced, function ($message) use ($user){
-            $message->to($user->email);
-        });
+    public function handle(ContractualServiceUpdateDeclinedBookingCancelled $event): void {
+        $this->toEmail = $event->client->email;
+        $this->event->recipient = $event->client;
+        $this->sendCustomEmail();
     }
 }

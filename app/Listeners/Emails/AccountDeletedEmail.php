@@ -2,31 +2,15 @@
 
 namespace App\Listeners\Emails;
 
-use App\Models\CustomEmail;
-use App\Events\UserRegistered;
-use App\EmailVariables\EmailVariables;
-use Illuminate\Support\Facades\Mail;
+use App\Events\AccountDeleted;
 
-class AccountDeletedEmail
-{
-    public function __construct()
-    {
-    }
+class AccountDeletedEmail extends SendEmailHandler {
 
-    public function handle(UserRegistered $event): void
-    {
-        $user = $event->user;
-
-        $emailVerification = CustomEmail::where('name', 'Account Deleted')
-            ->where('user_type', $user->account_type)
-            ->first();
-
-        $body           = $emailVerification->text;
-        $emailVariables = new EmailVariables($event);
-        $bodyReplaced   = $emailVariables->replace($body);
-
-        Mail::raw($bodyReplaced, function ($message) use ($user) {
-            $message->to($user->email);
-        });
+    public function handle(AccountDeleted $event): void {
+        $this->toEmail = $event->user->email;
+        $this->templateName = 'Account Deleted';
+        $this->event = $event;
+        $this->type = $event->user->account_type;
+        $this->sendCustomEmail();
     }
 }

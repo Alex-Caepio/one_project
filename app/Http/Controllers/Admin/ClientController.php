@@ -60,10 +60,6 @@ class ClientController extends Controller {
 
     public function destroy(User $client, ClientDestroyRequest $request) {
         run_action(DeleteUser::class, $client, $request);
-        // event(new BookingCancelledByClient($client));
-        // event(new AccountUpgradedToPractitioner($client));
-        // event(new AccountTerminatedByAdmin($client));
-        //event(new AccountDeleted($client));
         return response(null, 204);
     }
 

@@ -15,7 +15,7 @@ class RescheduleRequestRequest extends FormRequest
      */
     public function authorize()
     {
-        return $this->booking->user_id ?? $this->user_id == Auth::id();
+        return $this->booking->user_id ?? $this->user_id === Auth::id();
     }
 
     /**
@@ -35,7 +35,7 @@ class RescheduleRequestRequest extends FormRequest
    {
        $validator->after(function ($validator)
        {
-       if($this->booking->schedule->service->id != Schedule::find($this->get('new_schedule_id'))->service->id){
+       if($this->booking->schedule->service->id !== Schedule::find($this->get('new_schedule_id'))->service->id){
                $validator->errors()->add('new_schedule_id', 'This schedule does not belong to the service.');
            }
        });

@@ -69,13 +69,11 @@ class AuthController extends Controller
 
         event(new UserRegistered($user));
 
-        return fractal($user, new UserTransformer())
-            ->respond();
+        return fractal($user, new UserTransformer())->respond();
     }
 
 
-    public function login(LoginRequest $request)
-    {
+    public function login(LoginRequest $request) {
         $user = User::where('email', $request->get('email'))->first();
 
         $permissions = run_action(GetUsersPermissions::class, $user);
@@ -161,51 +159,42 @@ class AuthController extends Controller
         return fractal($user, new UserTransformer())->respond();
     }
 
-    public function avatar(Request $request)
-    {
-        $path     = public_path('\img\profile\\' . Auth::id() . '\\');
+    public function avatar(Request $request) {
+        $path = public_path('\img\profile\\' . Auth::id() . '\\');
         $fileName = $request->file('image')->getClientOriginalName();
         $request->file('avatar')->move($path, $fileName);
     }
 
-    public function background(Request $request)
-    {
-        $path     = public_path('\img\profile\\' . Auth::id() . '\\');
+    public function background(Request $request) {
+        $path = public_path('\img\profile\\' . Auth::id() . '\\');
         $fileName = $request->file('image')->getClientOriginalName();
         $request->file('background')->move($path, $fileName);
     }
 
-    public function verifyEmail(Request $request)
-    {
+    public function verifyEmail(Request $request) {
         if (!$request->hasValidSignature() || !$request->user || !$request->email) {
             abort(401);
         }
 
-        $user = User::where('id', $request->user)
-            ->where('email', $request->email)
-            ->firstOrFail();
+        $user = User::where('id', $request->user)->where('email', $request->email)->firstOrFail();
 
         $user->forceFill(['email_verified_at' => now(), 'status' => User::STATUS_ACTIVE]);
         $user->save();
 
         $user->withAccessToken($user->createToken('access-token'));
 
-        return fractal($user, new UserTransformer())
-            ->parseIncludes('access_token')
-            ->respond();
+        return fractal($user, new UserTransformer())->parseIncludes('access_token')->respond();
     }
 
-    public function resendVerification(Request $request)
-    {
+    public function resendVerification(Request $request) {
         $this->sendVerificationEmail($request->user());
         response(null, 200);
     }
 
-    protected function invalidate()
-    {
+    protected function invalidate() {
         throw ValidationException::withMessages([
-            'email' => ['The provided credentials are incorrect']
-        ]);
+                                                    'email' => ['The provided credentials are incorrect']
+                                                ]);
     }
 
     public function delete(Request $request)

@@ -2,18 +2,19 @@
 
 namespace App\Providers;
 
+use App\Events\AccountDeleted;
 use App\Events\AccountTerminatedByAdmin;
 use App\Events\AccountUpgradedToPractitioner;
 use App\Events\ArticlePublished;
 use App\Events\ArticleUnpublished;
+use App\Events\BookingCancelledByPractitioner;
 use App\Events\BookingCancelledByClient;
 use App\Events\BookingConfirmation;
 use App\Events\BookingEventVirtualWithDeposit;
 use App\Events\BookingReminder;
 use App\Events\BookingRescheduleAcceptedByClient;
 use App\Events\BookingRescheduleClientToSelectAppt;
-use App\Events\BookingRescheduleOfferedByPractitionerAppt;
-use App\Events\BookingRescheduleOfferedByPractitionerDate;
+use App\Events\BookingRescheduleOfferedByPractitioner;
 use App\Events\BusinessProfileLive;
 use App\Events\BusinessProfileUnpublished;
 use App\Events\ChangeOfSubscription;
@@ -27,13 +28,13 @@ use App\Events\RescheduleRequestDeclinedByClient;
 use App\Events\RescheduleRequestNoReplyFromClient;
 use App\Events\ServiceListingLive;
 use App\Events\ServiceScheduleCancelled;
-use App\Events\ServiceScheduleWentLive;
+use App\Events\ServiceScheduleLive;
 use App\Events\ServiceUnpublished;
 use App\Events\ServiceUpdatedByPractitionerContractual;
 use App\Events\ServiceUpdatedByPractitionerNonContractual;
-use App\Events\SubscriptionConfirmationFree;
-use App\Events\SubscriptionConfirmationPaid;
+use App\Events\SubscriptionConfirmation;
 use App\Events\UserRegistered;
+use App\Listeners\Emails\AccountDeletedEmail;
 use App\Listeners\Emails\AccountTerminatedByAdminEmail;
 use App\Listeners\Emails\AccountUpgradedToPractitionerEmail;
 use App\Listeners\Emails\ArticlePublishedEmail;
@@ -41,10 +42,10 @@ use App\Listeners\Emails\ArticleUnpublishedEmail;
 use App\Listeners\Emails\BookingCancelledByClientEmail;
 use App\Listeners\Emails\BookingConfirmationEmail;
 use App\Listeners\Emails\BookingEventVirtualWithDepositEmail;
+use App\Listeners\Emails\BookingReminderEmail;
 use App\Listeners\Emails\BookingRescheduleAcceptedByClientEmail;
 use App\Listeners\Emails\BookingRescheduleClientToSelectApptEmail;
-use App\Listeners\Emails\BookingRescheduleOfferedByPractitionerApptEmail;
-use App\Listeners\Emails\BookingRescheduleOfferedByPractitionerDateEmail;
+use App\Listeners\Emails\BookingRescheduleOfferedByPractitionerEmail;
 use App\Listeners\Emails\BusinessProfileLiveEmail;
 use App\Listeners\Emails\BusinessProfileUnpublishedEmail;
 use App\Listeners\Emails\ChangeOfSubscriptionEmail;
@@ -58,35 +59,32 @@ use App\Listeners\Emails\RescheduleRequestDeclinedByClientEmail;
 use App\Listeners\Emails\RescheduleRequestNoReplyFromClientEmail;
 use App\Listeners\Emails\ServiceListingLiveEmail;
 use App\Listeners\Emails\ServiceScheduleCancelledEmail;
-use App\Listeners\Emails\ServiceScheduleLiveAppointmentsEmail;
-use App\Listeners\Emails\ServiceScheduleWentLiveEmail;
+use App\Listeners\Emails\ServiceScheduleLiveEmail;
 use App\Listeners\Emails\ServiceUnpublishedEmail;
 use App\Listeners\Emails\ServiceUpdatedByPractitionerContractualEmail;
 use App\Listeners\Emails\ServiceUpdatedByPractitionerNonContractualEmail;
-use App\Listeners\Emails\SubscriptionConfirmationFreeEmail;
-use App\Listeners\Emails\SubscriptionConfirmationPaidEmail;
+use App\Listeners\Emails\SubscriptionConfirmationEmail;
 use App\Listeners\Emails\WelcomeVerification;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Event;
 
-class EventServiceProvider extends ServiceProvider
-{
+class EventServiceProvider extends ServiceProvider {
     /**
      * The event listener mappings for the application.
      *
      * @var array
      */
     protected $listen = [
-        Registered::class                                       => [
-            SendEmailVerificationNotification::class,
-        ],
         UserRegistered::class                                   => [
             WelcomeVerification::class
         ],
-        'App\Events\ClientAccount' => [
-            'App\Listeners\AccountDeleted'
+        Registered::class                                       => [
+            SendEmailVerificationNotification::class,
+        ],
+        AccountDeleted::class                                   => [
+            AccountDeletedEmail::class
         ],
         AccountTerminatedByAdmin::class                         => [
             AccountTerminatedByAdminEmail::class
@@ -100,7 +98,10 @@ class EventServiceProvider extends ServiceProvider
         ArticleUnpublished::class                               => [
             ArticleUnpublishedEmail::class
         ],
-        BookingCancelledByClient::class                         => [
+        BookingCancelledByPractitioner::class => [
+            BookingCancelledByPractitioner::class,
+        ],
+        BookingCancelledByClient::class => [
             BookingCancelledByClientEmail::class,
         ],
         BookingConfirmation::class                              => [
@@ -109,18 +110,17 @@ class EventServiceProvider extends ServiceProvider
         BookingEventVirtualWithDeposit::class                   => [
             BookingEventVirtualWithDepositEmail::class
         ],
-        BookingReminder::class                                  => [],
+        BookingReminder::class                                  => [
+            BookingReminderEmail::class
+        ],
         BookingRescheduleAcceptedByClient::class                => [
             BookingRescheduleAcceptedByClientEmail::class
         ],
         BookingRescheduleClientToSelectAppt::class              => [
             BookingRescheduleClientToSelectApptEmail::class
         ],
-        BookingRescheduleOfferedByPractitionerAppt::class       => [
-            BookingRescheduleOfferedByPractitionerApptEmail::class
-        ],
-        BookingRescheduleOfferedByPractitionerDate::class       => [
-            BookingRescheduleOfferedByPractitionerDateEmail::class
+        BookingRescheduleOfferedByPractitioner::class => [
+            BookingRescheduleOfferedByPractitionerEmail::class
         ],
         BusinessProfileLive::class                              => [
             BusinessProfileLiveEmail::class
@@ -161,8 +161,8 @@ class EventServiceProvider extends ServiceProvider
         ServiceScheduleCancelled::class                         => [
             ServiceScheduleCancelledEmail::class
         ],
-        ServiceScheduleWentLive::class                          => [
-            ServiceScheduleWentLiveEmail::class
+        ServiceScheduleLive::class                              => [
+            ServiceScheduleLiveEmail::class
         ],
         ServiceUnpublished::class                               => [
             ServiceUnpublishedEmail::class
@@ -173,12 +173,10 @@ class EventServiceProvider extends ServiceProvider
         ServiceUpdatedByPractitionerNonContractual::class       => [
             ServiceUpdatedByPractitionerNonContractualEmail::class
         ],
-        SubscriptionConfirmationFree::class                     => [
-            SubscriptionConfirmationFreeEmail::class
-        ],
-        SubscriptionConfirmationPaid::class                     => [
-            SubscriptionConfirmationPaidEmail::class
-        ],
+
+        SubscriptionConfirmation::class => [
+            SubscriptionConfirmationEmail::class
+        ]
     ];
 
     /**
@@ -186,8 +184,7 @@ class EventServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
-    {
+    public function boot() {
         parent::boot();
 
         //

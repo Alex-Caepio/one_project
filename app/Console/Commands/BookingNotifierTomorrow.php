@@ -1,0 +1,40 @@
+<?php
+
+namespace App\Console\Commands;
+
+use App\Events\BookingReminder;
+use App\Models\Booking;
+use Carbon\Carbon;
+use Illuminate\Console\Command;
+
+class BookingNotifierTomorrow extends Command {
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'bookings:notifier-tomorrow';
+
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'Notify clients about their upcoming bookings';
+
+    /**
+     * Execute the console command.
+     *
+     * @return int
+     */
+    public function handle(): void {
+        $bookings = Booking::whereNull('cancelled_at')->whereRaw("DATE_FORMAT(`datetime_from`, '%Y-%m-%d') = ?",
+                                                                 Carbon::now()->addDay()->format('Y-m-d'))
+                           ->whereHas('schedule.service', static function($query) {
+                               $query->whereIn('service_type_id', ['workshop', 'event', 'retreat', 'appointment']);
+                           })->with(['user', 'schedule', 'schedule.service', 'practitioner'])->get();
+        foreach ($bookings as $booking) {
+            event(new BookingReminder($booking, 'Booking Reminder - WS/Event/Retreat/Appointment'));
+        }
+    }
+}

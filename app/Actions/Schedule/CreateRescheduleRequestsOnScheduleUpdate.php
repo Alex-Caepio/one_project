@@ -2,6 +2,8 @@
 
 namespace App\Actions\Schedule;
 
+use App\Events\ServiceUpdatedByPractitionerContractual;
+use App\Events\ServiceUpdatedByPractitionerNonContractual;
 use App\Http\Requests\Request;
 use App\Models\Booking;
 use App\Models\RescheduleRequest;
@@ -14,11 +16,11 @@ class CreateRescheduleRequestsOnScheduleUpdate
 
         if ($this->requiresReschedule($request, $schedule)) {
             //should be moved to constant
-            $bookings = $schedule->service->service_type == 'appointment'
+            $bookings = $schedule->service->service_type === 'appointment'
                 ? $schedule->getOutsiderBookings()
                 : Booking::where('schedule_id', $schedule->id)->get();
 
-            //In order to avoid duplicated reschedule request we have to delete all prevous first
+            //In order to avoid duplicated reschedule request we have to delete all previous first
             $schedule->rescheduleRequests()->whereIn('booking_id', $bookings->pluck('id'))->delete();
 
             $rescheduleRequests = [];
@@ -48,8 +50,11 @@ class CreateRescheduleRequestsOnScheduleUpdate
                     $rescheduleRequests[$key]['new_end_date'] = $request->get('end_date');
                 }
             }
-
+            // without events handler
             RescheduleRequest::insert($rescheduleRequests);
+            event(new ServiceUpdatedByPractitionerContractual($schedule));
+        } else {
+            event(new ServiceUpdatedByPractitionerNonContractual($schedule));
         }
     }
 
@@ -63,7 +68,7 @@ class CreateRescheduleRequestsOnScheduleUpdate
 
     protected function dateHasChanged(Request $request, Schedule $schedule): bool
     {
-        if ($request['start_date'] != $schedule->start_date || $request['end_date'] != $schedule->end_date) {
+        if ($request['start_date'] !== $schedule->start_date || $request['end_date'] !== $schedule->end_date) {
             return true;
         }
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Actions\Service\ServiceStore;
 use App\Actions\Service\ServiceUpdate;
+use App\Events\ServiceUnpublished;
 use App\Http\Requests\Services\ServiceOwnerRequest;
 use App\Http\Requests\Services\UpdateServiceRequest;
 use App\Models\Service;
@@ -62,6 +63,7 @@ class ServiceController extends Controller {
     public function unpublish(Service $service, ServiceOwnerRequest $request) {
         $service->is_published = false;
         $service->save();
+        $user = Auth::user();
         return response(null, 204);
     }
 
@@ -103,7 +105,6 @@ class ServiceController extends Controller {
         $service->published_at = NOW();
         $service->save();
         $service->fresh();
-        event(new ServiceListingLive($service, $request->user()));
         return response(null, 204);
     }
 

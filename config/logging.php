@@ -175,6 +175,11 @@ return [
             'driver' => 'daily',
             'path' => storage_path('logs/stripe_refund_fail.log'),
         ],
+
+        'emails' => [
+            'path' => storage_path('logs/emails.log'),
+        ],
+
     ],
 
 ];

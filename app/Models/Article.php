@@ -30,7 +30,10 @@ class Article extends Model {
     ];
 
     public function disciplines() {
-        return $this->belongsToMany(Discipline::class, 'discipline_article', 'article_id', 'discipline_id')
+        return $this->belongsToMany(Discipline::class,
+                                    'discipline_article',
+                                    'article_id',
+                                    'discipline_id')
                     ->published()
                     ->withTimeStamps();
     }
@@ -66,19 +69,31 @@ class Article extends Model {
 
     public function featured_focus_area()
     {
-        return $this->belongsToMany(FocusArea::class, 'focus_area_featured_focus_area', 'discipline_id', 'focus_area_id');
+        return $this->belongsToMany(FocusArea::class,
+                                    'focus_area_featured_focus_area',
+                                    'discipline_id',
+                                    'focus_area_id');
     }
 
-    public function featured_at_disciplines(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function featured_at_disciplines(): BelongsToMany
     {
-        return $this->belongsToMany(Discipline::class, 'discipline_feature_articles', 'article_id', 'discipline_id');
+        return $this->belongsToMany(Discipline::class,
+                                    'discipline_feature_articles',
+                                    'article_id',
+                                    'discipline_id');
     }
     public function featured_articles() {
-        return $this->belongsToMany(FocusArea::class, 'focus_area_featured_article', 'focus_area_id', 'article_id');
+        return $this->belongsToMany(FocusArea::class,
+                                    'focus_area_featured_article',
+                                    'focus_area_id',
+                                    'article_id');
     }
 
     public function focus_areas(): BelongsToMany {
-        return $this->belongsToMany(FocusArea::class, 'focus_area_article', 'article_id', 'focus_area_id')->withTimeStamps();
+        return $this->belongsToMany(FocusArea::class,
+                                    'focus_area_article',
+                                    'article_id',
+                                    'focus_area_id')->withTimeStamps();
     }
 
     public function keywords(): BelongsToMany {

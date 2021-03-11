@@ -7,22 +7,13 @@ use App\Events\AccountTerminatedByAdmin;
 use App\Models\CustomEmail;
 use Illuminate\Support\Facades\Mail;
 
-class AccountTerminatedByAdminEmail
-{
-    public function __construct()
-    {
-    }
+class AccountTerminatedByAdminEmail extends SendEmailHandler {
 
-    public function handle(AccountTerminatedByAdmin $event): void
-    {
-        $user = $event->user;
-        $emailVerification = CustomEmail::where('name', 'Account Terminated by Admin')->first();
-        $body = $emailVerification->text;
-        $emailVariables = new EmailVariables($event);
-        $bodyReplaced = $emailVariables->replace($body);
-
-        Mail::raw($bodyReplaced, function ($message) use ($user){
-            $message->to($user->email);
-        });
+    public function handle(AccountTerminatedByAdmin $event): void {
+        $this->type = $event->user->isClient() ? 'client' : 'practitioner';
+        $this->toEmail = $event->user->email;
+        $this->templateName = 'Account Terminated by Admin';
+        $this->event = $event;
+        $this->sendCustomEmail();
     }
 }

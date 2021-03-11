@@ -2,23 +2,19 @@
 
 namespace App\Events;
 
-use App\Models\Schedule;
-use App\Models\Service;
+use App\Models\Booking;
 use App\Models\User;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class BookingRescheduleAcceptedByClient
-{
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+class BookingRescheduleAcceptedByClient {
+    use Dispatchable, InteractsWithSockets, SerializesModels, EventFillableFromBooking;
 
-    public $service;
-    public $user;
+    public User $recipient;
 
-    public function __construct(Service $service,User $user)
-    {
-        $this->service = $service;
-        $this->user = $user;
+    public function __construct(Booking $booking) {
+        $this->booking = $booking;
+        $this->fillEvent();
     }
 }

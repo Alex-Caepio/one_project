@@ -7,22 +7,14 @@ use App\Events\RescheduleRequestDeclinedByClient;
 use App\Models\CustomEmail;
 use Illuminate\Support\Facades\Mail;
 
-class RescheduleRequestDeclinedByClientEmail
-{
-    public function __construct()
-    {
-    }
+class RescheduleRequestDeclinedByClientEmail extends SendEmailHandler {
+    protected string $templateName = 'Reschedule Request Declined by Client';
 
-    public function handle(RescheduleRequestDeclinedByClient $event): void
-    {
-        $user = $event->user;
-        $emailVerification = CustomEmail::where('name', 'Reschedule Request Declined by Client')->first();
-        $body = $emailVerification->text;
-        $emailVariables = new EmailVariables($event);
-        $bodyReplaced = $emailVariables->replace($body);
+    public function handle(RescheduleRequestDeclinedByClient $event): void {
+        $this->toEmail = $event->practitioner->email;
+        $this->type = 'practitioner';
+        $this->event->recipient = $event->practitioner;
+        $this->sendCustomEmail();
 
-        Mail::raw($bodyReplaced, function ($message) use ($user){
-            $message->to($user->email);
-        });
     }
 }

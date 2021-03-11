@@ -35,7 +35,9 @@ class Request extends FormRequest {
 
 
     public function getLimit() {
-        return (int)$this->query->get('limit') ?: (int)$this->header('X-limit') ?: config('api.pagination_limit_default');
+        return (int)$this->query->get('limit')
+            ?: (int)$this->header('X-limit')
+                ?: config('api.pagination_limit_default');
     }
 
     public function getPage(): int {

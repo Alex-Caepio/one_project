@@ -69,7 +69,6 @@ class ServiceController extends Controller
         $service->is_published = true;
         $service->save();
         $service->fresh();
-        event(new ServiceListingLive($service, $request->user()));
         return response(null, 204);
     }
 }

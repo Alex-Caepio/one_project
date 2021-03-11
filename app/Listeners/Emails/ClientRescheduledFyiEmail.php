@@ -7,22 +7,13 @@ use App\Events\ClientRescheduledFyi;
 use App\Models\CustomEmail;
 use Illuminate\Support\Facades\Mail;
 
-class ClientRescheduledFyiEmail
-{
-    public function __construct()
-    {
+class ClientRescheduledFyiEmail extends SendEmailHandler {
+
+    public function handle(ClientRescheduledFyi $event): void {
+        $this->toEmail = $event->recipient->email;
+        $this->templateName = 'Client Rescheduled FYI';
+        $this->event = $event;
+        $this->sendCustomEmail();
     }
 
-    public function handle(ClientRescheduledFyi $event): void
-    {
-        $user = $event->user;
-        $emailVerification = CustomEmail::where('name', 'Client Rescheduled FYI')->first();
-        $body = $emailVerification->text;
-        $emailVariables = new EmailVariables($event);
-        $bodyReplaced = $emailVariables->replace($body);
-
-        Mail::raw($bodyReplaced, function ($message) use ($user){
-            $message->to($user->email);
-        });
-    }
 }

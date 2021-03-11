@@ -15,6 +15,7 @@ use App\Http\Controllers\ScheduleFreezesController;
 use App\Http\Controllers\SchedulePriceController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\StripeAccountController;
+use App\Http\Controllers\TestController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ArticleController;
@@ -147,12 +148,17 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::put('/price/{price}', [PriceController::class, 'update']);
     Route::delete('/price/{price}', [PriceController::class, 'destroy']);
 
-    Route::post('/schedules/{schedule}/reschedule', [RescheduleRequestController::class, 'store']);
     Route::get('/reschedule-requests', [RescheduleRequestController::class, 'index']);
     Route::get('/reschedule-requests/inbound', [RescheduleRequestController::class, 'inbound']);
     Route::get('/reschedule-requests/outbound', [RescheduleRequestController::class, 'outbound']);
     Route::post('reschedule-requests/{rescheduleRequest}/accept', [RescheduleRequestController::class, 'accept']);
     Route::post('reschedule-requests/{rescheduleRequest}/decline', [RescheduleRequestController::class, 'decline']);
+
+    Route::post('/bookings/{booking}/reschedule', [RescheduleRequestController::class, 'reschedule']);
+    Route::post('/bookings/reschedule', [RescheduleRequestController::class, 'allReschedule']);
+    //Route::post('/schedules/{schedule}/reschedule', [RescheduleRequestController::class, 'store']);
+
+
 
     /* Payments */
     Route::post('/schedules/{schedule}/promoсode', [PurchaseController::class, 'validatePromocode']);
@@ -184,8 +190,6 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
 
     Route::get('/bookings', [BookingController::class, 'index']);
     Route::get('/bookings/{booking}', [BookingController::class, 'show']);
-    Route::post('/bookings/{booking}/reschedule', [BookingController::class, 'reschedule']);
-    Route::post('/bookings/reschedule', [BookingController::class, 'allReschedule']);
     Route::post('/bookings/{booking}/complete', [BookingController::class, 'complete']);
 
     Route::get('/purchases', [PurchaseController::class, 'index']);

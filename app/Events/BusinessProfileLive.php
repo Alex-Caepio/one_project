@@ -2,19 +2,17 @@
 
 namespace App\Events;
 
-use App\Models\Schedule;
+use App\Models\User;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class BusinessProfileLive
-{
+class BusinessProfileLive {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $schedule;
+    public User $user;
 
-    public function __construct(Schedule $schedule)
-    {
-        $this->schedule = $schedule;
+    public function __construct(User $user) {
+        $this->user = $user;
     }
 }

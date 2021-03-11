@@ -3,28 +3,34 @@
 
 namespace App\EmailVariables;
 
-
+use App\Traits\GenerateCalendarLink;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Str;
+use Spatie\IcalendarGenerator\Components\Calendar;
+use Spatie\IcalendarGenerator\Components\Event;
 
-class EmailVariables
-{
+/**
+ * Class EmailVariables
+ *
+ * @package App\EmailVariables
+ */
+class EmailVariables {
 
-    public function __construct($event)
-    {
+    use GenerateCalendarLink;
+
+    public function __construct($event) {
         $this->event = $event;
     }
 
-    public function __get($property)
-    {
-        $property = ucfirst("$property");
+    public function __get(string $property) {
+        $property = ucfirst($property);
         $method = "get{$property}";
         return $this->$method();
-
     }
 
-    public function replace($body)
-    {
+    public function replace($body) {
         $openBracket = strpos($body, '{{');
         if (!$openBracket) {
             return $body;
@@ -40,207 +46,502 @@ class EmailVariables
         return $this->replace($newBody);
     }
 
-    public function getFirst_name()
-    {
-        return $this->event->user->first_name;
+    /**
+     * @return string
+     */
+    public function getPlatform_name(): string {
+        return config('app.platform_name');
     }
 
-    public function getPlatform_name()
-    {
-        return 'Oneness';
+    /**
+     *
+     *
+     * USER VARIABLES START
+     *
+     *
+     */
+
+    /**
+     * @return string
+     */
+    public function getFirst_name(): string {
+        return $this->event->recipient->first_name ?? $this->event->user->first_name;
     }
 
-    public function getPractitioner_URL()
-    {
-        return $this->event->user->email;
-    }
-
-    public function getEmail_verification_url()
-    {
+    /**
+     * @return string
+     */
+    public function getEmail_verification_url(): string {
         $linkApi = URL::temporarySignedRoute('verify-email', now()->addHours(48), [
-            'user' => $this->event->user->id,
+            'user'  => $this->event->user->id,
             'email' => $this->event->user->email
         ]);
         return config('app.frontend_email_confirm_page') . '?' . explode('?', $linkApi)[1];
     }
 
-    public function getArticle_url()
-    {
-        return $this->event->article->url;
+
+    /**
+     * @return string
+     */
+    public function getPlatform_email(): string {
+        return config('app.platform_email');
     }
 
-    public function getArticle_name()
-    {
-        return $this->event->article->title;
+
+    /**
+     * @return string
+     */
+    public function getReset_password_url(): string {
+        return config('app.frontend_reset_password_form_url') . '?token=' . $this->event->reset->token;
     }
 
-    public function getSubscription_tier_name()
-    {
-        return 'dsfsd';
+    /**
+     * @return string
+     */
+    public function getMy_account(): string {
+        return config('app.frontend_profile_link');
     }
 
-    public function getPlatform_email()
-    {
-        return 'asfsdfs';
+    /**
+     * @return string
+     */
+    public function getPractitioner_URL(): string {
+        return $this->event->user->public_link;
     }
 
-    public function getSubscription_cost()
-    {
-        return $this->event->schedule->cost;
+    /**
+     * @return string
+     */
+    public function getMy_services(): string {
+        return config('app.frontend_practitioner_services');
     }
 
-    public function getService_name()
-    {
+    /**
+     * @return string
+     */
+    public function getPractitioner_business_name(): string {
+        return $this->event->user->isPractitioner() ? $this->event->user->business_name : $this->event->practitioner->business_name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPractitioner_email_address(): string {
+        return $this->event->user->isPractitioner() ? $this->event->user->email : $this->event->practitioner->email;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAdmin_termination_message(): string {
+        return $this->event->user->termintaion_message;
+    }
+
+    /**
+     *
+     *
+     * USER VARIABLES END
+     *
+     *
+     */
+
+
+    /**
+     *
+     *
+     * SERVICE VARIABLES START
+     *
+     *
+     */
+
+
+    /**
+     * @return string
+     */
+    public function getService_name(): string {
         return $this->event->service->title;
     }
 
-    public function getService_url()
-    {
+    /**
+     * @return string
+     */
+    public function getService_url(): string {
         return $this->event->service->url;
     }
 
-    public function getSchedule_name()
-    {
+
+    /**
+     * @return string
+     */
+    public function getAdd_to_calendar(): string {
+        $this->calendarPresented = true;
+        return $this->generateGoogleLink($this->event->schedule);
+    }
+
+    /**
+     *
+     *
+     * SERVICE VARIABLES END
+     *
+     *
+     */
+
+
+    /**
+     *
+     *
+     * SCHEDULE VARIABLES START
+     *
+     *
+     */
+
+    /**
+     * @return string
+     */
+    public function getSchedule_name(): string {
         return $this->event->schedule->title;
     }
 
-    public function getSchedule_start_date()
-    {
+    /**
+     * @return string
+     */
+    public function getSchedule_start_date(): string {
         return Carbon::parse($this->event->schedule->start_date)->toDateString();
     }
 
-    public function getSchedule_start_time()
-    {
+    /**
+     * @return string
+     */
+    public function getSchedule_start_time(): string {
         return Carbon::parse($this->event->schedule->start_date)->toTimeString();
     }
 
-    public function getSchedule_end_date()
-    {
+    /**
+     * @return string
+     */
+    public function getSchedule_end_date(): string {
         return Carbon::parse($this->event->schedule->end_date)->toDateString();
     }
 
-    public function getSchedule_end_time()
-    {
+    /**
+     * @return string
+     */
+    public function getSchedule_end_time(): string {
         return Carbon::parse($this->event->schedule->end_date)->toTimeString();
     }
 
-    public function getSchedule_hosting_url()
-    {
-        return "dsfsdafa";
+    /**
+     * @return string
+     */
+    public function getSchedule_venue_name(): string {
+        return $this->event->schedule->venue_name;
     }
 
-    public function getAdmin_termination_message()
-    {
-        return 'Administrator attribution notification';
+    /**
+     * @return string
+     */
+    public function getSchedule_venue_address(): string {
+        return $this->event->schedule->venue_address;
     }
 
-    public function getSchedule_city()
-    {
-        return $this->event->user->email;
+    /**
+     * @return string
+     */
+    public function getSchedule_city(): string {
+        return $this->event->schedule->city;
     }
 
-    public function getSchedule_venue_name()
-    {
-        return $this->event->user->email;
+    /**
+     * @return string
+     */
+    public function getSchedule_country(): string {
+        return $this->event->schedule->country;
     }
 
-    public function getSchedule_postcode()
-    {
-        return $this->event->user->email;
+    /**
+     * @return string
+     */
+    public function getSchedule_postcode(): string {
+        return $this->event->schedule->post_code;
     }
 
-    public function getSchedule_venue_address()
-    {
-        return $this->event->user->email;
+    /**
+     * @return string
+     */
+    public function getSchedule_hosting_url(): string {
+        return $this->event->schedule->url;
     }
 
-    public function getTotal_paid()
-    {
-        return $this->event->user->email;
+    /**
+     * @return string
+     */
+    public function getPractitioner_schedule_message(): string {
+        return $this->event->schedule->comments;
     }
 
-    public function getCancelled_start_date()
-    {
-        return $this->event->user->email;
+    /**
+     *
+     *
+     * SCHEDULE VARIABLES END
+     *
+     *
+     */
+
+    /**
+     *
+     *
+     * SUBSCRIPTION VARIABLES START
+     *
+     *
+     */
+
+    /**
+     * @return string
+     */
+    public function getSubscription_tier_name(): string {
+        return $this->event->plan->name;
     }
 
-    public function getCancelled_start_time()
-    {
-        return $this->event->user->email;
+    /**
+     * @return string
+     */
+    public function getSubscription_cost(): string {
+        return number_format($this->event->plan->price, 2);
     }
 
-    public function getCancelled_end_date()
-    {
-        return $this->event->user->email;
+    /**
+     * @return string
+     */
+    public function getSubscription_start_date(): string {
+        return Carbon::parse($this->event->user->plan_from)->format('d.m.Y');
     }
 
-    public function getCancelled_end_time()
-    {
-        return $this->event->user->email;
+    /**
+     * @return string
+     */
+    public function getSubscription_end_date(): string {
+        return Carbon::parse($this->event->user->plan_until)->format('d.m.Y');
     }
 
-    public function getPractitioner_business_name()
-    {
-        return $this->event->user->email;
+    /**
+     *
+     *
+     * SUBSCRIPTION VARIABLES START
+     *
+     *
+     */
+
+    /**
+     *
+     *
+     * ARTICLES VARIABLES START
+     *
+     *
+     */
+
+    /**
+     * @return string
+     */
+    public function getMy_articles(): string {
+        return config('app.frontend_practitioner_services');
     }
 
-    public function getVerify_email()
-    {
-        return $this->event->user->email;
+    /**
+     * @return string
+     */
+    public function getArticle_url(): string {
+        return $this->event->article->url;
     }
 
-    public function getBooking_reference()
-    {
-        return $this->event->user->email;
+    /**
+     * @return string
+     */
+    public function getArticle_name(): string {
+        return $this->event->article->title;
     }
 
-    public function getReschedule_start_date()
-    {
-        return $this->event->user->email;
+    /**
+     *
+     *
+     * ARTICLES VARIABLES END
+     *
+     *
+     */
+
+    /**
+     *
+     *
+     * BOOKINGS VARIABLES START
+     *
+     *
+     */
+
+    /**
+     * @return string
+     */
+    public function getBooking_reference(): string {
+        return $this->event->booking->reference;
     }
 
-    public function getReschedule_start_time()
-    {
-        return $this->event->user->email;
+    /**
+     * @return float
+     */
+    public function getTotal_paid(): float {
+        return (float)$this->event->booking->cost;
     }
 
-    public function getReschedule_end_date()
-    {
-        return $this->event->user->email;
+    /**
+     * @return string
+     */
+    public function getClient_name(): string {
+        return $this->event->client->first_name . ' ' . $this->event->client->last_name;
     }
 
-    public function getReschedule_end_time()
-    {
-        return $this->event->user->email;
+
+    /**
+     * @return string
+     */
+    public function getClient_email_address(): string {
+        return $this->event->client->email ?? '';
     }
 
-    public function getReschedule_venue_name()
-    {
-        return $this->event->user->email;
+    /**
+     * @return string
+     */
+    public function getSee_on_map(): string {
+        return '';
     }
 
-    public function getService_schedule_reschedule_url()
-    {
-        return $this->event->user->email;
+    /**
+     * @return string
+     */
+    public function getAccept(): string {
+        return '';
     }
 
-    public function getReschedule_venue_address()
-    {
-        return $this->event->user->email;
+    /**
+     * @return string
+     */
+    public function getDecline(): string {
+        return '';
     }
 
-    public function getReschedule_city()
-    {
-        return $this->event->user->email;
+    /**
+     * @return string
+     */
+    public function getView_booking(): string {
+        return config('app.frontend_booking_url') . $this->event->booking->reference;
     }
 
-    public function getReschedule_postcode()
-    {
-        return $this->event->user->email;
+    /**
+     * @return string
+     */
+    public function getView_bookings(): string {
+        return config('app.frontend_booking_url');
     }
 
-    public function getReschedule_country()
-    {
-        return $this->event->user->email;
+
+    /**
+     *
+     *
+     * BOOKING VARIABLES END
+     *
+     *
+     */
+
+    /**
+     * RESCHEDULES START
+     *
+     */
+
+    /**
+     * @return string
+     */
+    public function getReschedule_start_date(): string {
+        return Carbon::parse($this->event->reschedule_schedule->start_date)->toDateString();
     }
+
+    /**
+     * @return string
+     */
+    public function getReschedule_start_time(): string {
+        return Carbon::parse($this->event->reschedule_schedule->start_date)->toTimeString();
+    }
+
+    /**
+     * @return string
+     */
+    public function getReschedule_end_date(): string {
+        return Carbon::parse($this->event->reschedule_schedule->end_date)->toDateString();
+    }
+
+    /**
+     * @return string
+     */
+    public function getReschedule_end_time(): string {
+        return Carbon::parse($this->event->reschedule_schedule->end_date)->toTimeString();
+    }
+
+    /**
+     * @return string
+     */
+    public function getReschedule_venue_name(): string {
+        return $this->event->reschedule_schedule->venue_name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getReschedule_venue_address(): string {
+        return $this->event->reschedule_schedule->venue_address;
+    }
+
+    /**
+     * @return string
+     */
+    public function getReschedule_city(): string {
+        return $this->event->reschedule_schedule->city;
+    }
+
+    /**
+     * @return string
+     */
+    public function getReschedule_country(): string {
+        return $this->event->reschedule_schedule->country;
+    }
+
+    /**
+     * @return string
+     */
+    public function getReschedule_postcode(): string {
+        return $this->event->reschedule_schedule->post_code;
+    }
+
+    /**
+     * @return string
+     */
+    public function getReschedule_hosting_url(): string {
+        return $this->event->reschedule_schedule->url;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPractitioner_reschedule_message(): string {
+        return $this->event->reschedule->comment;
+    }
+
+    /**
+     * RESCHEDULES END
+     *
+     */
+
+
+    /**
+     * @return string
+     */
+    public function getInstalments(): string {
+        return '';
+    }
+
 }

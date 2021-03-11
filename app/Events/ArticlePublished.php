@@ -8,15 +8,13 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class ArticlePublished
-{
+class ArticlePublished {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $article;
-    public $user;
+    public Article $article;
+    public User $user;
 
-    public function __construct(Article $article, User $user)
-    {
+    public function __construct(Article $article, User $user) {
         $this->article = $article;
         $this->user = $user;
     }

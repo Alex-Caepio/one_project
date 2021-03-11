@@ -2,31 +2,24 @@
 
 namespace App\Listeners\Emails;
 
-use App\Models\CustomEmail;
-use App\EmailVariables\EmailVariables;
 use App\Events\BookingCancelledByClient;
-use Illuminate\Support\Facades\Mail;
 
-class BookingCancelledByClientEmail
-{
-    public function handle(BookingCancelledByClient $event): void
-    {
-        $user = $event->user;
+class BookingCancelledByClientEmail extends SendEmailHandler {
+    public function handle(BookingCancelledByClient $event): void {
+        $this->templateName = $event->template;
+        $this->event = $event;
 
-        $emailVerification = CustomEmail::where('name', 'Booking Cancelled by Client with Refund')
-            ->where('user_type', $user->account_type)
-            ->first();
+        // client
+        $this->toEmail = $event->user->email;
+        $this->type = 'client';
+        $this->event->recipient = $event->user;
+        $this->sendCustomEmail();
 
-        $body           = $emailVerification->text;
-        $emailVariables = new EmailVariables($event);
-        $bodyReplaced   = $emailVariables->replace($body);
 
-        Mail::raw($bodyReplaced, function ($message) use ($user) {
-            $message->to($user->email);
-        });
-        //THERE ARE THREE EMAILS HERE!
-        //By client -  No Refund
-        //By client - with refund
-        //By practitioner
+        //practitioner
+        $this->toEmail = $event->practitioner->email;
+        $this->type = 'practitioner';
+        $this->event->recipient = $event->practitioner;
+        $this->sendCustomEmail();
     }
 }

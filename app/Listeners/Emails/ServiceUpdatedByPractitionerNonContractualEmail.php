@@ -2,27 +2,30 @@
 
 namespace App\Listeners\Emails;
 
-use App\EmailVariables\EmailVariables;
 use App\Events\ServiceUpdatedByPractitionerNonContractual;
-use App\Models\CustomEmail;
-use Illuminate\Support\Facades\Mail;
+use App\Models\Booking;
+use Carbon\Carbon;
 
-class ServiceUpdatedByPractitionerNonContractualEmail
-{
-    public function __construct()
-    {
-    }
 
-    public function handle(ServiceUpdatedByPractitionerNonContractual $event): void
-    {
-        $user = $event->user;
-        $emailVerification = CustomEmail::where('name', 'Service Updated by Practitioner (Non-Contractual)')->first();
-        $body = $emailVerification->text;
-        $emailVariables = new EmailVariables($event);
-        $bodyReplaced = $emailVariables->replace($body);
+class ServiceUpdatedByPractitionerNonContractualEmail extends SendEmailHandler {
 
-        Mail::raw($bodyReplaced, function ($message) use ($user){
-            $message->to($user->email);
-        });
+    public function handle(ServiceUpdatedByPractitionerNonContractual $event): void {
+        $this->templateName = 'Service Updated by Practitioner (Non-Contractual)';
+        $this->event = $event;
+
+        $upcomingBookings = Booking::where('schedule_id', $this->event->schedule->id)->whereNull('cancelled_at')
+                                   ->where('date_from', '>=', Carbon::now())->with([
+                                                                                       'user',
+                                                                                       'practitioner',
+                                                                                       'schedule',
+                                                                                       'schedule.service'
+                                                                                   ])->get();
+        foreach ($upcomingBookings as $booking) {
+            $this->event->booking = $booking;
+            $this->event->fillEvent();
+            $this->toEmail = $this->event->user->email;
+            $this->sendCustomEmail();
+        }
+
     }
 }

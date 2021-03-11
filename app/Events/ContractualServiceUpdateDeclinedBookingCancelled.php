@@ -2,19 +2,17 @@
 
 namespace App\Events;
 
-use App\Models\Schedule;
+use App\Models\Booking;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class ContractualServiceUpdateDeclinedBookingCancelled
-{
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+class ContractualServiceUpdateDeclinedBookingCancelled {
+    use Dispatchable, InteractsWithSockets, SerializesModels, EventFillableFromBooking;
 
-    public $schedule;
-
-    public function __construct(Schedule $schedule)
-    {
-        $this->schedule = $schedule;
+    public function __construct(Booking $booking) {
+        $this->booking = $booking;
+        $this->booking->load(['user', 'practitioner', 'schedule', 'schedule.service']);
+        $this->fillEvent();
     }
 }
