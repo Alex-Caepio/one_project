@@ -131,8 +131,8 @@ class EmailVariables {
     /**
      * @return string
      */
-    public function getAdmin_termination_message(): string {
-        return $this->event->user->termintaion_message;
+    public function getAdmin_termination_message(): ?string {
+        return $this->event->user->termination_message;
     }
 
     /**

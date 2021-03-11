@@ -54,7 +54,8 @@ class UserObserver {
                                                              'is_published' => false
                                                          ]);
         }
-        if (Auth::user()->is_admin !== true) {
+
+        if (!Auth::user()->is_admin) {
             event(new AccountDeleted($user));
         } else {
             event(new AccountTerminatedByAdmin($user));
