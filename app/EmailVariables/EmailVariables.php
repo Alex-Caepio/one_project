@@ -104,7 +104,7 @@ class EmailVariables {
     /**
      * @return string
      */
-    public function getPractitioner_URL(): string {
+    public function getPractitioner_URL(): ?string {
         return $this->event->user->public_link;
     }
 

@@ -31,6 +31,7 @@ class UpdateRequest extends Request
             'emails_practitioner_offers'  => 'bool',
             'email_forward_practitioners' => 'bool',
             'email_forward_clients'       => 'bool',
+            'is_published'                => 'bool',
             'email_forward_support'       => 'bool',
             'about_my_business'           => 'max:2000',
             'business_name'               => 'sometimes|required|max:255|min:2',
