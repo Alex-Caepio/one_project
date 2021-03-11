@@ -14,7 +14,7 @@ class ServiceUpdatedByPractitionerNonContractualEmail extends SendEmailHandler {
         $this->event = $event;
 
         $upcomingBookings = Booking::where('schedule_id', $this->event->schedule->id)->whereNull('cancelled_at')
-                                   ->where('date_from', '>=', Carbon::now())->with([
+                                   ->where('datetime_from', '>=', Carbon::now())->with([
                                                                                        'user',
                                                                                        'practitioner',
                                                                                        'schedule',

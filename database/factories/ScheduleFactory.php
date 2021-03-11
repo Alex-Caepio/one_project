@@ -6,13 +6,11 @@ namespace Database\Factories;
 use App\Models\Schedule;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class ScheduleFactory extends Factory
-{
+class ScheduleFactory extends Factory {
 
     protected $model = Schedule::class;
 
-    public function definition()
-    {
+    public function definition() {
         return [
             'title'              => $this->faker->sentence(),
             'service_id'         => $this->faker->randomNumber(2),
@@ -21,7 +19,8 @@ class ScheduleFactory extends Factory
             'end_date'           => $this->faker->date(),
             'attendees'          => $this->faker->randomNumber(2),
             'comments'           => $this->faker->realText(),
-            'venue'              => $this->faker->city,
+            'venue_name'         => $this->faker->sentence,
+            'venue_address'      => $this->faker->address,
             'city'               => $this->faker->city,
             'country'            => $this->faker->country,
             'url'                => $this->faker->url,
@@ -33,6 +32,7 @@ class ScheduleFactory extends Factory
             'notice_min_period'  => 'mins',
             'notice_min_time'    => 60,
             'cost'               => $this->faker->randomNumber(2),
+            'appointment'        => $this->faker->randomElement(['physical', 'virtual', 'mobile'])
         ];
     }
 }

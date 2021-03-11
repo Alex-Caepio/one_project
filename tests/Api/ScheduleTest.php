@@ -24,36 +24,36 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\Traits\UsesStripe;
 
-class ScheduleTest extends TestCase
-{
+class ScheduleTest extends TestCase {
     use DatabaseTransactions, UsesStripe;
 
-    public function setUp(): void
-    {
+    public function setUp(): void {
         parent::setUp();
 
-        $this->user = $this->createUser();
+        $this->user = $this->createUser(['account_type' => 'practitioner']);
+        $plan = Plan::factory()->best()->create();
+        $this->user->plan_id = $plan->id;
+        $this->user->save();
+        $this->client = $this->createUser(['account_type' => 'client']);
         $this->login($this->user);
     }
 
-    public function test_all_schedule(): void
-    {
+    public function test_all_schedule(): void {
         Schedule::factory()->count(2)->create();
-        $service  = Service::factory()->create();
+        $service = Service::factory()->create();
         $response = $this->json('get', "/api/services/{$service->id}/schedules");
 
-        $response
-            ->assertOk();
+        $response->assertOk();
     }
 
-    public function test_store_schedule(): void
-    {
-        Event::fake();
+    public function test_store_schedule(): void {
+
         $stripeProduct = $this->createStripeProduct();
-        $serviceType   = ServiceType::factory()->create(['id' => 'training_program']);
-        $service       = Service::factory()->create(['service_type_id' => $serviceType->id, 'stripe_id' => $stripeProduct->id]);
-        $schedule      = Schedule::factory()->make();
-        $response      = $this->json('post', "api/services/{$service->id}/schedules", [
+        $serviceType = ServiceType::factory()->create(['id' => 'training_program']);
+        $service =
+            Service::factory()->create(['service_type_id' => $serviceType->id, 'stripe_id' => $stripeProduct->id]);
+        $schedule = Schedule::factory()->make();
+        $response = $this->json('post', "api/services/{$service->id}/schedules", [
             'title'              => $schedule->title,
             'service_id'         => $service->id,
             'start_date'         => $schedule->start_date,
@@ -65,44 +65,46 @@ class ScheduleTest extends TestCase
                 ['url' => 'http://google.com'],
                 ['url' => 'http://google.com'],
             ],
-            'prices'             => [[
-                'name'    => 'test',
-                'cost'    => 200.00,
-                'is_free' => false,
-            ]],
+            'prices'             => [
+                [
+                    'name'    => 'test',
+                    'cost'    => 200.00,
+                    'is_free' => false,
+                ]
+            ],
         ]);
         $response->assertOk();
     }
 
-    public function test_update_schedule(): void
-    {
-        Event::fake();
+    public function test_update_schedule(): void {
+
         $stripeProduct = $this->creteStripeProduct();
-        $serviceType   = ServiceType::factory()->create(['id' => 'training_program']);
-        $service       = Service::factory()->create(['service_type_id' => $serviceType->id, 'stripe_id' => $stripeProduct->id]);
-        $schedule      = Schedule::factory()->create(['service_id' => $service->id]);
-        $response      = $this->json('put', "api/schedules/{$schedule->id}", [
+        $serviceType = ServiceType::factory()->create(['id' => 'training_program']);
+        $service =
+            Service::factory()->create(['service_type_id' => $serviceType->id, 'stripe_id' => $stripeProduct->id]);
+        $schedule = Schedule::factory()->create(['service_id' => $service->id]);
+        $response = $this->json('put', "api/schedules/{$schedule->id}", [
             'title' => '123'
         ]);
         $response->assertOk();
     }
 
-    public function test_update_schedule_with_prices(): void
-    {
-        Event::fake();
+    public function test_update_schedule_with_prices(): void {
 
-        $stripeProduct       = $this->creteStripeProduct();
+
+        $stripeProduct = $this->creteStripeProduct();
         $stripePriceToDelete = $this->creteStripePrice($stripeProduct->id);
         $stripePriceToUpdate = $this->creteStripePrice($stripeProduct->id);
 
         $serviceType = ServiceType::factory()->create(['id' => 'training_program']);
-        $service     = Service::factory()->create([
-            'service_type_id' => $serviceType->id,
-            'stripe_id'       => $stripeProduct->id
-        ]);
-        $schedule    = Schedule::factory()->create(['service_id' => $service->id]);
+        $service = Service::factory()->create([
+                                                  'service_type_id' => $serviceType->id,
+                                                  'stripe_id'       => $stripeProduct->id
+                                              ]);
+        $schedule = Schedule::factory()->create(['service_id' => $service->id]);
         Price::factory()->create(['schedule_id' => $schedule->id, 'stripe_id' => $stripePriceToDelete->id]);
-        $priceToUpdate = Price::factory()->create(['schedule_id' => $schedule->id, 'stripe_id' => $stripePriceToUpdate->id]);
+        $priceToUpdate =
+            Price::factory()->create(['schedule_id' => $schedule->id, 'stripe_id' => $stripePriceToUpdate->id]);
 
         $response = $this->json('put', "api/schedules/{$schedule->id}", [
             'title'  => '123',
@@ -119,12 +121,11 @@ class ScheduleTest extends TestCase
         $response->assertOk();
     }
 
-    public function test_all_user()
-    {
-        $schedule      = Schedule::factory()->create();
-        $user          = User::factory()->create();
+    public function test_all_user() {
+        $schedule = Schedule::factory()->create();
+        $user = User::factory()->create();
         $promotionCode = PromotionCode::factory()->create();
-        $response      = $this->json('get', "api/schedules/{$schedule->id}/attendants", [
+        $response = $this->json('get', "api/schedules/{$schedule->id}/attendants", [
             'user_id'           => $user->id,
             'schedule_id'       => $schedule->id,
             'promotion_code_id' => $promotionCode->id,
@@ -132,229 +133,243 @@ class ScheduleTest extends TestCase
         $response->assertOk();
     }
 
-    public function test_promo_code()
-    {
+    public function test_promo_code() {
         $stripeProduct = $this->creteStripeProduct();
-        $schedule      = Schedule::factory()->create();
-        $oldCcost      = $schedule->cost;
-        $promotion     = Promotion::factory()->create([
-            'status'      => 'active',
-            'expiry_date' => ''
-        ]);
-        $service       = Service::factory()->create(['id' => $schedule->service_id, 'stripe_id' => $stripeProduct->id]);
-        $discipline    = Discipline::factory()->create();
-        $serviceType   = ServiceType::factory()->create();
-        $focusArea     = FocusArea::factory()->create();
+        $schedule = Schedule::factory()->create();
+        $oldCcost = $schedule->cost;
+        $promotion = Promotion::factory()->create([
+                                                      'status'      => 'active',
+                                                      'expiry_date' => ''
+                                                  ]);
+        $service = Service::factory()->create(['id' => $schedule->service_id, 'stripe_id' => $stripeProduct->id]);
+        $discipline = Discipline::factory()->create();
+        $serviceType = ServiceType::factory()->create();
+        $focusArea = FocusArea::factory()->create();
         $service->disciplines()->attach($discipline);
         $service->service_type()->associate($serviceType);
         $service->focus_areas()->attach($focusArea);
         $promoCode = PromotionCode::factory()->create(['promotion_id' => $promotion->id]);
-        $response  = $this->json('post', "api/schedules/{$schedule->id}/promoсode", ['promo_code' => $promoCode->name]);
+        $response = $this->json('post', "api/schedules/{$schedule->id}/promoсode", ['promo_code' => $promoCode->name]);
         $response->assertOk();
         $this->assertFalse($oldCcost == $schedule->cost);
     }
 
-    public function test_validate_request_class_ad_hoc_schedule(): void
-    {
-        Event::fake();
-        $plan = Plan::factory()->best()->create();
-        $this->user->plan_id = $plan->id;
-        $this->user->save();
-        $stripeProduct = $this->creteStripeProduct();
-        $serviceType   = ServiceType::factory()->create(['id' => 'class_ad_hoc']);
-        $service       = Service::factory()->create(['service_type_id' => $serviceType->id, 'stripe_id' => $stripeProduct->id]);
-        $schedule      = Schedule::factory()->make();
+    public function test_validate_request_class_ad_hoc_schedule(): void {
 
-        $payload           = $schedule->toArray();
-        $payload['prices'] = [[
-            'name'    => 'test price',
-            'is_free' => false,
-            'cost'    => 100,
-        ]];
+        $stripeProduct = $this->creteStripeProduct();
+        $serviceType = ServiceType::factory()->create(['id' => 'class_ad_hoc']);
+        $service =
+            Service::factory()->create(['service_type_id' => $serviceType->id, 'stripe_id' => $stripeProduct->id]);
+        $schedule = Schedule::factory()->make();
+
+        $payload = $schedule->toArray();
+        $payload['prices'] = [
+            [
+                'name'    => 'test price',
+                'is_free' => false,
+                'cost'    => 100,
+            ]
+        ];
 
         $response = $this->json('post', "api/services/{$service->id}/schedules", $payload);
         $response->assertOk();
     }
 
-    public function test_validate_request_workshop_schedule(): void
-    {
-        Event::fake();
-        $stripeProduct = $this->creteStripeProduct();
-        $serviceType   = ServiceType::factory()->create(['id' => 'workshop']);
-        $service       = Service::factory()->create(['service_type_id' => $serviceType->id, 'stripe_id' => $stripeProduct->id]);
-        $schedule      = Schedule::factory()->make();
+    public function test_validate_request_workshop_schedule(): void {
 
-        $payload           = $schedule->toArray();
-        $payload['prices'] = [[
-            'name'      => 'test price',
-            'is_free'   => false,
-            'cost'      => 100,
-            'stripe_id' => $stripeProduct->id
-        ]];
+        $stripeProduct = $this->creteStripeProduct();
+        $serviceType = ServiceType::factory()->create(['id' => 'workshop']);
+        $service =
+            Service::factory()->create(['service_type_id' => $serviceType->id, 'stripe_id' => $stripeProduct->id]);
+        $schedule = Schedule::factory()->make();
+
+        $payload = $schedule->toArray();
+        $payload['prices'] = [
+            [
+                'name'      => 'test price',
+                'is_free'   => false,
+                'cost'      => 100,
+                'stripe_id' => $stripeProduct->id
+            ]
+        ];
 
         $response = $this->json('post', "api/services/{$service->id}/schedules", $payload);
         $response->assertOk();
     }
 
-    public function test_validate_request_econtent_schedule(): void
-    {
-        Event::fake();
-        $stripeProduct = $this->creteStripeProduct();
-        $serviceType   = ServiceType::factory()->create(['id' => 'econtent']);
-        $service       = Service::factory()->create(['service_type_id' => $serviceType->id, 'stripe_id' => $stripeProduct->id]);
-        $schedule      = Schedule::factory()->make();
+    public function test_validate_request_econtent_schedule(): void {
 
-        $payload           = $schedule->toArray();
-        $payload['prices'] = [[
-            'name'      => 'test price',
-            'is_free'   => false,
-            'cost'      => 100,
-            'stripe_id' => $stripeProduct->id
-        ]];
+        $stripeProduct = $this->creteStripeProduct();
+        $serviceType = ServiceType::factory()->create(['id' => 'econtent']);
+        $service =
+            Service::factory()->create(['service_type_id' => $serviceType->id, 'stripe_id' => $stripeProduct->id]);
+        $schedule = Schedule::factory()->make();
+
+        $payload = $schedule->toArray();
+        $payload['prices'] = [
+            [
+                'name'      => 'test price',
+                'is_free'   => false,
+                'cost'      => 100,
+                'stripe_id' => $stripeProduct->id
+            ]
+        ];
 
         $response = $this->json('post', "api/services/{$service->id}/schedules", $payload);
         $response->assertOk();
     }
 
-    public function test_validate_request_class_schedule(): void
-    {
-        Event::fake();
-        $stripeProduct = $this->creteStripeProduct();
-        $serviceType   = ServiceType::factory()->create(['id' => 'class']);
-        $service       = Service::factory()->create(['service_type_id' => $serviceType->id, 'stripe_id' => $stripeProduct->id]);
-        $schedule      = Schedule::factory()->make();
+    public function test_validate_request_class_schedule(): void {
 
-        $payload           = $schedule->toArray();
-        $payload['prices'] = [[
-            'name'      => 'test price',
-            'is_free'   => false,
-            'cost'      => 100,
-            'stripe_id' => $stripeProduct->id
-        ]];
+        $stripeProduct = $this->creteStripeProduct();
+        $serviceType = ServiceType::factory()->create(['id' => 'class']);
+        $service =
+            Service::factory()->create(['service_type_id' => $serviceType->id, 'stripe_id' => $stripeProduct->id]);
+        $schedule = Schedule::factory()->make();
+
+        $payload = $schedule->toArray();
+        $payload['prices'] = [
+            [
+                'name'      => 'test price',
+                'is_free'   => false,
+                'cost'      => 100,
+                'stripe_id' => $stripeProduct->id
+            ]
+        ];
 
         $response = $this->json('post', "api/services/{$service->id}/schedules", $payload);
         $response->assertOk();
     }
 
-    public function test_validate_request_courses_schedule(): void
-    {
-        Event::fake();
-        $stripeProduct = $this->creteStripeProduct();
-        $serviceType   = ServiceType::factory()->create(['id' => 'courses']);
-        $service       = Service::factory()->create(['service_type_id' => $serviceType->id, 'stripe_id' => $stripeProduct->id]);
-        $schedule      = Schedule::factory()->make();
+    public function test_validate_request_courses_schedule(): void {
 
-        $payload           = $schedule->toArray();
-        $payload['prices'] = [[
-            'name'      => 'test price',
-            'is_free'   => false,
-            'cost'      => 100,
-            'stripe_id' => $stripeProduct->id
-        ]];
+        $stripeProduct = $this->creteStripeProduct();
+        $serviceType = ServiceType::factory()->create(['id' => 'courses']);
+        $service =
+            Service::factory()->create(['service_type_id' => $serviceType->id, 'stripe_id' => $stripeProduct->id]);
+        $schedule = Schedule::factory()->make();
+
+        $payload = $schedule->toArray();
+        $payload['prices'] = [
+            [
+                'name'      => 'test price',
+                'is_free'   => false,
+                'cost'      => 100,
+                'stripe_id' => $stripeProduct->id
+            ]
+        ];
 
         $response = $this->json('post', "api/services/{$service->id}/schedules", $payload);
         $response->assertOk();
     }
 
-    public function test_validate_request_events_schedule(): void
-    {
-        Event::fake();
-        $stripeProduct = $this->creteStripeProduct();
-        $serviceType   = ServiceType::factory()->create(['id' => 'events']);
-        $service       = Service::factory()->create(['service_type_id' => $serviceType->id, 'stripe_id' => $stripeProduct->id]);
-        $schedule      = Schedule::factory()->make();
+    public function test_validate_request_events_schedule(): void {
 
-        $payload           = $schedule->toArray();
-        $payload['prices'] = [[
-            'name'      => 'test price',
-            'is_free'   => false,
-            'cost'      => 100,
-            'stripe_id' => $stripeProduct->id
-        ]];
+        $stripeProduct = $this->creteStripeProduct();
+        $serviceType = ServiceType::factory()->create(['id' => 'events']);
+        $service =
+            Service::factory()->create(['service_type_id' => $serviceType->id, 'stripe_id' => $stripeProduct->id]);
+        $schedule = Schedule::factory()->make();
+
+        $payload = $schedule->toArray();
+        $payload['prices'] = [
+            [
+                'name'      => 'test price',
+                'is_free'   => false,
+                'cost'      => 100,
+                'stripe_id' => $stripeProduct->id
+            ]
+        ];
 
         $response = $this->json('post', "api/services/{$service->id}/schedules", $payload);
         $response->assertOk();
     }
 
-    public function test_validate_request_product_schedule(): void
-    {
-        Event::fake();
-        $stripeProduct = $this->creteStripeProduct();
-        $serviceType   = ServiceType::factory()->create(['id' => 'product']);
-        $service       = Service::factory()->create(['service_type_id' => $serviceType->id, 'stripe_id' => $stripeProduct->id]);
-        $schedule      = Schedule::factory()->make();
+    public function test_validate_request_product_schedule(): void {
 
-        $payload           = $schedule->toArray();
-        $payload['prices'] = [[
-            'name'      => 'test price',
-            'is_free'   => false,
-            'cost'      => 100,
-            'stripe_id' => $stripeProduct->id
-        ]];
+        $stripeProduct = $this->creteStripeProduct();
+        $serviceType = ServiceType::factory()->create(['id' => 'product']);
+        $service =
+            Service::factory()->create(['service_type_id' => $serviceType->id, 'stripe_id' => $stripeProduct->id]);
+        $schedule = Schedule::factory()->make();
+
+        $payload = $schedule->toArray();
+        $payload['prices'] = [
+            [
+                'name'      => 'test price',
+                'is_free'   => false,
+                'cost'      => 100,
+                'stripe_id' => $stripeProduct->id
+            ]
+        ];
 
         $response = $this->json('post', "api/services/{$service->id}/schedules", $payload);
         $response->assertOk();
     }
 
-    public function test_validate_request_retreat_schedule(): void
-    {
-        Event::fake();
-        $stripeProduct = $this->creteStripeProduct();
-        $serviceType   = ServiceType::factory()->create(['id' => 'retreat']);
-        $service       = Service::factory()->create(['service_type_id' => $serviceType->id, 'stripe_id' => $stripeProduct->id]);
-        $schedule      = Schedule::factory()->make();
+    public function test_validate_request_retreat_schedule(): void {
 
-        $payload           = $schedule->toArray();
-        $payload['prices'] = [[
-            'name'      => 'test price',
-            'is_free'   => false,
-            'cost'      => 100,
-            'stripe_id' => $stripeProduct->id
-        ]];
+        $stripeProduct = $this->creteStripeProduct();
+        $serviceType = ServiceType::factory()->create(['id' => 'retreat']);
+        $service =
+            Service::factory()->create(['service_type_id' => $serviceType->id, 'stripe_id' => $stripeProduct->id]);
+        $schedule = Schedule::factory()->make();
+
+        $payload = $schedule->toArray();
+        $payload['prices'] = [
+            [
+                'name'      => 'test price',
+                'is_free'   => false,
+                'cost'      => 100,
+                'stripe_id' => $stripeProduct->id
+            ]
+        ];
 
         $response = $this->json('post', "api/services/{$service->id}/schedules", $payload);
         $response->assertOk();
     }
 
-    public function test_validate_request_training_program_schedule(): void
-    {
-        Event::fake();
-        $stripeProduct = $this->creteStripeProduct();
-        $serviceType   = ServiceType::factory()->create(['id' => 'training_program']);
-        $service       = Service::factory()->create(['service_type_id' => $serviceType->id, 'stripe_id' => $stripeProduct->id]);
-        $schedule      = Schedule::factory()->make();
+    public function test_validate_request_training_program_schedule(): void {
 
-        $payload           = $schedule->toArray();
-        $payload['prices'] = [[
-            'name'      => 'test price',
-            'is_free'   => false,
-            'cost'      => 100,
-            'stripe_id' => $stripeProduct->id
-        ]];
+        $stripeProduct = $this->creteStripeProduct();
+        $serviceType = ServiceType::factory()->create(['id' => 'training_program']);
+        $service =
+            Service::factory()->create(['service_type_id' => $serviceType->id, 'stripe_id' => $stripeProduct->id]);
+        $schedule = Schedule::factory()->make();
+
+        $payload = $schedule->toArray();
+        $payload['prices'] = [
+            [
+                'name'      => 'test price',
+                'is_free'   => false,
+                'cost'      => 100,
+                'stripe_id' => $stripeProduct->id
+            ]
+        ];
 
         $response = $this->json('post', "api/services/{$service->id}/schedules", $payload);
         $response->assertOk();
     }
 
-    public function test_saving_apointment_schedule_with_relations(): void
-    {
-        Event::fake();
-        $stripeProduct = $this->creteStripeProduct();
-        $serviceType   = ServiceType::factory()->create(['id' => 'appointment']);
-        $service       = Service::factory()->create(['service_type_id' => $serviceType->id, 'stripe_id' => $stripeProduct->id]);
+    public function test_saving_apointment_schedule_with_relations(): void {
 
-        $prices                   = Price::factory()->count(2)->make(['stripe_id' => $stripeProduct->id]);
-        $schedule                 = Schedule::factory()->make();
-        $scheduleFiles            = ScheduleFile::factory()->count(3)->make();
-        $scheduleHiddenFiles      = ScheduleHiddenFile::factory()->count(3)->make();
-        $scheduleAvailabilities   = ScheduleAvailability::factory()->count(2)->make();
+        $stripeProduct = $this->creteStripeProduct();
+        $serviceType = ServiceType::factory()->create(['id' => 'appointment']);
+        $service =
+            Service::factory()->create(['service_type_id' => $serviceType->id, 'stripe_id' => $stripeProduct->id]);
+
+        $prices = Price::factory()->count(2)->make(['stripe_id' => $stripeProduct->id]);
+        $schedule = Schedule::factory()->make();
+        $scheduleFiles = ScheduleFile::factory()->count(3)->make();
+        $scheduleHiddenFiles = ScheduleHiddenFile::factory()->count(3)->make();
+        $scheduleAvailabilities = ScheduleAvailability::factory()->count(2)->make();
         $scheduleUnavailabilities = ScheduleUnavailability::factory()->count(2)->make();
 
-        $payload                              = $schedule->toArray();
-        $payload['prices']                    = $prices->toArray();
-        $payload['schedule_files']            = $scheduleFiles->toArray();
-        $payload['schedule_hidden_files']     = $scheduleHiddenFiles->toArray();
-        $payload['schedule_availabilities']   = $scheduleAvailabilities->toArray();
+        $payload = $schedule->toArray();
+        $payload['prices'] = $prices->toArray();
+        $payload['schedule_files'] = $scheduleFiles->toArray();
+        $payload['schedule_hidden_files'] = $scheduleHiddenFiles->toArray();
+        $payload['schedule_availabilities'] = $scheduleAvailabilities->toArray();
         $payload['schedule_unavailabilities'] = $scheduleUnavailabilities->toArray();
 
         $response = $this->json('post', "api/services/{$service->id}/schedules", $payload);
@@ -367,18 +382,21 @@ class ScheduleTest extends TestCase
         self::assertCount(3, $schedule->schedule_files);
     }
 
-    public function test_schedule_update_creates_reschedules()
-    {
-        Event::fake();
+    public function test_schedule_update_creates_reschedules() {
+
         $stripeProduct = $this->creteStripeProduct();
-        $service       = Service::factory()->create(['stripe_id' => $stripeProduct->id]);
-        $schedule      = Schedule::factory()->create(['service_id' => $service->id, 'attendees' => 1]);
-        $bookings      = Booking::factory()->create(['schedule_id' => $schedule->id]);
+        $service = Service::factory()->create(['stripe_id' => $stripeProduct->id]);
+        $schedule = Schedule::factory()->create(['service_id' => $service->id, 'attendees' => 1]);
+        $bookings = Booking::factory()->create([
+                                                   'schedule_id'     => $schedule->id,
+                                                   'practitioner_id' => $this->user->id,
+                                                   'user_id'         => $this->client->id
+                                               ]);
 
         $rescheduleRequest = RescheduleRequest::factory()->create([
-            'booking_id'  => $bookings->id,
-            'schedule_id' => $schedule->id
-        ]);
+                                                                      'booking_id'  => $bookings->id,
+                                                                      'schedule_id' => $schedule->id
+                                                                  ]);
 
         $this->json('put', "api/schedules/{$schedule->id}", [
             'location_id'        => 12345,
@@ -392,85 +410,86 @@ class ScheduleTest extends TestCase
 
     }
 
-    public function test_reschedule_is_created_on_availability_change()
-    {
-        Event::fake();
+    public function test_reschedule_is_created_on_availability_change() {
+
         $stripeProduct = $this->creteStripeProduct();
-        $service       = Service::factory()->create(['stripe_id' => $stripeProduct->id]);
-        $schedule      = Schedule::factory()->create([
-            'service_id' => $service->id,
-            'attendees'  => 1
-        ]);
+        $service = Service::factory()->create(['stripe_id' => $stripeProduct->id]);
+        $schedule = Schedule::factory()->create([
+                                                    'service_id' => $service->id,
+                                                    'attendees'  => 1
+                                                ]);
         ScheduleAvailability::factory()->create([
-            'schedule_id' => $schedule->id,
-            'days'        => 'monday',
-            'start_time'  => '10:00:00',
-            'end_time'    => '18:00:00',
-        ]);
+                                                    'schedule_id' => $schedule->id,
+                                                    'days'        => 'monday',
+                                                    'start_time'  => '10:00:00',
+                                                    'end_time'    => '18:00:00',
+                                                ]);
         Booking::factory()->create([
-            'schedule_id'   => $schedule->id,
-            'datetime_from' => '2020-12-21 17:00:00'
-        ]);
+                                       'schedule_id'     => $schedule->id,
+                                       'datetime_from'   => '2020-12-21 17:00:00',
+                                       'practitioner_id' => $this->user->id,
+                                       'user_id'         => $this->client->id
+                                   ]);
 
         $this->json('put', "api/schedules/$schedule->id", [
-            ['availabilities' =>
-                 [
-                     'days'       => 'monday',
-                     'start_time' => '09:00:00',
-                     'end_time'   => '15:00:00'
-                 ]
+            [
+                'availabilities' => [
+                    'days'       => 'monday',
+                    'start_time' => '09:00:00',
+                    'end_time'   => '15:00:00'
+                ]
             ]
         ])->assertStatus(200);
 
         $this->assertDatabaseCount('reschedule_requests', 1);
     }
 
-    public function test_reschedule_is_created_on_unavailability_change()
-    {
-        Event::fake();
+    public function test_reschedule_is_created_on_unavailability_change() {
+
         $stripeProduct = $this->creteStripeProduct();
-        $service       = Service::factory()->create(['stripe_id' => $stripeProduct->id]);
-        $schedule      = Schedule::factory()->create([
-            'service_id' => $service->id,
-            'attendees'  => 1
-        ]);
+        $service = Service::factory()->create(['stripe_id' => $stripeProduct->id]);
+        $schedule = Schedule::factory()->create([
+                                                    'service_id' => $service->id,
+                                                    'attendees'  => 1
+                                                ]);
         ScheduleAvailability::factory()->create([
-            'schedule_id' => $schedule->id,
-            'days'        => 'monday',
-            'start_time'  => '10:00:00',
-            'end_time'    => '18:00:00',
-        ]);
+                                                    'schedule_id' => $schedule->id,
+                                                    'days'        => 'monday',
+                                                    'start_time'  => '10:00:00',
+                                                    'end_time'    => '18:00:00',
+                                                ]);
+
         Booking::factory()->create([
-            'schedule_id'   => $schedule->id,
-            'datetime_from' => '2020-12-21 17:00:00'
-        ]);
+                                       'schedule_id'     => $schedule->id,
+                                       'datetime_from'   => '2020-12-21 17:00:00',
+                                       'practitioner_id' => $this->user->id,
+                                       'user_id'         => $this->client->id
+                                   ]);
 
         $this->json('put', "api/schedules/$schedule->id", [
-            ['unavaulabilities' =>
-                 [
-                     'start_date' => '2020-12-21 10:00:00',
-                     'end_date'   => '2020-12-23 18:00:00'
-                 ]
+            [
+                'unavaulabilities' => [
+                    'start_date' => '2020-12-21 10:00:00',
+                    'end_date'   => '2020-12-23 18:00:00'
+                ]
             ]
         ])->assertStatus(200);
 
         $this->assertDatabaseCount('reschedule_requests', 1);
     }
 
-    protected function creteStripeProduct()
-    {
+    protected function creteStripeProduct() {
         $client = app()->make(StripeClient::class);
         return $client->products->create(['name' => 'Test product @' . now()->toDateTimeString()]);
     }
 
-    protected function creteStripePrice($product)
-    {
+    protected function creteStripePrice($product) {
         $client = app()->make(StripeClient::class);
         return $client->prices->create([
-            'unit_amount' => '1000',
-            'currency'    => 'gbp',
-            'product'     => $product,
-        ]);
+                                           'unit_amount' => '1000',
+                                           'currency'    => 'gbp',
+                                           'product'     => $product,
+                                       ]);
     }
 }
 

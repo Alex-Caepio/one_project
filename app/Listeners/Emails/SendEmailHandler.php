@@ -27,9 +27,9 @@ abstract class SendEmailHandler {
             $emailData = $emailDataQuery->first();
 
             if ($emailData) {
+
                 $emailVariables = new EmailVariables($this->event);
                 $bodyReplaced = $this->wrapTemplate($emailData, $emailVariables);
-
                 Mail::html($bodyReplaced, function($message) use ($emailData, $emailVariables) {
                     $subjectReplaced = $emailVariables->replace($emailData->subject);
                     $message->to($this->toEmail)->subject($subjectReplaced)
@@ -44,11 +44,17 @@ abstract class SendEmailHandler {
                         ]);
                     }
                 });
+                Log::channel('emails')->info('Email success: ', [
+                    'template'   => $this->templateName,
+                    'event_name' => get_class($this->event),
+                    'user_email' => $this->toEmail,
+                    'message'    => 'Sent',
+                ]);
             } else {
                 throw new \Exception('Email template #' . $this->templateName . ' was not found');
             }
         } catch (\Exception $e) {
-            Log::channel('emails')->info('Email error: ', [
+            Log::channel('emails')->error('Email error: ', [
                 'template'   => $this->templateName,
                 'event_name' => get_class($this->event),
                 'user_email' => $this->toEmail,

@@ -178,6 +178,7 @@ return [
 
         'emails' => [
             'path' => storage_path('logs/emails.log'),
+            'driver' => 'daily',
         ],
 
     ],
