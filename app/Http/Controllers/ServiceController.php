@@ -78,7 +78,7 @@ class ServiceController extends Controller {
         } catch (\Stripe\Exception\ApiErrorException $e) {
             Log::channel('stripe_product_errors')->info("Client could not create product", [
                 'user_id' => $request->user_id,
-                'stripe_product'  => $stripeProduct ? $stripeProduct->id : null,
+                'stripe_product'  => $stripeProduct->id ?? null,
                 'name' => $request->title,
                 'message' => $e->getMessage(),
             ]);

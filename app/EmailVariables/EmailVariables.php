@@ -48,7 +48,6 @@ class EmailVariables {
      * @return string
      */
     public function getPlatform_name(): string {
-        Log::info('Replace Platform Name: '.config('app.platform_name'));
         return config('app.platform_name');
     }
 
@@ -408,7 +407,10 @@ class EmailVariables {
      * @return string
      */
     public function getSee_on_map(): string {
-        return '';
+        return 'https://www.google.com/maps/search/?api=1&map_action=map&query=
+        ' . $this->event->schedule->venue_name . ', ' . $this->event->schedule->venue_address . ', ' .
+               $this->event->schedule->city . ', ' . $this->event->schedule->country . ', ' .
+               $this->event->schedule->post_code;
     }
 
     /**
