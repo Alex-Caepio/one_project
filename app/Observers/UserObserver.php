@@ -9,6 +9,7 @@ use App\Events\BusinessProfileUnpublished;
 use App\Models\Article;
 use App\Models\Service;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 
 class UserObserver {
