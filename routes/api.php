@@ -160,7 +160,7 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
 
 
     /* Payments */
-    Route::post('/schedules/{schedule}/promoсode', [PurchaseController::class, 'validatePromocode']);
+    Route::post('/schedules/{schedule}/promocode', [PurchaseController::class, 'validatePromocode']);
     Route::post('/schedules/{schedule}/purchase', [PurchaseController::class, 'purchase']);
     /* Payments */
 
