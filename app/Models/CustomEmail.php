@@ -8,5 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class CustomEmail extends Model {
     use HasFactory;
 
-    protected $fillable = ['logo', 'name', 'user_type', 'subject', 'text', 'delay'];
+    protected $fillable = ['logo', 'logo_filename', 'name', 'user_type', 'subject', 'text', 'delay'];
 }
