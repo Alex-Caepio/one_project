@@ -33,4 +33,10 @@ class BookingController extends Controller {
         return fractal($booking, new BookingTransformer())->parseIncludes($request->getIncludes())->toArray();
     }
 
+    public function complete(Booking $booking, BookingCompleteRequest $request) {
+        $booking->status = 'completed';
+        $booking->save();
+
+        return response(null, 200);
+    }
 }

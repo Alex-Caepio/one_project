@@ -137,12 +137,16 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
 
     Route::post('/services/{service}/schedules', [ScheduleController::class, 'store']);
     Route::get('/services/{service}/schedules', [ScheduleController::class, 'index']);
+    Route::get('/schedules/{schedule}', [ScheduleController::class, 'show']);
     Route::put('/schedules/{schedule}', [ScheduleController::class, 'update']);
     Route::get('/schedules/{schedule}/attendants', [ScheduleController::class, 'allUser']);
     Route::post('/schedules/{schedule}/freeze', [ScheduleController::class, 'freeze']);
     Route::get('/schedules/{schedule}/availabilities', [ScheduleController::class, 'availabilities']);
     Route::post('/schedules/{schedule}/price', [SchedulePriceController::class, 'store']);
     Route::delete('/schedules/{schedule}', [ScheduleController::class, 'destroy']);
+    Route::get('/schedules/{schedule}/appointments-days', [ScheduleController::class, 'appointmentsDays']);
+    Route::get('/schedules/{schedule}/appointments-days/{day}', [ScheduleController::class, 'appointmentsDaysOnYear']);
+    Route::get('/schedules/{schedule}/appointments-days/{day}/{date}', [ScheduleController::class, 'appointmentsTime']);
 
     Route::put('/price/{price}', [PriceController::class, 'update']);
     Route::delete('/price/{price}', [PriceController::class, 'destroy']);

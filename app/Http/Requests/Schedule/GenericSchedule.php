@@ -7,13 +7,15 @@ use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 use phpDocumentor\Reflection\Types\This;
 
-class GenericSchedule extends Request implements CreateScheduleInterface {
+class GenericSchedule extends Request implements CreateScheduleInterface
+{
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
-    public function authorize() {
+    public function authorize()
+    {
         return (bool)$this->user()->plan;
     }
 
@@ -22,14 +24,17 @@ class GenericSchedule extends Request implements CreateScheduleInterface {
      *
      * @return array
      */
-    public function rules() {
+    public function rules()
+    {
         return [];
     }
 
-    public function withValidator($validator): void {
-        $validator->after(function($validator) {
-            $plan = $this->user()->plan;
+    public function withValidator($validator): void
+    {
+        $validator->after(function ($validator) {
+            $plan           = $this->user()->plan;
             $totalSchedules = $this->service->schedules()->count();
+
             if (!$plan->unlimited_bookings && $this->attendees > $plan->amount_bookings) {
                 $validator->errors()->add('attendees', "You're limited to {$plan->amount_bookings} attendees");
             }
@@ -50,15 +55,30 @@ class GenericSchedule extends Request implements CreateScheduleInterface {
         });
     }
 
-    protected function hasPaidPrices() {
-        return !collect($this->prices)->filter(function($item) {
+    protected function hasPaidPrices()
+    {
+        return !collect($this->prices)->filter(function ($item) {
             return isset($item['cost']) && $item['cost'] > 0;
         })->isEmpty();
     }
 
-    protected function hasFreePrices() {
-        return !collect($this->prices)->filter(function($item) {
+    protected function hasFreePrices()
+    {
+        return !collect($this->prices)->filter(function ($item) {
             return isset($item['cost']) && in_array($item['cost'], [0, null]);
         })->isEmpty();
+    }
+
+    public function prepareForValidation()
+    {
+        $plan = $this->user()->plan;
+
+        if ($plan->list_paid_services && $this->user()->isPractitioner()) {
+            foreach ($this->prices as $price => $value) {
+                $another[$price]['cost'] = 0;
+            }
+            $this->merge(['prices' => $another]);
+        }
+
     }
 }
