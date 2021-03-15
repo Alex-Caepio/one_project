@@ -41,15 +41,18 @@ class ResetPasswordController extends Controller {
         if (!$request->token) {
             abort(500);
         }
-        $resetModel = PasswordReset::where('token', $request->token)->with('user')->first();
+        $resetModel = PasswordReset::where('token', '=', $request->token)->with('user')->has('user')->first();
+        if (!$resetModel) {
+            abort(500, 'Password reset request was not found');
+        }
         $user = $resetModel->user;
         $user->update(['password' => Hash::make($request->password)]);
-        $resetModel->delete();
 
         event(new PasswordChanged($user));
 
         $user->withAccessToken($user->createToken('access-token'));
-
+        $resetModel->delete();
+        
         return fractal($user, new UserTransformer())->parseIncludes('access_token')->respond();
     }
 
