@@ -74,8 +74,10 @@ class GenericSchedule extends Request implements CreateScheduleInterface
         $plan = $this->user()->plan;
 
         if ($plan->list_paid_services && $this->user()->isPractitioner()) {
-            foreach ($this->prices as $price => $value) {
-                $another[$price]['cost'] = 0;
+            $another = [];
+            foreach ($this->prices as $key => $value) {
+                $another[$key] = $value;
+                $another[$key]['cost'] = 0;
             }
             $this->merge(['prices' => $another]);
         }

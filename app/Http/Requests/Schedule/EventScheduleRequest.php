@@ -31,7 +31,7 @@ class EventScheduleRequest extends GenericSchedule
             'post_code'          => 'required_if:appointment,physical',
             'location_displayed' => 'required|string',
             'attendees'          => 'required|integer',
-            'url'                => 'required_if:appointment,virtual|string',
+            'url'                => 'nullable|required_if:appointment,virtual|string',
             'refund_terms'       => 'required',
             'prices'             => 'required|array',
             'prices.*.name'      => 'required',
