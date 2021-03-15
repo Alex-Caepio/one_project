@@ -25,7 +25,6 @@ class Kernel extends ConsoleKernel {
         BookingNotifierTomorrow::class,
         BookingNotifierTwoWeek::class,
         BookingNotifierWeek::class,
-        //InstalmentsNotifier::class,
     ];
 
     /**
@@ -35,14 +34,12 @@ class Kernel extends ConsoleKernel {
      * @return void
      */
     protected function schedule(Schedule $schedule) {
-        // $schedule->command('inspire')->hourly();
         $schedule->command('schedule-freezes:cleanup')->everyFifteenMinutes();
         $schedule->command('mark-expired-promo')->everyFifteenMinutes();
         $schedule->command('bookings:notifier-week')->daily();
         $schedule->command('bookings:notifier-twoweek')->daily();
         $schedule->command('bookings:notifier-tomorrow')->daily();
         $schedule->command('reschedule:noreply')->daily();
-        //$schedule->command('instalments:notify')->daily();
     }
 
     /**

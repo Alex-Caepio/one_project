@@ -1,20 +1,23 @@
 type: object
 properties:
-  name:
-    type: string
   user_type:
     type: string
+    example: all, client, practitioner
   from_email:
     type: string
+    example: test@test.com
   from_title:
     type: string
+    example: Name
   subject:
     type: string
+    example: Email Subject
   logo:
     type: string
     format: binary
   logo_filename:
     type: string
+    example: test.jpg
   text:
     type: string
   delay:

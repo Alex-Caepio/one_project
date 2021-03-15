@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Actions\Email\SaveEmailTemplate;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\CustomEmailSaveRequest;
 use App\Http\Requests\Request;
 use App\Models\CustomEmail;
 use App\Transformers\CustomEmailTransformer;
@@ -10,35 +12,27 @@ use Illuminate\Support\Facades\Auth;
 
 class CustomEmailController extends Controller {
     public function index(Request $request) {
-        $paginator = CustomEmail::query()->paginate($request->getLimit());
+        $customEmailQuery = CustomEmail::query();
+        if ($request->hasSearch()) {
+            $customEmailQuery->where('name', 'LIKE', '%' . $request->get('search') . '%');
+        }
+        $paginator = $customEmailQuery->paginate($request->getLimit());
         $customerEmail = $paginator->getCollection();
         return response(fractal($customerEmail,
                                 new CustomEmailTransformer())->parseIncludes($request->getIncludes()))->withPaginationHeaders($paginator);
     }
 
-    public function store(Request $request) {
-        $admin = Auth::user();
-        $customerEmail = new CustomEmail();
-        $customerEmail->forceFill([
-                                      'name'          => $request->get('name'),
-                                      'user_type'     => $request->get('user_type'),
-                                      'from_email'    => $admin->email,
-                                      'from_title'    => $admin->first_name . " " . $admin->last_name,
-                                      'subject'       => $request->get('subject'),
-                                      'logo'          => $request->get('logo'),
-                                      'logo_filename' => $request->get('logo_filename'),
-                                      'text'          => $request->get('text'),
-                                      'delay'         => $request->get('delay'),
-                                  ]);
-        $customerEmail->save();
+    public function store(CustomEmailSaveRequest $request) {
+        $email = run_action(SaveEmailTemplate::class, $request);
+        return fractal($email, new CustomEmailTransformer())->respond();
     }
 
     public function show(Request $request, CustomEmail $customEmail) {
         return response(fractal($customEmail, new CustomEmailTransformer())->parseIncludes($request->getIncludes()));
     }
 
-    public function update(Request $request, CustomEmail $customEmail) {
-        $customEmail->update($request->all());
+    public function update(CustomEmailSaveRequest $request, CustomEmail $customEmail) {
+        run_action(SaveEmailTemplate::class, $request, $customEmail);
         return fractal($customEmail, new CustomEmailTransformer())->respond();
     }
 

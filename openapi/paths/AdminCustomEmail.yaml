@@ -48,6 +48,13 @@ transactional-emails:
         schema:
           type: integer
           example: 10
+      - name: search
+        in: query
+        description: Email template name
+        required: false
+        schema:
+          type: string
+          example: Welcome
     responses:
       '200':
         description: OK

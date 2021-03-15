@@ -75,7 +75,7 @@ abstract class SendEmailHandler {
      */
     private function wrapTemplate(CustomEmail $emailData, EmailVariables $emailVariables): string {
         $subject = $emailVariables->replace($emailData->subject);
-        return '<!DOCTYPE html><html><head><title>' . $subject . '</title></head><body><table><tr>
+        return '<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html charset=UTF-8"/><title>' . $subject . '</title></head><body><table><tr>
         <td><img src="' . $emailData->logo . '" alt="' . $subject . '" /></td></tr>'
                . $emailVariables->replace($emailData->text) . '</table></body></html>';
     }

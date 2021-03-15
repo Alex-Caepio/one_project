@@ -437,6 +437,13 @@ class EmailVariables {
     /**
      * @return string
      */
+    public function getRebook(): string {
+        return config('app.frontend_booking_url') . $this->event->booking->reference;
+    }
+
+    /**
+     * @return string
+     */
     public function getView_bookings(): string {
         return config('app.frontend_booking_url');
     }
