@@ -11,6 +11,7 @@ use App\Http\Requests\Auth\ResetPasswordClaim;
 use DB;
 use Hash;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Events\PasswordReset as ResetEvent;
@@ -41,18 +42,21 @@ class ResetPasswordController extends Controller {
         if (!$request->token) {
             abort(500);
         }
+
         $resetModel = PasswordReset::where('token', '=', $request->token)->with('user')->has('user')->first();
         if (!$resetModel) {
             abort(500, 'Password reset request was not found');
         }
+
         $user = $resetModel->user;
         $user->update(['password' => Hash::make($request->password)]);
 
         event(new PasswordChanged($user));
 
         $user->withAccessToken($user->createToken('access-token'));
-        $resetModel->delete();
-        
+
+        PasswordReset::where('token', '=', $request->token)->delete();
+
         return fractal($user, new UserTransformer())->parseIncludes('access_token')->respond();
     }
 
