@@ -63,7 +63,6 @@ class ServiceController extends Controller {
     public function unpublish(Service $service, ServiceOwnerRequest $request) {
         $service->is_published = false;
         $service->save();
-        $user = Auth::user();
         return response(null, 204);
     }
 

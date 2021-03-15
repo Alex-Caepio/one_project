@@ -155,7 +155,6 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
 
     Route::post('/bookings/{booking}/reschedule', [RescheduleRequestController::class, 'reschedule']);
     Route::post('/bookings/reschedule', [RescheduleRequestController::class, 'allReschedule']);
-    //Route::post('/schedules/{schedule}/reschedule', [RescheduleRequestController::class, 'store']);
 
 
 

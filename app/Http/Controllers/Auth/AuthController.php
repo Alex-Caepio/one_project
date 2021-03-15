@@ -97,7 +97,7 @@ class AuthController extends Controller
         if ($request->is_published === true) {
             $user->is_published = true;
             $user->save();
-        } else if($request->is_published === false) {
+        } elseif($request->is_published === false) {
             $user->is_published = false;
             $user->save();
         }
