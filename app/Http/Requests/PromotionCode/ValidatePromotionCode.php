@@ -10,6 +10,7 @@ use App\Models\Schedule;
 use App\Models\Service;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Validator;
 
 class ValidatePromotionCode {
@@ -22,14 +23,9 @@ class ValidatePromotionCode {
      */
     public static function validate(Validator $validator, string $promocodeName, Service $service,
                                     ?Schedule $schedule): void {
-        if (!$promoCode = PromotionCode::where('name', $promocodeName)
-                                       ->whereHas('promotion', function($query) {
-            $query->where('status', Promotion::STATUS_ACTIVE)
-                  ->where('expiry_date', '>=', date('Y-m-d H:i:s'));
-        })
-                                       ->where('status', PromotionCode::STATUS_ACTIVE)
-                                       ->with(['promotion'])
-                                       ->first()) {
+        if (!$promoCode = PromotionCode::where('name', $promocodeName)->whereHas('promotion', function($query) {
+            $query->where('status', Promotion::STATUS_ACTIVE)->where('expiry_date', '>=', date('Y-m-d H:i:s'));
+        })->where('status', PromotionCode::STATUS_ACTIVE)->with(['promotion'])->first()) {
             $validator->errors()->add('promo_code', 'Promo code was not found');
             return;
         }
@@ -37,13 +33,12 @@ class ValidatePromotionCode {
         $promotion = $promoCode->promotion;
         $eligibleUsers = $promoCode->users()->pluck('users.id');
 
-        $promoDisciplines = $promoCode->promotion->disciplines()->pluck('disciplines.id');
-        $promoFocusAreas = $promoCode->promotion->focus_area()->pluck('focus_areas.id');
-        $promoServiceTypes = $promoCode->promotion->service_types()->pluck('service_types.id');
+        $promoDisciplines = $promoCode->promotion->disciplines()->pluck('disciplines.id')->toArray();
+        $promoFocusAreas = $promoCode->promotion->focus_areas()->pluck('focus_areas.id')->toArray();
+        $promoServiceTypes = $promoCode->promotion->service_types()->pluck('service_types.id')->toArray();
 
-        $serviceDisciplines = $service->disciplines()->pluck('disciplines.id');
-        $serviceServiceTypes = $service->service_types()->pluck('service_types.id');
-        $serviceFocusAreas = $service->focus_areas()->pluck('focus_areas.id');
+        $serviceDisciplines = $service->disciplines()->pluck('disciplines.id')->toArray();
+        $serviceFocusAreas = $service->focus_areas()->pluck('focus_areas.id')->toArray();
 
         if ($eligibleUsers->count() && !$eligibleUsers->has(Auth::id())) {
             $validator->errors()->add('promo_code', 'Promo code user is invalid');
@@ -90,7 +85,7 @@ class ValidatePromotionCode {
             $validator->errors()->add('promo_code', 'You are not allowed to use the promocode with this discipline');
         } elseif (count($promoFocusAreas) && !count(array_intersect($promoFocusAreas, $serviceFocusAreas))) {
             $validator->errors()->add('promo_code', 'You are not allowed to use the promocode with this focus area');
-        } elseif (count($promoServiceTypes) && !count(array_intersect($promoServiceTypes, $serviceServiceTypes))) {
+        } elseif (count($promoServiceTypes) && !in_array($service->service_type_id, $promoServiceTypes)) {
             $validator->errors()->add('promo_code', 'You are not allowed to use the promocode with this service type');
         }
 
