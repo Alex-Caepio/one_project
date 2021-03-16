@@ -19,6 +19,7 @@ class Price extends Model {
         'available_till',
         'min_purchase',
         'number_available',
+        'duration',
         'stripe_id'
     ];
 
