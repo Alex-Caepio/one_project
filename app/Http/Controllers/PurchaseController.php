@@ -179,10 +179,8 @@ class PurchaseController extends Controller {
     }
 
     public function validatePromocode(ValidatePromocodeRequest $request, Schedule $schedule) {
-        $name = $request->get('promo_code');
-        $scheduleCost = $schedule->cost;
-        $promo = PromotionCode::where('name', $name)->with('promotion')->first();
-        return fractal((object)['promocode' => $promo, 'scheduleCost' => $scheduleCost],
+        $promo = PromotionCode::where('name', $request->get('promo_code'))->with('promotion')->first();
+        return fractal((object)['promocode' => $promo, 'scheduleCost' => $schedule->cost],
                        new PromocodeCalculateTransformer());
     }
 
