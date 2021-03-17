@@ -31,17 +31,22 @@ class AppointmentScheduleRequest extends GenericSchedule
             'notice_min_period'             => 'required',
             'buffer_time'                   => 'required',
 
-            'schedule_availabilities.*.days'         => 'required_with:availabilities',
-            'schedule_availabilities.*.start_time'   => 'required_with:availabilities',
-            'schedule_availabilities.*.end_time'     => 'required_with:availabilities',
+            'schedule_availabilities.*.days'         => 'required_with:schedule_availabilities',
+            'schedule_availabilities.*.start_time'   => 'required_with:schedule_availabilities',
+            'schedule_availabilities.*.end_time'     => 'required_with:schedule_availabilities',
 
-            'schedule_unavailabilities.*.start_date' => 'required_with:unavailabilities',
-            'schedule_unavailabilities.*.end_date'   => 'required_with:unavailabilities',
+            'schedule_unavailabilities.*.start_date' => 'required_with:schedule_unavailabilities',
+            'schedule_unavailabilities.*.end_date'   => 'required_with:schedule_unavailabilities',
 
             'schedule_availabilities'                => 'required|array',
 
             'deposit_amount'                => 'required_if:deposit_accepted,true',
             'deposit_final_date'            => 'required_if:deposit_accepted,true',
         ];
+    }
+
+    public function attributes()
+    {
+        ['schedule_unavailabilities.required_with' => 'custom error message'];
     }
 }

@@ -421,6 +421,8 @@ class ScheduleTest extends TestCase {
         $scheduleAvailabilities = ScheduleAvailability::factory()->count(2)->make();
         $scheduleUnavailabilities = ScheduleUnavailability::factory()->count(2)->make();
 
+        unset($scheduleUnavailabilities[0]['start_date']);
+
         $payload = $schedule->toArray();
         $payload['prices'] = $prices->toArray();
         $payload['schedule_files'] = $scheduleFiles->toArray();
