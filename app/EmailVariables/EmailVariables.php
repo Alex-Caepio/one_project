@@ -118,14 +118,18 @@ class EmailVariables {
      * @return string
      */
     public function getPractitioner_business_name(): string {
-        return $this->event->user->isPractitioner() ? $this->event->user->business_name : $this->event->practitioner->business_name;
+        return $this->event->user->isPractitioner()
+            ? $this->event->user->business_name
+            : $this->event->practitioner->business_name;
     }
 
     /**
      * @return string
      */
     public function getPractitioner_email_address(): string {
-        return $this->event->user->isPractitioner() ? $this->event->user->email : $this->event->practitioner->email;
+        return $this->event->user->isPractitioner()
+            ? $this->event->user->email
+            : $this->event->practitioner->email;
     }
 
     /**
@@ -204,76 +208,78 @@ class EmailVariables {
      * @return string
      */
     public function getSchedule_start_date(): string {
-        return Carbon::parse($this->event->schedule->start_date)->toDateString();
+        return $this->event->schedule->start_date ? Carbon::parse($this->event->schedule->start_date)
+                                                          ->toDateString() : '';
     }
 
     /**
      * @return string
      */
     public function getSchedule_start_time(): string {
-        return Carbon::parse($this->event->schedule->start_date)->toTimeString();
+        return $this->event->schedule->start_date ? Carbon::parse($this->event->schedule->start_date)
+                                                          ->toTimeString() : '';
     }
 
     /**
      * @return string
      */
     public function getSchedule_end_date(): string {
-        return Carbon::parse($this->event->schedule->end_date)->toDateString();
+        return $this->event->schedule->end_date ? Carbon::parse($this->event->schedule->end_date)->toDateString() : '';
     }
 
     /**
      * @return string
      */
     public function getSchedule_end_time(): string {
-        return Carbon::parse($this->event->schedule->end_date)->toTimeString();
+        return $this->event->schedule->end_date ? Carbon::parse($this->event->schedule->end_date)->toTimeString() : '';
     }
 
     /**
      * @return string
      */
-    public function getSchedule_venue_name(): string {
+    public function getSchedule_venue_name(): ?string {
         return $this->event->schedule->venue_name;
     }
 
     /**
      * @return string
      */
-    public function getSchedule_venue_address(): string {
+    public function getSchedule_venue_address(): ?string {
         return $this->event->schedule->venue_address;
     }
 
     /**
      * @return string
      */
-    public function getSchedule_city(): string {
+    public function getSchedule_city(): ?string {
         return $this->event->schedule->city;
     }
 
     /**
      * @return string
      */
-    public function getSchedule_country(): string {
+    public function getSchedule_country(): ?string {
         return $this->event->schedule->country;
     }
 
     /**
      * @return string
      */
-    public function getSchedule_postcode(): string {
+    public function getSchedule_postcode(): ?string {
         return $this->event->schedule->post_code;
     }
 
     /**
      * @return string
      */
-    public function getSchedule_hosting_url(): string {
+    public function getSchedule_hosting_url(): ?string {
         return $this->event->schedule->url;
     }
 
     /**
      * @return string
      */
-    public function getPractitioner_schedule_message(): string {
+    public function getPractitioner_schedule_message(): ?string {
         return $this->event->schedule->comments;
     }
 
@@ -466,76 +472,80 @@ class EmailVariables {
      * @return string
      */
     public function getReschedule_start_date(): string {
-        return Carbon::parse($this->event->reschedule_schedule->start_date)->toDateString();
+        return $this->event->reschedule_schedule->start_date ? Carbon::parse($this->event->reschedule_schedule->start_date)
+                                                                     ->toDateString() : '';
     }
 
     /**
      * @return string
      */
     public function getReschedule_start_time(): string {
-        return Carbon::parse($this->event->reschedule_schedule->start_date)->toTimeString();
+        return $this->event->reschedule_schedule->start_date ? Carbon::parse($this->event->reschedule_schedule->start_date)
+                                                                     ->toTimeString() : '';
     }
 
     /**
      * @return string
      */
     public function getReschedule_end_date(): string {
-        return Carbon::parse($this->event->reschedule_schedule->end_date)->toDateString();
+        return $this->event->reschedule_schedule->end_date ? Carbon::parse($this->event->reschedule_schedule->end_date)
+                                                                   ->toDateString() : '';
     }
 
     /**
      * @return string
      */
     public function getReschedule_end_time(): string {
-        return Carbon::parse($this->event->reschedule_schedule->end_date)->toTimeString();
+        return $this->event->reschedule_schedule->end_date ? Carbon::parse($this->event->reschedule_schedule->end_date)
+                                                                   ->toTimeString() : '';
     }
 
     /**
      * @return string
      */
-    public function getReschedule_venue_name(): string {
+    public function getReschedule_venue_name(): ?string {
         return $this->event->reschedule_schedule->venue_name;
     }
 
     /**
      * @return string
      */
-    public function getReschedule_venue_address(): string {
+    public function getReschedule_venue_address(): ?string {
         return $this->event->reschedule_schedule->venue_address;
     }
 
     /**
      * @return string
      */
-    public function getReschedule_city(): string {
+    public function getReschedule_city(): ?string {
         return $this->event->reschedule_schedule->city;
     }
 
     /**
      * @return string
      */
-    public function getReschedule_country(): string {
+    public function getReschedule_country(): ?string {
         return $this->event->reschedule_schedule->country;
     }
 
     /**
      * @return string
      */
-    public function getReschedule_postcode(): string {
+    public function getReschedule_postcode(): ?string {
         return $this->event->reschedule_schedule->post_code;
     }
 
     /**
      * @return string
      */
-    public function getReschedule_hosting_url(): string {
+    public function getReschedule_hosting_url(): ?string {
         return $this->event->reschedule_schedule->url;
     }
 
     /**
      * @return string
      */
-    public function getPractitioner_reschedule_message(): string {
+    public function getPractitioner_reschedule_message(): ?string {
         return $this->event->reschedule->comment;
     }
 
