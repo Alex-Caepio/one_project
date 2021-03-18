@@ -22,4 +22,12 @@ class CustomEmail extends Model {
         'from_email',
         'from_title'
     ];
+
+
+    /**
+     * @return string|null
+     */
+    public function getEmbedImageContent(): ?string {
+        return !empty($this->logo) ? base64_decode(preg_replace('/^data:image\/\w+;base64,/', '', $this->logo)) : null;
+    }
 }

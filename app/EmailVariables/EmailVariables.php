@@ -3,6 +3,7 @@
 
 namespace App\EmailVariables;
 
+use App\Models\Schedule;
 use App\Traits\GenerateCalendarLink;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
@@ -43,6 +44,15 @@ class EmailVariables {
 
         return $this->replace($newBody);
     }
+
+
+    /**
+     * @return \App\Models\Schedule|null
+     */
+    public function getSchedule(): ?Schedule {
+        return $this->event->schedule ?? null;
+    }
+
 
     /**
      * @return string
