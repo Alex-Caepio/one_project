@@ -57,9 +57,4 @@ class AppointmentScheduleRequest extends GenericSchedule
             'schedule_availabilities.*.end_time.required_with'     => 'The end time field is required when setting availabilities.',
         ];
     }
-
-    public function attributes()
-    {
-        ['schedule_unavailabilities.required_with' => 'custom error message'];
-    }
 }
