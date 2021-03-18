@@ -26,8 +26,8 @@ class WorkshopScheduleRequest extends GenericSchedule
             'promo_code'         => 'string|min:5',
             'service_id'         => 'integer',
             'location_id'        => 'integer',
-            'start_date'         => 'required|date',
-            'end_date'           => 'required|date',
+            'start_date'         => 'required|date|after:today',
+            'end_date'           => 'required|date|after:today',
             'attendees'          => 'required|integer',
             'cost'               => 'integer',
             'comments'           => 'nullable|string',
@@ -41,6 +41,7 @@ class WorkshopScheduleRequest extends GenericSchedule
             'prices.*.name'      => 'required',
             'prices.*.cost'      => 'required',
             'prices.*.is_free'   => 'required',
+            'prices.*.available_till' => 'before:end_date',
 
             'deposit_amount'     => 'required_if:deposit_accepted,true',
             'deposit_final_date' => 'required_if:deposit_accepted,true',

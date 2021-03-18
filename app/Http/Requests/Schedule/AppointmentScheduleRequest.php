@@ -27,6 +27,8 @@ class AppointmentScheduleRequest extends GenericSchedule
             'prices.*.duration'             => 'required',
             'prices.*.cost'                 => 'required',
             'prices.*.is_free'              => 'required',
+            'prices.*.available_till'       => 'before:end_date',
+
             'notice_min_time'               => 'required',
             'notice_min_period'             => 'required',
             'buffer_time'                   => 'required',
@@ -45,8 +47,14 @@ class AppointmentScheduleRequest extends GenericSchedule
         ];
     }
 
-    public function attributes()
+    public function messages()
     {
-        ['schedule_unavailabilities.required_with' => 'custom error message'];
+        return [
+            'schedule_unavailabilities.*.start_date.required_with' => 'The start date field is required when setting unavailabilities.',
+            'schedule_unavailabilities.*.end_date.required_with'   => 'The end date field is required when setting unavailabilities.',
+            'schedule_availabilities.*.days.required_with'         => 'The days field is required when setting availabilities.',
+            'schedule_availabilities.*.start_time.required_with'   => 'The start time field is required when setting availabilities.',
+            'schedule_availabilities.*.end_time.required_with'     => 'The end time field is required when setting availabilities.',
+        ];
     }
 }
