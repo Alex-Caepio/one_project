@@ -47,7 +47,7 @@ class ScheduleController extends Controller
         }
         if ($request->filled('prices')) {
 
-            $prices = $request->get('prices');
+            $prices = $data['prices'];
             foreach  ($prices as $key => $price ){
                 $stripePrice = $stripe->prices->create([
                     'unit_amount' => $prices[$key]['cost'],

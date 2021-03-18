@@ -86,13 +86,15 @@ class GenericSchedule extends Request implements CreateScheduleInterface
             $this->merge(['prices' => $another]);
         }
 
-        foreach ($this->prices as $key => $value) {
-            $another[$key] = $value;
-            if(!empty($another[$key]['duration'])){
-                list($h, $m) = explode(':', $another[$key]['duration']);
-                $another[$key]['duration'] = ($h * 60) + $m;
+        if($this->prices){
+            foreach ($this->prices as $key => $value) {
+                $another[$key] = $value;
+                if(!empty($another[$key]['duration'])){
+                    list($h, $m) = explode(':', $another[$key]['duration']);
+                    $another[$key]['duration'] = ($h * 60) + $m;
+                }
             }
+            $this->merge(['prices' => $another]);
         }
-        $this->merge(['prices' => $another]);
     }
 }
