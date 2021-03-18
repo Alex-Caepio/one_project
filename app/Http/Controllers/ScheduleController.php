@@ -6,6 +6,7 @@ use App\Actions\Schedule\CreateRescheduleRequestsOnScheduleUpdate;
 use App\Actions\Schedule\HandlePricesUpdate;
 use App\Events\ServiceScheduleCancelled;
 use App\Events\ServiceScheduleLive;
+use App\Http\Requests\Schedule\GenericUpdateSchedule;
 use App\Models\Service;
 use App\Models\Schedule;
 use App\Models\ScheduleUser;
@@ -79,7 +80,7 @@ class ScheduleController extends Controller
             ->toArray();
     }
 
-    public function update(Request $request, Schedule $schedule, StripeClient $stripe)
+    public function update(GenericUpdateSchedule $request, Schedule $schedule, StripeClient $stripe)
     {
         $schedule->update($request->all());
 

@@ -4,7 +4,7 @@ namespace App\Http\Requests\Schedule;
 
 use App\Http\Requests\Request;
 
-class GenericSchedule extends Request implements CreateScheduleInterface
+class GenericUpdateSchedule extends Request implements CreateScheduleInterface
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +13,7 @@ class GenericSchedule extends Request implements CreateScheduleInterface
      */
     public function authorize()
     {
-        return (bool)$this->user()->plan;
+        return $this->schedule->service->user_id = $this->user()->id;
     }
 
     /**
@@ -30,7 +30,8 @@ class GenericSchedule extends Request implements CreateScheduleInterface
     {
         $validator->after(function ($validator) {
             $plan           = $this->user()->plan;
-            $totalSchedules = $this->service->schedules()->count();
+            $service = $this->schedule->service;
+            $totalSchedules = $service->schedules()->where('id', '!=', $this->schedule->id)->count();
 
             if (!$plan->unlimited_bookings && $this->attendees > $plan->amount_bookings) {
                 $validator->errors()->add('attendees', "You're limited to {$plan->amount_bookings} attendees");
@@ -50,7 +51,7 @@ class GenericSchedule extends Request implements CreateScheduleInterface
                 $validator->errors()->add('service_id', 'The schedules limit on the service has been exceeded.');
             }
 
-            foreach ($this->service->schedules as $schedule) {
+            foreach ($service->schedules as $schedule) {
                 if ($schedule->title == $this->title) {
                     $validator->errors()->add('title', 'The schedule name is not unique!');
                 }
