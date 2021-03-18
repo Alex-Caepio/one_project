@@ -29,6 +29,7 @@ class TrainingProgramScheduleRequest extends GenericSchedule
             'prices.*.name'      => 'required',
             'prices.*.cost'      => 'required',
             'prices.*.is_free'   => 'required',
+            'prices.*.available_till' => 'before:end_date',
 
             'deposit_amount'     => 'required_if:deposit_accepted,true',
             'deposit_final_date' => 'required_if:deposit_accepted,true',

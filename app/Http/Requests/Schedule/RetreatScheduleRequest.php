@@ -23,8 +23,8 @@ class RetreatScheduleRequest extends GenericSchedule
     {
         return [
             'title'              => 'required|string|min:5',
-            'start_date'         => 'required|date',
-            'end_date'           => 'required|date',
+            'start_date'         => 'required|date|after:today',
+            'end_date'           => 'required|date|after:today',
             'venue_address'      => 'required_if:appointment,physical|max:255',
             'city'               => 'required_if:appointment,physical|required|string',
             'country'            => 'required_if:appointment,physical|string',
@@ -35,6 +35,7 @@ class RetreatScheduleRequest extends GenericSchedule
             'prices.*.name'      => 'required',
             'prices.*.cost'      => 'required',
             'prices.*.is_free'   => 'required',
+            'prices.*.available_till' => 'before:end_date',
 
             'deposit_amount'     => 'required_if:deposit_accepted,true',
             'deposit_final_date' => 'required_if:deposit_accepted,true',

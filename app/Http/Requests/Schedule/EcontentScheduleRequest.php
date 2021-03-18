@@ -26,8 +26,8 @@ class EcontentScheduleRequest extends GenericSchedule
             'promo_code' => 'string|min:5',
             'service_id' => 'integer',
             'location_id' => 'integer',
-            'start_date' => 'date',
-            'end_date' => 'date',
+            'start_date' => 'date|after:today',
+            'end_date' => 'date|after:today',
             'attendees' => 'integer',
             'cost' => 'integer',
             'comments' => 'nullable|string',
@@ -39,6 +39,7 @@ class EcontentScheduleRequest extends GenericSchedule
             'prices.*.name'      => 'required',
             'prices.*.cost'      => 'required',
             'prices.*.is_free'   => 'required',
+            'prices.*.available_till' => 'before:end_date',
 
             'deposit_amount'     => 'required_if:deposit_accepted,true',
             'deposit_final_date' => 'required_if:deposit_accepted,true',

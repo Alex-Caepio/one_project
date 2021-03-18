@@ -3,9 +3,6 @@
 namespace App\Http\Requests\Schedule;
 
 use App\Http\Requests\Request;
-use Illuminate\Validation\Rule;
-use Illuminate\Validation\Validator;
-use phpDocumentor\Reflection\Types\This;
 
 class GenericSchedule extends Request implements CreateScheduleInterface
 {
@@ -52,6 +49,13 @@ class GenericSchedule extends Request implements CreateScheduleInterface
             if (!$plan->schedules_per_service_unlimited && $totalSchedules >= $plan->schedules_per_service) {
                 $validator->errors()->add('service_id', 'The schedules limit on the service has been exceeded.');
             }
+
+            foreach ($this->service->schedules as $schedule)
+            {
+                if($schedule->title == $this->title) {
+                    $validator->errors()->add('title', 'The schedule name is not unique!');
+                }
+            }
         });
     }
 
@@ -82,5 +86,13 @@ class GenericSchedule extends Request implements CreateScheduleInterface
             $this->merge(['prices' => $another]);
         }
 
+        foreach ($this->prices as $key => $value) {
+            $another[$key] = $value;
+            if(!empty($another[$key]['duration'])){
+                list($h, $m) = explode(':', $another[$key]['duration']);
+                $another[$key]['duration'] = ($h * 60) + $m;
+            }
+        }
+        $this->merge(['prices' => $another]);
     }
 }

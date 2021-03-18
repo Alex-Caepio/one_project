@@ -27,6 +27,8 @@ class AppointmentScheduleRequest extends GenericSchedule
             'prices.*.duration'             => 'required',
             'prices.*.cost'                 => 'required',
             'prices.*.is_free'              => 'required',
+            'prices.*.available_till'       => 'before:end_date',
+
             'notice_min_time'               => 'required',
             'notice_min_period'             => 'required',
             'buffer_time'                   => 'required',
@@ -42,6 +44,17 @@ class AppointmentScheduleRequest extends GenericSchedule
 
             'deposit_amount'                => 'required_if:deposit_accepted,true',
             'deposit_final_date'            => 'required_if:deposit_accepted,true',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'schedule_unavailabilities.*.start_date.required_with' => 'The start date field is required when setting unavailabilities.',
+            'schedule_unavailabilities.*.end_date.required_with'   => 'The end date field is required when setting unavailabilities.',
+            'schedule_availabilities.*.days.required_with'         => 'The days field is required when setting availabilities.',
+            'schedule_availabilities.*.start_time.required_with'   => 'The start time field is required when setting availabilities.',
+            'schedule_availabilities.*.end_time.required_with'     => 'The end time field is required when setting availabilities.',
         ];
     }
 
