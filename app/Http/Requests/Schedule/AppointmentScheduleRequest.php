@@ -52,9 +52,16 @@ class AppointmentScheduleRequest extends GenericSchedule
         return [
             'schedule_unavailabilities.*.start_date.required_with' => 'The start date field is required when setting unavailabilities.',
             'schedule_unavailabilities.*.end_date.required_with'   => 'The end date field is required when setting unavailabilities.',
+
             'schedule_availabilities.*.days.required_with'         => 'The days field is required when setting availabilities.',
             'schedule_availabilities.*.start_time.required_with'   => 'The start time field is required when setting availabilities.',
             'schedule_availabilities.*.end_time.required_with'     => 'The end time field is required when setting availabilities.',
+
+            'prices.*.name.required'           => 'The name field is required when setting prices.',
+            'prices.*.duration.required'       => 'The duration field is required when setting prices.',
+            'prices.*.cost.required'           => 'The cost field is required when setting prices.',
+            'prices.*.is_free.required'        => 'The is_free field is required when setting prices.',
+            'prices.*.available_till.before'   => 'The available_till field should be before the end_date field.',
         ];
     }
 }

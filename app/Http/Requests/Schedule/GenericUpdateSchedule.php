@@ -51,7 +51,10 @@ class GenericUpdateSchedule extends Request implements CreateScheduleInterface
                 $validator->errors()->add('service_id', 'The schedules limit on the service has been exceeded.');
             }
 
-            foreach ($service->schedules as $schedule) {
+            $otherSchedules = $service->schedules()
+                ->where('id', '!=', $this->schedule->id)
+                ->get();
+            foreach ($otherSchedules as $schedule) {
                 if ($schedule->title == $this->title) {
                     $validator->errors()->add('title', 'The schedule name is not unique!');
                 }

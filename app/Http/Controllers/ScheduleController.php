@@ -6,6 +6,7 @@ use App\Actions\Schedule\CreateRescheduleRequestsOnScheduleUpdate;
 use App\Actions\Schedule\HandlePricesUpdate;
 use App\Events\ServiceScheduleCancelled;
 use App\Events\ServiceScheduleLive;
+use App\Http\Requests\Schedule\PurchaseScheduleRequest;
 use App\Http\Requests\Schedule\GenericUpdateSchedule;
 use App\Models\Service;
 use App\Models\Schedule;
@@ -127,7 +128,7 @@ class ScheduleController extends Controller
         return response([$amountTotal, $amount_left, $amountBought, $amountFreezed]);
     }
 
-    public function freeze(Schedule $schedule, Request $request)
+    public function freeze(Schedule $schedule, PurchaseScheduleRequest $request)
     {
         $personalFreezed = ScheduleFreeze::where('schedule_id', $schedule->id)
             ->where('user_id', Auth::id())->first();
@@ -159,64 +160,37 @@ class ScheduleController extends Controller
         return response(null, 204);
     }
 
-    public function appointmentsOnDate(Schedule $schedule) {
-       $availabilities =  $schedule->schedule_availabilities;
-        $days = [];
-
-        foreach ($availabilities as $availability){
-
-            if($availability->days == 'everyday'){
-                $days += [
-                    'sunday', 'monday', 'tuesday', 'wednesday',
-                    'thursday', 'friday', 'saturday'
-                ];
-            } else if ($availability->days == 'weekends') {
-                $days += [
-                    'saturday', 'sunday',
-                ];
-            } else if ($availability->days == 'weekdays') {
-                $days += [
-                    'monday', 'tuesday', 'wednesday', 'thursday', 'friday',
-                ];
-            } else {
-                $days[] = $availability->days;
-            }
-        }
-
-        return array_unique($days);
-    }
-
-    public function appointmentsDaysOnYear(Schedule $schedule, $day) {
-        $fromDate = Carbon::now();
-        $toDate = Carbon::now()->addYear();
-        $days = [];
-
-        $startDate = Carbon::parse($fromDate)->modify("this {$day}");
-        $endDate = Carbon::parse($toDate);
-
-        for ($date = $startDate; $date->lte($endDate); $date->addWeek()) {
-            $days [] = $date->format('Y-m-d');
-        }
-        return $days;
-    }
-
-    public function appointmentsTime(Schedule $schedule, $day, $date) {
+    public function appointmentsOnDate(Schedule $schedule, $date) {
+        $convertedDay = mb_strtolower(Carbon::parse($date)->isoFormat('dddd'));
         $availabilities =  $schedule->schedule_availabilities;
         $times = [];
+
         $weekdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday',];
         $weekends = ['saturday', 'sunday',];
 
-        foreach ($availabilities as $availability) {
-            if ($availability->days == $convertedDay || $availability->days == 'everyday') {
-                $times[] = $availability->start_time;
+        foreach ($availabilities as $availability){
+            $fromTime = $availability->start_time;
+            $toTime = $availability->end_time;
+
+            $startTime = Carbon::parse($fromTime);
+            $endTime = Carbon::parse($toTime);
+
+            if($availability->days == $convertedDay || $availability->days == 'everyday') {
+                for ($date = $startTime; $date->lte($endTime); $date->addHour()) {
+                    $times[] = $date->format('H:i:s');
+                }
             }
 
-            if (in_array($convertedDay, $weekends) && $availability->days == 'weekends') {
-                $times[] = $availability->start_time;
+            if ( in_array($convertedDay, $weekends) && $availability->days == 'weekends'){
+                for ($date = $startTime; $date->lte($endTime); $date->addHour()) {
+                    $times[] = $date->format('H:i:s');
+                }
             }
 
-            if (in_array($convertedDay, $weekdays) && $availability->days == 'weekdays')
-                $times[] = $availability->start_time;
+            if( in_array($convertedDay, $weekdays) && $availability->days == 'weekdays')
+                for ($date = $startTime; $date->lte($endTime); $date->addHour()) {
+                    $times[] = $date->format('H:i:s');
+                }
         }
 
         return array_unique($times);

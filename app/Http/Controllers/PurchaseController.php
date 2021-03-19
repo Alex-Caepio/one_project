@@ -44,7 +44,7 @@ class PurchaseController extends Controller {
 
     public function purchase(PurchaseScheduleRequest $request, Schedule $schedule, StripeClient $stripe) {
         $price = $schedule->prices()->find($request->get('price_id'));
-        $cost = $price->cost;
+        $cost = $price->cost * $request->amount;
         $practitoner = $schedule->service->user;
 
         $promo = null;
@@ -64,6 +64,7 @@ class PurchaseController extends Controller {
         $purchase->price_original = $price->cost;
         $purchase->price = $cost;
         $purchase->is_deposit = false;
+        $purchase->amount = $request->amount;
         $purchase->save();
 
         if ($schedule->service->service_type_id === 'appointment') {
@@ -80,6 +81,7 @@ class PurchaseController extends Controller {
                 $booking->datetime_to = $datetimeTo->format('Y-m-d H:i:s');
                 $booking->cost = $cost;
                 $booking->purchase_id = $purchase->id;
+                $booking->amount = $request->amount;
                 $booking->save();
             }
         } else {
@@ -90,12 +92,13 @@ class PurchaseController extends Controller {
             $booking->schedule_id = $schedule->id;
             $booking->cost = $cost;
             $booking->purchase_id = $purchase->id;
+            $booking->amount = $request->amount;
             $booking->save();
         }
 
         ScheduleFreeze::where('schedule_id', $schedule->id)->where('user_id', $request->user()->id)->delete();
 
-
+        
         try {
             $payment_method_id = run_action(GetViablePaymentMethod::class, $practitoner, $request->payment_method_id);
 
@@ -121,6 +124,7 @@ class PurchaseController extends Controller {
                 'schedule_id'    => $schedule->id,
                 'payment_intent' => $paymentIntent->id,
                 'payment_method' => $payment_method_id,
+                'amount'         => $request->amount,
                 'message'        => $e->getMessage(),
             ]);
 
@@ -138,6 +142,7 @@ class PurchaseController extends Controller {
                 'schedule_id'    => $schedule->id,
                 'payment_intent' => $paymentIntent->id,
                 'payment_method' => $payment_method_id,
+                'amount'         => $request->amount,
             ]);
 
         } catch (\Stripe\Exception\ApiErrorException $e) {
@@ -150,6 +155,7 @@ class PurchaseController extends Controller {
                 'schedule_id'    => $schedule->id,
                 'payment_intent' => $paymentIntent->id,
                 'payment_method' => $payment_method_id,
+                'amount'         => $request->amount,
                 'message'        => $e->getMessage(),
             ]);
 
@@ -163,6 +169,7 @@ class PurchaseController extends Controller {
             'schedule_id'    => $schedule->id,
             'payment_intent' => $paymentIntent->id,
             'payment_method' => $payment_method_id,
+            'amount'         => $request->amount,
         ]);
 
         return response(null, 200);

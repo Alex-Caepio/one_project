@@ -3,13 +3,14 @@
 namespace App\Http\Requests\Schedule;
 
 use App\Http\Requests\PromotionCode\ValidatePromotionCode;
+use App\Http\Requests\Request;
 use App\Models\ScheduleAvailability;
 use App\Models\Booking;
 use App\Models\Price;
 use App\Models\ScheduleUnavailability;
 use Illuminate\Validation\Rule;
 
-class PurchaseScheduleRequest extends GenericSchedule {
+class PurchaseScheduleRequest extends Request implements CreateScheduleInterface {
 
     /**
      * Determine if the user is authorized to make this request.
@@ -32,6 +33,7 @@ class PurchaseScheduleRequest extends GenericSchedule {
         $rules = [
             'price_id' => 'required|exists:prices,id',
             Rule::in($idValue),
+            'amount'   => 'required'
         ];
 
         if ($this->schedule->service->service_type_id === 'appointment') {
@@ -45,38 +47,36 @@ class PurchaseScheduleRequest extends GenericSchedule {
         return $rules;
     }
 
-    public function withValidator($validator): void {
+   public function withValidator($validator): void {
 
-        parent::withValidator($validator);
+       $validator->after(function($validator) {
+           $schedule = $this->schedule;
+           $priceId = $this->price_id;
 
-        $validator->after(function($validator) {
-            $schedule = $this->schedule;
-            $priceId = $this->price_id;
+           $bookingsCount = Booking::where('price_id', $this->price_id)->count();
+           $price = Price::find($this->price_id);
 
-            $bookingsCount = Booking::where('price_id', $this->price_id)->count();
-            $price = Price::find($this->price_id);
+           if ($this->has('availabilities')) {
+               $this->validateAvailabilities($validator);
+           }
 
-            if ($this->has('availabilities')) {
-                $this->validateAvailabilities($validator);
-            }
+           if ($this->has('promo_code')) {
+               ValidatePromotionCode::validate($validator, $this->get('promo_code'), $schedule->service, $schedule);
+           }
 
-            if ($this->has('promo_code')) {
-                ValidatePromotionCode::validate($validator, $this->get('promo_code'), $schedule->service, $schedule);
-            }
+           if ($schedule->attendees && $schedule->isSoldOut()) {
+               $validator->errors()->add('schedule_id', 'All quotes on the schedule are sold out');
+           }
 
-            if ($schedule->attendees && $schedule->isSoldOut()) {
-                $validator->errors()->add('schedule_id', 'All quotes on the schedule are sold out');
-            }
+           if (!$schedule->prices()->where('id', $priceId)->exists()) {
+               $validator->errors()->add('price_id', 'Price does not belong to the schedule');
+           }
 
-            if (!$schedule->prices()->where('id', $priceId)->exists()) {
-                $validator->errors()->add('price_id', 'Price does not belong to the schedule');
-            }
-
-            if($bookingsCount >= $price->number_available){
-                $validator->errors()->add('price_id', 'All schedules for that price were sold out');
-            }
-        });
-    }
+           if($bookingsCount >= $price->number_available){
+               $validator->errors()->add('price_id', 'All schedules for that price were sold out');
+           }
+       });
+   }
 
     protected function validateAvailabilities($validator): void {
         $availabilitiesRequest = $this->get('availabilities');

@@ -41,7 +41,8 @@ class PurchaseTransformer extends Transformer {
             'deleted_at'     => $purchase->deleted_at,
             'is_deposit'     => $purchase->is_deposit,
             'deposit_amount' => $purchase->deposit_amount,
-            'stripe_id'      => $purchase->stripe_id
+            'stripe_id'      => $purchase->stripe_id,
+            'amount'         => $purchase->amount
         ];
     }
 

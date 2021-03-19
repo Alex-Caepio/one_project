@@ -28,7 +28,8 @@ class Purchase extends Model {
         'deleted_at',
         'is_deposit',
         'deposit_amount',
-        'stripe_id'
+        'stripe_id',
+        'amount'
     ];
 
     /**
