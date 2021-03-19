@@ -140,7 +140,7 @@ class ScheduleController extends Controller
                 'freeze_at'   => $time,
                 'user_id'     => Auth::id(),
                 'schedule_id' => $schedule->id,
-                'quantity'    => $request->get('quantity') ?? 1,
+                'quantity'    => $request->get('amount') ?? 1,
                 'price_id'    => $request->price_id
             ]);
             $freeze->save();
