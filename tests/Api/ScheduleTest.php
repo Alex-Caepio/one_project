@@ -438,6 +438,35 @@ class ScheduleTest extends TestCase {
         self::assertCount(3, $schedule->schedule_files);
     }
 
+    public function test_availability_dates_listing(): void{
+
+        $stripeProduct = $this->creteStripeProduct();
+        $service =
+            Service::factory()->create([
+                'stripe_id'       => $stripeProduct->id,
+                'user_id'         => $this->user->id
+            ]);
+        $schedule = Schedule::factory()->create([
+            'service_id' => $service->id,
+            'attendees'  => 1
+        ]);
+
+        ScheduleAvailability::factory()->create([
+            'schedule_id' => $schedule->id,
+            'days'        => 'monday',
+            'start_time'  => '10:00:00',
+            'end_time'    => '18:00:00',
+        ]);
+        ScheduleAvailability::factory()->create([
+            'schedule_id' => $schedule->id,
+            'days'        => 'weekdays',
+            'start_time'  => '10:00:00',
+            'end_time'    => '18:00:00',
+        ]);
+
+        $this->json('put', "api/schedules/{$schedule->id}/appointments-dates")->assertStatus(200);
+    }
+
     public function test_schedule_update_creates_reschedules() {
 
         $stripeProduct = $this->creteStripeProduct();
