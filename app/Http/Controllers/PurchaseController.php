@@ -122,7 +122,7 @@ class PurchaseController extends Controller {
                 'price_id'       => $price->id,
                 'service_id'     => $schedule->service->id,
                 'schedule_id'    => $schedule->id,
-                'payment_intent' => $paymentIntent->id,
+                'payment_intent' => $paymentIntent ? $paymentIntent->id : null,
                 'payment_method' => $payment_method_id,
                 'amount'         => $request->amount,
                 'message'        => $e->getMessage(),
