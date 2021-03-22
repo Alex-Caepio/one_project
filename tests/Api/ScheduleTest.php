@@ -439,7 +439,7 @@ class ScheduleTest extends TestCase {
     }
 
     public function test_availability_dates_listing(): void{
-
+        Event::fake();
         $stripeProduct = $this->creteStripeProduct();
         $service =
             Service::factory()->create([
@@ -448,8 +448,14 @@ class ScheduleTest extends TestCase {
             ]);
         $schedule = Schedule::factory()->create([
             'service_id' => $service->id,
-            'attendees'  => 1
+            'attendees'  => 1,
+            'buffer_time' => 30,
         ]);
+        Booking::factory()->create([
+            'schedule_id' => $schedule->id,
+            'datetime_from' => '2021-03-22 11:00:00',
+            'datetime_to' => '2021-03-22 12:00:00',
+            ]);
 
         ScheduleAvailability::factory()->create([
             'schedule_id' => $schedule->id,
@@ -464,7 +470,8 @@ class ScheduleTest extends TestCase {
             'end_time'    => '18:00:00',
         ]);
 
-        $this->json('put', "api/schedules/{$schedule->id}/appointments-dates")->assertStatus(200);
+        $response = $this->json('get', "api/schedules/{$schedule->id}/appointments-dates/2021-03-22");
+        $response->assertStatus(200);
     }
 
     public function test_schedule_update_creates_reschedules() {

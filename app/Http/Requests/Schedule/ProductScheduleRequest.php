@@ -25,7 +25,7 @@ class ProductScheduleRequest extends GenericSchedule
             'title'              => 'required|string|min:5',
             'prices'             => 'required|array',
             'prices.*.name'      => 'required',
-            'prices.*.cost'      => 'required',
+//            'prices.*.cost'      => 'required',
             'prices.*.is_free'   => 'required',
             'prices.*.available_till' => 'before:end_date',
 

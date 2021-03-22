@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
  * Class Schedule
  *
  * @property int     id
+ * @property int     buffer_time
  * @property Service service
  */
 class Schedule extends Model

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Actions\Schedule\CreateRescheduleRequestsOnScheduleUpdate;
+use App\Actions\Schedule\GetAvailableAppointmentTimeOnDate;
 use App\Actions\Schedule\HandlePricesUpdate;
 use App\Events\ServiceScheduleCancelled;
 use App\Events\ServiceScheduleLive;
@@ -161,38 +162,6 @@ class ScheduleController extends Controller
     }
 
     public function appointmentsOnDate(Schedule $schedule, $date) {
-        $convertedDay = mb_strtolower(Carbon::parse($date)->isoFormat('dddd'));
-        $availabilities =  $schedule->schedule_availabilities;
-        $times = [];
-
-        $weekdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday',];
-        $weekends = ['saturday', 'sunday',];
-
-        foreach ($availabilities as $availability){
-            $fromTime = $availability->start_time;
-            $toTime = $availability->end_time;
-
-            $startTime = Carbon::parse($fromTime);
-            $endTime = Carbon::parse($toTime);
-
-            if($availability->days == $convertedDay || $availability->days == 'everyday') {
-                for ($date = $startTime; $date->lte($endTime); $date->addHour()) {
-                    $times[] = $date->format('H:i:s');
-                }
-            }
-
-            if ( in_array($convertedDay, $weekends) && $availability->days == 'weekends'){
-                for ($date = $startTime; $date->lte($endTime); $date->addHour()) {
-                    $times[] = $date->format('H:i:s');
-                }
-            }
-
-            if( in_array($convertedDay, $weekdays) && $availability->days == 'weekdays')
-                for ($date = $startTime; $date->lte($endTime); $date->addHour()) {
-                    $times[] = $date->format('H:i:s');
-                }
-        }
-
-        return array_unique($times);
+        return run_action(GetAvailableAppointmentTimeOnDate::class, $schedule, $date);
     }
 }

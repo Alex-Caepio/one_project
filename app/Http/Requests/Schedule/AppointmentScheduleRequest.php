@@ -25,7 +25,7 @@ class AppointmentScheduleRequest extends GenericSchedule
             'prices'                        => 'required|array',
             'prices.*.name'                 => 'required',
             'prices.*.duration'             => 'required',
-            'prices.*.cost'                 => 'required',
+//            'prices.*.cost'                 => 'required',
             'prices.*.is_free'              => 'required',
             'prices.*.available_till'       => 'before:end_date',
 

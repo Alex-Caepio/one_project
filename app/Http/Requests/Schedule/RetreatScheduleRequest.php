@@ -33,7 +33,7 @@ class RetreatScheduleRequest extends GenericSchedule
             'refund_terms'       => 'required',
             'prices'             => 'required|array',
             'prices.*.name'      => 'required',
-            'prices.*.cost'      => 'required',
+//            'prices.*.cost'      => 'required',
             'prices.*.is_free'   => 'required',
             'prices.*.available_till' => 'before:end_date',
 

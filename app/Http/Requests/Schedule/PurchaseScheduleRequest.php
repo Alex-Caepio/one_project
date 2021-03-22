@@ -31,7 +31,7 @@ class PurchaseScheduleRequest extends Request implements CreateScheduleInterface
         $idValue = $this->schedule->prices->pluck('id');
 
         $rules = [
-            'price_id' => 'required_if:is_free,false|exists:prices,id',
+            'price_id' => 'required|exists:prices,id',
             Rule::in($idValue),
             'amount'   => 'required'
         ];
