@@ -104,7 +104,7 @@ class PurchaseController extends Controller {
 
             $paymentIntent = $stripe->paymentIntents->create([
                                                                  'amount'               => $cost * 100,
-                                                                 'currency'             => $price->name,
+                                                                 'currency'             => config('app.platform_currency'),
                                                                  'payment_method_types' => ['card'],
                                                                  'customer'             => Auth::user()->stripe_customer_id,
                                                                  'payment_method'       => $payment_method_id
