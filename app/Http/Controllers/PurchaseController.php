@@ -98,7 +98,7 @@ class PurchaseController extends Controller {
 
         ScheduleFreeze::where('schedule_id', $schedule->id)->where('user_id', $request->user()->id)->delete();
 
-        
+        $paymentIntent = null;
         try {
             $payment_method_id = run_action(GetViablePaymentMethod::class, $practitoner, $request->payment_method_id);
 
@@ -122,7 +122,7 @@ class PurchaseController extends Controller {
                 'price_id'       => $price->id,
                 'service_id'     => $schedule->service->id,
                 'schedule_id'    => $schedule->id,
-                'payment_intent' => $paymentIntent ? $paymentIntent->id : null,
+                'payment_intent' => $paymentIntent->id ?? null,
                 'payment_method' => $payment_method_id,
                 'amount'         => $request->amount,
                 'message'        => $e->getMessage(),
@@ -140,7 +140,7 @@ class PurchaseController extends Controller {
                 'price_id'       => $price->id,
                 'service_id'     => $schedule->service->id,
                 'schedule_id'    => $schedule->id,
-                'payment_intent' => $paymentIntent->id,
+                'payment_intent' => $paymentIntent->id ?? null,
                 'payment_method' => $payment_method_id,
                 'amount'         => $request->amount,
             ]);
@@ -153,7 +153,7 @@ class PurchaseController extends Controller {
                 'price_id'       => $price->id,
                 'service_id'     => $schedule->service->id,
                 'schedule_id'    => $schedule->id,
-                'payment_intent' => $paymentIntent->id,
+                'payment_intent' => $paymentIntent->id ?? null,
                 'payment_method' => $payment_method_id,
                 'amount'         => $request->amount,
                 'message'        => $e->getMessage(),
@@ -174,15 +174,6 @@ class PurchaseController extends Controller {
 
         return response(null, 200);
 
-//        if ($schedule->isSoldOut()){
-//            $stripe->charges->create([
-//                'amount' => $newSchedule,
-//                'currency' => 'usd',
-//                'customer' => $user->stripe_id,
-//                'description' => 'My First Test Charge (created for API docs)',
-//            ]);
-//            $schedule->users()->save($user);
-//        }
     }
 
     public function validatePromocode(ValidatePromocodeRequest $request, Schedule $schedule) {
