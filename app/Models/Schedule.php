@@ -86,20 +86,19 @@ class Schedule extends Model
         return $this->belongsToMany(User::class);
     }
 
-    public function isSoldOut()
-    {
+    public function isSoldOut(): bool {
         $time = Carbon::now()->subMinutes(15);
         $purchased = Booking::where('schedule_id', $this->id)->count();
-        $personalFreezed = ScheduleFreeze::where('schedule_id', $this->id)
-            ->where('user_id', Auth::id())
-            ->where('freeze_at', '>', $time->toDateTimeString())->count();
-        $freezed = ScheduleFreeze::where('schedule_id', $this->id)
-            ->where('freeze_at', '>', $time->toDateTimeString())->count();
+        $personalFreezed = ScheduleFreeze::where('schedule_id', $this->id)->where('user_id', Auth::id())
+                                         ->where('freeze_at', '>', $time->toDateTimeString())->count();
+        $freezed = ScheduleFreeze::where('schedule_id', $this->id)->where('freeze_at', '>', $time->toDateTimeString())
+                                 ->count();
+
         if (isset($personalFreezed)) {
-            return (bool)$this->attendees <= $purchased + $freezed - $personalFreezed;
-        } else {
-            return (bool)$this->attendees <= $purchased + $freezed;
+            return $this->attendees <= ($purchased + $freezed - $personalFreezed);
         }
+
+        return $this->attendees <= ($purchased + $freezed);
 
     }
 

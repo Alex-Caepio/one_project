@@ -688,7 +688,8 @@ To: {{schedule_end_date}}, {{schedule_end_time}}<br/>
 Location: {{schedule_hosting_url}} {{schedule_venue_name}} {{schedule_venue_address}} {{schedule_city}}, {{schedule_postcode}}, {{schedule_country}}<br/>
 You can either Accept or Decline this change. This will not impact the price you have paid for the service.
 If you Decline, your booking will be cancelled and you will be refunded in full.
-Please note, if you do not reply, this will be considered as accepting the change.<br/>  {{accept}} <br />{{decline}} <br/>
+Please note, if you do not reply, this will be considered as accepting the change.
+<br/>  {{accept}} <br />{{decline}} <br/>
 <a href="{{service_url}}" target="_blank">View the service</a><br/>
 <a href="{{view_booking}}" target="_blank">View My Booking</a><br/><br/>
 Thank you<br/> The {{platform_name}} Team<br/></td></tr>',
