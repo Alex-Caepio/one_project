@@ -75,7 +75,6 @@ class PurchaseController extends Controller {
                 $booking->practitioner_id = $schedule->service->user_id;
                 $booking->price_id = $request->get('price_id');
                 $booking->schedule_id = $schedule->id;
-                $booking->availability_id = $availability['availability_id'];
                 $booking->datetime_from = $availability['datetime_from'];
                 $datetimeTo = (new Carbon($booking->datetime_from))->addMinutes($price->duration);
                 $booking->datetime_to = $datetimeTo->format('Y-m-d H:i:s');
