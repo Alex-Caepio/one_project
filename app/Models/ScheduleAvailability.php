@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Log;
 
 /**
  * @property string days
@@ -33,34 +34,33 @@ class ScheduleAvailability extends Model
         return $this->fitsDay($datetime) && $this->fitsTime($datetime);
     }
 
-    public function fitsDay(string $datetime)
-    {
-        if ($this->days == 'everyday') {
+    public function fitsDay(string $datetime): bool {
+        $daysFormatted = strtolower($this->days);
+
+        if ($daysFormatted === 'everyday') {
             return true;
         }
-
         $datetime = new Carbon($datetime);
-        if ($this->days == 'weekdays' && $datetime->isWeekday()) {
+        if ($daysFormatted === 'weekdays' && $datetime->isWeekday()) {
             return true;
         }
-        if ($this->days == 'weekends' && $datetime->isWeekend()) {
+        if ($daysFormatted === 'weekends' && $datetime->isWeekend()) {
             return true;
         }
 
-        return $datetime->dayName == $this->days;
+        return strtolower($datetime->dayName) === $daysFormatted;
     }
 
-    public function fitsTime(string $datetime)
-    {
-        if ($this->start_time == $this->end_time) {
+    public function fitsTime(string $datetime): bool {
+        if ($this->start_time === $this->end_time) {
             return true;
         }
 
-        $time      = (new Carbon($datetime))->format('H:i:s');
+        $time = (new Carbon($datetime))->format('H:i:s');
         $timeStart = Carbon::createFromTimeString($this->start_time);
-        $timeEnd   = Carbon::createFromTimeString($this->end_time);
+        $timeEnd = Carbon::createFromTimeString($this->end_time);
 
-        if($timeStart->isAfter($timeEnd)){
+        if ($timeStart->isAfter($timeEnd)) {
             $timeEnd->addDay();
         }
 

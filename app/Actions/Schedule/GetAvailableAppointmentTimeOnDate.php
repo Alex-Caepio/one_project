@@ -20,9 +20,7 @@ class GetAvailableAppointmentTimeOnDate
         $this->excludeTimes($periods, $excludedTimes);
 
         $flatTimes  = $this->toTimes($periods);
-        $unqueTimes = array_unique($flatTimes);
-
-        return $unqueTimes;
+        return array_unique($flatTimes);
     }
 
     protected function getMatchingDays($day)
