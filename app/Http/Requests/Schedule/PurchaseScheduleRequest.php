@@ -72,7 +72,7 @@ class PurchaseScheduleRequest extends Request implements CreateScheduleInterface
                 $validator->errors()->add('price_id', 'Price does not belong to the schedule');
             }
 
-            if ($bookingsCount >= $price->number_available) {
+            if ($price->number_available !== null && $bookingsCount > 0 && $bookingsCount >= (int)$price->number_available) {
                 $validator->errors()->add('price_id', 'All schedules for that price were sold out');
             }
         });
