@@ -5,18 +5,17 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\PublishRequest;
 use App\Models\Schedule;
+use App\Models\User;
 use DB;
 use App\Http\Requests\Request;
 
 
-class QuoteController extends Controller
-{
-    public function quotesArticles(Request $request)
-    {
+class QuoteController extends Controller {
+    public function quotesArticles(Request $request) {
         $articlesCount = $request->user()->articles()->count();
         $article_publishing = $request->user()->plan->article_publishing;
 
-        if($request->user()->account_type == 'practitioner' && $request->user()->plan){
+        if ($request->user()->account_type === User::ACCOUNT_PRACTITIONER && $request->user()->plan) {
 
             if ($request->user()->plan->article_publishing_unlimited) {
                 $quotes = [
@@ -26,7 +25,7 @@ class QuoteController extends Controller
                     'message' => null
                 ];
 
-            } elseif($articlesCount < $article_publishing) {
+            } elseif ($articlesCount < $article_publishing) {
                 $quotes = [
                     'allowed' => true,
                     'current' => $articlesCount,
@@ -55,13 +54,12 @@ class QuoteController extends Controller
 
     }
 
-    public function quotesServices(Request $request)
-    {
+    public function quotesServices(Request $request) {
         $schedulesCount = $request->service->schedules()->count();
-        $schedulesPerService = $request->user()->plan->schedules_per_service;
 
-        if($request->user()->account_type == 'practitioner' && $request->user()->plan){
+        if ($request->user()->account_type === User::ACCOUNT_PRACTITIONER && $request->user()->plan) {
 
+            $schedulesPerService = $request->user()->plan->schedules_per_service;
             if ($request->user()->plan->schedules_per_service_unlimited) {
                 $quotes = [
                     'allowed' => true,
@@ -70,17 +68,17 @@ class QuoteController extends Controller
                     'message' => null
                 ];
 
-            } elseif( $schedulesCount < $schedulesPerService) {
+            } elseif ($schedulesCount < $schedulesPerService) {
                 $quotes = [
                     'allowed' => true,
-                    'current' =>  $schedulesCount,
+                    'current' => $schedulesCount,
                     'max'     => $schedulesPerService,
                     'message' => null
                 ];
-            } elseif ( $schedulesCount  >= $schedulesPerService) {
+            } elseif ($schedulesCount >= $schedulesPerService) {
                 $quotes = [
                     'allowed' => false,
-                    'current' =>  $schedulesCount,
+                    'current' => $schedulesCount,
                     'max'     => $schedulesPerService,
                     'message' => "You\'ve already reached your limit of {$schedulesPerService} schedules"
                 ];
@@ -91,20 +89,19 @@ class QuoteController extends Controller
         } else {
             return [
                 'allowed' => false,
-                'current' =>  $schedulesCount,
+                'current' => $schedulesCount,
                 'max'     => null,
                 'message' => 'You\'re no allowed to publish an schedules'
             ];
         }
     }
 
-    public function quotesPrices(Request $request)
-    {
+    public function quotesPrices(Request $request) {
         $schedule = Schedule::find($request->schedule);
         $pricesCount = $schedule->prices()->count();
         $pricingOptionsPerService = $request->user()->plan->pricing_options_per_service;
 
-        if($request->user()->account_type == 'practitioner' && $request->user()->plan){
+        if ($request->user()->account_type == 'practitioner' && $request->user()->plan) {
 
             if ($request->user()->plan->pricing_options_per_service_unlimited) {
                 $quotes = [
@@ -114,17 +111,17 @@ class QuoteController extends Controller
                     'message' => null
                 ];
 
-            } elseif($pricesCount  < $pricingOptionsPerService) {
+            } elseif ($pricesCount < $pricingOptionsPerService) {
                 $quotes = [
                     'allowed' => true,
-                    'current' => $pricesCount ,
+                    'current' => $pricesCount,
                     'max'     => $pricingOptionsPerService,
                     'message' => null
                 ];
-            } elseif ($pricesCount   >= $pricingOptionsPerService) {
+            } elseif ($pricesCount >= $pricingOptionsPerService) {
                 $quotes = [
                     'allowed' => false,
-                    'current' => $pricesCount ,
+                    'current' => $pricesCount,
                     'max'     => $pricingOptionsPerService,
                     'message' => "You\'ve already reached your limit of {$pricingOptionsPerService} prices"
                 ];
@@ -135,7 +132,7 @@ class QuoteController extends Controller
         } else {
             return [
                 'allowed' => false,
-                'current' => $pricesCount ,
+                'current' => $pricesCount,
                 'max'     => null,
                 'message' => 'You\'re no allowed to publish an prices'
             ];
