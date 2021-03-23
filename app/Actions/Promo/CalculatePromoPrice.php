@@ -6,13 +6,13 @@ use App\Models\Promotion;
 use App\Models\PromotionCode;
 
 class CalculatePromoPrice {
-    public function execute(PromotionCode $promo, $scheduleCost) {
+    public function execute(PromotionCode $promo, $amount, $cost) {
         $promotion = $promo->promotion;
         $promoValue = $promotion->discount_value;
-
-        return $promotion->discount_type === Promotion::TYPE_PERCENTAGE ? $scheduleCost - ($scheduleCost *
+        $total = $amount * $cost;
+        return $promotion->discount_type === Promotion::TYPE_PERCENTAGE ? $total - ($total *
                                                                                            ($promoValue /
-                                                                                            100)) : $scheduleCost -
+                                                                                            100)) : $total -
                                                                                                     $promoValue;
     }
 }

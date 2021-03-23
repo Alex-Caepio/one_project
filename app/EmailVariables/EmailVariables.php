@@ -433,14 +433,14 @@ class EmailVariables {
      * @return string
      */
     public function getAccept(): string {
-        return '';
+        return config('app.frontend_reschedule_apply').'/'.$this->event->booking->reference;
     }
 
     /**
      * @return string
      */
     public function getDecline(): string {
-        return '';
+        return config('app.frontend_reschedule_apply').'/'.$this->event->booking->reference.'/?';
     }
 
     /**

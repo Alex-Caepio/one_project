@@ -3,6 +3,7 @@
 namespace App\Http\Requests\PromotionCode;
 
 use App\Http\Requests\Request;
+use Illuminate\Validation\Rule;
 
 class ValidatePromocodeRequest extends Request {
     /**
@@ -20,8 +21,12 @@ class ValidatePromocodeRequest extends Request {
      * @return array
      */
     public function rules() {
+        $idValue = $this->schedule->prices->pluck('id');
         return [
             'promo_code' => 'required|string|min:5',
+            'price_id'   => 'required|exists:prices,id',
+            Rule::in($idValue),
+            'amount'     => 'required'
         ];
     }
 
@@ -36,8 +41,10 @@ class ValidatePromocodeRequest extends Request {
             return true;
         }
 
+        $price = $this->schedule->prices()->find($this->get('price_id'));
+
         $schedule = $this->schedule;
         $service = $this->schedule->service;
-        ValidatePromotionCode::validate($validator, $name, $service, $schedule);
+        ValidatePromotionCode::validate($validator, $name, $service, $schedule, $price->cost * $this->get('amount'));
     }
 }

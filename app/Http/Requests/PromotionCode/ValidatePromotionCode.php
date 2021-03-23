@@ -20,9 +20,10 @@ class ValidatePromotionCode {
      * @param string $promocodeName
      * @param \App\Models\Service $service
      * @param \App\Models\Schedule|null $schedule
+     * @param int $totalCost
      */
     public static function validate(Validator $validator, string $promocodeName, Service $service,
-                                    ?Schedule $schedule): void {
+                                    ?Schedule $schedule, $totalCost = 0): void {
         if (!$promoCode = PromotionCode::where('name', $promocodeName)->whereHas('promotion', function($query) {
             $query->where('status', Promotion::STATUS_ACTIVE)->where('expiry_date', '>=', date('Y-m-d H:i:s'));
         })->where('status', PromotionCode::STATUS_ACTIVE)->with(['promotion'])->first()) {
@@ -57,20 +58,20 @@ class ValidatePromotionCode {
             $validator->errors()->add('promo_code', 'You are not allowed to use this promocode');
         }
 
+        //checks below
+        if ($promotion->spend_min && $totalCost < $promotion->spend_min) {
+            $validator->errors()->add('promo_code',
+                                      'Promo eligible for services with price more than ' . $promotion->spend_min .
+                                      ' only!');
+        }
+
+        if ($promotion->spend_max && $totalCost > $promotion->spend_max) {
+            $validator->errors()->add('promo_code',
+                                      'Promo eligible for services with price less than ' . $promotion->spend_max .
+                                      ' only!');
+        }
+
         if ($schedule instanceof Schedule) {
-            //checks below
-            if ($promotion->spend_min && $schedule->cost < $promotion->spend_min) {
-                $validator->errors()->add('promo_code',
-                                          'Promo eligible for services with price more than' . $promotion->spend_min .
-                                          ' only!');
-            }
-
-            if ($promotion->spend_max && $schedule->cost > $promotion->spend_max) {
-                $validator->errors()->add('promo_code',
-                                          'Promo eligible for services with price less than ' . $promotion->spend_max .
-                                          'only!');
-            }
-
             if (Carbon::parse($promotion->valid_from) >= Carbon::parse($schedule->start_date)) {
                 $validator->errors()->add('promo_code',
                                           'This promo is only for services starting from ' . $promotion->valid_from);

@@ -5,7 +5,9 @@ namespace App\Providers;
 use App\Models\Article;
 use App\Models\Booking;
 use App\Models\Promotion;
+use App\Models\RescheduleRequest;
 use App\Models\Service;
+use App\Models\User;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
 
@@ -33,25 +35,21 @@ class RouteServiceProvider extends ServiceProvider {
      */
     public function boot() {
         Route::bind('publicArticle', function($value) {
-            return Article::published()
-                ->where('id', (int)$value)
-                ->orWhere('url', (string)$value)
-                ->whereHas('user', function($query) {
-                $query->published();
-            })->firstOrFail();
+            return Article::published()->where('id', (int)$value)->orWhere('url', (string)$value)
+                          ->whereHas('user', function($query) {
+                              $query->published();
+                          })->firstOrFail();
         });
 
         Route::bind('publicService', function($value) {
-            return Service::published()->where('id', (int)$value)->orWhere('url',(string)$value)
-                ->whereHas('user', function($query) {
-                $query->published();
-            })->firstOrFail();
+            return Service::published()->where('id', (int)$value)->orWhere('url', (string)$value)
+                          ->whereHas('user', function($query) {
+                              $query->published();
+                          })->firstOrFail();
         });
 
         Route::bind('service', function($value) {
-            return Service::where('id', $value)
-                ->orWhere('url', $value)
-                ->firstOrFail();
+            return Service::where('id', $value)->orWhere('url', $value)->firstOrFail();
         });
 
         Route::bind('promotionWithTrashed', function($value) {
@@ -59,9 +57,12 @@ class RouteServiceProvider extends ServiceProvider {
         });
 
         Route::bind('booking', function($value) {
-            return Booking::where('id', $value)
-                          ->orWhere('reference', $value)->whereNull('cancelled_at')
-                          ->firstOrFail();
+            return Booking::where('id', $value)->orWhere('reference', $value)->whereNull('cancelled_at')->firstOrFail();
+        });
+
+        Route::bind('reschedule_request', function($value) {
+            return RescheduleRequest::where('id', $value)->where('requested_by', User::ACCOUNT_PRACTITIONER)
+                                    ->firstOrFail();
         });
 
         parent::boot();

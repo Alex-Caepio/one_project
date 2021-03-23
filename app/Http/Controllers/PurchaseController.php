@@ -51,7 +51,7 @@ class PurchaseController extends Controller {
         if ($request->has('promo_code')) {
             $promo = PromotionCode::where('name', $request->get('promo_code'))->with('promotion')->first();
             if ($promo instanceof PromotionCode) {
-                $cost = run_action(CalculatePromoPrice::class, $promo, $cost);
+                $cost = run_action(CalculatePromoPrice::class, $promo, $request->amount, $price->cost);
             }
         }
         $schedule->load('service');
@@ -177,7 +177,11 @@ class PurchaseController extends Controller {
 
     public function validatePromocode(ValidatePromocodeRequest $request, Schedule $schedule) {
         $promo = PromotionCode::where('name', $request->get('promo_code'))->with('promotion')->first();
-        return fractal((object)['promocode' => $promo, 'scheduleCost' => $schedule->cost],
+        $price = $schedule->prices()->find($request->get('price_id'));
+        if (!$price) {
+            abort(500, 'Price not found');
+        }
+        return fractal((object)['promocode' => $promo, 'amount' => $request->amount, 'price' => $price->cost],
                        new PromocodeCalculateTransformer());
     }
 
