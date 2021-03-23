@@ -77,17 +77,13 @@ class GenericSchedule extends Request implements CreateScheduleInterface
         $plan = $this->user()->plan;
 
         if ($this->prices) {
-            if (!$plan->list_paid_services && $this->user()->isPractitioner()) {
-                $another = [];
-                foreach ($this->prices as $key => $value) {
-                    $another[$key]         = $value;
-                    $another[$key]['cost'] = 0;
-                }
-                $this->merge(['prices' => $another]);
-            }
-
             foreach ($this->prices as $key => $value) {
                 $another[$key] = $value;
+
+                if($another[$key]['is_free']){
+                    $another[$key]['cost'] = 0;
+                }
+
                 if (!empty($another[$key]['duration'])) {
                     list($h, $m) = explode(':', $another[$key]['duration']);
                     $another[$key]['duration'] = ($h * 60) + $m;
