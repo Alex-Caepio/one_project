@@ -3,7 +3,9 @@
 
 namespace App\EmailVariables;
 
+use App\Events\BookingConfirmation;
 use App\Models\Schedule;
+use App\Models\User;
 use App\Traits\GenerateCalendarLink;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
@@ -53,6 +55,9 @@ class EmailVariables {
         return $this->event->schedule ?? null;
     }
 
+    private function generatePersonalAccessTokenForEmail(User $user): string {
+
+    }
 
     /**
      * @return string
@@ -128,18 +133,14 @@ class EmailVariables {
      * @return string
      */
     public function getPractitioner_business_name(): string {
-        return $this->event->user->isPractitioner()
-            ? $this->event->user->business_name
-            : $this->event->practitioner->business_name;
+        return $this->event->user->isPractitioner() ? $this->event->user->business_name : $this->event->practitioner->business_name;
     }
 
     /**
      * @return string
      */
     public function getPractitioner_email_address(): string {
-        return $this->event->user->isPractitioner()
-            ? $this->event->user->email
-            : $this->event->practitioner->email;
+        return $this->event->user->isPractitioner() ? $this->event->user->email : $this->event->practitioner->email;
     }
 
     /**
@@ -433,14 +434,14 @@ class EmailVariables {
      * @return string
      */
     public function getAccept(): string {
-        return config('app.frontend_reschedule_apply').'/'.$this->event->booking->reference;
+        return config('app.frontend_reschedule_apply') . '/' . $this->event->booking->reference;
     }
 
     /**
      * @return string
      */
     public function getDecline(): string {
-        return config('app.frontend_reschedule_apply').'/'.$this->event->booking->reference.'/?';
+        return config('app.frontend_reschedule_apply') . '/' . $this->event->booking->reference . '/?';
     }
 
     /**
@@ -556,7 +557,16 @@ class EmailVariables {
      * @return string
      */
     public function getPractitioner_reschedule_message(): ?string {
-        return $this->event->reschedule->comment;
+        return $this->event instanceof BookingConfirmation
+            ? $this->event->schedule->comments
+            : $this->event->reschedule_schedule->comment;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPractitioner_message(): ?string {
+        return $this->event instanceof BookingConfirmation ? $this->event->schedule->comments : '';
     }
 
     /**
@@ -571,5 +581,6 @@ class EmailVariables {
     public function getInstalments(): string {
         return '';
     }
+
 
 }

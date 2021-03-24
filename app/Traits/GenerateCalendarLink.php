@@ -5,7 +5,6 @@ namespace App\Traits;
 
 
 use App\Models\Schedule;
-use App\Models\Service;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;

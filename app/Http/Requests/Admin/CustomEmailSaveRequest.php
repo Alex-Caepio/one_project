@@ -25,8 +25,8 @@ class CustomEmailSaveRequest extends Request {
             'from_title'    => 'string|max:255',
             'subject'       => 'required|string|max:255',
             'text'          => 'required|string',
-            'logo'          => 'string',
-            'logo_filename' => 'string',
+            'logo'          => 'nullable|string',
+            'logo_filename' => 'nullable|string',
             'delay'         => 'nullable|integer',
             'user_type'     => [
                 'required',

@@ -45,7 +45,7 @@ class PurchaseController extends Controller {
     public function purchase(PurchaseScheduleRequest $request, Schedule $schedule, StripeClient $stripe) {
         $price = $schedule->prices()->find($request->get('price_id'));
         $cost = $price->cost * $request->amount;
-        $practitoner = $schedule->service->user;
+        $practitioner = $schedule->service->user;
 
         $promo = null;
         if ($request->has('promo_code')) {
@@ -95,11 +95,9 @@ class PurchaseController extends Controller {
             $booking->save();
         }
 
-        ScheduleFreeze::where('schedule_id', $schedule->id)->where('user_id', $request->user()->id)->delete();
-
         $paymentIntent = null;
         try {
-            $payment_method_id = run_action(GetViablePaymentMethod::class, $practitoner, $request->payment_method_id);
+            $payment_method_id = run_action(GetViablePaymentMethod::class, $practitioner, $request->payment_method_id);
 
             $paymentIntent = $stripe->paymentIntents->create([
                                                                  'amount'               => $cost * 100,
@@ -131,11 +129,11 @@ class PurchaseController extends Controller {
         }
 
         try {
-            run_action(TransferFundsWithCommissions::class, $cost, $practitoner, $schedule);
+            run_action(TransferFundsWithCommissions::class, $cost, $practitioner, $schedule);
 
             Log::channel('stripe_transfer_success')->info("The practitioner received transfer", [
                 'user_id'        => $request->user()->id,
-                'practitioner'   => $practitoner->id,
+                'practitioner'   => $practitioner->id,
                 'price_id'       => $price->id,
                 'service_id'     => $schedule->service->id,
                 'schedule_id'    => $schedule->id,
@@ -148,7 +146,7 @@ class PurchaseController extends Controller {
 
             Log::channel('stripe_transfer_fail')->info("The practitioner could not received transfer", [
                 'user_id'        => $request->user()->id,
-                'practitioner'   => $practitoner->id,
+                'practitioner'   => $practitioner->id,
                 'price_id'       => $price->id,
                 'service_id'     => $schedule->service->id,
                 'schedule_id'    => $schedule->id,
@@ -160,7 +158,7 @@ class PurchaseController extends Controller {
 
             return abort(500);
         }
-
+        ScheduleFreeze::where('schedule_id', $schedule->id)->where('user_id', $request->user()->id)->delete();
         Log::channel('stripe_purchase_schedule_success')->info("Client purchase schedule", [
             'user_id'        => $request->user()->id,
             'price_id'       => $price->id,
