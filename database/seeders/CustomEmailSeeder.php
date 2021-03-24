@@ -517,7 +517,7 @@ Order Reference: {{booking_reference}} <br/>
 Cost: {{total_paid}} <br/>
 Location: {{schedule_hosting_url}} <br/>{{view_booking}} <br/>
 Message from {{practitioner_business_name}}:
-<br/>{{practitioner_schedule_message}}<br/><br/>
+<br/>{{practitioner_message}}<br/><br/>
 Your Practitioner may have also added some attachments to this email for you and should be in touch
 with you via {{platform_name}} email message to confirm further details.
  <br/><br/>Thank you <br/>The {{platform_name}}  Team<br/></td></tr>',
@@ -559,7 +559,7 @@ Location: {{schedule_hosting_url}} <br/>{{view_booking}}<br/>
 <a href="{{add_to_calendar}}" target="_blank">Add to calendar</a>
 <br/> {{see_on_map}} <br/>
  Message from {{practitioner_business_name}}:
-<br/>{{practitioner_schedule_message}}<br/><br/>
+<br/>{{practitioner_message}}<br/><br/>
 Your Practitioner may have also added some attachments to this email for you. <br/> <br/>
 Thank you  <br/> The {{platform_name}} Team <br/></td></tr>',
                 'delay'      => random_int(5, 20)
@@ -597,7 +597,7 @@ Booking Reference: {{booking_reference}}  <br/>
 Cost: {{total_paid}} <br/>
 Location: {{schedule_city}}, {{schedule_country}} <br/>
  Message from {{practitioner_business_name}}:
-<br/>{{practitioner_reschedule_message}}<br/><br/>
+<br/>{{practitioner_message}}<br/><br/>
 {{view_booking}} <br/>
 Your Practitioner may have also added some attachments to this email for you and should also be in touch with you via {{platform_name}} messaging to confirm further details.
  <br/> <br/>Thank you  <br/>The {{platform_name}} Team <br/></td></tr>',

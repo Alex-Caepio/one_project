@@ -53,7 +53,7 @@ class TransactionalEmail extends Mailable {
         $schedule = $this->emailVariables->getSchedule();
         if ($this->emailVariables->calendarPresented === true && $schedule instanceof Schedule) {
             $attachmentName = $this->emailVariables->generateIcs($schedule);
-            $this->attach(storage_path('local') . DIRECTORY_SEPARATOR . $attachmentName, [
+            $this->attach(storage_path('app') . DIRECTORY_SEPARATOR . $attachmentName, [
                 'as'   => $attachmentName,
                 'mime' => 'text/calendar',
             ]);
