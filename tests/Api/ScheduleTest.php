@@ -13,11 +13,13 @@ use App\Models\RescheduleRequest;
 use App\Models\Schedule;
 use App\Models\ScheduleAvailability;
 use App\Models\ScheduleFile;
+use App\Models\ScheduleFreeze;
 use App\Models\ScheduleHiddenFile;
 use App\Models\ScheduleUnavailability;
 use App\Models\Service;
 use App\Models\ServiceType;
 use App\Models\User;
+use Carbon\Carbon;
 use Tests\TestCase;
 use Stripe\StripeClient;
 use Illuminate\Support\Facades\Event;
@@ -453,24 +455,35 @@ class ScheduleTest extends TestCase {
         ]);
         Booking::factory()->create([
             'schedule_id' => $schedule->id,
-            'datetime_from' => '2021-03-22 11:00:00',
-            'datetime_to' => '2021-03-22 12:00:00',
+            'datetime_from' => '2021-03-24 11:00:00',
+            'datetime_to' => '2021-03-24 12:00:00',
             ]);
 
         ScheduleAvailability::factory()->create([
             'schedule_id' => $schedule->id,
-            'days'        => 'monday',
-            'start_time'  => '10:00:00',
-            'end_time'    => '18:00:00',
+            'days'        => 'wednesday',
+            'start_time'  => '00:00:00',
+            'end_time'    => '00:15:00',
         ]);
         ScheduleAvailability::factory()->create([
             'schedule_id' => $schedule->id,
             'days'        => 'weekdays',
-            'start_time'  => '10:00:00',
-            'end_time'    => '18:00:00',
+            'start_time'  => '18:00:00',
+            'end_time'    => '22:00:00',
         ]);
 
-        $response = $this->json('get', "api/schedules/{$schedule->id}/appointments-dates/2021-03-22");
+        ScheduleUnavailability::factory()->create([
+            'schedule_id' => $schedule->id,
+            'start_date'  => '2021-03-24 15:15:00',
+            'end_date'    => '2021-03-24 16:00:00',
+        ]);
+
+        ScheduleFreeze::factory()->create([
+            'schedule_id' => $schedule->id,
+            'freeze_at'  => Carbon::now()->toDateTimeString(),
+        ]);
+
+        $response = $this->json('get', "api/schedules/{$schedule->id}/appointments-dates/2021-03-24");
         $response->assertStatus(200);
     }
 

@@ -19,7 +19,7 @@ class GetAvailableAppointmentTimeOnDate
 
         $this->excludeTimes($periods, $excludedTimes);
 
-        $flatTimes  = $this->toTimes($periods);
+        $flatTimes = $this->toTimes($periods);
         return array_unique($flatTimes);
     }
 
@@ -51,7 +51,14 @@ class GetAvailableAppointmentTimeOnDate
     {
         $periods = [];
         foreach ($availabilities as $availability) {
-            $periods[] = new \Carbon\CarbonPeriod("{$date} {$availability->start_time}", self::STEP, "{$date} {$availability->end_time}");
+            $from = Carbon::parse("{$date} {$availability->start_time}");
+            $to   = Carbon::parse("{$date} {$availability->end_time}");
+
+            if ($from->greaterThanOrEqualTo($to)) {
+                $to->addDay();
+            }
+
+            $periods[] = new \Carbon\CarbonPeriod($from, self::STEP, $to);
         }
 
         return $periods;
@@ -75,11 +82,34 @@ class GetAvailableAppointmentTimeOnDate
             ->where('datetime_from', '<=', "{$date} 23:59:59")
             ->get();
 
+        $unavailabilities = $schedule->schedule_unavailabilities()
+            ->where('start_date', '>=', "{$date} 00:00:00")
+            ->where('end_date', '<=', "{$date} 23:59:59")
+            ->get();
+
+        $frozenBookings = $schedule->freezes()
+            ->where('freeze_at', '>', Carbon::now()->subMinutes(15)->toDateTimeString())
+            ->get();
+
         $excludedTimes = [];
         foreach ($bookings as $booking) {
             $excludedTimes[] = [
                 'from' => Carbon::parse($booking->datetime_from)->subMinutes($buffer)->addSecond(),
                 'to'   => Carbon::parse($booking->datetime_to)->addMinutes($buffer)->subSecond()
+            ];
+        }
+
+        foreach ($unavailabilities as $unavailability) {
+            $excludedTimes[] = [
+                'from' => Carbon::parse($unavailability->start_date)->addSecond(),
+                'to'   => Carbon::parse($unavailability->end_date)->subSecond()
+            ];
+        }
+
+        foreach ($frozenBookings as $frozenBooking) {
+            $excludedTimes[] = [
+                'from' => Carbon::parse($frozenBooking->freeze_at)->addSecond(),
+                'to'   => Carbon::parse($frozenBooking->freeze_at)->addMinutes(15)->subSecond()
             ];
         }
 
