@@ -46,7 +46,7 @@ class TransferFundsWithCommissions {
         $transfer->schedule_id = $schedule->id ?? null;
         $transfer->description = 'transfer for a schedule purchase';
         $transfer->save();
-        
+
 
         return $transfer;
     }

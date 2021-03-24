@@ -155,8 +155,6 @@ class PurchaseController extends Controller {
                 'amount'         => $request->amount,
                 'message'        => $e->getMessage(),
             ]);
-
-            return abort(500);
         }
         ScheduleFreeze::where('schedule_id', $schedule->id)->where('user_id', $request->user()->id)->delete();
         Log::channel('stripe_purchase_schedule_success')->info("Client purchase schedule", [
