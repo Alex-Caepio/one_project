@@ -22,8 +22,8 @@ class CancelManyBookingsRequest extends FormRequest
         $bookings = Booking::find($this->booking_ids);
 
         foreach ($bookings as $booking) {
-            $userBooking         = Auth::id() == $booking->user_id;
-            $practitionerBooking = Auth::id() == $booking->practitioner_id;
+            $userBooking         = Auth::id() === $booking->user_id;
+            $practitionerBooking = Auth::id() === $booking->practitioner_id;
 
             if (!$userBooking && !$practitionerBooking) {
                 return false;

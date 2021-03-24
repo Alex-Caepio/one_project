@@ -38,10 +38,10 @@ class CancellationController extends Controller {
 
     public function cancelManyBookings(CancelManyBookingsRequest $request)
     {
-        $bookings = Booking::find($this->booking_ids);
+        $bookings = Booking::find($request->get('booking_ids'));
 
         foreach ($bookings as $booking) {
-            return run_action(CancelBooking::class, $booking);
+            run_action(CancelBooking::class, $booking);
         }
 
         return response(null, 204);
