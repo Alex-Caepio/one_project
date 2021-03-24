@@ -424,10 +424,19 @@ class EmailVariables {
      * @return string
      */
     public function getSee_on_map(): string {
-        return 'https://www.google.com/maps/search/?api=1&map_action=map&query=
-        ' . $this->event->schedule->venue_name . ', ' . $this->event->schedule->venue_address . ', ' .
-               $this->event->schedule->city . ', ' . $this->event->schedule->country . ', ' .
-               $this->event->schedule->post_code;
+        $addressCollection = array_filter([
+            $this->event->schedule->venue_name,
+            $this->event->schedule->venue_address,
+            $this->event->schedule->city,
+            $this->event->schedule->country,
+            $this->event->schedule->post_code
+        ], static function(?string $value) {
+            if (!empty($value)) {
+                return trim($value);
+            }
+        });
+
+        return 'https://www.google.com/maps/search/?api=1&map_action=map&query=' . implode(', ', $addressCollection);
     }
 
     /**

@@ -26,10 +26,10 @@ class ScheduleFreezesByCron extends Command {
     /**
      * Execute the console command.
      *
-     * @return int
+     * @return void
      */
-    public function handle() {
+    public function handle(): void {
         $deletedCount = ScheduleFreeze::where('freeze_at', '<', Carbon::now()->subMinutes(15))->delete();
-        Log::info(__METHOD__ . ': Freeze delete ' . $deletedCount);
+        $this->comment(__METHOD__ . ': Freeze delete ' . $deletedCount);
     }
 }
