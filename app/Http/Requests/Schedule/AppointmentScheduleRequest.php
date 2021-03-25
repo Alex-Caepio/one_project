@@ -23,9 +23,9 @@ class AppointmentScheduleRequest extends GenericSchedule
     {
         if($this->is_published == false){
             return [
-                'prices'                        => 'array',
-                'prices.*.available_till'       => 'before:end_date',
-                'schedule_availabilities'       => 'array',
+                'prices'                        => 'nullable',
+                'prices.*.available_till'       => 'nullable',
+                'schedule_availabilities'       => 'nullable',
             ];
         } else {
             return [

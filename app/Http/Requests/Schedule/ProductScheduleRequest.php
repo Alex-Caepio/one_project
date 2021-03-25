@@ -23,9 +23,9 @@ class ProductScheduleRequest extends GenericSchedule
     {
         if($this->is_published == false) {
             return [
-                'title' => 'string|min:5',
-                'prices' => 'array',
-                'prices.*.available_till' => 'before:end_date',
+                'title' => 'nullable',
+                'prices' => 'nullable',
+                'prices.*.available_till' => 'nullable',
             ];
         } else {
             return [

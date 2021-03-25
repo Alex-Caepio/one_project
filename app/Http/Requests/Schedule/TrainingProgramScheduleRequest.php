@@ -23,10 +23,10 @@ class TrainingProgramScheduleRequest extends GenericSchedule
     {
         if($this->is_published == false) {
             return [
-                'title' => 'string|min:5',
-                'location_displayed' => 'string',
-                'prices' => 'array',
-                'prices.*.available_till' => 'before:end_date',
+                'title' => 'nullable',
+                'location_displayed' => 'nullable',
+                'prices' => 'nullable',
+                'prices.*.available_till' => 'nullable',
             ];
         } else {
             return [

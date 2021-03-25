@@ -49,21 +49,21 @@ class WorkshopScheduleRequest extends GenericSchedule
             ];
         } else {
             return [
-                'title' => 'string|min:5',
-                'promo_code' => 'string|min:5',
-                'service_id' => 'integer',
-                'location_id' => 'integer',
-                'start_date' => 'date|after:today',
-                'end_date' => 'date|after:today',
-                'attendees' => 'integer',
-                'cost' => 'integer',
-                'comments' => 'nullable|string',
-                'venue_address' => 'max:255',
-                'city' => 'string',
-                'country' => 'string',
-                'location_displayed' => 'string',
-                'prices' => 'array',
-                'prices.*.available_till' => 'before:end_date',
+                'title' => 'nullable',
+                'promo_code' => 'nullable',
+                'service_id' => 'nullable',
+                'location_id' => 'nullable',
+                'start_date' => 'nullable',
+                'end_date' => 'nullable',
+                'attendees' => 'nullable',
+                'cost' => 'nullable',
+                'comments' => 'nullable',
+                'venue_address' => 'nullable',
+                'city' => 'nullable',
+                'country' => 'nullable',
+                'location_displayed' => 'nullable',
+                'prices' => 'nullable',
+                'prices.*.available_till' => 'nullable',
             ];
         }
     }

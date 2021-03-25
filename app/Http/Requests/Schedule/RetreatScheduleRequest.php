@@ -23,16 +23,16 @@ class RetreatScheduleRequest extends GenericSchedule
     {
         if($this->is_published == false) {
             return [
-                'title' => 'string|min:5',
-                'start_date' => 'date|after:today',
-                'end_date' => 'date|after:today',
-                'venue_address' => 'max:255',
-                'city' => 'string',
-                'country' => 'string',
-                'location_displayed' => 'string',
-                'attendees' => 'integer',
-                'prices' => 'array',
-                'prices.*.available_till' => 'before:end_date',
+                'title' => 'nullable',
+                'start_date' => 'nullable',
+                'end_date' => 'nullable',
+                'venue_address' => 'nullable',
+                'city' => 'nullable',
+                'country' => 'nullable',
+                'location_displayed' => 'nullable',
+                'attendees' => 'nullable',
+                'prices' => 'nullable',
+                'prices.*.available_till' => 'nullable',
             ];
         } else {
             return [
