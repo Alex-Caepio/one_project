@@ -15,8 +15,8 @@ class DeclineRescheduleRequestRequest extends FormRequest {
      */
     public function authorize() {
         return $this->requested_by === User::ACCOUNT_PRACTITIONER
-            ? $this->booking->user_id === Auth::id()
-            : $this->booking->practitioner_id === Auth::id();
+            ? $this->rescheduleRequest->user_id === Auth::id()
+            : $this->rescheduleRequest->booking->practitioner_id === Auth::id();
     }
 
     /**
