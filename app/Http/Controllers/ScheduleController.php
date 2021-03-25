@@ -25,7 +25,15 @@ class ScheduleController extends Controller
 {
     public function index(Service $service, Request $request)
     {
-        $schedule = Schedule::all()->where('service_id', $service->id)->where('is_published', true);
+        $schedule = Schedule::query()->where('service_id', $service->id)
+            ->join('services', function($join)
+            {
+                $join->on('services.id', '=', 'schedules.service_id');
+            })
+            ->where('schedules.is_published', true)
+            ->orWhere('services.user_id', Auth::id())
+            ->get();
+
         return fractal($schedule, new ScheduleTransformer())
             ->parseIncludes($request->getIncludes())
             ->toArray();
@@ -193,6 +201,33 @@ class ScheduleController extends Controller
                 $scheduleUnavailabilitieCopy->save();
             }
         }
+        return response(null, 204);
+    }
+
+    public function copySchedule(Schedule $schedule) {
+
+        $scheduleCopy = $schedule->replicate();
+        $scheduleCopy->title = "{$schedule->title} (copy)";
+        $scheduleCopy->save();
+
+            foreach ($schedule->prices as $price) {
+                $priceCopy = $price->replicate();
+                $priceCopy->schedule_id = $scheduleCopy->id;
+                $priceCopy->save();
+            }
+
+            foreach($schedule->schedule_availabilities as $scheduleAvailabilitie) {
+                $scheduleAvailabilitieCopy = $scheduleAvailabilitie->replicate();
+                $scheduleAvailabilitieCopy->schedule_id = $scheduleCopy->id;
+                $scheduleAvailabilitieCopy->save();
+            }
+
+            foreach($schedule->schedule_unavailabilities as $scheduleUnavailabilitie) {
+                $scheduleUnavailabilitieCopy = $scheduleUnavailabilitie->replicate();
+                $scheduleUnavailabilitieCopy->schedule_id = $scheduleCopy->id;
+                $scheduleUnavailabilitieCopy->save();
+            }
+
         return response(null, 204);
     }
 }
