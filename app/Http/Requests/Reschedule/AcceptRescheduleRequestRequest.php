@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Reschedule;
 
 use App\Models\Schedule;
+use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
@@ -13,11 +14,10 @@ class AcceptRescheduleRequestRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
-    {
-            return $this->requested_by == 'practitioner'
-                ? $this->booking->user_id == Auth::id()
-                : $this->booking->service->user->id == Auth::id();
+    public function authorize()  {
+            return $this->requested_by === User::ACCOUNT_PRACTITIONER
+                ? $this->booking->user_id === Auth::id()
+                : $this->booking->practitioner === Auth::id();
     }
 
     /**

@@ -3,21 +3,20 @@
 namespace App\Http\Requests\Reschedule;
 
 use App\Models\Schedule;
+use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
-class DeclineRescheduleRequestRequest extends FormRequest
-{
+class DeclineRescheduleRequestRequest extends FormRequest {
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
-    public function authorize()
-    {
-        return $this->requested_by == 'practitioner'
-            ? $this->booking->user_id == Auth::id()
-            : $this->booking->service->user->id == Auth::id();
+    public function authorize() {
+        return $this->requested_by === User::ACCOUNT_PRACTITIONER
+            ? $this->booking->user_id === Auth::id()
+            : $this->booking->practitioner_id === Auth::id();
     }
 
     /**
@@ -25,8 +24,7 @@ class DeclineRescheduleRequestRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
-    {
+    public function rules() {
         return [];
     }
 }
