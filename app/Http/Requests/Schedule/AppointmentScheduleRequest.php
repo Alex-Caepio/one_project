@@ -21,30 +21,39 @@ class AppointmentScheduleRequest extends GenericSchedule
      */
     public function rules()
     {
-        return [
-            'prices'                        => 'required|array',
-            'prices.*.name'                 => 'required',
-            'prices.*.duration'             => 'required',
-//            'prices.*.cost'                 => 'required',
-            'prices.*.is_free'              => 'required',
-            'prices.*.available_till'       => 'before:end_date',
+        if($this->is_published == false){
+            return [
+                'prices'                        => 'array',
+                'prices.*.available_till'       => 'before:end_date',
+                'schedule_availabilities'       => 'array',
+            ];
+        } else {
+            return [
+                'prices'                        => 'required|array',
+                'prices.*.name'                 => 'required',
+                'prices.*.duration'             => 'required',
+                'prices.*.cost'                 => 'required_if:prices.*.is_free,false',
+                'prices.*.is_free'              => 'required',
+                'prices.*.available_till'       => 'before:end_date',
 
-            'notice_min_time'               => 'required',
-            'notice_min_period'             => 'required',
-            'buffer_time'                   => 'required',
+                'notice_min_time'               => 'required',
+                'notice_min_period'             => 'required',
+                'buffer_time'                   => 'required',
 
-            'schedule_availabilities.*.days'         => 'required_with:schedule_availabilities',
-            'schedule_availabilities.*.start_time'   => 'required_with:schedule_availabilities',
-            'schedule_availabilities.*.end_time'     => 'required_with:schedule_availabilities',
+                'schedule_availabilities.*.days'         => 'required_with:schedule_availabilities',
+                'schedule_availabilities.*.start_time'   => 'required_with:schedule_availabilities',
+                'schedule_availabilities.*.end_time'     => 'required_with:schedule_availabilities',
 
-            'schedule_unavailabilities.*.start_date' => 'required_with:schedule_unavailabilities',
-            'schedule_unavailabilities.*.end_date'   => 'required_with:schedule_unavailabilities',
+                'schedule_unavailabilities.*.start_date' => 'required_with:schedule_unavailabilities',
+                'schedule_unavailabilities.*.end_date'   => 'required_with:schedule_unavailabilities',
 
-            'schedule_availabilities'                => 'required|array',
+                'schedule_availabilities'                => 'required|array',
 
-            'deposit_amount'                => 'required_if:deposit_accepted,true',
-            'deposit_final_date'            => 'required_if:deposit_accepted,true',
-        ];
+                'deposit_amount'                => 'required_if:deposit_accepted,true',
+                'deposit_final_date'            => 'required_if:deposit_accepted,true',
+            ];
+        }
+
     }
 
     public function messages()

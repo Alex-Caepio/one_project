@@ -25,7 +25,7 @@ class ScheduleController extends Controller
 {
     public function index(Service $service, Request $request)
     {
-        $schedule = Schedule::all()->where('service_id', $service->id);
+        $schedule = Schedule::all()->where('service_id', $service->id)->where('is_published', true);
         return fractal($schedule, new ScheduleTransformer())
             ->parseIncludes($request->getIncludes())
             ->toArray();
@@ -129,7 +129,8 @@ class ScheduleController extends Controller
         return response([$amountTotal, $amount_left, $amountBought, $amountFreezed]);
     }
 
-    public function freeze(Schedule $schedule, PurchaseScheduleRequest $request) {
+    public function freeze(Schedule $schedule, PurchaseScheduleRequest $request)
+    {
         $personalFreezed = ScheduleFreeze::where('schedule_id', $schedule->id)
             ->where('user_id', Auth::id())->first();
 
@@ -162,5 +163,36 @@ class ScheduleController extends Controller
 
     public function appointmentsOnDate(Schedule $schedule, $date) {
         return run_action(GetAvailableAppointmentTimeOnDate::class, $schedule, $date);
+    }
+
+    public function copy(Service $service) {
+        $serviceCopy = $service->replicate();
+        $serviceCopy->title = "{$service->title} (copy)";
+        $serviceCopy->save();
+
+        foreach($service->schedules as $schedule) {
+            $scheduleCopy = $schedule->replicate();
+            $scheduleCopy->service_id = $serviceCopy->id;
+            $scheduleCopy->save();
+
+            foreach ($schedule->prices as $price) {
+                $priceCopy = $price->replicate();
+                $priceCopy->schedule_id = $scheduleCopy->id;
+                $priceCopy->save();
+            }
+
+            foreach($schedule->schedule_availabilities as $scheduleAvailabilitie) {
+                $scheduleAvailabilitieCopy = $scheduleAvailabilitie->replicate();
+                $scheduleAvailabilitieCopy->schedule_id = $scheduleCopy->id;
+                $scheduleAvailabilitieCopy->save();
+            }
+
+            foreach($schedule->schedule_unavailabilities as $scheduleUnavailabilitie) {
+                $scheduleUnavailabilitieCopy = $scheduleUnavailabilitie->replicate();
+                $scheduleUnavailabilitieCopy->schedule_id = $scheduleCopy->id;
+                $scheduleUnavailabilitieCopy->save();
+            }
+        }
+        return response(null, 204);
     }
 }

@@ -65,6 +65,7 @@ class Schedule extends Model
         'venue_address',
         'within_kilometers',
         'deleted_at',
+        'is_published'
     ];
 
     public function location()

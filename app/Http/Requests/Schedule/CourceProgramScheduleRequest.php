@@ -21,18 +21,27 @@ class CourceProgramScheduleRequest extends GenericSchedule
      */
     public function rules()
     {
-        return [
-            'title'              => 'required|string|min:5',
-            'location_displayed' => 'required|string',
-            'prices'             => 'required|array',
-            'prices.*.name'      => 'required',
-//            'prices.*.cost'      => 'required',
-            'prices.*.is_free'   => 'required',
-            'prices.*.available_till' => 'before:end_date',
+        if($this->is_published == false) {
+            return [
+                'title' => 'string|min:5',
+                'location_displayed' => 'string',
+                'prices' => 'array',
+                'prices.*.available_till' => 'before:end_date',
+            ];
+        } else {
+            return [
+                'title' => 'required|string|min:5',
+                'location_displayed' => 'required|string',
+                'prices' => 'required|array',
+                'prices.*.name' => 'required',
+                'prices.*.cost' => 'required_if:prices.*.is_free,false',
+                'prices.*.is_free' => 'required',
+                'prices.*.available_till' => 'before:end_date',
 
-            'deposit_amount'     => 'required_if:deposit_accepted,true',
-            'deposit_final_date' => 'required_if:deposit_accepted,true',
-        ];
+                'deposit_amount' => 'required_if:deposit_accepted,true',
+                'deposit_final_date' => 'required_if:deposit_accepted,true',
+            ];
+        }
     }
 
     public function messages()

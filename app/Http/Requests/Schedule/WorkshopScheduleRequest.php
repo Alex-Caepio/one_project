@@ -21,31 +21,51 @@ class WorkshopScheduleRequest extends GenericSchedule
      */
     public function rules()
     {
-        return [
-            'title'              => 'required|string|min:5',
-            'promo_code'         => 'string|min:5',
-            'service_id'         => 'integer',
-            'location_id'        => 'integer',
-            'start_date'         => 'required|date|after:today',
-            'end_date'           => 'required|date|after:today',
-            'attendees'          => 'required|integer',
-            'cost'               => 'integer',
-            'comments'           => 'nullable|string',
-            'venue_address'      => 'required_if:appointment,physical|max:255',
-            'city'               => 'required_if:appointment,physical|required|string',
-            'country'            => 'required_if:appointment,physical|string',
-            'location_displayed' => 'required|string',
-            'post_code'          => 'required_if:appointment,physical|required',
-            'refund_terms'       => 'required',
-            'prices'             => 'required|array',
-            'prices.*.name'      => 'required',
-//            'prices.*.cost'      => 'required',
-            'prices.*.is_free'   => 'required',
-            'prices.*.available_till' => 'before:end_date',
+        if($this->is_published == false) {
+            return [
+                'title' => 'required|string|min:5',
+                'promo_code' => 'string|min:5',
+                'service_id' => 'integer',
+                'location_id' => 'integer',
+                'start_date' => 'required|date|after:today',
+                'end_date' => 'required|date|after:today',
+                'attendees' => 'required|integer',
+                'cost' => 'integer',
+                'comments' => 'nullable|string',
+                'venue_address' => 'required_if:appointment,physical|max:255',
+                'city' => 'required_if:appointment,physical|required|string',
+                'country' => 'required_if:appointment,physical|string',
+                'location_displayed' => 'required|string',
+                'post_code' => 'required_if:appointment,physical|required',
+                'refund_terms' => 'required',
+                'prices' => 'required|array',
+                'prices.*.name' => 'required',
+                'prices.*.cost' => 'required_if:prices.*.is_free,false',
+                'prices.*.is_free' => 'required',
+                'prices.*.available_till' => 'before:end_date',
 
-            'deposit_amount'     => 'required_if:deposit_accepted,true',
-            'deposit_final_date' => 'required_if:deposit_accepted,true',
-        ];
+                'deposit_amount' => 'required_if:deposit_accepted,true',
+                'deposit_final_date' => 'required_if:deposit_accepted,true',
+            ];
+        } else {
+            return [
+                'title' => 'string|min:5',
+                'promo_code' => 'string|min:5',
+                'service_id' => 'integer',
+                'location_id' => 'integer',
+                'start_date' => 'date|after:today',
+                'end_date' => 'date|after:today',
+                'attendees' => 'integer',
+                'cost' => 'integer',
+                'comments' => 'nullable|string',
+                'venue_address' => 'max:255',
+                'city' => 'string',
+                'country' => 'string',
+                'location_displayed' => 'string',
+                'prices' => 'array',
+                'prices.*.available_till' => 'before:end_date',
+            ];
+        }
     }
 
     public function messages()
