@@ -432,7 +432,7 @@ class EmailVariables {
             $this->event->schedule->post_code
         ], static function(?string $value) {
             if (!empty($value)) {
-                return trim($value);
+                return str_replace(' ', '+', trim($value));
             }
         });
 
