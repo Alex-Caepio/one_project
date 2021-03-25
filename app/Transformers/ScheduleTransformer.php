@@ -63,7 +63,7 @@ class ScheduleTransformer extends Transformer
             'venue_address'                 => $schedule->venue_address,
             'within_kilometers'             => $schedule->within_kilometers,
             'deleted_at'                    => $schedule->deleted_at,
-            'is_published'                  => $schedule->is_published,
+            'is_published'                  => (bool)$schedule->is_published,
         ];
     }
 
