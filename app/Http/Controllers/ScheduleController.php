@@ -9,6 +9,7 @@ use App\Events\ServiceScheduleCancelled;
 use App\Events\ServiceScheduleLive;
 use App\Http\Requests\Schedule\PurchaseScheduleRequest;
 use App\Http\Requests\Schedule\GenericUpdateSchedule;
+use App\Models\Price;
 use App\Models\Service;
 use App\Models\Schedule;
 use App\Models\ScheduleUser;
@@ -173,8 +174,8 @@ class ScheduleController extends Controller
         return response(null, 204);
     }
 
-    public function appointmentsOnDate(Schedule $schedule, $date) {
-        return run_action(GetAvailableAppointmentTimeOnDate::class, $schedule, $date);
+    public function appointmentsOnDate(Price $price, $date) {
+        return run_action(GetAvailableAppointmentTimeOnDate::class, $price, $date);
     }
 
     public function copy(Service $service) {

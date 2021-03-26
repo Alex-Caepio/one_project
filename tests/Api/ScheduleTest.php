@@ -453,6 +453,10 @@ class ScheduleTest extends TestCase {
             'attendees'  => 1,
             'buffer_time' => 30,
         ]);
+        $price = Price::factory()->create([
+            'duration' => 60,
+            'schedule_id' => $schedule->id
+        ]);
         Booking::factory()->create([
             'schedule_id' => $schedule->id,
             'datetime_from' => '2021-03-24 11:00:00',
@@ -462,8 +466,8 @@ class ScheduleTest extends TestCase {
         ScheduleAvailability::factory()->create([
             'schedule_id' => $schedule->id,
             'days'        => 'wednesday',
-            'start_time'  => '00:00:00',
-            'end_time'    => '00:15:00',
+            'start_time'  => '08:00:00',
+            'end_time'    => '17:15:00',
         ]);
         ScheduleAvailability::factory()->create([
             'schedule_id' => $schedule->id,
@@ -483,7 +487,7 @@ class ScheduleTest extends TestCase {
             'freeze_at'  => Carbon::now()->toDateTimeString(),
         ]);
 
-        $response = $this->json('get', "api/schedules/{$schedule->id}/appointments-dates/2021-03-24");
+        $response = $this->json('get', "api/prices/{$price->id}/appointments-dates/2021-03-24");
         $response->assertStatus(200);
     }
 
