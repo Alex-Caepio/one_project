@@ -31,8 +31,10 @@ class ScheduleController extends Controller
             {
                 $join->on('services.id', '=', 'schedules.service_id');
             })
-            ->where('schedules.is_published', true)
-            ->orWhere('services.user_id', Auth::id())
+            ->where(function($q){
+                $q->where('schedules.is_published', true)
+                    ->orWhere('services.user_id', Auth::id());
+            })
             ->groupBy('schedules.id')
             ->get();
 
