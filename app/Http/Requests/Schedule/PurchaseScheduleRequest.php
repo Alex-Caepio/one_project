@@ -50,10 +50,17 @@ class PurchaseScheduleRequest extends Request implements CreateScheduleInterface
 
        $validator->after(function($validator) {
            $schedule = $this->schedule;
-           $priceId = $this->price_id;
+           $price = $schedule->prices()->where('id', $this->price_id)->first();
+
+           if (!$price) {
+               $validator->errors()->add('price_id', 'Price does not belong to the schedule');
+           }
 
            $bookingsCount = Booking::where('price_id', $this->price_id)->count();
-           $price = Price::find($this->price_id);
+
+           if($bookingsCount > 0 && $price->number_available !== null && $bookingsCount >= (int)$price->number_available){
+               $validator->errors()->add('price_id', 'All schedules for that price were sold out');
+           }
 
            if ($this->has('availabilities')) {
                $this->validateAvailabilities($validator);
@@ -67,13 +74,6 @@ class PurchaseScheduleRequest extends Request implements CreateScheduleInterface
                $validator->errors()->add('schedule_id', 'All quotes on the schedule are sold out');
            }
 
-           if (!$schedule->prices()->where('id', $priceId)->exists()) {
-               $validator->errors()->add('price_id', 'Price does not belong to the schedule');
-           }
-
-           if($bookingsCount >= $price->number_available){
-               $validator->errors()->add('price_id', 'All schedules for that price were sold out');
-           }
        });
    }
 
