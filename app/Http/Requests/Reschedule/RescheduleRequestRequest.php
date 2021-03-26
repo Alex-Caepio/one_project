@@ -21,9 +21,11 @@ class RescheduleRequestRequest extends FormRequest {
                    ($loggedUser->isClient() && $this->booking->user_id === $loggedUser->id);
         }
 
-        if ($this->filled('booking_ids') && $loggedUser->isPractitioner()) {
-            return count($this->get('booking_ids')) === Booking::where('practitioner_id', $loggedUser->id)
-                                                               ->whereIn('id', $this->get('booking_ids'))->count();
+        if ($this->filled('booking_ids')) {
+            $countBookings = count($this->get('booking_ids'));
+            $fieldName = $loggedUser->isPractitioner() ? 'practitioner_id' : 'user_id';
+            return $countBookings ===
+                   Booking::where($fieldName, $loggedUser->id)->whereIn('id', $this->get('booking_ids'))->count();
         }
         return false;
     }
@@ -42,10 +44,10 @@ class RescheduleRequestRequest extends FormRequest {
 
     public function withValidator($validator): void {
         $validator->after(function($validator) {
-            if ($this->booking && $this->booking->schedule->service->id !==
-                    Schedule::find($this->get('new_schedule_id'))->service->id) {
-                    $validator->errors()->add('new_schedule_id', 'This schedule does not belong to the service.');
-                }
+            if ($this->booking &&
+                $this->booking->schedule->service->id !== Schedule::find($this->get('new_schedule_id'))->service->id) {
+                $validator->errors()->add('new_schedule_id', 'This schedule does not belong to the service.');
+            }
         });
     }
 }
