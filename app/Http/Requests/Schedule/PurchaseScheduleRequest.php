@@ -67,7 +67,8 @@ class PurchaseScheduleRequest extends Request implements CreateScheduleInterface
            }
 
            if (!empty($this->get('promo_code'))) {
-               ValidatePromotionCode::validate($validator, $this->get('promo_code'), $schedule->service, $schedule);
+               ValidatePromotionCode::validate($validator, $this->get('promo_code'), $schedule->service, $schedule,
+                                               $this->get('amount') * $price->cost);
            }
 
            if ($schedule->attendees && $schedule->isSoldOut()) {
