@@ -6,6 +6,7 @@ use App\Models\Booking;
 use App\Models\Schedule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class RescheduleRequestRequest extends FormRequest {
     /**
@@ -21,8 +22,8 @@ class RescheduleRequestRequest extends FormRequest {
         }
 
         if ($this->filled('booking_ids') && $loggedUser->isPractitioner()) {
-            return count($this->get('bookings_id')) === Booking::where('practitioner_id', $loggedUser->id)
-                                                               ->whereIn('id', $this->get('bookings_id'))->count();
+            return count($this->get('booking_ids')) === Booking::where('practitioner_id', $loggedUser->id)
+                                                               ->whereIn('id', $this->get('booking_ids'))->count();
         }
         return false;
     }
