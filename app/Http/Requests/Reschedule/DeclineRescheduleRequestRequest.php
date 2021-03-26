@@ -6,6 +6,7 @@ use App\Models\Schedule;
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class DeclineRescheduleRequestRequest extends FormRequest {
     /**
@@ -14,9 +15,10 @@ class DeclineRescheduleRequestRequest extends FormRequest {
      * @return bool
      */
     public function authorize() {
-        return $this->requested_by === User::ACCOUNT_PRACTITIONER
-            ? $this->rescheduleRequest->user_id === Auth::id()
-            : $this->rescheduleRequest->booking->practitioner_id === Auth::id();
+        $loggedUser = Auth::user();
+        return $this->rescheduleRequest->requested_by === User::ACCOUNT_PRACTITIONER
+            ? $this->rescheduleRequest->user_id === $loggedUser->id
+            : $this->rescheduleRequest->booking->practitioner_id === $loggedUser->id;
     }
 
     /**

@@ -59,8 +59,7 @@ class RescheduleRequestController extends Controller {
         return response(null, 200);
     }
 
-    public function accept(AcceptRescheduleRequestRequest $request, RescheduleRequest $rescheduleRequest)
-    {
+    public function accept(AcceptRescheduleRequestRequest $request, RescheduleRequest $rescheduleRequest) {
         $booking = $rescheduleRequest->booking;
         $booking->schedule_id = $rescheduleRequest->new_schedule_id;
         $booking->datetime_from = $rescheduleRequest->new_start_date;
@@ -73,8 +72,7 @@ class RescheduleRequestController extends Controller {
         return response(null, 204);
     }
 
-    public function decline(DeclineRescheduleRequestRequest $request, RescheduleRequest $rescheduleRequest)
-    {
+    public function decline(DeclineRescheduleRequestRequest $request, RescheduleRequest $rescheduleRequest) {
         $rescheduleRequest->delete();
         return response(null, 204);
     }
