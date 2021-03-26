@@ -22,45 +22,33 @@ class ClassAdHocScheduleRequest extends GenericSchedule
     public function rules()
     {
         if($this->is_published == false) {
-            return [
-                'title' => 'nullable',
-                'start_date' => 'nullable',
-                'end_date' => 'nullable',
-                'venue_address' => 'nullable',
-                'city' => 'nullable',
-                'country' => 'nullable',
-                'location_displayed' => 'nullable',
-                'attendees' => 'nullable',
-                'url' => 'nullable',
-                'prices' => 'nullable',
-                'prices.*.available_till' => 'nullable',
-            ];
-        } else {
-            return [
-                'title' => 'required|string|min:5',
-                'start_date' => 'required|date|after:today',
-                'end_date' => 'required|date|after:today',
-                'venue_address' => 'required_if:appointment,physical|max:255',
-                'city' => 'required|string',
-                'country' => 'required_if:appointment,physical|string',
-                'location_displayed' => 'required|string',
-                'attendees' => 'required|integer',
-                'url' => 'nullable|required_if:appointment,virtual|string',
-                'refund_terms' => 'required',
-                'prices' => 'required|array',
-                'prices.*.name' => 'required',
-                'prices.*.cost' => 'required_if:prices.*.is_free,false',
-                'prices.*.is_free' => 'required',
-                'prices.*.available_till' => 'before:end_date',
-
-                'repeat_every' => 'required_if:repeat,monthly',
-                'repeat_period' => 'required_if:repeat,monthly',
-
-                'deposit_amount' => 'required_if:deposit_accepted,true',
-                'deposit_final_date' => 'required_if:deposit_accepted,true',
-
-            ];
+            return [];
         }
+
+        return [
+            'title' => 'required|string|min:5',
+            'start_date' => 'required|date|after:today',
+            'end_date' => 'required|date|after:today',
+            'venue_address' => 'required_if:appointment,physical|max:255',
+            'city' => 'required|string',
+            'country' => 'required_if:appointment,physical|string',
+            'location_displayed' => 'required|string',
+            'attendees' => 'required|integer',
+            'url' => 'nullable|required_if:appointment,virtual|string',
+            'refund_terms' => 'required',
+            'prices' => 'required|array',
+            'prices.*.name' => 'required',
+            'prices.*.cost' => 'required_if:prices.*.is_free,false',
+            'prices.*.is_free' => 'required',
+            'prices.*.available_till' => 'before:end_date',
+
+            'repeat_every' => 'required_if:repeat,monthly',
+            'repeat_period' => 'required_if:repeat,monthly',
+
+            'deposit_amount' => 'required_if:deposit_accepted,true',
+            'deposit_final_date' => 'required_if:deposit_accepted,true',
+
+        ];
     }
 
     public function messages()

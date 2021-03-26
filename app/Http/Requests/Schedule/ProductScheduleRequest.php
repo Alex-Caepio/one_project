@@ -22,24 +22,19 @@ class ProductScheduleRequest extends GenericSchedule
     public function rules()
     {
         if($this->is_published == false) {
-            return [
-                'title' => 'nullable',
-                'prices' => 'nullable',
-                'prices.*.available_till' => 'nullable',
-            ];
-        } else {
-            return [
-                'title' => 'required|string|min:5',
-                'prices' => 'required|array',
-                'prices.*.name' => 'required',
-                'prices.*.cost' => 'required_if:prices.*.is_free,false',
-                'prices.*.is_free' => 'required',
-                'prices.*.available_till' => 'before:end_date',
-
-                'deposit_amount' => 'required_if:deposit_accepted,true',
-                'deposit_final_date' => 'required_if:deposit_accepted,true',
-            ];
+            return [];
         }
+
+        return [
+            'title' => 'required|string|min:5',
+            'prices' => 'required|array',
+            'prices.*.name' => 'required',
+            'prices.*.cost' => 'required_if:prices.*.is_free,false',
+            'prices.*.is_free' => 'required',
+            'prices.*.available_till' => 'before:end_date',
+            'deposit_amount' => 'required_if:deposit_accepted,true',
+            'deposit_final_date' => 'required_if:deposit_accepted,true',
+        ];
     }
 
     public function messages()
