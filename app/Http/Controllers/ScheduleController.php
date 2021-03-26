@@ -88,8 +88,6 @@ class ScheduleController extends Controller
             $schedule->schedule_hidden_files()->createMany($request->get('schedule_hidden_files'));
         }
 
-        event(new ServiceScheduleLive($schedule, $request->user()));
-
         return fractal($schedule, new ScheduleTransformer())
             ->parseIncludes($request->getIncludes())
             ->toArray();
@@ -170,7 +168,6 @@ class ScheduleController extends Controller
     public function destroy(Schedule $schedule)
     {
         $schedule->delete();
-        event(new ServiceScheduleCancelled($schedule, Auth::user()));
         return response(null, 204);
     }
 
