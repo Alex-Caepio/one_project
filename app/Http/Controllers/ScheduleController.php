@@ -25,7 +25,8 @@ class ScheduleController extends Controller
 {
     public function index(Service $service, Request $request)
     {
-        $schedule = Schedule::query()->where('service_id', $service->id)
+        $schedule = Schedule::selectRaw('schedules.*')
+            ->where('service_id', $service->id)
             ->join('services', function($join)
             {
                 $join->on('services.id', '=', 'schedules.service_id');
