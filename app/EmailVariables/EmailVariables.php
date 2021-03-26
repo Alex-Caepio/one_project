@@ -218,7 +218,7 @@ class EmailVariables {
     /**
      * @return string
      */
-    public function getSchedule_name(): string {
+    public function getSchedule_name(): ?string {
         return $this->event->schedule->title;
     }
 
