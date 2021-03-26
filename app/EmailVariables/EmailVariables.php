@@ -112,6 +112,13 @@ class EmailVariables {
      * @return string
      */
     public function getMy_account(): string {
+        return config('app.frontend_account_link');
+    }
+
+    /**
+     * @return string
+     */
+    public function getMy_profile(): string {
         return config('app.frontend_profile_link');
     }
 
@@ -458,6 +465,13 @@ class EmailVariables {
      */
     public function getView_booking(): string {
         return config('app.frontend_booking_url') . $this->event->booking->reference;
+    }
+
+    /**
+     * @return string
+     */
+    public function getView_my_booking(): string {
+        return $this->getView_booking();
     }
 
     /**

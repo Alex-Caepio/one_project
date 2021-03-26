@@ -75,6 +75,7 @@ return [
     'frontend_reset_password_form_url'      => env('FRONTEND_URL_RESET_PASSWORD_FORM', 'http://localhost'),
     'frontend_email_confirm_page'           => env('FRONTEND_EMAIL_CONFIRM_PAGE', 'http://localhost'),
     'frontend_profile_link'                 => env('FRONTEND_PROFILE_LINK', 'http://localhost'),
+    'frontend_account_link'                 => env('FRONTEND_ACCOUNT_LINK', 'http://localhost'),
     'frontend_practitioner_services'        => env('FRONTEND_PRACTITIONER_SERVICES', 'http://localhost'),
     'frontend_practitioner_articles'        => env('FRONTEND_PRACTITIONER_ARTICLES', 'http://localhost'),
     'frontend_booking_url'                  => env('FRONTEND_BOOKING_URL', 'http://localhost'),
