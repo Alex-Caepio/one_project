@@ -15,6 +15,7 @@ class MyClientUpcomingTransformer extends Transformer
     {
         return [
             'id'             => $myClientPurchase->id,
+            'service_id'     => $myClientPurchase->service_id,
             'service_name'   => $myClientPurchase->service_name,
             'service_type'   => $myClientPurchase->service_type,
             'schedule_name'  => $myClientPurchase->schedule_name,

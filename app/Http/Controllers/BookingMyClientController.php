@@ -61,6 +61,7 @@ class BookingMyClientController extends Controller
         $paginator = Schedule::query()
             ->selectRaw(implode(', ', [
                 'schedules.id as id',
+                'services.id as service_id',
                 'services.title as service_name',
                 'service_types.name as service_type',
                 'schedules.title as schedule_name',
@@ -121,6 +122,7 @@ class BookingMyClientController extends Controller
             ->selectRaw(implode(', ', [
                 'purchases.id as id',
                 'bookings.id as booking_id',
+                'services.id as service_id',
                 'services.title as service_name',
                 'service_types.name as service_type',
                 'schedules.title as schedule_name',
