@@ -53,7 +53,12 @@ class ServiceController extends Controller {
 
     public function practitionerServiceShow(ServiceOwnerRequest $request, Service $service) {
         if ($request->get('with')) {
-            $service->load($request->getArrayFromRequest('with'));
+            $service->load(array_filter($request->getArrayFromRequest('with'), static function($value) use($service) {
+                $relationParts = explode('.', $value);
+                if (method_exists($service, $relationParts[0])) {
+                    return $value;
+                }
+            }));
         }
         return fractal($service, new ServiceTransformer())
             ->parseIncludes($request->getIncludes())->respond();
