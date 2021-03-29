@@ -52,7 +52,11 @@ class ServiceController extends Controller {
     }
 
     public function practitionerServiceShow(ServiceOwnerRequest $request, Service $service) {
-        return fractal($service, new ServiceTransformer())->parseIncludes($request->getIncludes())->respond();
+        if ($request->get('with')) {
+            $service->load($request->getArrayFromRequest('with'));
+        }
+        return fractal($service, new ServiceTransformer())
+            ->parseIncludes($request->getIncludes())->respond();
     }
 
     public function destroy(Service $service, ServiceOwnerRequest $request) {

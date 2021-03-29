@@ -11,7 +11,8 @@ class ScheduleTransformer extends Transformer
     protected $availableIncludes = [
         'location', 'prices', 'service', 'users', 'media_files',
         'schedule_availabilities', 'schedule_unavailabilities',
-        'schedule_files', 'schedule_hidden_files'
+        'schedule_files', 'schedule_hidden_files', 'bookings',
+        'reschedule_requests'
     ];
 
     public function transform(Schedule $schedule)
@@ -106,8 +107,19 @@ class ScheduleTransformer extends Transformer
     {
         return $this->collectionOrNull($schedule->schedule_files, new ScheduleFileTransformer());
     }
+
     public function includeScheduleHiddenFiles(Schedule $schedule)
     {
         return $this->collectionOrNull($schedule->schedule_hidden_files, new ScheduleHiddenFileTransformer());
+    }
+
+    public function includeBookings(Schedule $schedule)
+    {
+        return $this->collectionOrNull($schedule->bookings, new BookingTransformer());
+    }
+
+    public function includeRescheduleRequests(Schedule $schedule)
+    {
+        return $this->collectionOrNull($schedule->reschedule_requests, new RescheduleRequestTransformer());
     }
 }

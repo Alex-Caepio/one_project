@@ -17,6 +17,7 @@ class ServiceTransformer extends Transformer
         'focus_areas',
         'location',
         'schedules',
+        'active_schedules',
         'favourite_services',
         'service_type',
         'articles',
@@ -81,9 +82,12 @@ class ServiceTransformer extends Transformer
         return $this->itemOrNull($service->location, new LocationTransformer());
     }
 
-    public function includeSchedules(Service $service)
-    {
+    public function includeSchedules(Service $service) {
         return $this->collectionOrNull($service->schedules, new ScheduleTransformer());
+    }
+
+    public function includeActiveSchedules(Service $service) {
+        return $this->collectionOrNull($service->active_schedules, new ScheduleTransformer());
     }
 
     public function includeFavoritesService(Service $service)

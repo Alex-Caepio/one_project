@@ -99,6 +99,10 @@ class Service extends Model {
         return $this->hasMany(Schedule::class);
     }
 
+    public function active_schedules() {
+        return $this->hasMany(Schedule::class)->where('is_published', true);
+    }
+
     public function favourite_services() {
         return $this->belongsToMany(__CLASS__);
     }

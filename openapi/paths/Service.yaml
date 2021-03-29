@@ -122,7 +122,7 @@ services-practitioner:
         required: false
         schema:
           type: string
-          example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles,media_images,media_videos,media_files
+          example: user,keywords,disciplines,focus_areas,location,schedules,active_schedules,favourite_services,service_type,articles,media_images,media_videos,media_files
       - name: x-with
         in: header
         description: Include additional objects in response
