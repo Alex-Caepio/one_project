@@ -15,6 +15,7 @@ class MyClientPurchaseTransformer extends Transformer
     {
         return [
             'id'            => $myClientPurchase->id,
+            'booking_id'    => $myClientPurchase->booking_id,
             'service_name'  => $myClientPurchase->service_name,
             'service_type'  => $myClientPurchase->service_type,
             'schedule_name' => $myClientPurchase->schedule_name,
@@ -24,7 +25,6 @@ class MyClientPurchaseTransformer extends Transformer
             'purchased'     => 1,
             'location'      => $myClientPurchase->location,
             'refund_terms'  => $myClientPurchase->refund_terms,
-            'booking_id'    => $myClientPurchase->booking_id,
             'reference'     => $myClientPurchase->reference
         ];
     }

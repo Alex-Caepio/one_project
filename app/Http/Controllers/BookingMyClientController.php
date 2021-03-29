@@ -120,6 +120,7 @@ class BookingMyClientController extends Controller
         $paginator = Purchase::query()
             ->selectRaw(implode(', ', [
                 'purchases.id as id',
+                'bookings.id as booking_id',
                 'services.title as service_name',
                 'service_types.name as service_type',
                 'schedules.title as schedule_name',
@@ -128,7 +129,6 @@ class BookingMyClientController extends Controller
                 'purchases.price as paid',
                 'schedules.location_displayed as location',
                 'schedules.refund_terms as refund_terms',
-                'bookings.purchase_id as booking_id',
                 'bookings.reference as reference',
             ]))
             ->join('services', 'services.id', '=', 'purchases.service_id')
