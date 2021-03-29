@@ -17,15 +17,14 @@ class RescheduleRequestRequest extends FormRequest {
     public function authorize() {
         $loggedUser = Auth::user();
         if ($this->booking) {
-            return ($loggedUser->isPractitioner() && $this->booking->practitioner_id === $loggedUser->id) ||
-                   ($loggedUser->isClient() && $this->booking->user_id === $loggedUser->id);
+            return $this->booking->user_id === $loggedUser->id || $this->booking->practitioner_id === $loggedUser->id;
         }
 
         if ($this->filled('booking_ids')) {
             $countBookings = count($this->get('booking_ids'));
-            $fieldName = $loggedUser->isPractitioner() ? 'practitioner_id' : 'user_id';
-            return $countBookings ===
-                   Booking::where($fieldName, $loggedUser->id)->whereIn('id', $this->get('booking_ids'))->count();
+            return $countBookings === Booking::where(static function($query) use ($loggedUser) {
+                    $query->where('practitioner_id', $loggedUser->id)->orWhere('user_id', $loggedUser->id);
+                })->whereIn('id', $this->get('booking_ids'))->count();
         }
         return false;
     }

@@ -3,12 +3,12 @@
 
 namespace App\Actions\RescheduleRequest;
 
-use App\Http\Requests\Request;
+use App\Http\Requests\Reschedule\RescheduleRequestRequest;
 use App\Models\Booking;
 use App\Models\RescheduleRequest;
 
 class RescheduleRequestStore {
-    public function execute(Booking $booking, Request $request) {
+    public function execute(Booking $booking, RescheduleRequestRequest $request) {
         $rescheduleRequest = new RescheduleRequest();
         $rescheduleRequest->forceFill([
                                           'user_id'         => $booking->user_id,
