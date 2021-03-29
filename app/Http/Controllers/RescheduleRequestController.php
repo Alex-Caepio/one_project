@@ -64,6 +64,7 @@ class RescheduleRequestController extends Controller {
         $booking->schedule_id = $rescheduleRequest->new_schedule_id;
         $booking->datetime_from = $rescheduleRequest->new_start_date;
         $booking->datetime_to = $rescheduleRequest->new_end_date;
+        $booking->status = 'rescheduled';
 
         $booking->update();
         event(new BookingRescheduleAcceptedByClient($booking));

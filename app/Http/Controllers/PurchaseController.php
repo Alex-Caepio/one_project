@@ -87,6 +87,10 @@ class PurchaseController extends Controller {
             $booking = new Booking();
             $booking->user_id = $request->user()->id;
             $booking->practitioner_id = $schedule->service->user_id;
+
+            $booking->datetime_from = $schedule->start_date ?: Carbon::now();
+            $booking->datetime_to = $schedule->end_date ?: Carbon::now();
+
             $booking->price_id = $request->get('price_id');
             $booking->schedule_id = $schedule->id;
             $booking->cost = $cost;
