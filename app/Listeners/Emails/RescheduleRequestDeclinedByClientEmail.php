@@ -8,7 +8,7 @@ use App\Models\CustomEmail;
 use Illuminate\Support\Facades\Mail;
 
 class RescheduleRequestDeclinedByClientEmail extends SendEmailHandler {
-    protected string $templateName = 'Reschedule Request Declined by Client';
+    protected ?string $templateName = 'Reschedule Request Declined by Client';
 
     public function handle(RescheduleRequestDeclinedByClient $event): void {
         $this->toEmail = $event->practitioner->email;

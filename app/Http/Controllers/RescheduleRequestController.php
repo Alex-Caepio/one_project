@@ -12,7 +12,6 @@ use App\Http\Requests\Request;
 use App\Models\RescheduleRequest;
 use App\Actions\RescheduleRequest\RescheduleRequestStore;
 use App\Transformers\RescheduleRequestTransformer;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class RescheduleRequestController extends Controller {
@@ -74,6 +73,7 @@ class RescheduleRequestController extends Controller {
     }
 
     public function decline(DeclineRescheduleRequestRequest $request, RescheduleRequest $rescheduleRequest) {
+        event(new RescheduleRequestDeclinedByClient($rescheduleRequest));
         $rescheduleRequest->delete();
         return response(null, 204);
     }
