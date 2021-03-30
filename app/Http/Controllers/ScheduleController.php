@@ -9,12 +9,14 @@ use App\Events\ServiceScheduleCancelled;
 use App\Events\ServiceScheduleLive;
 use App\Http\Requests\Schedule\PurchaseScheduleRequest;
 use App\Http\Requests\Schedule\GenericUpdateSchedule;
+use App\Http\Requests\Schedule\ScheduleOwnerRequest;
 use App\Models\Price;
 use App\Models\Service;
 use App\Models\Schedule;
 use App\Models\ScheduleUser;
 use App\Models\ScheduleFreeze;
 use App\Http\Requests\Request;
+use App\Transformers\BookingTransformer;
 use App\Transformers\UserTransformer;
 use App\Transformers\ScheduleTransformer;
 use App\Http\Requests\Schedule\CreateScheduleInterface;
@@ -163,6 +165,13 @@ class ScheduleController extends Controller
     {
         $reschedule = $schedule->users()->get();
         return fractal($reschedule, new UserTransformer())->respond();
+    }
+
+    public function allBookings(Schedule $schedule, ScheduleOwnerRequest $request) {
+        $query = $schedule->bookings()->with($request->getIncludes());
+        $paginator = $query->paginate($request->getLimit());
+        $fractal = fractal($paginator->getCollection(), new BookingTransformer())->respond();
+        return response($fractal)->withPaginationHeaders($paginator);
     }
 
     public function destroy(Schedule $schedule)

@@ -142,6 +142,7 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::get('/schedules/{schedule}', [ScheduleController::class, 'show']);
     Route::put('/schedules/{schedule}', [ScheduleController::class, 'update']);
     Route::get('/schedules/{schedule}/attendants', [ScheduleController::class, 'allUser']);
+    Route::get('/schedules/{schedule}/bookings', [ScheduleController::class, 'allBookings']);
     Route::post('/schedules/{schedule}/freeze', [ScheduleController::class, 'freeze']);
     Route::get('/schedules/{schedule}/availabilities', [ScheduleController::class, 'availabilities']);
     Route::post('/schedules/{schedule}/price', [SchedulePriceController::class, 'store']);
@@ -160,7 +161,6 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
 
     Route::post('/bookings/{booking}/reschedule', [RescheduleRequestController::class, 'reschedule']);
     Route::post('/bookings/reschedule', [RescheduleRequestController::class, 'allReschedule']);
-
 
 
     /* Payments */
