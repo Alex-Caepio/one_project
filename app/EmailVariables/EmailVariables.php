@@ -506,74 +506,74 @@ class EmailVariables {
      * @return string
      */
     public function getReschedule_start_date(): string {
-        return $this->event->reschedule_schedule->start_date ? Carbon::parse($this->event->reschedule_schedule->start_date)
-                                                                     ->toDateString() : '';
+        return isset($this->event->reschedule_schedule) && $this->event->reschedule_schedule->start_date
+            ? Carbon::parse($this->event->reschedule_schedule->start_date)->toDateString() : '';
     }
 
     /**
      * @return string
      */
     public function getReschedule_start_time(): string {
-        return $this->event->reschedule_schedule->start_date ? Carbon::parse($this->event->reschedule_schedule->start_date)
-                                                                     ->toTimeString() : '';
+        return isset($this->event->reschedule_schedule) && $this->event->reschedule_schedule->start_date
+            ? Carbon::parse($this->event->reschedule_schedule->start_date)->toTimeString() : '';
     }
 
     /**
      * @return string
      */
     public function getReschedule_end_date(): string {
-        return $this->event->reschedule_schedule->end_date ? Carbon::parse($this->event->reschedule_schedule->end_date)
-                                                                   ->toDateString() : '';
+        return isset($this->event->reschedule_schedule) && $this->event->reschedule_schedule->end_date
+            ? Carbon::parse($this->event->reschedule_schedule->end_date)->toDateString() : '';
     }
 
     /**
      * @return string
      */
     public function getReschedule_end_time(): string {
-        return $this->event->reschedule_schedule->end_date ? Carbon::parse($this->event->reschedule_schedule->end_date)
-                                                                   ->toTimeString() : '';
+        return isset($this->event->reschedule_schedule) && $this->event->reschedule_schedule->end_date
+            ? Carbon::parse($this->event->reschedule_schedule->end_date)->toTimeString() : '';
     }
 
     /**
      * @return string
      */
     public function getReschedule_venue_name(): ?string {
-        return $this->event->reschedule_schedule->venue_name;
+        return isset($this->event->reschedule_schedule) ? $this->event->reschedule_schedule->venue_name : '';
     }
 
     /**
      * @return string
      */
     public function getReschedule_venue_address(): ?string {
-        return $this->event->reschedule_schedule->venue_address;
+        return isset($this->event->reschedule_schedule) ? $this->event->reschedule_schedule->venue_address : '';
     }
 
     /**
      * @return string
      */
     public function getReschedule_city(): ?string {
-        return $this->event->reschedule_schedule->city;
+        return isset($this->event->reschedule_schedule) ? $this->event->reschedule_schedule->city : '';
     }
 
     /**
      * @return string
      */
     public function getReschedule_country(): ?string {
-        return $this->event->reschedule_schedule->country;
+        return isset($this->event->reschedule_schedule) ? $this->event->reschedule_schedule->country : '';
     }
 
     /**
      * @return string
      */
     public function getReschedule_postcode(): ?string {
-        return $this->event->reschedule_schedule->post_code;
+        return isset($this->event->reschedule_schedule) ? $this->event->reschedule_schedule->post_code : '';
     }
 
     /**
      * @return string
      */
     public function getReschedule_hosting_url(): ?string {
-        return $this->event->reschedule_schedule->url;
+        return isset($this->event->reschedule_schedule) ? $this->event->reschedule_schedule->url : '';
     }
 
     /**
