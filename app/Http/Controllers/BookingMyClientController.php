@@ -122,6 +122,7 @@ class BookingMyClientController extends Controller
             ->selectRaw(implode(', ', [
                 'purchases.id as id',
                 'bookings.id as booking_id',
+                'bookings.reference as booking_reference',
                 'services.id as service_id',
                 'services.title as service_name',
                 'service_types.name as service_type',

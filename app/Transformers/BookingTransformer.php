@@ -26,6 +26,7 @@ class BookingTransformer extends Transformer {
     public function transform(Booking $booking) {
         return [
             'id'              => $booking->id,
+            'reference'       => $booking->reference,
             'user_id'         => $booking->user_id,
             'schedule_id'     => $booking->schedule_id,
             'price_id'        => $booking->price_id,
