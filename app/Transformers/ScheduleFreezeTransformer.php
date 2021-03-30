@@ -28,12 +28,12 @@ class ScheduleFreezeTransformer extends Transformer
 
     public function includeUser(ScheduleFreeze $freeze)
     {
-        return $this->item($freeze->user, new UserTransformer());
+        return $this->itemOrNull($freeze->user, new UserTransformer());
     }
 
     public function includeSchedule(ScheduleFreeze $freeze)
     {
-        return $this->item($freeze->schedule, new ScheduleTransformer());
+        return $this->itemOrNull($freeze->schedule, new ScheduleTransformer());
     }
 
 }
