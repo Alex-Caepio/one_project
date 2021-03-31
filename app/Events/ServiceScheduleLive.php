@@ -35,7 +35,7 @@ class ServiceScheduleLive {
             return 'Service Schedule Live - Retreat';
         }
 
-        if ($schedule->service->service_type_id === 'courses') {
+        if ($schedule->service->service_type_id === 'bespoke') {
             return 'Service Schedule Live - Date-less';
         }
 

@@ -19,6 +19,7 @@ use App\Transformers\PurchaseTransformer;
 use Carbon\Carbon;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Stripe\StripeClient;
 
@@ -46,6 +47,7 @@ class PurchaseController extends Controller {
         $price = $schedule->prices()->find($request->get('price_id'));
         $cost = $price->cost * $request->amount;
         $practitioner = $schedule->service->user;
+        DB::beginTransaction();
 
         $promo = null;
         if ($request->has('promo_code')) {
@@ -99,77 +101,81 @@ class PurchaseController extends Controller {
             $booking->save();
         }
 
-        $paymentIntent = null;
-        try {
-            $payment_method_id = run_action(GetViablePaymentMethod::class, $practitioner, $request->payment_method_id);
+        if (!(empty($request->cost) || $price->is_free)) {
+            $paymentIntent = null;
+            try {
+                $payment_method_id = run_action(GetViablePaymentMethod::class, $practitioner, $request->payment_method_id);
 
-            $paymentIntent = $stripe->paymentIntents->create([
-                                                                 'amount'               => $cost * 100,
-                                                                 'currency'             => config('app.platform_currency'),
-                                                                 'payment_method_types' => ['card'],
-                                                                 'customer'             => Auth::user()->stripe_customer_id,
-                                                                 'payment_method'       => $payment_method_id
-                                                             ]);
+                $paymentIntent = $stripe->paymentIntents->create([
+                    'amount'               => $cost * 100,
+                    'currency'             => config('app.platform_currency'),
+                    'payment_method_types' => ['card'],
+                    'customer'             => Auth::user()->stripe_customer_id,
+                    'payment_method'       => $payment_method_id
+                ]);
 
-            $paymentIntent =
-                $stripe->paymentIntents->confirm($paymentIntent->id, ['payment_method' => $payment_method_id]);
-            $purchase->stripe_id = $paymentIntent->id;
-            $purchase->save();
+                $paymentIntent       =
+                    $stripe->paymentIntents->confirm($paymentIntent->id, ['payment_method' => $payment_method_id]);
+                $purchase->stripe_id = $paymentIntent->id;
+                $purchase->save();
+                DB::commit();
+            } catch (\Stripe\Exception\ApiErrorException $e) {
 
-        } catch (\Stripe\Exception\ApiErrorException $e) {
+                Log::channel('stripe_purchase_schedule_error')->info("Client could not purchase schedule", [
+                    'user_id'        => $request->user()->id,
+                    'price_id'       => $price->id,
+                    'service_id'     => $schedule->service->id,
+                    'schedule_id'    => $schedule->id,
+                    'payment_intent' => $paymentIntent->id ?? null,
+                    'payment_method' => $payment_method_id,
+                    'amount'         => $request->amount,
+                    'message'        => $e->getMessage(),
+                ]);
+                DB::rollBack();
 
-            Log::channel('stripe_purchase_schedule_error')->info("Client could not purchase schedule", [
+                return abort(500);
+            }
+
+            try {
+                run_action(TransferFundsWithCommissions::class, $cost, $practitioner, $schedule);
+
+                Log::channel('stripe_transfer_success')->info("The practitioner received transfer", [
+                    'user_id'        => $request->user()->id,
+                    'practitioner'   => $practitioner->id,
+                    'price_id'       => $price->id,
+                    'service_id'     => $schedule->service->id,
+                    'schedule_id'    => $schedule->id,
+                    'payment_intent' => $paymentIntent->id ?? null,
+                    'payment_method' => $payment_method_id,
+                    'amount'         => $request->amount,
+                ]);
+
+            } catch (\Stripe\Exception\ApiErrorException $e) {
+
+                Log::channel('stripe_transfer_fail')->info("The practitioner could not received transfer", [
+                    'user_id'        => $request->user()->id,
+                    'practitioner'   => $practitioner->id,
+                    'price_id'       => $price->id,
+                    'service_id'     => $schedule->service->id,
+                    'schedule_id'    => $schedule->id,
+                    'payment_intent' => $paymentIntent->id ?? null,
+                    'payment_method' => $payment_method_id,
+                    'amount'         => $request->amount,
+                    'message'        => $e->getMessage(),
+                ]);
+                return abort(500);
+            }
+            Log::channel('stripe_purchase_schedule_success')->info("Client purchase schedule", [
                 'user_id'        => $request->user()->id,
                 'price_id'       => $price->id,
                 'service_id'     => $schedule->service->id,
                 'schedule_id'    => $schedule->id,
-                'payment_intent' => $paymentIntent->id ?? null,
+                'payment_intent' => $paymentIntent->id,
                 'payment_method' => $payment_method_id,
                 'amount'         => $request->amount,
-                'message'        => $e->getMessage(),
-            ]);
-
-            return abort(500);
-        }
-
-        try {
-            run_action(TransferFundsWithCommissions::class, $cost, $practitioner, $schedule);
-
-            Log::channel('stripe_transfer_success')->info("The practitioner received transfer", [
-                'user_id'        => $request->user()->id,
-                'practitioner'   => $practitioner->id,
-                'price_id'       => $price->id,
-                'service_id'     => $schedule->service->id,
-                'schedule_id'    => $schedule->id,
-                'payment_intent' => $paymentIntent->id ?? null,
-                'payment_method' => $payment_method_id,
-                'amount'         => $request->amount,
-            ]);
-
-        } catch (\Stripe\Exception\ApiErrorException $e) {
-
-            Log::channel('stripe_transfer_fail')->info("The practitioner could not received transfer", [
-                'user_id'        => $request->user()->id,
-                'practitioner'   => $practitioner->id,
-                'price_id'       => $price->id,
-                'service_id'     => $schedule->service->id,
-                'schedule_id'    => $schedule->id,
-                'payment_intent' => $paymentIntent->id ?? null,
-                'payment_method' => $payment_method_id,
-                'amount'         => $request->amount,
-                'message'        => $e->getMessage(),
             ]);
         }
         ScheduleFreeze::where('schedule_id', $schedule->id)->where('user_id', $request->user()->id)->delete();
-        Log::channel('stripe_purchase_schedule_success')->info("Client purchase schedule", [
-            'user_id'        => $request->user()->id,
-            'price_id'       => $price->id,
-            'service_id'     => $schedule->service->id,
-            'schedule_id'    => $schedule->id,
-            'payment_intent' => $paymentIntent->id,
-            'payment_method' => $payment_method_id,
-            'amount'         => $request->amount,
-        ]);
 
         return response(null, 200);
 

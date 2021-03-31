@@ -6,7 +6,7 @@ use App\Http\Requests\Schedule\CreateScheduleInterface;
 use App\Http\Requests\Schedule\AppointmentScheduleRequest;
 use App\Http\Requests\Schedule\ClassAdHocScheduleRequest;
 use App\Http\Requests\Schedule\ClassScheduleRequest;
-use App\Http\Requests\Schedule\CourceProgramScheduleRequest;
+use App\Http\Requests\Schedule\BespokeProgramScheduleRequest;
 use App\Http\Requests\Schedule\EcontentScheduleRequest;
 use App\Http\Requests\Schedule\EventScheduleRequest;
 use App\Http\Requests\Schedule\ProductScheduleRequest;
@@ -87,8 +87,8 @@ class AppServiceProvider extends ServiceProvider
                 case 'class':
                     return new ClassScheduleRequest();
 
-                case 'courses':
-                    return new CourceProgramScheduleRequest();
+                case 'bespoke':
+                    return new BespokeProgramScheduleRequest();
 
                 case 'events':
                     return new EventScheduleRequest();

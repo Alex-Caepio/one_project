@@ -275,10 +275,10 @@ class ScheduleTest extends TestCase {
         $response->assertOk();
     }
 
-    public function test_validate_request_courses_schedule(): void {
+    public function test_validate_request_bespoke_schedule(): void {
 
         $stripeProduct = $this->creteStripeProduct();
-        $serviceType = ServiceType::factory()->create(['id' => 'courses']);
+        $serviceType = ServiceType::factory()->create(['id' => 'bespoke']);
         $service =
             Service::factory()->create([
                                            'service_type_id' => $serviceType->id,

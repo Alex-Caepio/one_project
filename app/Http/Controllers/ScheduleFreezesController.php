@@ -3,17 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Filters\ScheduleFreezeFiltrator;
-use App\Models\Service;
 use App\Models\ScheduleFreeze;
 use App\Http\Requests\Request;
 use App\Transformers\ScheduleFreezeTransformer;
+use Illuminate\Support\Carbon;
 
 
 class ScheduleFreezesController extends Controller {
 
-    public function index(Service $service, Request $request) {
+    public function index(Request $request) {
 
-        $query = ScheduleFreeze::query();
+        $time = Carbon::now()->subMinutes(15);
+        $query = ScheduleFreeze::query()
+            ->where('freeze_at', '>', $time->toDateTimeString());
 
         $freezeFilter = new ScheduleFreezeFiltrator();
         $freezeFilter->apply($query, $request);

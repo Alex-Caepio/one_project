@@ -17,7 +17,7 @@ class ServiceTypeSeeder extends Seeder
         $data = [
             ['id' => 'workshop',         'name' => 'Workshop'],
             ['id' => 'appointment',      'name' => 'Appointment'],
-            ['id' => 'courses',          'name' => 'Courses'],
+            ['id' => 'bespoke',          'name' => 'Bespoke'],
             ['id' => 'events',           'name' => 'Events'],
             ['id' => 'retreat',          'name' => 'Retreat'],
 //            ['id' => 'class_ad_hoc',     'name' => 'Class Ad Hoc'],
