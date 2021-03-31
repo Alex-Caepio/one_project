@@ -170,7 +170,7 @@ class ScheduleController extends Controller
     public function allBookings(Schedule $schedule, ScheduleOwnerRequest $request) {
         $query = $schedule->bookings()->with($request->getIncludes());
         $paginator = $query->paginate($request->getLimit());
-        $fractal = fractal($paginator->getCollection(), new BookingTransformer())->respond();
+        $fractal = fractal($paginator->getCollection(), new BookingTransformer())->parseIncludes($request->getIncludes())->toArray();
         return response($fractal)->withPaginationHeaders($paginator);
     }
 
