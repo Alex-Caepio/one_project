@@ -39,7 +39,8 @@ class Service extends Model {
         'url',
         'service_type_id',
         'stripe_id',
-        'published_at'
+        'published_at',
+        'is_published'
     ];
 
     /**

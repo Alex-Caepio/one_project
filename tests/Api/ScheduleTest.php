@@ -416,7 +416,7 @@ class ScheduleTest extends TestCase {
                                            'user_id'         => $this->user->id
                                        ]);
 
-        $prices = Price::factory()->count(2)->make(['stripe_id' => $stripeProduct->id]);
+        $prices = Price::factory()->count(2)->make(['stripe_id' => $stripeProduct->id, 'duration' => '03:10']);
         $schedule = Schedule::factory()->make();
         $scheduleFiles = ScheduleFile::factory()->count(3)->make();
         $scheduleHiddenFiles = ScheduleHiddenFile::factory()->count(3)->make();

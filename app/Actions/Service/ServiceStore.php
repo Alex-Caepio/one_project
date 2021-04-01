@@ -15,6 +15,11 @@ class ServiceStore extends ServiceAction {
     public function execute(StoreServiceRequest $request, $stripeProduct): Service {
         $service = new Service();
         $service->stripe_id = $stripeProduct->id;
+
+        if($request->is_published) {
+            $service->published_at = now();
+        }
+
         $this->saveService($service, $request);
         return $service;
     }

@@ -21,10 +21,6 @@ class TrainingProgramScheduleRequest extends GenericSchedule
      */
     public function rules()
     {
-        if($this->is_published == false) {
-            return [];
-        }
-
         return [
             'title' => 'required|string|min:5',
             'location_displayed' => 'required|string',
@@ -43,7 +39,7 @@ class TrainingProgramScheduleRequest extends GenericSchedule
     {
         return [
             'prices.*.name.required'         => 'The name field is required when setting prices.',
-            'prices.*.cost.required'         => 'The cost field is required when setting prices.',
+            'prices.*.cost.required_if'         => 'The cost field is required when setting prices.',
             'prices.*.is_free.required'      => 'The is_free field is required when setting prices.',
             'prices.*.available_till.before' => 'The available_till field should be before the end_date field.',
         ];
