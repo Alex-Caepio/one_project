@@ -17,6 +17,7 @@ use App\Models\ScheduleUser;
 use App\Models\ScheduleFreeze;
 use App\Http\Requests\Request;
 use App\Transformers\BookingTransformer;
+use App\Transformers\ServiceTransformer;
 use App\Transformers\UserTransformer;
 use App\Transformers\ScheduleTransformer;
 use App\Http\Requests\Schedule\CreateScheduleInterface;
@@ -212,7 +213,7 @@ class ScheduleController extends Controller
                 $scheduleUnavailabilitieCopy->save();
             }
         }
-        return response(null, 204);
+        return fractal($serviceCopy, new ServiceTransformer())->respond();
     }
 
     public function copySchedule(Schedule $schedule) {

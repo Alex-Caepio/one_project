@@ -177,7 +177,7 @@ class PurchaseController extends Controller {
         }
         ScheduleFreeze::where('schedule_id', $schedule->id)->where('user_id', $request->user()->id)->delete();
 
-        return response(null, 200);
+        return fractal($purchase, new PurchaseTransformer())->parseIncludes($request->getIncludes())->respond();
 
     }
 
