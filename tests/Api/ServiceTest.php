@@ -85,6 +85,17 @@ class ServiceTest extends TestCase
                     'preview' => 'http://facebook.com',
                 ],
             ],
+            'media_files'=> [
+                [
+                    'url' => 'http://google.com',
+                    'name' => 'http://google.com',
+                ],
+
+                [
+                    'url' => 'http://yandex.com',
+                    'name' => 'http://facebook.com',
+                ],
+            ],
         ]);
         $response->assertOk();
         $this->assertCount(2, Service::first()->media_images);
