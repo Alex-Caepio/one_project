@@ -31,6 +31,7 @@ class AppointmentScheduleRequest extends GenericSchedule
             'notice_min_time'               => 'required',
             'notice_min_period'             => 'required',
             'buffer_time'                   => 'required',
+            'refund_terms'                  => 'required',
             'schedule_availabilities.*.days'         => 'required_with:schedule_availabilities',
             'schedule_availabilities.*.start_time'   => 'required_with:schedule_availabilities',
             'schedule_availabilities.*.end_time'     => 'required_with:schedule_availabilities',

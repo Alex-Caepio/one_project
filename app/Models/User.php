@@ -66,7 +66,7 @@ class User extends Authenticatable implements MustVerifyEmail {
         'business_name',
         'business_address',
         'business_email',
-        'public_link',
+        'slug',
         'business_introduction',
         'date_of_birth',
         'mobile_number',

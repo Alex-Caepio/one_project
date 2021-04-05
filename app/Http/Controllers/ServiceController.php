@@ -130,4 +130,35 @@ class ServiceController extends Controller {
         return response(null, 204);
     }
 
+    public function copy(Service $service) {
+        $serviceCopy = $service->replicate();
+        $serviceCopy->title = "{$service->title} (copy)";
+        $serviceCopy->save();
+
+        foreach($service->schedules as $schedule) {
+            $scheduleCopy = $schedule->replicate();
+            $scheduleCopy->service_id = $serviceCopy->id;
+            $scheduleCopy->save();
+
+            foreach ($schedule->prices as $price) {
+                $priceCopy = $price->replicate();
+                $priceCopy->schedule_id = $scheduleCopy->id;
+                $priceCopy->save();
+            }
+
+            foreach($schedule->schedule_availabilities as $scheduleAvailabilitie) {
+                $scheduleAvailabilitieCopy = $scheduleAvailabilitie->replicate();
+                $scheduleAvailabilitieCopy->schedule_id = $scheduleCopy->id;
+                $scheduleAvailabilitieCopy->save();
+            }
+
+            foreach($schedule->schedule_unavailabilities as $scheduleUnavailabilitie) {
+                $scheduleUnavailabilitieCopy = $scheduleUnavailabilitie->replicate();
+                $scheduleUnavailabilitieCopy->schedule_id = $scheduleCopy->id;
+                $scheduleUnavailabilitieCopy->save();
+            }
+        }
+        return fractal($serviceCopy, new ServiceTransformer())->respond();
+    }
+
 }

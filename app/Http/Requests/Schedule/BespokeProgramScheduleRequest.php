@@ -31,6 +31,7 @@ class BespokeProgramScheduleRequest extends GenericSchedule
             'prices.*.available_till' => 'before:end_date',
             'deposit_amount' => 'required_if:deposit_accepted,true',
             'deposit_final_date' => 'required_if:deposit_accepted,true',
+            'refund_terms'   => 'required',
         ];
     }
 

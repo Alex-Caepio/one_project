@@ -37,7 +37,7 @@ class UpdateRequest extends Request
             'business_name'               => 'sometimes|required|max:255|min:2',
             'business_address'            => 'sometimes|required|max:255',
             'business_email'              => 'sometimes|required|max:255|email',
-            'public_link'                 => 'max:255|url',
+            'slug'                        => Rule::unique('users','slug')->ignore($this->user()->id),
             'business_introduction'       => 'max:150',
             'gender'                      => 'string',
             'date_of_birth'               => 'sometimes|nullable|date|before:-18 years',

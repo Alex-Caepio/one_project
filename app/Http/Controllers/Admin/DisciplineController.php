@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Requests\Admin\DisciplineUpdateRequest;
 use App\Models\Discipline;
 use App\Http\Requests\Request;
 use App\Http\Controllers\Controller;
@@ -109,7 +110,7 @@ class DisciplineController extends Controller
             ->toArray();
     }
 
-    public function update(Request $request, Discipline $discipline)
+    public function update(DisciplineUpdateRequest $request, Discipline $discipline)
     {
 
         $data        = $request->all();

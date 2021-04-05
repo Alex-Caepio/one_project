@@ -23,6 +23,7 @@ class ProductScheduleRequest extends GenericSchedule
     {
         return [
             'title' => 'required|string|min:5',
+            'refund_terms' => 'required',
             'prices' => 'required|array',
             'prices.*.name' => 'required',
             'prices.*.cost' => 'required_if:prices.*.is_free,false',

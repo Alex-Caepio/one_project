@@ -35,6 +35,7 @@ class EcontentScheduleRequest extends GenericSchedule
             'city' => 'nullable|string',
             'country' => 'nullable|string',
             'location_displayed' => 'required|string',
+            'refund_terms' => 'required',
             'prices' => 'required|array',
             'prices.*.name' => 'required',
             'prices.*.cost' => 'required_if:prices.*.is_free,false',
