@@ -45,6 +45,7 @@ pipeline{
             steps {
                 withAWS(credentials: "$registryCredentials", region: "$AWSregion") {
                     sh '''aws ecs update-service --cluster tom-app-dev --service back --task-definition tom-backend --force-new-deployment
+                    aws ecs update-service --cluster tom-app-dev --service back-cron --task-definition back-artisan:3 --force-new-deployment
                     aws ecs run-task --cluster tom-app-dev --count 1 --launch-type EC2 --task-definition back-artisan'''
                 }
             }
