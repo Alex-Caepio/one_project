@@ -31,7 +31,7 @@ abstract class ServiceAction {
      * @return \App\Models\Service
      */
     protected function fillService(Service $service, Request $request): Service {
-        $slug = $request->get('slug') ?? to_url($request->get('title'));
+        $slug = $this->getSlug($request);
         $params = [
             'title'           => $request->get('title'),
             'description'     => $request->get('description'),
@@ -109,4 +109,9 @@ abstract class ServiceAction {
         return $ids;
     }
 
+    protected function getSlug($request): string
+    {
+        $titleSlug = $request->get('title') ?? '';
+        return $request->get('slug') ?? to_url($titleSlug);
+    }
 }
