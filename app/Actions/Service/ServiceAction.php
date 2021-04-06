@@ -31,13 +31,13 @@ abstract class ServiceAction {
      * @return \App\Models\Service
      */
     protected function fillService(Service $service, Request $request): Service {
-        $url = $request->get('url') ?? to_url($request->get('title'));
+        $slug = $request->get('slug') ?? to_url($request->get('title'));
         $params = [
             'title'           => $request->get('title'),
             'description'     => $request->get('description'),
             'is_published'    => $request->getBoolFromRequest('is_published'),
             'introduction'    => $request->get('introduction'),
-            'url'             => $url,
+            'slug'            => $slug,
             'image_url'       => $request->get('image_url'),
             'icon_url'        => $request->get('icon_url'),
             'service_type_id' => $request->get('service_type_id'),
