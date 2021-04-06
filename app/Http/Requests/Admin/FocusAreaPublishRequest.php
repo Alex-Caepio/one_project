@@ -41,9 +41,6 @@ class FocusAreaPublishRequest extends FormRequest
             if (!$focusArea->introduction) {
                 $validator->errors()->add('introduction', "You have not filled in the field \"Introduction\"");
             }
-            if (!$focusArea->url) {
-                $validator->errors()->add('url', "You have not filled in the field \"Focus area url\"");
-            }
             if (!$focusArea->icon_url) {
                 $validator->errors()->add('icon_url', "You have not filled in the field \"Icon url\"");
             }

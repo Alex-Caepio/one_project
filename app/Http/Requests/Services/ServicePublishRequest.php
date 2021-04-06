@@ -32,7 +32,6 @@ class ServicePublishRequest extends Request {
                                  'description'     => 'nullable|string|min:5|max:1000',
                                  'is_published'    => 'boolean',
                                  'introduction'    => 'required|min:5|max:500',
-                                 'url'             => 'required|url|unique:services,url,' . $this->service->id,
                                  'image_url'       => 'nullable|url',
                                  'icon_url'        => 'nullable|url',
                                  'service_type_id' => 'required|exists:service_types,id'

@@ -23,8 +23,8 @@ class UpdateServiceRequest extends Request {
      */
     public function rules() {
         $isPublished = $this->getBoolFromRequest('is_published');
-        $url = $this->get('url') ?? to_url($this->get('title'));
-        $this->getInputSource()->set('url', $url);
+        $slug = $this->get('slug') ?? to_url($this->get('title'));
+        $this->getInputSource()->set('slug', $slug);
 
         if ($isPublished === true) {
             return [
@@ -32,7 +32,7 @@ class UpdateServiceRequest extends Request {
                 'description'     => 'nullable|string|min:5|max:1000',
                 'is_published'    => 'bool',
                 'introduction'    => 'string|min:5|max:500',
-                'url'             => 'url|unique:services,url' . ($this->service ? ',' . $this->service->id : ''),
+                'slug'            => 'unique:services,slug' . ($this->service ? ',' . $this->service->id : ''),
                 'service_type_id' => 'exists:service_types,id',
                 'image_url'       => 'nullable|url',
                 'icon_url'        => 'nullable|url',
@@ -43,7 +43,6 @@ class UpdateServiceRequest extends Request {
             'description'     => 'nullable|string|min:5|max:1000',
             'is_published'    => 'boolean',
             'introduction'    => 'string|min:5|max:500',
-            'url'             => 'url',
             'service_type_id' => 'exists:service_types,id'
         ];
     }

@@ -11,7 +11,7 @@ class FocusArea extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'url', 'description', 'introduction', 'banner_url', 'icon_url', 'is_published',
+        'name', 'slug', 'description', 'introduction', 'banner_url', 'icon_url', 'is_published',
         'section_2_h2', 'section_2_h3', 'section_2_background',
         'section_2_textarea', 'section_3_h2', 'section_4_tag_line', 'section_4_alt_text',
         'section_4_url', 'section_4_target_blanc', 'section_4_video_url',

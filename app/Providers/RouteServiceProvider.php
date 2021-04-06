@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Article;
 use App\Models\Booking;
+use App\Models\FocusArea;
 use App\Models\Promotion;
 use App\Models\RescheduleRequest;
 use App\Models\Service;
@@ -35,21 +36,21 @@ class RouteServiceProvider extends ServiceProvider {
      */
     public function boot() {
         Route::bind('publicArticle', function($value) {
-            return Article::published()->where('id', (int)$value)->orWhere('url', (string)$value)
+            return Article::published()->where('id', (int)$value)->orWhere('slug', (string)$value)
                           ->whereHas('user', function($query) {
                               $query->published();
                           })->firstOrFail();
         });
 
         Route::bind('publicService', function($value) {
-            return Service::published()->where('id', (int)$value)->orWhere('url', (string)$value)
+            return Service::published()->where('id', (int)$value)->orWhere('slug', (string)$value)
                           ->whereHas('user', function($query) {
                               $query->published();
                           })->firstOrFail();
         });
 
         Route::bind('service', function($value) {
-            return Service::where('id', $value)->orWhere('url', $value)->firstOrFail();
+            return Service::where('id', $value)->orWhere('slug', $value)->firstOrFail();
         });
 
         Route::bind('promotionWithTrashed', function($value) {
@@ -63,6 +64,10 @@ class RouteServiceProvider extends ServiceProvider {
         Route::bind('reschedule_request', function($value) {
             return RescheduleRequest::where('id', $value)->where('requested_by', User::ACCOUNT_PRACTITIONER)
                                     ->firstOrFail();
+        });
+
+        Route::bind('focusArea', function($value) {
+            return FocusArea::where('id', $value)->orWhere('slug', $value)->firstOrFail();
         });
 
         parent::boot();
