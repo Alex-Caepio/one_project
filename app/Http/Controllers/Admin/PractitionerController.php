@@ -74,7 +74,7 @@ class PractitionerController extends Controller {
         return response(null, 204);
     }
 
-    public function unpublished(User $practitioner) {
+    public function unpublish(User $practitioner) {
         $practitioner->forceFill([
                                      'is_published' => false,
                                  ]);
