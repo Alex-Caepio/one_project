@@ -39,6 +39,7 @@ class PurchaseScheduleRequest extends Request implements CreateScheduleInterface
         if ($this->schedule->service->service_type_id === 'appointment') {
             $availabilityRules = [
                 'availabilities.*.datetime_from'   => 'required_with:availabilities',
+                'availabilities'                   => 'required'
             ];
 
             $rules = array_merge($rules, $availabilityRules);

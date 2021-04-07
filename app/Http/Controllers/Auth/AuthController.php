@@ -17,6 +17,7 @@ use App\Traits\hasMediaItems;
 use App\Transformers\UserTransformer;
 use DB;
 use App\Http\Requests\Request;
+use http\Env\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
@@ -205,5 +206,14 @@ class AuthController extends Controller
         $request->user()->delete();
 
         return response(null, 204);
+    }
+
+    public function show($slug, Request $request)
+    {
+        $user = User::where('slug', $slug)->with($request->getIncludes())->firstOrFail();
+
+        return fractal($user, new UserTransformer())
+            ->parseIncludes($request->getIncludes())
+            ->respond();
     }
 }

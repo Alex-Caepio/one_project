@@ -12,6 +12,7 @@ class MediaImageTransformer extends Transformer
     {
         return [
             'url' => $image->url,
+            'name' => $image->name,
         ];
     }
 }

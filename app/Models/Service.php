@@ -36,10 +36,11 @@ class Service extends Model {
         'title',
         'description',
         'introduction',
-        'url',
+        'slug',
         'service_type_id',
         'stripe_id',
-        'published_at'
+        'published_at',
+        'is_published'
     ];
 
     /**

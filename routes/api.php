@@ -85,6 +85,7 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::get('auth/quotes/articles', [QuoteController::class, 'quotesArticles']);
     Route::get('auth/quotes/services/{service}/schedules', [QuoteController::class, 'quotesServices']);
     Route::get('auth/quotes/schedules/{schedule}/prices', [QuoteController::class, 'quotesPrices']);
+    Route::get('users/{slug}', [AuthController::class, 'show']);
 
     Route::get('stripe/link', [StripeAccountController::class, 'link']);
     Route::get('stripe/account', [StripeAccountController::class, 'account']);
@@ -111,6 +112,7 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
         Route::post('services/{service}/publish', [ServiceController::class, 'publish']);
         Route::post('services/{service}/unpublish', [ServiceController::class, 'unpublish']);
         Route::delete('services/{service}', [ServiceController::class, 'destroy']);
+        Route::post('/services/{service}/copy', [ServiceController::class, 'copy']);
 
     });
 
@@ -137,7 +139,6 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
 
     Route::post('/services/{service}/schedules', [ScheduleController::class, 'store']);
     Route::get('/services/{service}/schedules', [ScheduleController::class, 'index']);
-    Route::post('/services/{service}/copy', [ScheduleController::class, 'copy']);
 
     Route::get('/schedules/{schedule}', [ScheduleController::class, 'show']);
     Route::put('/schedules/{schedule}', [ScheduleController::class, 'update']);

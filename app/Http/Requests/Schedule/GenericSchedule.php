@@ -28,10 +28,6 @@ class GenericSchedule extends Request implements CreateScheduleInterface
 
     public function withValidator($validator): void
     {
-        if($this->is_published == false){
-            return;
-        }
-
         $validator->after(function ($validator) {
             $plan           = $this->user()->plan;
             $totalSchedules = $this->service->schedules()->count();

@@ -17,6 +17,7 @@ use App\Models\ScheduleUser;
 use App\Models\ScheduleFreeze;
 use App\Http\Requests\Request;
 use App\Transformers\BookingTransformer;
+use App\Transformers\ServiceTransformer;
 use App\Transformers\UserTransformer;
 use App\Transformers\ScheduleTransformer;
 use App\Http\Requests\Schedule\CreateScheduleInterface;
@@ -184,14 +185,17 @@ class ScheduleController extends Controller
         return run_action(GetAvailableAppointmentTimeOnDate::class, $price, $date);
     }
 
-    public function copy(Service $service) {
-        $serviceCopy = $service->replicate();
-        $serviceCopy->title = "{$service->title} (copy)";
-        $serviceCopy->save();
 
-        foreach($service->schedules as $schedule) {
+
+    public function copy(Schedule $schedule) {
+
+        $plan = Auth::user()->plan;
+        $service = $schedule->service;
+
+        if($plan->schedules_per_service_unlimited || $plan->schedules_per_service > $service->schedules()->count() ) {
+
             $scheduleCopy = $schedule->replicate();
-            $scheduleCopy->service_id = $serviceCopy->id;
+            $scheduleCopy->title = "{$schedule->title} (copy)";
             $scheduleCopy->save();
 
             foreach ($schedule->prices as $price) {
@@ -200,44 +204,20 @@ class ScheduleController extends Controller
                 $priceCopy->save();
             }
 
-            foreach($schedule->schedule_availabilities as $scheduleAvailabilitie) {
+            foreach ($schedule->schedule_availabilities as $scheduleAvailabilitie) {
                 $scheduleAvailabilitieCopy = $scheduleAvailabilitie->replicate();
                 $scheduleAvailabilitieCopy->schedule_id = $scheduleCopy->id;
                 $scheduleAvailabilitieCopy->save();
             }
 
-            foreach($schedule->schedule_unavailabilities as $scheduleUnavailabilitie) {
+            foreach ($schedule->schedule_unavailabilities as $scheduleUnavailabilitie) {
                 $scheduleUnavailabilitieCopy = $scheduleUnavailabilitie->replicate();
                 $scheduleUnavailabilitieCopy->schedule_id = $scheduleCopy->id;
                 $scheduleUnavailabilitieCopy->save();
             }
+        } else {
+            return response( ['message' => 'The maximum allowed number of shedules per service has been exceeded.'], 422);
         }
-        return response(null, 204);
-    }
-
-    public function copySchedule(Schedule $schedule) {
-
-        $scheduleCopy = $schedule->replicate();
-        $scheduleCopy->title = "{$schedule->title} (copy)";
-        $scheduleCopy->save();
-
-            foreach ($schedule->prices as $price) {
-                $priceCopy = $price->replicate();
-                $priceCopy->schedule_id = $scheduleCopy->id;
-                $priceCopy->save();
-            }
-
-            foreach($schedule->schedule_availabilities as $scheduleAvailabilitie) {
-                $scheduleAvailabilitieCopy = $scheduleAvailabilitie->replicate();
-                $scheduleAvailabilitieCopy->schedule_id = $scheduleCopy->id;
-                $scheduleAvailabilitieCopy->save();
-            }
-
-            foreach($schedule->schedule_unavailabilities as $scheduleUnavailabilitie) {
-                $scheduleUnavailabilitieCopy = $scheduleUnavailabilitie->replicate();
-                $scheduleUnavailabilitieCopy->schedule_id = $scheduleCopy->id;
-                $scheduleUnavailabilitieCopy->save();
-            }
 
         return response(null, 204);
     }

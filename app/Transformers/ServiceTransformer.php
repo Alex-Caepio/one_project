@@ -39,7 +39,7 @@ class ServiceTransformer extends Transformer
             'user_id'                     => $service->user_id,
             'is_published'                => (bool)$service->is_published,
             'introduction'                => $service->introduction,
-            'url'                         => $service->url,
+            'slug'                        => $service->slug,
             'service_type_id'             => $service->service_type_id,
             'created_at'                  => $service->created_at,
             'updated_at'                  => $service->updated_at,

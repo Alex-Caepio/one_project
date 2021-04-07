@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  *
  * @property int    id
  * @property string url
+ * @property string name
  * @property Carbon created_at
  * @property Carbon updated_at
  */
@@ -18,7 +19,7 @@ class MediaFile extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['url'];
+    protected $fillable = ['url', 'name'];
 
     public function morphesTo()
     {

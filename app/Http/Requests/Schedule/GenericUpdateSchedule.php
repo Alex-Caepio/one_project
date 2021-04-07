@@ -23,15 +23,13 @@ class GenericUpdateSchedule extends Request implements CreateScheduleInterface
      */
     public function rules()
     {
-        return [];
+        return [
+            'refund_terms' => 'required',
+        ];
     }
 
     public function withValidator($validator): void
     {
-        if($this->is_published == false){
-            return;
-        }
-
         $validator->after(function ($validator) {
             $plan           = $this->user()->plan;
             $service = $this->schedule->service;

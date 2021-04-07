@@ -25,7 +25,6 @@ class FocusAreaRequests extends FormRequest
     {
         return [
             'name'                      => 'max:200',
-            'url'                       => 'url',
             'banner_url'                => 'max:200',
             'icon_url'                  => 'max:200',
             'is_published'              => 'nullable|boolean',

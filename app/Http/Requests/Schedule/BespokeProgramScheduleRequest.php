@@ -21,10 +21,6 @@ class BespokeProgramScheduleRequest extends GenericSchedule
      */
     public function rules()
     {
-        if($this->is_published == false) {
-            return [];
-        }
-
         return [
             'title' => 'required|string|min:5',
             'location_displayed' => 'required|string',
@@ -35,6 +31,7 @@ class BespokeProgramScheduleRequest extends GenericSchedule
             'prices.*.available_till' => 'before:end_date',
             'deposit_amount' => 'required_if:deposit_accepted,true',
             'deposit_final_date' => 'required_if:deposit_accepted,true',
+            'refund_terms'   => 'required',
         ];
     }
 
@@ -42,8 +39,8 @@ class BespokeProgramScheduleRequest extends GenericSchedule
     {
         return [
             'prices.*.name.required'           => 'The name field is required when setting prices.',
-            'prices.*.cost.required'           => 'The cost field is required when setting prices.',
-            'prices.*.is_free.required'        => 'The is_free field is required when setting prices.',
+            'prices.*.cost.required_if'           => 'The cost field is required when setting prices.',
+            'prices.*.is_free.required'     => 'The is_free field is required when setting prices.',
             'prices.*.available_till.before'   => 'The available_till field should be before the end_date field.',
         ];
     }

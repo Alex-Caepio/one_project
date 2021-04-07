@@ -41,7 +41,7 @@ class ArticleTransformer extends Transformer {
             'user_id'      => $article->user_id,
             'is_published' => (bool)$article->is_published,
             'introduction' => $article->introduction,
-            'url'          => $article->url,
+            'slug'         => $article->slug,
             'image_url'    => $article->image_url,
             'created_at'   => $article->created_at,
             'updated_at'   => $article->updated_at,

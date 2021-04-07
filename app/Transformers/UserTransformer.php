@@ -47,7 +47,7 @@ class UserTransformer extends Transformer {
             'business_name'               => $user->business_name,
             'business_address'            => $user->business_address,
             'business_email'              => $user->business_email,
-            'public_link'                 => $user->public_link,
+            'slug'                        => $user->slug,
             'business_introduction'       => $user->business_introduction,
             'date_of_birth'               => $user->date_of_birth,
             'mobile_country_code'         => $user->mobile_country_code,

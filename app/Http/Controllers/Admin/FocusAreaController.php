@@ -56,8 +56,8 @@ class FocusAreaController extends Controller
     public function store(FocusAreaStoreRequest $request)
     {
         $data        = $request->all();
-        $url         = $data['url'] ?? to_url($data['name']);
-        $data['url'] = $url;
+        $url         = $data['slug'] ?? to_url($data['name']);
+        $data['slug'] = $url;
         $focusArea   = FocusArea::create($data);
 
         if ($request->filled('featured_practitioners')) {
@@ -116,8 +116,8 @@ class FocusAreaController extends Controller
     public function update(FocusAreaUpdateRequest $request, FocusArea $focusArea)
     {
         $data        = $request->all();
-        $url       = $request->url ?? $focusArea->url ?? to_url($request->name);
-        $data['url'] = $url;
+        $url       = $request->slug ?? $focusArea->slug ?? to_url($request->name);
+        $data['slug'] = $url;
 
         $focusArea->update($data);
 

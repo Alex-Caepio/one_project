@@ -21,10 +21,6 @@ class WorkshopScheduleRequest extends GenericSchedule
      */
     public function rules()
     {
-        if($this->is_published == false) {
-            return [];
-        }
-
         return [
             'title' => 'required|string|min:5',
             'promo_code' => 'string|min:5',
@@ -32,14 +28,14 @@ class WorkshopScheduleRequest extends GenericSchedule
             'location_id' => 'integer',
             'start_date' => 'required|date|after:today',
             'end_date' => 'required|date|after:today',
-            'attendees' => 'required|integer',
+            'attendees' => 'integer',
             'cost' => 'integer',
             'comments' => 'nullable|string',
             'venue_address' => 'required_if:appointment,physical|max:255',
-            'city' => 'required_if:appointment,physical|required|string',
+            'city' => 'required_if:appointment,physical|string',
             'country' => 'required_if:appointment,physical|string',
-            'location_displayed' => 'required|string',
-            'post_code' => 'required_if:appointment,physical|required',
+            'location_displayed' => 'string',
+            'post_code' => 'required_if:appointment,physical',
             'refund_terms' => 'required',
             'prices' => 'required|array',
             'prices.*.name' => 'required',
@@ -58,7 +54,7 @@ class WorkshopScheduleRequest extends GenericSchedule
     {
         return [
             'prices.*.name.required'           => 'The name field is required when setting prices.',
-            'prices.*.cost.required'           => 'The cost field is required when setting prices.',
+            'prices.*.cost.required_if'           => 'The cost field is required when setting prices.',
             'prices.*.is_free.required'        => 'The is_free field is required when setting prices.',
             'prices.*.available_till.before'   => 'The available_till field should be before the end_date field.',
         ];
