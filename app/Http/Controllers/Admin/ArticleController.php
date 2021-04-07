@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Admin;
 use App\Filters\ArticleFiltrator;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ArticlePublishRequest;
+use App\Http\Requests\Admin\ArticleUpdateRequest;
 use App\Models\Article;
 use App\Http\Requests\Request;
 use App\Transformers\ArticleTransformer;
@@ -26,7 +27,7 @@ class ArticleController extends Controller {
 
             $query->where(
                 function ($query) use ($search) {
-                    $query->where('name', 'like', "%{$search}%")
+                    $query->where('title', 'like', "%{$search}%")
                         ->orWhere('introduction', 'like', "%{$search}%")
                         ->orWhere('description', 'like', "%{$search}%");
                 }
@@ -44,6 +45,13 @@ class ArticleController extends Controller {
         return response(fractal($article, new ArticleTransformer())
                             ->parseIncludes($request->getIncludes())
                             ->toArray())->withPaginationHeaders($paginator);
+    }
+
+    public function update(ArticleUpdateRequest $request, Article $article)
+    {
+        $article->forceFill($request->all());
+        $article->save();
+        return response(null, 204);
     }
 
 
