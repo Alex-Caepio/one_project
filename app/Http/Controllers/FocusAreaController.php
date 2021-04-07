@@ -18,10 +18,10 @@ class FocusAreaController extends Controller
         $allVideos = $focusArea->focus_area_videos;
         return response($allVideos);
     }
-    
+
     public function index(Request $request)
     {
-        $query = FocusArea::query();
+        $query = FocusArea::query()->where('is_published', true);
 
         if ($request->hasOrderBy()) {
             $order = $request->getOrderBy();
