@@ -139,7 +139,7 @@ class EmailVariables {
     /**
      * @return string
      */
-    public function getPractitioner_business_name(): string {
+    public function getPractitioner_business_name(): ?string {
         return $this->event->user->isPractitioner() ? $this->event->user->business_name : $this->event->practitioner->business_name;
     }
 
@@ -178,14 +178,14 @@ class EmailVariables {
     /**
      * @return string
      */
-    public function getService_name(): string {
+    public function getService_name(): ?string {
         return $this->event->service->title;
     }
 
     /**
      * @return string
      */
-    public function getService_url(): string {
+    public function getService_url(): ?string {
         return $this->event->service->url;
     }
 
