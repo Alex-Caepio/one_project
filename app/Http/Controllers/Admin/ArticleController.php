@@ -47,6 +47,12 @@ class ArticleController extends Controller {
                             ->toArray())->withPaginationHeaders($paginator);
     }
 
+    public function show(Article $article, Request $request)
+    {
+        return fractal($article, new ArticleTransformer())->parseIncludes($request->getIncludes())
+            ->toArray();
+    }
+
     public function update(ArticleUpdateRequest $request, Article $article)
     {
         $article->forceFill($request->all());

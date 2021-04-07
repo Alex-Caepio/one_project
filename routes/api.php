@@ -149,7 +149,7 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::post('/schedules/{schedule}/price', [SchedulePriceController::class, 'store']);
     Route::delete('/schedules/{schedule}', [ScheduleController::class, 'destroy']);
     Route::get('/prices/{price}/appointments-dates/{date}', [ScheduleController::class, 'appointmentsOnDate']);
-    Route::post('/schedules/{schedule}/copy', [ScheduleController::class, 'copySchedule']);
+    Route::post('/schedules/{schedule}/copy', [ScheduleController::class, 'copy']);
 
     Route::put('/price/{price}', [PriceController::class, 'update']);
     Route::delete('/price/{price}', [PriceController::class, 'destroy']);

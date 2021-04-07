@@ -23,6 +23,14 @@ class GenericUpdateSchedule extends Request implements CreateScheduleInterface
      */
     public function rules()
     {
+        if($this->schedule->service->service_type_id == 'appointment') {
+            return [
+                'schedule_unavailabilities.*.start_date' => 'required_with:schedule_unavailabilities',
+                'schedule_unavailabilities.*.end_date'   => 'required_with:schedule_unavailabilities',
+                'refund_terms' => 'required',
+            ];
+        }
+
         return [
             'refund_terms' => 'required',
         ];
@@ -101,5 +109,13 @@ class GenericUpdateSchedule extends Request implements CreateScheduleInterface
             }
             $this->merge(['prices' => $another]);
         }
+    }
+
+    public function messages()
+    {
+        return [
+            'schedule_unavailabilities.*.start_date.required_with' => 'The start date field is required when setting unavailabilities.',
+            'schedule_unavailabilities.*.end_date.required_with'   => 'The end date field is required when setting unavailabilities.',
+        ];
     }
 }

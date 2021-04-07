@@ -96,7 +96,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::delete('/transactional-emails/{customEmail}', [CustomEmailController::class, 'destroy']);
 
         Route::get('/articles', [ArticleController::class, 'index']);
-        Route::put('articles/{article}', [ArticleController::class, 'update']);
+        Route::get('/articles/{article}', [ArticleController::class, 'show']);
+        Route::put('/articles/{article}', [ArticleController::class, 'update']);
         Route::delete('/articles/{article}', [ArticleController::class, 'destroy']);
 
         Route::post('/articles/{article}/publish', [ArticleController::class, 'publish']);
