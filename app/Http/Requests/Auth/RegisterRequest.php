@@ -38,7 +38,7 @@ class RegisterRequest extends FormRequest
                 Rule::in(['client', 'practitioner']),
             ],
             'accepted_terms'          => 'required|accepted',
-            'emails_holistify_update' => 'required|boolean',
+            'emails_holistify_update' => 'nullable|boolean',
         ];
     }
 
