@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Article;
 use App\Models\Booking;
+use App\Models\Discipline;
 use App\Models\FocusArea;
 use App\Models\Promotion;
 use App\Models\RescheduleRequest;
@@ -68,6 +69,10 @@ class RouteServiceProvider extends ServiceProvider {
 
         Route::bind('focusArea', function($value) {
             return FocusArea::where('id', $value)->orWhere('slug', $value)->firstOrFail();
+        });
+
+        Route::bind('discipline', function($value) {
+            return Discipline::where('id', $value)->orWhere('slug', $value)->firstOrFail();
         });
 
         parent::boot();

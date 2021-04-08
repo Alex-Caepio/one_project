@@ -31,7 +31,7 @@ class Discipline extends Model
     use HasFactory, PublishedScope;
 
     protected $fillable = [
-        'name', 'description', 'introduction', 'url', 'icon_url', 'banner_url',
+        'name', 'description', 'introduction', 'slug', 'icon_url', 'banner_url',
         'is_published', 'section_2_h2', 'section_2_h3', 'section_2_background',
         'section_2_textarea', 'section_3_h2', 'section_3_h4', 'section_4_h2',
         'section_4_h3', 'section_4_background', 'section_4_textarea',

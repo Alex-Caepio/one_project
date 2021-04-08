@@ -169,4 +169,14 @@ class ArticleController extends Controller
         $article->save();
         return response(null, 204);
     }
+
+    public function copy(Article $article) {
+        $newArticle = $article->replicate();
+        $newArticle->title = "{$article->title} (copy)";
+        $newArticle->is_published = false;
+        $newArticle->save();
+
+        return response(null, 204);
+    }
+
 }

@@ -35,8 +35,8 @@ class DisciplinePublishRequest extends FormRequest
             if (!$discipline->name) {
                 $validator->errors()->add('name', "You have not filled in the field \"Discipline name\"");
             }
-            if (!$discipline->url) {
-                $validator->errors()->add('url', "You have not filled in the field \"Discipline url\"");
+            if (!$discipline->slug) {
+                $validator->errors()->add('slug', "You have not filled in the field \"Discipline slug\"");
             }
 
             if (!$discipline->icon_url) {

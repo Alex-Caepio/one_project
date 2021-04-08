@@ -21,7 +21,7 @@ class DisciplineTransformer extends Transformer
             'name'         => $discipline->name,
             'introduction' => $discipline->introduction,
             'description'  => $discipline->description,
-            'url'          => $discipline->url,
+            'slug'         => $discipline->slug,
             'banner_url'   => $discipline->banner_url,
             'icon_url'     => $discipline->icon_url,
             'is_published' => (bool)$discipline->is_published,

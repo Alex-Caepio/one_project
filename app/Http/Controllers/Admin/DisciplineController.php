@@ -57,8 +57,8 @@ class DisciplineController extends Controller
     public function store(DisciplineStoreRequest $request)
     {
         $data        = $request->all();
-        $url         = $data['url'] ?? to_url($data['name']);
-        $data['url'] = $url;
+        $slug        = $data['slug'] ?? to_url($data['name']);
+        $data['slug'] = $slug;
         $discipline  = Discipline::create($data);
 
         if ($request->filled('featured_practitioners')) {
@@ -114,8 +114,8 @@ class DisciplineController extends Controller
     {
 
         $data        = $request->all();
-        $url         = $data['url'] ?? to_url($data['name']);
-        $data['url'] = $url;
+        $slug        = $data['slug'] ?? to_url($data['name']);
+        $data['slug'] = $slug;
 
         $discipline->update($data);
 

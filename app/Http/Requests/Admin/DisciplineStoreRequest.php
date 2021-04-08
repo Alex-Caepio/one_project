@@ -28,7 +28,6 @@ class DisciplineStoreRequest extends Request
             'name'                      => 'required|unique:disciplines,name',
             'introduction'              => 'max:200',
             'description'               => 'max:200',
-            'url'                       => 'url',
             'banner_url'                => 'max:200',
             'icon_url'                  => 'max:200',
             'is_published'              => 'nullable|boolean',
@@ -85,23 +84,5 @@ class DisciplineStoreRequest extends Request
             'section_13_image_url'       => 'nullable|url',
             'section_13_video_url'       => 'nullable|url',
         ];
-    }
-
-    public function withValidator($validator): void
-    {
-        $validator->after(function ($validator) {
-            if ($validator->errors()->isNotEmpty()) {
-                return;
-            }
-            $url       = $this->get('url') ?? to_url($this->get('name'));
-            $fieldName = $this->get('url') ? 'url' : 'name';
-
-            if (Discipline::where('url', $url)->exists()) {
-                $validator->errors()->add(
-                    $fieldName,
-                    "The slug {$url} is not unique! Please, chose the different {$fieldName}."
-                );
-            }
-        });
     }
 }
