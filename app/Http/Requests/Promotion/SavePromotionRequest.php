@@ -34,11 +34,11 @@ class SavePromotionRequest extends Request {
             'expiry_date'     => 'date_format:Y-m-d',
             'discount_type'   => ['required', Rule::in([Promotion::TYPE_FIXED, Promotion::TYPE_PERCENTAGE])],
             'discount_value'  => 'required|numeric',
-            'spend_min'       => 'numeric|min:0|max:10000',
-            'spend_max'       => 'numeric|min:0|max:10000',
+            'spend_min'       => 'nullable|numeric|min:0|max:10000',
+            'spend_max'       => 'nullable|numeric|min:0|max:10000',
             'applied_to'      => ['required', Rule::in([Promotion::APPLIED_BOTH, Promotion::APPLIED_HOST])],
-            'uses_per_client' => 'integer',
-            'uses_per_code'   => 'integer',
+            'uses_per_client' => 'nullable|integer',
+            'uses_per_code'   => 'nullable|integer',
             'total_codes'     => (!$this->promotion ? 'required|' : '') . 'integer|min:1',
             'promocode_names' => 'array'
         ];
