@@ -56,8 +56,7 @@ Route::post('auth/forgot-password-claim', [ResetPasswordController::class, 'clai
 
 /* Public Routes For Services And Articles */
 Route::get('articles', [ArticleController::class, 'index']);
-Route::get('articles/{publicArticle}', [ArticleController::class, 'show'])
-    ->where('publicArticle', '[0-9]+');
+Route::get('articles/{publicArticle}', [ArticleController::class, 'show']);
 Route::post('/articles/{article}/copy', [ArticleController::class, 'copy']);
 
 Route::get('services', [ServiceController::class, 'index']);

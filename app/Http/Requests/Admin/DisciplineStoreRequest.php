@@ -85,4 +85,22 @@ class DisciplineStoreRequest extends Request
             'section_13_video_url'       => 'nullable|url',
         ];
     }
+
+    public function withValidator($validator): void
+    {
+        $validator->after(function ($validator) {
+            if ($validator->errors()->isNotEmpty()) {
+                return;
+            }
+            $slug       = $this->get('slug') ?? to_url($this->get('name'));
+            $fieldName = $this->get('slug') ? 'slug' : 'name';
+
+            if (Discipline::where('slug', $slug)->exists()) {
+                $validator->errors()->add(
+                    $fieldName,
+                    "The slug {$slug} is not unique! Please, chose the different {$fieldName}."
+                );
+            }
+        });
+    }
 }

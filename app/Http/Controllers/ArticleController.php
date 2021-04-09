@@ -176,7 +176,7 @@ class ArticleController extends Controller
         $newArticle->is_published = false;
         $newArticle->save();
 
-        return response(null, 204);
+        return fractal($newArticle, new ArticleTransformer())->respond();
     }
 
 }
