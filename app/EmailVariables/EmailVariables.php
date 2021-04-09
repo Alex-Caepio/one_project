@@ -276,6 +276,7 @@ class EmailVariables {
     /**
      * @return string
      */
+
     public function getSchedule_country(): ?string {
         return $this->event->schedule->country;
     }
@@ -364,21 +365,21 @@ class EmailVariables {
     /**
      * @return string
      */
-    public function getMy_articles(): string {
+    public function getMy_articles(): ?string {
         return config('app.frontend_practitioner_services');
     }
 
     /**
      * @return string
      */
-    public function getArticle_url(): string {
+    public function getArticle_url(): ?string {
         return $this->event->article->url;
     }
 
     /**
      * @return string
      */
-    public function getArticle_name(): string {
+    public function getArticle_name(): ?string {
         return $this->event->article->title;
     }
 
