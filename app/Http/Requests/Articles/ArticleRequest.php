@@ -40,7 +40,6 @@ class ArticleRequest extends Request {
             'is_published' => 'required|boolean',
             'introduction' => 'string|min:5|max:200',
             'image_url'    => 'nullable|url',
-            'user_id'      => 'required|exists:users,id|integer|min:0'
         ];
 
     }
