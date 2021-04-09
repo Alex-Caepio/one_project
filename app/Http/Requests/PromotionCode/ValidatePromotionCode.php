@@ -27,7 +27,7 @@ class ValidatePromotionCode {
         if (!$promoCode = PromotionCode::where('name', $promocodeName)->whereHas('promotion', function($query) {
             $query->where('status', Promotion::STATUS_ACTIVE)->where('expiry_date', '>=', date('Y-m-d H:i:s'));
         })->where('status', PromotionCode::STATUS_ACTIVE)->with(['promotion'])->first()) {
-            $validator->errors()->add('promo_code', 'Promo code was not found');
+            $validator->errors()->add('promo_code', 'The Promotion code is invalid');
             return;
         }
         //initialise variables
@@ -48,7 +48,7 @@ class ValidatePromotionCode {
         //Uses Per Code
         if ($promoCode->uses_per_code > 0 &&
             Purchase::where('promocode_id', $promoCode->id)->count() >= (int)$promoCode->uses_per_code) {
-            $validator->errors()->add('promo_code', 'Promo code is already in use');
+            $validator->errors()->add('promo_code', 'Sorry, this code has already been used');
         }
 
         //Uses Per Client
@@ -61,24 +61,22 @@ class ValidatePromotionCode {
         //checks below
         if ($promotion->spend_min && $totalCost < $promotion->spend_min) {
             $validator->errors()->add('promo_code',
-                                      'Promo eligible for services with price more than ' . $promotion->spend_min .
-                                      ' only!');
+                                      'Sorry, this Service is under the minimum cost allowed');
         }
 
         if ($promotion->spend_max && $totalCost > $promotion->spend_max) {
             $validator->errors()->add('promo_code',
-                                      'Promo eligible for services with price less than ' . $promotion->spend_max .
-                                      ' only!');
+                                      'Sorry, this Service is above the maximum cost allowed');
         }
 
         if ($schedule instanceof Schedule) {
             if (Carbon::parse($promotion->valid_from) >= Carbon::parse($schedule->start_date)) {
                 $validator->errors()->add('promo_code',
-                                          'This promo is only for services starting from ' . $promotion->valid_from);
+                                          'Sorry, this code is not valid for the date of Booking');
             }
 
             if (Carbon::parse($promotion->expiry_date) <= Carbon::parse($schedule->end_date)) {
-                $validator->errors()->add('promo_code', "Promo code has expired");
+                $validator->errors()->add('promo_code', "Sorry, this code is not valid for the date of Booking");
             }
         }
 
@@ -87,7 +85,7 @@ class ValidatePromotionCode {
         } elseif (count($promoFocusAreas) && !count(array_intersect($promoFocusAreas, $serviceFocusAreas))) {
             $validator->errors()->add('promo_code', 'You are not allowed to use the promocode with this focus area');
         } elseif (count($promoServiceTypes) && !in_array($service->service_type_id, $promoServiceTypes)) {
-            $validator->errors()->add('promo_code', 'You are not allowed to use the promocode with this service type');
+            $validator->errors()->add('promo_code', 'Sorry, this code cannot be used on this service');
         }
 
     }
