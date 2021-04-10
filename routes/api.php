@@ -76,6 +76,7 @@ Route::get('disciplines/{discipline}', [DisciplineController::class, 'show']);
 Route::get('/focus-areas', [FocusAreaController::class, 'index']);
 Route::get('/focus-areas/{focusArea}', [FocusAreaController::class, 'show']);
 
+Route::get('users/{slug}', [AuthController::class, 'show']);
 Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::get('auth/profile', [AuthController::class, 'profile']);
     Route::put('auth/profile', [AuthController::class, 'update']);
