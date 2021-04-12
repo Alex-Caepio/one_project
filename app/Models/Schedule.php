@@ -15,6 +15,10 @@ use Illuminate\Support\Facades\DB;
  *
  * @property int     id
  * @property int     buffer_time
+ * @property int     deposit_instalments
+ * @property bool    deposit_accepted
+ * @property float   deposit_amount
+ * @property string  deposit_final_date
  * @property Service service
  */
 class Schedule extends Model
@@ -88,13 +92,14 @@ class Schedule extends Model
         return $this->belongsToMany(User::class);
     }
 
-    public function isSoldOut(): bool {
-        $time = Carbon::now()->subMinutes(15);
-        $purchased = Booking::where('schedule_id', $this->id)->count();
+    public function isSoldOut(): bool
+    {
+        $time            = Carbon::now()->subMinutes(15);
+        $purchased       = Booking::where('schedule_id', $this->id)->count();
         $personalFreezed = ScheduleFreeze::where('schedule_id', $this->id)->where('user_id', Auth::id())
-                                         ->where('freeze_at', '>', $time->toDateTimeString())->count();
-        $freezed = ScheduleFreeze::where('schedule_id', $this->id)->where('freeze_at', '>', $time->toDateTimeString())
-                                 ->count();
+            ->where('freeze_at', '>', $time->toDateTimeString())->count();
+        $freezed         = ScheduleFreeze::where('schedule_id', $this->id)->where('freeze_at', '>', $time->toDateTimeString())
+            ->count();
 
         if (isset($personalFreezed)) {
             return $this->attendees <= ($purchased + $freezed - $personalFreezed);
@@ -223,14 +228,16 @@ class Schedule extends Model
             $q->whereNotBetween('datetime_from', [$unavailability->start_date, $unavailability->end_date]);
         }
 
-        return  $this->bookings()->whereNotIn('id', $q->pluck('id'))->get();
+        return $this->bookings()->whereNotIn('id', $q->pluck('id'))->get();
     }
 
-    public function bookings(): HasMany {
+    public function bookings(): HasMany
+    {
         return $this->hasMany(Booking::class);
     }
 
-    public function purchases(): HasMany {
+    public function purchases(): HasMany
+    {
         return $this->hasMany(Purchase::class);
     }
 }

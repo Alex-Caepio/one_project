@@ -33,9 +33,9 @@ class SchedulePurchaseTest extends TestCase
     public function test_appointment_purchase_success()
     {
         //practitioner
-        $plan        = Plan::factory()->create(['commission_on_sale' => 10]);
-        $practitoner = User::factory()->create(['plan_id' => $plan->id]);
-        $this->createConnectAccount($practitoner);
+        $plan         = Plan::factory()->create(['commission_on_sale' => 10]);
+        $practitioner = User::factory()->create(['plan_id' => $plan->id]);
+        $this->createConnectAccount($practitioner);
 
         //client
         $stripeUser    = $this->createStripeClient($this->user);
@@ -46,10 +46,10 @@ class SchedulePurchaseTest extends TestCase
         $service       = Service::factory()->create([
             'service_type_id' => 'appointment',
             'stripe_id'       => $stripeProduct->id,
-            'user_id'         => $practitoner->id
+            'user_id'         => $practitioner->id
         ]);
         $schedule      = Schedule::factory()->create(['service_id' => $service->id]);
-        $price         = Price::factory()->create(['schedule_id' => $schedule->id, 'stripe_id' => $stripeProduct->id]);
+        $price         = Price::factory()->create(['is_free' => false, 'schedule_id' => $schedule->id, 'stripe_id' => $stripeProduct->id]);
         $availability  = ScheduleAvailability::factory()->create(
             [
                 'schedule_id' => $schedule->id,
@@ -63,6 +63,7 @@ class SchedulePurchaseTest extends TestCase
             'price_id'          => $price->id,
             'customer'          => $stripeUser,
             'payment_method_id' => $paymentMethod->id,
+            'amount'            => 1,
             'availabilities'    => [
                 [
                     'availability_id' => $availability->id,
@@ -77,6 +78,47 @@ class SchedulePurchaseTest extends TestCase
 
         $response->assertOk();
         $this->assertDatabaseCount('bookings', 2);
+    }
+
+    public function test_workshop_installment_purchase()
+    {
+        //practitioner
+        $plan         = Plan::factory()->create(['commission_on_sale' => 10]);
+        $practitioner = User::factory()->create(['plan_id' => $plan->id]);
+        $this->createConnectAccount($practitioner);
+
+        //customer
+        $customer      = $this->createStripeClient($this->user);
+        $paymentMethod = $this->createStripePaymentMethod($this->user);
+
+        //product
+        $stripeProduct = $this->creteStripeProduct();
+        $service       = Service::factory()->create([
+            'service_type_id' => 'workshop',
+            'stripe_id'       => $stripeProduct->id,
+            'user_id'         => $practitioner->id
+        ]);
+        $schedule      = Schedule::factory()->create([
+            'service_id'          => $service->id,
+            'deposit_accepted'    => true,
+            'deposit_amount'      => 10,
+            'deposit_instalments' => 4,
+            'deposit_final_date' => Carbon::now()->addMonth()->toDateTimeString()
+        ]);
+        $price         = Price::factory()->create([
+            'schedule_id' => $schedule->id,
+            'stripe_id'   => $stripeProduct->id,
+            'is_free'     => false,
+            'cost'        => 100
+        ]);
+        $response      = $this->json('post', "api/schedules/{$schedule->id}/purchase", [
+            'price_id'          => $price->id,
+            'amount'            => 1,
+            'customer'          => $customer,
+            'payment_method_id' => $paymentMethod->id,
+            'instalments'       => 10
+        ]);
+        $response->assertOk();
     }
 
     public function test_appointment_purchase_failure_due_unavailability()
@@ -99,9 +141,9 @@ class SchedulePurchaseTest extends TestCase
             'user_id'         => $practitoner->id
         ]);
 
-        $schedule      = Schedule::factory()->create(['service_id' => $service->id]);
-        $price         = Price::factory()->create(['schedule_id' => $schedule->id, 'stripe_id' => $stripeProduct->id]);
-        $availability  = ScheduleAvailability::factory()->create(
+        $schedule     = Schedule::factory()->create(['service_id' => $service->id]);
+        $price        = Price::factory()->create(['schedule_id' => $schedule->id, 'stripe_id' => $stripeProduct->id]);
+        $availability = ScheduleAvailability::factory()->create(
             [
                 'schedule_id' => $schedule->id,
                 'days'        => 'everyday',
@@ -116,10 +158,10 @@ class SchedulePurchaseTest extends TestCase
         ]);
 
         $response = $this->json('post', "api/schedules/{$schedule->id}/purchase", [
-            'price_id'       => $price->id,
+            'price_id'          => $price->id,
             'customer'          => $stripeUser,
             'payment_method_id' => $paymentMethod->id,
-            'availabilities' => [
+            'availabilities'    => [
                 [
                     'availability_id' => $availability->id,
                     'datetime_from'   => '2020-11-30 16:00:00',
@@ -160,10 +202,10 @@ class SchedulePurchaseTest extends TestCase
         );
 
         $response = $this->json('post', "api/schedules/{$schedule->id}/purchase", [
-            'price_id'       => $price->id,
+            'price_id'          => $price->id,
             'customer'          => $stripeUser,
             'payment_method_id' => $paymentMethod->id,
-            'availabilities' => [
+            'availabilities'    => [
                 [
                     'availability_id' => $availability->id,
                     'datetime_from'   => '2020-11-30 11:00:00',
@@ -193,8 +235,8 @@ class SchedulePurchaseTest extends TestCase
         //product
         $stripeProduct = $this->creteStripeProduct();
         $service       = Service::factory()->create([
-            'stripe_id'       => $stripeProduct->id,
-            'user_id'         => $practitoner->id
+            'stripe_id' => $stripeProduct->id,
+            'user_id'   => $practitoner->id
         ]);
         $schedule      = Schedule::factory()->create(['service_id' => $service->id]);
         $price         = Price::factory()->create([
@@ -213,11 +255,11 @@ class SchedulePurchaseTest extends TestCase
 
         $response = $this->json('post', "api/schedules/{$schedule->id}/purchase",
             [
-                'price_id'       => $price->id,
+                'price_id'          => $price->id,
                 'customer'          => $stripeUser,
                 'payment_method_id' => $paymentMethod->id,
-                'schedule_id'    => $schedule->id,
-                'availabilities' => [[
+                'schedule_id'       => $schedule->id,
+                'availabilities'    => [[
                     'availability_id' => $availability->id,
                     'datetime_from'   => '2020-11-30 11:00:00'
                 ]]
@@ -241,8 +283,8 @@ class SchedulePurchaseTest extends TestCase
         //product
         $stripeProduct = $this->creteStripeProduct();
         $service       = Service::factory()->create([
-            'stripe_id'       => $stripeProduct->id,
-            'user_id'         => $practitoner->id
+            'stripe_id' => $stripeProduct->id,
+            'user_id'   => $practitoner->id
         ]);
         $schedule      = Schedule::factory()->create(['service_id' => $service->id]);
         Price::factory()->create([
@@ -266,11 +308,11 @@ class SchedulePurchaseTest extends TestCase
 
         $response = $this->json('post', "api/schedules/{$schedule->id}/purchase",
             [
-                'price_id'       => $wrongPrice->id,
+                'price_id'          => $wrongPrice->id,
                 'customer'          => $stripeUser,
                 'payment_method_id' => $paymentMethod->id,
-                'schedule_id'    => $schedule->id,
-                'availabilities' => [[
+                'schedule_id'       => $schedule->id,
+                'availabilities'    => [[
                     'availability_id' => $availability->id,
                     'datetime_from'   => '2020-11-30 11:00:00'
                 ]]
@@ -316,11 +358,11 @@ class SchedulePurchaseTest extends TestCase
         ]);
 
         $response = $this->json('post', "api/schedules/{$schedule->id}/purchase", [
-            'price_id'       => $price->id,
+            'price_id'          => $price->id,
             'customer'          => $stripeUser,
             'payment_method_id' => $paymentMethod->id,
-            'schedule_id'    => $schedule->id,
-            'availabilities' => [[
+            'schedule_id'       => $schedule->id,
+            'availabilities'    => [[
                 'availability_id' => $availability->id,
                 'datetime_from'   => '2020-11-30 11:00:00'
             ]]
@@ -344,8 +386,8 @@ class SchedulePurchaseTest extends TestCase
         //product
         $stripeProduct = $this->creteStripeProduct();
         $service       = Service::factory()->create([
-            'stripe_id'       => $stripeProduct->id,
-            'user_id'         => $practitoner->id
+            'stripe_id' => $stripeProduct->id,
+            'user_id'   => $practitoner->id
         ]);
         $schedule      = Schedule::factory()->create([
             'service_id' => $service->id,
@@ -359,11 +401,11 @@ class SchedulePurchaseTest extends TestCase
         ]);
         $price         = Price::factory()->create(['schedule_id' => $schedule->id, 'stripe_id' => $stripeProduct->id]);
         $response      = $this->json('post', "api/schedules/{$schedule->id}/purchase", [
-            'price_id'       => $price->id,
+            'price_id'          => $price->id,
             'customer'          => $stripeUser,
             'payment_method_id' => $paymentMethod->id,
-            'schedule_id'    => $schedule->id,
-            'availabilities' => [[
+            'schedule_id'       => $schedule->id,
+            'availabilities'    => [[
                 'availability_id' => $availability->id,
                 'datetime_from'   => '2020-11-30 11:00:00'
             ]]
@@ -376,11 +418,11 @@ class SchedulePurchaseTest extends TestCase
         ]);
 
         $response = $this->json('post', "api/schedules/{$schedule->id}/purchase", [
-            'price_id'       => $price->id,
+            'price_id'          => $price->id,
             'customer'          => $stripeUser,
             'payment_method_id' => $paymentMethod->id,
-            'schedule_id'    => $schedule->id,
-            'availabilities' => [[
+            'schedule_id'       => $schedule->id,
+            'availabilities'    => [[
                 'availability_id' => $availability->id,
                 'datetime_from'   => '2020-11-30 11:00:00'
             ]]

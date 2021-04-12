@@ -40,7 +40,7 @@ trait UsesStripe
             'card' => [
                 'number'    => $cardNumber
                     ? $cardNumber
-                    : '4242424242424242',
+                    : '4000000000000077 ',
                 'exp_month' => 1,
                 'exp_year'  => 2022,
                 'cvc'       => '314',

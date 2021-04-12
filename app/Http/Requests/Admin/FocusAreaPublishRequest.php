@@ -35,9 +35,6 @@ class FocusAreaPublishRequest extends FormRequest
             if (!$focusArea->name) {
                 $validator->errors()->add('name', "You have not filled in the field \"Focus area name\"");
             }
-            if (!$focusArea->description) {
-                $validator->errors()->add('description', "You have not filled in the field \"Description\"");
-            }
             if (!$focusArea->introduction) {
                 $validator->errors()->add('introduction', "You have not filled in the field \"Introduction\"");
             }

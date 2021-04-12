@@ -15,35 +15,38 @@ use Illuminate\Support\Facades\Log;
 use Stripe\Exception\ApiErrorException;
 use Stripe\StripeClient;
 
-class PlanController extends Controller {
-    public function index(Request $request) {
+class PlanController extends Controller
+{
+    public function index(Request $request)
+    {
         $plans = Plan::with('service_types')->get();
         return fractal($plans, new PlanTransformer())->parseIncludes($request->getIncludes())->toArray();
     }
 
-    public function purchase(Plan $plan, StripeClient $stripe, PlanRequest $request) {
+    public function purchase(Plan $plan, StripeClient $stripe, PlanRequest $request)
+    {
         $user = Auth::user();
 
         try {
             $subscription = $stripe->subscriptions->create([
-                                                               'default_payment_method' => $request->payment_method_id,
-                                                               'customer'               => $user->stripe_customer_id,
-                                                               'items'                  => [
-                                                                   ['price' => $plan->stripe_id],
-                                                               ],
-                                                           ]);
-            $isNewPlan = true;
+                'default_payment_method' => $request->payment_method_id,
+                'customer'               => $user->stripe_customer_id,
+                'items'                  => [
+                    ['price' => $plan->stripe_id],
+                ],
+            ]);
+            $isNewPlan    = true;
             if ($subscription->id) {
                 if (!empty($user->stripe_plan_id)) {
                     $isNewPlan = false;
                     $stripe->subscriptions->cancel($user->stripe_plan_id, []);
                 }
                 $user->stripe_plan_id = $subscription->id;
-                $user->plan_id = $plan->id;
+                $user->plan_id        = $plan->id;
             }
 
-            $user->plan_until = Carbon::createFromTimestamp($subscription->current_period_end);
-            $user->plan_from = Carbon::now();
+            $user->plan_until   = Carbon::createFromTimestamp($subscription->current_period_end);
+            $user->plan_from    = Carbon::now();
             $user->account_type = 'practitioner';
             $user->save();
 

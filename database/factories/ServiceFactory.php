@@ -20,7 +20,7 @@ class ServiceFactory extends Factory
             'description'     => $this->faker->text(255),
             'is_published'    => $this->faker->boolean,
             'introduction'    => $this->faker->text,
-            'url'             => $this->faker->url,
+            'slug'            => $this->faker->word,
             'service_type_id' => $this->faker->randomNumber(2),
             'stripe_id'       => $this->faker->word,
         ];

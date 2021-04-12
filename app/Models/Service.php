@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Auth;
  * @property string url
  * @property string title
  * @property string string
+ * @property string stripe_id
  * @property string description
  * @property string introduction
  * @property Carbon created_at
