@@ -77,6 +77,7 @@ Route::get('/focus-areas', [FocusAreaController::class, 'index']);
 Route::get('/focus-areas/{focusArea}', [FocusAreaController::class, 'show']);
 
 Route::get('users/{slug}', [AuthController::class, 'show']);
+Route::get('/services/{service}/schedules', [ScheduleController::class, 'index']);
 Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::get('auth/profile', [AuthController::class, 'profile']);
     Route::put('auth/profile', [AuthController::class, 'update']);
