@@ -75,7 +75,9 @@ class PromotionFiltrator {
         }
 
         if ($request->filled('spend_max') && (int)$request->get('spend_max') > 0) {
-            $queryBuilder->where('spend_max', '<=', $request->get('spend_max'));
+            $queryBuilder->where(static function($query) use($request) {
+                $query->where('spend_max', '<=', $request->get('spend_max'))->orWhereNull('spend_max');
+            });
         }
 
         return $queryBuilder;
