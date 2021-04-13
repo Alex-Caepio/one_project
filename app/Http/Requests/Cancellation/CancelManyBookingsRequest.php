@@ -17,19 +17,7 @@ class CancelManyBookingsRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
-    {
-        $bookings = Booking::find($this->booking_ids);
-
-        foreach ($bookings as $booking) {
-            $userBooking         = Auth::id() === $booking->user_id;
-            $practitionerBooking = Auth::id() === $booking->practitioner_id;
-
-            if (!$userBooking && !$practitionerBooking) {
-                return false;
-            }
-
-        }
+    public function authorize() {
         return true;
     }
 

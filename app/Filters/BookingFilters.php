@@ -6,6 +6,17 @@ namespace App\Filters;
 use Carbon\Carbon;
 
 class BookingFilters extends QueryFilter {
+
+    public function search(string $searchQuery) {
+        $searchQuery = '%'.$searchQuery.'%';
+        return $this->builder->where(static function($query) use ($searchQuery) {
+            $query->whereHas('users', static function ($queryHas) use($searchQuery) {
+                $queryHas->where('email', 'LIKE', $searchQuery);
+            })->orWhere('reference', 'LIKE', $searchQuery);
+        });
+    }
+
+
     public function status(string $status) {
         $status = strtolower($status);
         if ($status === 'upcoming') {

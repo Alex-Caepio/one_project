@@ -12,12 +12,11 @@ use Illuminate\Database\Query\Builder;
 
 class BookingController extends Controller
 {
-    public function index(Request $request,BookingFilters $filters)
+    public function index(Request $request, BookingFilters $filters)
     {
         $query = Booking::filter($filters);
 
-        if ($request->hasOrderBy())
-        {
+        if ($request->hasOrderBy()) {
             $order = $request->getOrderBy();
             $query->orderBy($order['column'], $order['direction']);
         }
@@ -42,7 +41,7 @@ class BookingController extends Controller
         $booking   = $paginator->getCollection();
 
         return response(fractal($booking, new BookingTransformer())
-            ->parseIncludes($request->getIncludes()))
+            ->parseIncludes($request->getIncludes())->toArray())
             ->withPaginationHeaders($paginator);
 
     }
