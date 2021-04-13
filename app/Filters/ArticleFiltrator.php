@@ -29,6 +29,12 @@ class ArticleFiltrator {
             });
         }
 
+        if ($request->filled('discipline_id')) {
+            $queryBuilder->whereHas('disciplines', function($q) use ($request){
+                $q->where('discipline_id', $request->discipline_id);
+            });
+        }
+
         if ($request->filled('published_from')) {
             $queryBuilder->where('created_at', '>=', Carbon::parse($request->published_from)->startOfDay());
         }

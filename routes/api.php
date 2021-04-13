@@ -77,8 +77,10 @@ Route::get('disciplines/{discipline}', [DisciplineController::class, 'show']);
 Route::get('/focus-areas', [FocusAreaController::class, 'index']);
 Route::get('/focus-areas/{focusArea}', [FocusAreaController::class, 'show']);
 
+Route::get('practitioners', [PractitionerController::class, 'index']);
 Route::get('users/{slug}', [AuthController::class, 'show']);
 Route::get('/services/{service}/schedules', [ScheduleController::class, 'index']);
+
 Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::get('auth/profile', [AuthController::class, 'profile']);
     Route::put('auth/profile', [AuthController::class, 'update']);
@@ -133,7 +135,6 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::get('locations', [LocationController::class, 'index']);
     Route::get('locations/list', [LocationController::class, 'list']);
 
-    Route::get('practitioners', [PractitionerController::class, 'index']);
     Route::get('practitioners/list', [PractitionerController::class, 'list']);
 
     Route::post('/credit-cards', [CardStripeController::class, 'store']);

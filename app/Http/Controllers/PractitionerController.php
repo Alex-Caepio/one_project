@@ -13,10 +13,30 @@ class PractitionerController extends Controller
     public function index(Request $request)
     {
         $query = User::query()->where('account_type', 'practitioner');
-        $user = $query->get();
 
-        return fractal($user, new UserTransformer())->parseIncludes($request->getIncludes())
-            ->toArray();
+        if ($request->filled('discipline_id')) {
+            $query->whereHas('disciplines', function($q) use ($request){
+                $q->where('discipline_id', $request->discipline_id);
+            });
+        }
+
+        if ($request->hasSearch()) {
+            $search = $request->search();
+
+            $query->where(
+                function ($query) use ($search) {
+                    $query->where('first_name', 'like', "%{$search}%")
+                        ->orWhere('last_name', 'like', "%{$search}%")
+                        ->orWhere('business_name', 'like', "%{$search}%");
+                }
+            );
+        }
+
+        $paginator = $query->paginate($request->getLimit());
+        $user = $paginator->getCollection();;
+
+        return response(fractal($user, new UserTransformer())->parseIncludes($request->getIncludes()))
+            ->withPaginationHeaders($paginator);
     }
 
     public function list()

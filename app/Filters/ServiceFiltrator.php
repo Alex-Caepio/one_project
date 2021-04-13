@@ -87,6 +87,12 @@ class ServiceFiltrator {
             });
         }
 
+        if ($request->filled('discipline_id')) {
+            $queryBuilder->whereHas('disciplines', function($q) use ($request){
+                $q->where('discipline_id', $request->discipline_id);
+            });
+        }
+
         return $queryBuilder;
     }
 
