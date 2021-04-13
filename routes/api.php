@@ -78,6 +78,7 @@ Route::get('/focus-areas', [FocusAreaController::class, 'index']);
 Route::get('/focus-areas/{focusArea}', [FocusAreaController::class, 'show']);
 
 Route::get('users/{slug}', [AuthController::class, 'show']);
+Route::get('/services/{service}/schedules', [ScheduleController::class, 'index']);
 Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::get('auth/profile', [AuthController::class, 'profile']);
     Route::put('auth/profile', [AuthController::class, 'update']);
@@ -141,7 +142,6 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::post('/plans/{plan}/purchase', [PlanController::class, 'purchase']);
 
     Route::post('/services/{service}/schedules', [ScheduleController::class, 'store']);
-    Route::get('/services/{service}/schedules', [ScheduleController::class, 'index']);
 
     Route::get('/schedules/{schedule}', [ScheduleController::class, 'show']);
     Route::put('/schedules/{schedule}', [ScheduleController::class, 'update']);
