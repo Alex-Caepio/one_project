@@ -96,10 +96,10 @@ class DisciplineUpdateRequest extends Request
             $slug       = $this->get('slug') ?? to_url($this->get('name'));
             $fieldName = $this->get('slug') ? 'slug' : 'name';
 
-            if (Discipline::where('slug', $slug)->exists()) {
+            if (Discipline::where('slug', $slug)->where('id', '<>', $this->discipline->id)->exists()) {
                 $validator->errors()->add(
                     $fieldName,
-                    "The slug {$slug} is not unique! Please, chose the different {$fieldName}."
+                    "The slug {$slug} is not unique! Please, choose the different {$fieldName}."
                 );
             }
         });

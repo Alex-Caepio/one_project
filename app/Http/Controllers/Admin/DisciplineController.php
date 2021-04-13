@@ -8,7 +8,6 @@ use App\Http\Requests\Request;
 use App\Http\Controllers\Controller;
 use App\Traits\hasMediaItems;
 use App\Transformers\DisciplineTransformer;
-use App\Actions\Discipline\DisciplineStore;
 use App\Http\Requests\Admin\DisciplineStoreRequest;
 use App\Http\Requests\Admin\DisciplinePublishRequest;
 use Illuminate\Support\Facades\DB;
