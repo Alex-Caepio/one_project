@@ -44,6 +44,7 @@ pipeline{
             steps {
                 withAWS(credentials: 'oneness-ecr-creds', region: 'eu-west-2') {
                     sh '''aws ecs update-service --cluster stage-app --service back --task-definition backend-prod --force-new-deployment
+                    aws ecs update-service --cluster stage-app --service back-cron --task-definition back-artisan-stage:3 --force-new-deployment
                     aws ecs run-task --cluster stage-app --count 1 --launch-type EC2 --task-definition back-artisan-stage'''
                 }
             }
