@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 
+use App\Actions\Article\AdminArticleUpdate;
 use App\Filters\ArticleFiltrator;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ArticlePublishRequest;
@@ -55,9 +56,9 @@ class ArticleController extends Controller {
 
     public function update(ArticleUpdateRequest $request, Article $article)
     {
-        $article->forceFill($request->all());
-        $article->save();
-        return response(null, 204);
+        $article = run_action(AdminArticleUpdate::class, $request, $article);
+        return fractal($article, new ArticleTransformer())->parseIncludes($request->getIncludes())
+            ->toArray();
     }
 
 

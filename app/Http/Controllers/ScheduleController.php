@@ -221,4 +221,25 @@ class ScheduleController extends Controller
 
         return response(null, 204);
     }
+
+    public function availableInstalments(Schedule $schedule)
+    {
+        $dateNow = Carbon::now();
+        $dateFinal = Carbon::parse($schedule->deposit_final_date);
+
+        //can't put installments on expired schedules
+        if($dateNow->isAfter($dateFinal)){
+            return [];
+        }
+
+        $daysDiff = $dateNow->diffInDays($dateFinal);
+        $periods = (int) ($daysDiff / 14);
+        $date = [];
+
+       for ($i = 1; $i <= $periods; $i++) {
+           $date[] += $i;
+       }
+
+        return $date;
+    }
 }

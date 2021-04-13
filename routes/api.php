@@ -13,6 +13,7 @@ use App\Http\Controllers\PriceController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\ScheduleFreezesController;
 use App\Http\Controllers\SchedulePriceController;
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\StripeAccountController;
 use App\Http\Controllers\UserController;
@@ -152,6 +153,7 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::delete('/schedules/{schedule}', [ScheduleController::class, 'destroy']);
     Route::get('/prices/{price}/appointments-dates/{date}', [ScheduleController::class, 'appointmentsOnDate']);
     Route::post('/schedules/{schedule}/copy', [ScheduleController::class, 'copy']);
+    Route::get('/schedules/{schedule}/available-instalments', [ScheduleController::class, 'availableInstalments']);
 
     Route::put('/price/{price}', [PriceController::class, 'update']);
     Route::delete('/price/{price}', [PriceController::class, 'destroy']);
@@ -215,4 +217,6 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
 
     Route::get('/notifications/practitioner', [NotificationController::class, 'index']);
     Route::post('/notifications/{notification}/mark-as-read', [NotificationController::class, 'markAsRead']);
+
+    Route::get('/search', [SearchController::class, 'index']);
 });

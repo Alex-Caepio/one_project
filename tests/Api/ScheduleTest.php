@@ -599,6 +599,18 @@ class ScheduleTest extends TestCase {
         $this->assertDatabaseCount('reschedule_requests', 1);
     }
 
+    public function test_available_installments(): void
+    {
+        $service  = Service::factory()->create(['user_id' => $this->user->id]);
+        $schedule = Schedule::factory()->create([
+            'service_id'         => $service->id,
+            'deposit_final_date' => Carbon::now()->addWeeks(7)->toDateTimeString()
+        ]);
+        $response = $this->json('get', "/api/schedules/{$schedule->id}/available-instalments");
+
+        $response->assertOk();
+    }
+
     protected function creteStripeProduct() {
         $client = app()->make(StripeClient::class);
         return $client->products->create(['name' => 'Test product @' . now()->toDateTimeString()]);
