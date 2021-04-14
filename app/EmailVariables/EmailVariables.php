@@ -193,7 +193,7 @@ class EmailVariables {
     /**
      * @return string
      */
-    public function getAdd_to_calendar(): string {
+    public function getAdd_to_calendar(): ?string {
         $this->calendarPresented = true;
         return $this->generateGoogleLink($this->event->schedule);
     }
