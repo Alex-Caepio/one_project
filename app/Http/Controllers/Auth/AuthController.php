@@ -210,7 +210,7 @@ class AuthController extends Controller
 
     public function show($slug, Request $request)
     {
-        $user = User::where('slug', $slug)->orWhere('id', $slug)->with($request->getIncludes())->firstOrFail();
+        $user = User::where('slug', $slug)->with($request->getIncludes())->firstOrFail();
 
         return fractal($user, new UserTransformer())
             ->parseIncludes($request->getIncludes())
