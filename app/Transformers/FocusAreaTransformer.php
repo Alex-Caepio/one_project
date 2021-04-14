@@ -74,7 +74,7 @@ class FocusAreaTransformer extends Transformer
             'section_11_image_url'      => $focusArea->section_11_image_url,
             'section_11_video_url'      => $focusArea->section_11_video_url,
 
-            'section_12_h2'             => $focusArea->section_11_h2,
+            'section_12_h2'             => $focusArea->section_12_h2,
             'section_12_h4'             => $focusArea->section_11_h4,
 
             'section_13_tag_line'       => $focusArea->section_13_tag_line,
