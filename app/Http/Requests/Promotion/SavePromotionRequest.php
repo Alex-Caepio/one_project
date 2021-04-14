@@ -31,7 +31,7 @@ class SavePromotionRequest extends Request {
             'name'            => 'required|min:3|max:80|unique:promotions,name' .
                                  ($this->promotion ? ',' . $this->promotion->id : ''),
             'valid_from'      => 'date_format:Y-m-d',
-            'expiry_date'     => 'date_format:Y-m-d',
+            'expiry_date'     => 'nullable|date_format:Y-m-d',
             'discount_type'   => ['required', Rule::in([Promotion::TYPE_FIXED, Promotion::TYPE_PERCENTAGE])],
             'discount_value'  => 'required|numeric',
             'spend_min'       => 'nullable|numeric|min:0|max:10000',
