@@ -18,7 +18,7 @@ class CancelBookingRequest extends FormRequest {
     public function authorize() {
         $userBooking = Auth::id() == $this->booking->user_id;
         $practitionerBooking = Auth::id() == $this->booking->practitioner_id;
-        return $userBooking || $practitionerBooking;
+        return $userBooking || $practitionerBooking || Auth::user()->is_admin;
 
     }
 
@@ -29,15 +29,6 @@ class CancelBookingRequest extends FormRequest {
      */
     public function rules() {
         return [];
-    }
-
-    public function withValidator($validator) {
-        $validator->after(function($validator) {
-            $this->booking->load('schedule');
-            if (Carbon::parse($this->booking->schedule->start_date) < Carbon::now()) {
-                $validator->errors()->add('error', 'The schedule cannot be cancelled');
-            }
-        });
     }
 
 }

@@ -181,6 +181,16 @@ return [
             'driver' => 'daily',
         ],
 
+        'google_authorisation_failed' => [
+            'path' => storage_path('logs/google_authorization_failed.log'),
+            'driver' => 'daily',
+        ],
+
+        'google_authorisation_success' => [
+            'path' => storage_path('logs/google_authorization_success.log'),
+            'driver' => 'daily',
+        ],
+
     ],
 
 ];

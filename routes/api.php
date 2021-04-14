@@ -91,7 +91,7 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::get('auth/quotes/articles', [QuoteController::class, 'quotesArticles']);
     Route::get('auth/quotes/services/{service}/schedules', [QuoteController::class, 'quotesServices']);
     Route::get('auth/quotes/schedules/{schedule}/prices', [QuoteController::class, 'quotesPrices']);
-    Route::get('users/{slug}', [AuthController::class, 'show']);
+
 
     Route::get('stripe/link', [StripeAccountController::class, 'link']);
     Route::get('stripe/account', [StripeAccountController::class, 'account']);
