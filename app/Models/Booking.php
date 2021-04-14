@@ -33,7 +33,8 @@ class Booking extends Model
         'cancelled_at',
         'purchase_id',
         'status',
-        'amount'
+        'amount',
+        'is_installment'
     ];
 
     public function user()

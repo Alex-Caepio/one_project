@@ -12,6 +12,12 @@ class PriceTransformer extends Transformer
 
     public function transform(Price $price)
     {
+        $number_unpurchased = $price->number_available - $price->schedule->bookings()->count();
+
+        if(!$price->number_available || $number_unpurchased < 0){
+            $number_unpurchased = 0;
+        }
+
         return [
             'id'                => $price->id,
             'cost'              => $price->cost,
@@ -22,6 +28,7 @@ class PriceTransformer extends Transformer
             'duration'          => $this->formatDuration($price->duration),
             'min_purchase'      => $price->min_purchase,
             'number_available'  => $price->number_available,
+            'number_unpurchased'=> $number_unpurchased,
             'stripe_id'         => $price->stripe_id,
             'created_at'        => $price->created_at,
             'updated_at'        => $price->updated_at,

@@ -29,7 +29,7 @@ class RetreatScheduleRequest extends GenericSchedule
             'city' => 'required_if:appointment,physical|required|string',
             'country' => 'required_if:appointment,physical|string',
             'location_displayed' => 'required|string',
-            'attendees' => 'required|integer',
+            'attendees' => 'required_if:appointment,physical|integer',
             'refund_terms' => 'required',
             'prices' => 'required|array',
             'prices.*.name' => 'required',

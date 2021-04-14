@@ -40,6 +40,7 @@ class ScheduleController extends Controller
                     ->orWhere('services.user_id', Auth::id());
             })
             ->groupBy('schedules.id')
+            ->where('start_date', '>=', now())
             ->get();
 
         return fractal($schedule, new ScheduleTransformer())

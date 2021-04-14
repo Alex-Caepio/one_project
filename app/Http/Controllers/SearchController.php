@@ -38,9 +38,9 @@ class SearchController extends Controller {
         );
 
         return [
-            'articles' => fractal($articles->get(), new ArticleTransformer())->toArray(),
-            'practitioners' => fractal($practitioners->get(), new UserTransformer())->toArray(),
-            'services' => fractal($services->get(), new ServiceTransformer())->toArray(),
+            'articles' => fractal($articles->limit(10)->get(), new ArticleTransformer())->toArray(),
+            'practitioners' => fractal($practitioners->limit(10)->get(), new UserTransformer())->toArray(),
+            'services' => fractal($services->limit(10)->get(), new ServiceTransformer())->toArray(),
         ];
     }
 }

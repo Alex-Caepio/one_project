@@ -28,7 +28,7 @@ class WorkshopScheduleRequest extends GenericSchedule
             'location_id' => 'integer',
             'start_date' => 'required|date|after:today',
             'end_date' => 'required|date|after:today',
-            'attendees' => 'integer',
+            'attendees' => 'required_if:appointment,physical|integer',
             'cost' => 'integer',
             'comments' => 'nullable|string',
             'venue_address' => 'required_if:appointment,physical|max:255',

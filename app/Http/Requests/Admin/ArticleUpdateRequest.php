@@ -52,7 +52,7 @@ class ArticleUpdateRequest extends Request {
                 $validator
                     ->errors()
                     ->add('name',
-                          'Article not Published. Please publish your Business Profile before publishing the Article');
+                          'Article not Published. The practitioner must be published before publishing the Article');
             }
         });
     }

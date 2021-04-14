@@ -42,6 +42,7 @@ class BookingTransformer extends Transformer {
             'cancelled_at'    => $booking->cancelled_at,
             'status'          => $booking->status,
             'amount'          => $booking->amount,
+            'is_installment'  => $booking->is_installment
         ];
     }
 

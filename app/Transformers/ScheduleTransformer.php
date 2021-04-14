@@ -17,6 +17,12 @@ class ScheduleTransformer extends Transformer
 
     public function transform(Schedule $schedule)
     {
+        $attendees_available = $schedule->attendees - $schedule->bookings()->count();
+
+        if(!$schedule->attendees || $attendees_available < 0){
+            $attendees_available = 0;
+        }
+
         return [
             'id'                            => $schedule->id,
             'title'                         => $schedule->title,
@@ -25,6 +31,7 @@ class ScheduleTransformer extends Transformer
             'start_date'                    => $schedule->start_date,
             'end_date'                      => $schedule->end_date,
             'attendees'                     => $schedule->attendees,
+            'attendees_available'           => $attendees_available,
             'cost'                          => $schedule->cost,
             'comments'                      => $schedule->comments,
             'city'                          => $schedule->city,

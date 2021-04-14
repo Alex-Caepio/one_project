@@ -28,7 +28,9 @@ class BookingController extends Controller
                 function ($query) use ($search) {
                     $query->where('reference', 'like', "%{$search}%")
                         ->orWhereHas('practitioner', function($q) use ($search){
-                            $q->where('business_name', 'like', "%{$search}%");
+                            $q->where('business_name', 'like', "%{$search}%")
+                                ->orWhere('first_name', 'like', "%{$search}%")
+                                ->orWhere('last_name', 'like', "%{$search}%");
                         })
                         ->orWhereHas('user', function($q) use ($search){
                             $q->where('first_name', 'like', "%{$search}%")
