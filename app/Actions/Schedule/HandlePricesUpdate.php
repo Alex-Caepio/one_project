@@ -103,6 +103,7 @@ class HandlePricesUpdate
 
             $price['stripe_id'] = $stripePrice->id;
             $price['cost']      = $price['cost'] ?? 0;
+            unset($price['number_unpurchased']);
 
             Price::where('id', $price['id'])->update($price);
         }
@@ -118,6 +119,7 @@ class HandlePricesUpdate
             ]);
             $price['stripe_id'] = $stripePrice->id;
             $price['cost']      = $price['cost'] ?? 0;
+            unset($price['number_unpurchased']);
 
             return $price;
         });
