@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Actions\Article\ArticleStore;
 use App\Actions\Article\ArticleUpdate;
+use App\Filters\ArticleFiltrator;
+use App\Filters\ServiceFiltrator;
 use App\Http\Requests\Admin\ArticlePublishRequest;
 use App\Http\Requests\Articles\ArticleActionRequest;
 use App\Http\Requests\Articles\ArticleRequest;
@@ -26,7 +28,7 @@ class ArticleController extends Controller
         $paginator = $this->getArticleList($request);
         $articles = $paginator->getCollection();
 
-        return response(fractal($articles, new ArticleTransformer())->parseIncludes($request->getIncludes()))
+        return response(fractal($articles, new ArticleTransformer())->parseIncludes($request->getIncludes())->toArray())
             ->withPaginationHeaders($paginator);
     }
 
@@ -125,6 +127,8 @@ class ArticleController extends Controller
                                     bool $isPublished = true): LengthAwarePaginator
     {
         $queryBuilder = Article::with($request->getIncludes());
+        $articleFiltrator = new ArticleFiltrator();
+        $articleFiltrator->apply($queryBuilder, $request);
 
         if ($userId !== null) {
             $queryBuilder->where('user_id', $userId);
