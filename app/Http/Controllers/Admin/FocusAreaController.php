@@ -35,7 +35,7 @@ class FocusAreaController extends Controller {
                 $query->where('name', 'like', $searchString)
                       ->orWhere('introduction', 'like', $searchString)
                       ->orWhere('description', 'like', $searchString)
-                      ->orWhereHas('user', static function($queryHas) use ($searchString) {
+                      ->orWhereHas('users', static function($queryHas) use ($searchString) {
                     $queryHas->where('email', 'LIKE', $searchString);
                 });
             });
