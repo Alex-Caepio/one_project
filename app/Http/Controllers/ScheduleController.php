@@ -169,7 +169,7 @@ class ScheduleController extends Controller
         return fractal($reschedule, new UserTransformer())->respond();
     }
 
-    public function allBookings(Schedule $schedule, ScheduleOwnerRequest $request) {
+    public function allBookings(Schedule $schedule, Request $request) {
         $query = $schedule->bookings()->with($request->getIncludes());
         $paginator = $query->paginate($request->getLimit());
         $fractal = fractal($paginator->getCollection(), new BookingTransformer())->parseIncludes($request->getIncludes())->toArray();

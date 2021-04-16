@@ -4,18 +4,20 @@
 namespace App\Filters;
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class BookingFilters extends QueryFilter {
 
-//    public function search(string $searchQuery) {
-//        $searchQuery = '%'.$searchQuery.'%';
-//        return $this->builder->where(static function($query) use ($searchQuery) {
-//            $query->whereHas('users', static function ($queryHas) use($searchQuery) {
-//                $queryHas->where('email', 'LIKE', $searchQuery);
-//            })->orWhere('reference', 'LIKE', $searchQuery);
-//        });
-//    }
-
+    public function search(string $searchQuery) {
+        $searchQuery = '%'.$searchQuery.'%';
+        return $this->builder->where(static function($query) use ($searchQuery) {
+            $query->whereHas('user', static function ($queryHas) use($searchQuery) {
+                $queryHas->where('email', 'LIKE', $searchQuery);
+            })->orWhere('reference', 'LIKE', $searchQuery)->orWhereHas('practitioner', static function ($queryHas) use($searchQuery) {
+                $queryHas->where('business_name', 'LIKE', $searchQuery);
+            });
+        });
+    }
 
     public function status(string $status) {
         $status = strtolower($status);
@@ -41,13 +43,17 @@ class BookingFilters extends QueryFilter {
         return $this->builder->where('datetime_from', '<=', $date);
     }
 
-    public function bookingReference(string $reference) {
+    public function booking_reference(string $reference) {
         return $this->builder->where('reference', '=', $reference);
     }
 
-    public function serviceType(string $serviceTypeId) {
+    public function order_reference(string $reference) {
+        return $this->builder->where('reference', '=', $reference);
+    }
+
+    public function service_type(string $serviceTypeId) {
         return $this->builder->whereHas('schedule.service', function($q) use ($serviceTypeId) {
-            $q->where('service_type_id', '=', $serviceTypeId);
+            $q->whereIn('service_type_id', $this->paramToArray($serviceTypeId));
         });
     }
 
