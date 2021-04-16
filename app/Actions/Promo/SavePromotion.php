@@ -8,6 +8,7 @@ use App\Http\Requests\Promotion\SavePromotionRequest;
 use App\Models\Promotion;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class SavePromotion {
     /**
@@ -57,13 +58,14 @@ class SavePromotion {
      * @param \App\Models\Promotion $promotion
      */
     private function fillModel(SavePromotionRequest $request, Promotion $promotion): void {
+
         $promotion->forceFill([
                                   'name'           => $request->get('name'),
                                   'valid_from'     => $request->filled('valid_from')
                                       ? Carbon::parse($request->get('valid_from'))->startOfDay()
                                       : Carbon::now()->startOfDay(),
                                   'expiry_date'    => $request->filled('expiry_date')
-                                      ? Carbon::parse($request->get('expiry_date'))->endOfDay()
+                                      ? Carbon::parse($request->get('expiry_date'))
                                       : null,
                                   'spend_min'      => $request->get('spend_min'),
                                   'spend_max'      => $request->get('spend_max'),
