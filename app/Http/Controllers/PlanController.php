@@ -6,6 +6,7 @@ use App\Events\AccountUpgradedToPractitioner;
 use App\Events\ChangeOfSubscription;
 use App\Http\Requests\Plans\PlanRequest;
 use App\Events\SubscriptionConfirmation;
+use App\Models\Article;
 use App\Models\Plan;
 use App\Http\Requests\Request;
 use App\Transformers\PlanTransformer;
@@ -58,10 +59,7 @@ class PlanController extends Controller
             }
 
             if(!$plan->article_publishing){
-                foreach ($user->articles as $article) {
-                    $article->is_published = false;
-                    $article->save();
-                }
+                Article::where('user_id', $user->id)->update(['is_published' => false]);
             }
 
         } catch (ApiErrorException $e) {

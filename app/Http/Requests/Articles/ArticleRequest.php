@@ -53,6 +53,10 @@ class ArticleRequest extends Request {
                     ->add('name',
                           'Article not Published. Please publish your Business Profile before publishing the Article');
             }
+
+            if(!$this->user()->plan->article_publishing && $this->is_published) {
+                $validator->errors()->add('is_published', "Please upgrade your subscription to be able to publish articles");
+            }
         });
     }
 

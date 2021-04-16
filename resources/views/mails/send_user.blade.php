@@ -8,6 +8,8 @@
     <title>Document</title>
 </head>
 <body>
-<h1>{{ $text }}</h1>
+<p>Hello, {{$receiver->first_name}} {{$receiver->last_name}} </p>
+<p>{{$sender->first_name}} {{$sender->last_name}} just sent you a message below:</p>
+<p>{{ $text }}</p>
 </body>
 </html>

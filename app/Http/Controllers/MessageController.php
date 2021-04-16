@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Message\MessageRequest;
 use App\Http\Requests\Request;
 use App\Mail\SendUserMail;
 use App\Models\EmailMessage;
@@ -21,10 +22,12 @@ class MessageController extends Controller
 
     }
 
-    public function store(Request $request, User $user)
+    public function store(MessageRequest $request, User $user)
     {
+        $sender = $request->user();
         $text = $request->get('text');
-        Mail::to($user->email)->send(new SendUserMail($text));
+        Mail::to($user->email)->send(new SendUserMail($sender, $user, $text));
+
 
         $message = new EmailMessage();
         $message->forceFill([

@@ -21,6 +21,13 @@ class ServiceFiltrator {
                 $query->where('end_date', '<=', $request->end_date);
             });
         }
+
+        if ($request->filled('date_after')) {
+            $queryBuilder->whereHas('schedules', function($query) use ($request) {
+                $query->where('start_date', '>=', $request->date_after);
+            });
+        }
+
         if ($request->filled('id')) {
             $queryBuilder->whereHas('schedules.locations', function($query) use ($request) {
                 $query->where('id', '=', $request->id);
