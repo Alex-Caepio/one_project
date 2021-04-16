@@ -8,16 +8,6 @@ use Illuminate\Support\Facades\Log;
 
 class BookingFilters extends QueryFilter {
 
-    public function search(string $searchQuery) {
-        $searchQuery = '%'.$searchQuery.'%';
-        return $this->builder->where(static function($query) use ($searchQuery) {
-            $query->whereHas('user', static function ($queryHas) use($searchQuery) {
-                $queryHas->where('email', 'LIKE', $searchQuery);
-            })->orWhere('reference', 'LIKE', $searchQuery)->orWhereHas('practitioner', static function ($queryHas) use($searchQuery) {
-                $queryHas->where('business_name', 'LIKE', $searchQuery);
-            });
-        });
-    }
 
     public function status(string $status) {
         $status = strtolower($status);
