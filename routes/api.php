@@ -221,6 +221,4 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
 
     Route::get('/notifications/practitioner', [NotificationController::class, 'index']);
     Route::post('/notifications/{notification}/mark-as-read', [NotificationController::class, 'markAsRead']);
-
-    Route::get('/search', [SearchController::class, 'index']);
 });
