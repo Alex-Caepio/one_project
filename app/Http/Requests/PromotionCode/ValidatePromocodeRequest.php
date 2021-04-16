@@ -23,7 +23,7 @@ class ValidatePromocodeRequest extends Request {
     public function rules() {
         $idValue = $this->schedule->prices->pluck('id');
         return [
-            'promo_code' => 'required|string|min:5',
+            'promo_code' => 'required|string|min:1',
             'price_id'   => 'required|exists:prices,id',
             Rule::in($idValue),
             'amount'     => 'required'
