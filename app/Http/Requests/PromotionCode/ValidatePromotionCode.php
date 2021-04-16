@@ -59,18 +59,18 @@ class ValidatePromotionCode {
         }
 
         //checks below
-        if ($promotion->spend_min && $totalCost < $promotion->spend_min) {
+        if (!empty($promotion->spend_min) && $totalCost < $promotion->spend_min) {
             $validator->errors()->add('promo_code',
                                       'Sorry, this Service is under the minimum cost allowed');
         }
 
-        if ($promotion->spend_max && $totalCost > $promotion->spend_max) {
+        if (!empty($promotion->spend_max) && $totalCost > $promotion->spend_max) {
             $validator->errors()->add('promo_code',
                                       'Sorry, this Service is above the maximum cost allowed');
         }
 
         if ($schedule instanceof Schedule) {
-            if (Carbon::parse($promotion->valid_from) >= Carbon::parse($schedule->start_date)) {
+            if ($promotion->valid_from && Carbon::parse($promotion->valid_from) >= Carbon::parse($schedule->start_date)) {
                 $validator->errors()->add('promo_code',
                                           'Sorry, this code is not valid for the date of Booking');
             }
