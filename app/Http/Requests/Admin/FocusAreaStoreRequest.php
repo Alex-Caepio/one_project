@@ -25,7 +25,7 @@ class FocusAreaStoreRequest extends Request
     public function rules()
     {
         return [
-            'name'                      => 'max:200',
+            'name'                      => 'max:200|unique:focus_areas,name',
             'banner_url'                => 'max:200',
             'icon_url'                  => 'max:200',
             'is_published'              => 'nullable|boolean',

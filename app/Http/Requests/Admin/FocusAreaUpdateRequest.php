@@ -4,6 +4,7 @@ namespace App\Http\Requests\Admin;
 
 use App\Models\FocusArea;
 use App\Http\Requests\Request;
+use Illuminate\Validation\Rule;
 
 class FocusAreaUpdateRequest extends Request
 {
@@ -25,7 +26,8 @@ class FocusAreaUpdateRequest extends Request
     public function rules()
     {
         return [
-            'name'                      => 'max:200',
+            'name'                      => ['max:200',
+                Rule::unique('focus_areas','name')->ignore($this->focusArea->name, 'name')],
             'banner_url'                => 'max:200',
             'icon_url'                  => 'max:200',
             'is_published'              => 'nullable|boolean',

@@ -81,6 +81,8 @@ Route::get('practitioners', [PractitionerController::class, 'index']);
 Route::get('users/{slug}', [AuthController::class, 'show']);
 Route::get('/services/{service}/schedules', [ScheduleController::class, 'index']);
 
+Route::get('/search', [SearchController::class, 'index']);
+
 Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::get('auth/profile', [AuthController::class, 'profile']);
     Route::put('auth/profile', [AuthController::class, 'update']);
@@ -91,6 +93,8 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::get('auth/quotes/articles', [QuoteController::class, 'quotesArticles']);
     Route::get('auth/quotes/services/{service}/schedules', [QuoteController::class, 'quotesServices']);
     Route::get('auth/quotes/schedules/{schedule}/prices', [QuoteController::class, 'quotesPrices']);
+    Route::get('users/{slug}', [AuthController::class, 'show']);
+
 
     Route::get('stripe/link', [StripeAccountController::class, 'link']);
     Route::get('stripe/account', [StripeAccountController::class, 'account']);

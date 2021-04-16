@@ -57,6 +57,13 @@ class PlanController extends Controller
                 event(new ChangeOfSubscription($user, $plan));
             }
 
+            if(!$plan->article_publishing){
+                foreach ($user->articles as $article) {
+                    $article->is_published = false;
+                    $article->save();
+                }
+            }
+
         } catch (ApiErrorException $e) {
 
             Log::channel('stripe_plans_errors')->info('Error purchasing a plan', [
