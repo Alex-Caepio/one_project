@@ -30,7 +30,7 @@ class PractitionerCommissionTransformer extends Transformer
         ];
     }
 
-    public function includeUsers(PractitionerCommission $practitionerCommission)
+    public function includeUser(PractitionerCommission $practitionerCommission)
     {
         return $this->itemOrNull($practitionerCommission->user, new UserTransformer());
     }
