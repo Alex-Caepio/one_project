@@ -39,8 +39,11 @@ class ScheduleController extends Controller
                 $q->where('schedules.is_published', true)
                     ->orWhere('services.user_id', Auth::id());
             })
+            ->where(function($q){
+                $q->where('schedules.start_date', '>=', now())
+                  ->orWhereNull('schedules.start_date');
+            })
             ->groupBy('schedules.id')
-            ->where('start_date', '>=', now())
             ->get();
 
         return fractal($schedule, new ScheduleTransformer())
