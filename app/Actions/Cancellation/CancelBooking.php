@@ -27,7 +27,7 @@ class CancelBooking {
         $this->stripe = app()->make(StripeClient::class);
 
         try {
-            $booking->load(['practitioner', 'purchase', 'schedule', 'schedule.service']);
+            $booking->load(['user', 'practitioner', 'purchase', 'schedule', 'schedule.service']);
             if (!$booking->purchase || !$booking->practitioner) {
                 throw new \Exception('Incorrect model relation in booking #' . $booking->id);
             }
