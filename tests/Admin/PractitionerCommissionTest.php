@@ -3,6 +3,7 @@
 
 namespace Tests\Admin;
 
+use App\Models\Plan;
 use App\Models\PractitionerCommission;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -22,13 +23,12 @@ class PractitionerCommissionTest extends TestCase
 
     public function test_get_all_practitionerCommission()
     {
-        $user = User::factory()->make(['account_type' => 'practitioner', 'id' => 1]);
+        $plan = Plan::factory()->create(['commission_on_sale' => '66']);
+        $user = User::factory()->create(['account_type' => 'practitioner', 'plan_id' => $plan->id]);
         PractitionerCommission::factory()->create(['practitioner_id' => $user->id]);
 
-        $response = $this->actingAs($this->user)->json('get', "/admin/practitioner-commissions");
-
-        $response
-            ->assertOk();
+        $response = $this->actingAs($this->user)->json('get', "/api/admin/practitioner-commissions");
+        $response->assertOk();
     }
 
     public function test_show_practitionerCommission()
