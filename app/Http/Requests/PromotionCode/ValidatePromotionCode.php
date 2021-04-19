@@ -72,7 +72,7 @@ class ValidatePromotionCode {
         }
 
         if ($schedule instanceof Schedule) {
-            if ($promotion->valid_from && Carbon::parse($promotion->valid_from) < Carbon::parse($schedule->start_date)) {
+            if ($promotion->valid_from && Carbon::parse($promotion->valid_from) > Carbon::parse($schedule->start_date)) {
                 $validator->errors()->add('promo_code',
                                           'Sorry, this code is not valid for the date of Booking');
             }
