@@ -82,6 +82,7 @@ return [
     'frontend_booking_url'                  => env('FRONTEND_BOOKING_URL', 'http://localhost'),
     'frontend_reschedule_apply'             => env('FRONTEND_RESCHEDULE_APPLY', 'http://localhost'),
     'frontend_reschedule_decline'           => env('FRONTEND_RESCHEDULE_DECLINE', 'http://localhost'),
+    'frontend_public_profile'               => env('FRONTEND_PUBLIC_PROFILE', 'http://localhost'),
     'asset_url'                             => env('ASSET_URL', null),
 
     /*

@@ -99,9 +99,9 @@ class CancelBooking {
         }
 
         if (Auth::id() === $booking->user_id) {
-            event(new BookingCancelledByClient($booking, $cancellation, $booking->practitioner));
+            event(new BookingCancelledByClient($booking, $cancellation));
         } else {
-            event(new BookingCancelledByPractitioner($booking, Auth::user()));
+            event(new BookingCancelledByPractitioner($booking));
         }
 
         $notification = new Notification();

@@ -12,26 +12,16 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
 class BookingCancelledByClient {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable, InteractsWithSockets, SerializesModels, EventFillableFromBooking;
 
-    public Booking $booking;
-    public Schedule $schedule;
-    public Service $service;
     public Cancellation $cancellation;
-    public User $user;
-    public User $practitioner;
-    public User $client;
-
     public User $recipient;
 
     public string $template;
 
-    public function __construct(Booking $booking, Cancellation $cancellation, User $practitioner) {
-        $this->user = $this->client = Auth::user();
-        $this->practitioner = $practitioner;
+    public function __construct(Booking $booking, Cancellation $cancellation) {
         $this->booking = $booking;
-        $this->schedule = $booking->schedule;
-        $this->service = $booking->schedule->service;
+        $this->fillEvent();
         $this->cancellation = $cancellation;
 
         $this->template = $cancellation->amount >
