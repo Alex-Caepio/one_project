@@ -25,7 +25,7 @@ class MainPageController extends Controller
         $mainPage = MainPage::first();
         $mainPage
             ? $mainPage->update($request->all())
-            : $mainPage->create($request->all());
+            : MainPage::create($request->all());
 
 
         if ($request->filled('featured_focus_areas')) {
