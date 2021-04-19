@@ -14,9 +14,10 @@ class ArticleFiltrator {
     /**
      * @param \Illuminate\Database\Eloquent\Builder $queryBuilder
      * @param \App\Http\Requests\Request $request
+     * @param bool $frontView
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function apply(Builder $queryBuilder, Request $request): Builder {
+    public function apply(Builder $queryBuilder, Request $request, $frontView = false): Builder {
 
         if ($request->filled('search')) {
             $search = '%' . $request->get('search') . '%';
@@ -47,20 +48,22 @@ class ArticleFiltrator {
         $publishedVariants = $request->getArrayFromRequest('is_published');
         $isDeleted = $request->getBoolFromRequest('is_deleted');
 
-        if (($isDeleted === null && count($publishedVariants) === 0)
-            || ($isDeleted === true && count($publishedVariants) === 2)) {
-            $queryBuilder->withTrashed();
-        } elseif (count($publishedVariants) === 1) {
-            $isPublished = $request->getBoolValue($publishedVariants[0]);
-            if ($isDeleted) {
-                $queryBuilder->where(function($query) use ($isPublished) {
-                    $query->where('is_published', $isPublished)->orWhereNotNull('deleted_at');
-                })->withTrashed();
-            } else {
-                $queryBuilder->where('is_published', $isPublished);
+        if (!$frontView) {
+            if (($isDeleted === null && count($publishedVariants) === 0) ||
+                ($isDeleted === true && count($publishedVariants) === 2)) {
+                $queryBuilder->withTrashed();
+            } elseif (count($publishedVariants) === 1) {
+                $isPublished = $request->getBoolValue($publishedVariants[0]);
+                if ($isDeleted) {
+                    $queryBuilder->where(function($query) use ($isPublished) {
+                        $query->where('is_published', $isPublished)->orWhereNotNull('deleted_at');
+                    })->withTrashed();
+                } else {
+                    $queryBuilder->where('is_published', $isPublished);
+                }
+            } elseif ($isDeleted === true && !count($publishedVariants)) {
+                $queryBuilder->onlyTrashed();
             }
-        } elseif ($isDeleted === true && !count($publishedVariants)) {
-            $queryBuilder->onlyTrashed();
         }
 
         $practitioners = $request->getArrayFromRequest('practitioner');

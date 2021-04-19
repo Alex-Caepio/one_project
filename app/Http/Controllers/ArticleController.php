@@ -128,7 +128,8 @@ class ArticleController extends Controller
     {
         $queryBuilder = Article::with($request->getIncludes());
         $articleFiltrator = new ArticleFiltrator();
-        $articleFiltrator->apply($queryBuilder, $request);
+        $practitionerView = !$isPublished;
+        $articleFiltrator->apply($queryBuilder, $request, $practitionerView);
 
         if ($userId !== null) {
             $queryBuilder->where('user_id', $userId);
