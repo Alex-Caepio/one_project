@@ -26,9 +26,11 @@ class EmailVariables {
     }
 
     public function __get(string $property) {
-        $property = ucfirst($property);
-        $method = "get{$property}";
-        return $this->$method();
+        if (!empty($property)) {
+            $property = ucfirst($property);
+            $method = "get{$property}";
+            return method_exists($this, $method) ? $this->$method() : '';
+        }
     }
 
     public function replace($body) {
@@ -41,10 +43,10 @@ class EmailVariables {
         $lengthVariable = $closeBracket - $openBracket - 2;
         $variable = trim(substr($body, $openBracket + 2, $lengthVariable));
         $length = $closeBracket - $openBracket + 2;
-
-        $newBody = substr_replace($body, $this->$variable, $openBracket, $length);
-
-        return $this->replace($newBody);
+        if (!empty($variable)) {
+            $newBody = substr_replace($body, $this->$variable, $openBracket, $length);
+            return $this->replace($newBody);
+        }
     }
 
 

@@ -40,6 +40,7 @@ use App\Listeners\Emails\AccountUpgradedToPractitionerEmail;
 use App\Listeners\Emails\ArticlePublishedEmail;
 use App\Listeners\Emails\ArticleUnpublishedEmail;
 use App\Listeners\Emails\BookingCancelledByClientEmail;
+use App\Listeners\Emails\BookingCancelledByPractitionerEmail;
 use App\Listeners\Emails\BookingConfirmationEmail;
 use App\Listeners\Emails\BookingEventVirtualWithDepositEmail;
 use App\Listeners\Emails\BookingReminderEmail;
@@ -99,7 +100,7 @@ class EventServiceProvider extends ServiceProvider {
             ArticleUnpublishedEmail::class
         ],
         BookingCancelledByPractitioner::class => [
-            BookingCancelledByPractitioner::class,
+            BookingCancelledByPractitionerEmail::class,
         ],
         BookingCancelledByClient::class => [
             BookingCancelledByClientEmail::class,
