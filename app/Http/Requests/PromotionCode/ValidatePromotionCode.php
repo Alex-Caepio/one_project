@@ -34,13 +34,6 @@ class ValidatePromotionCode {
         //initialise variables
         $promotion = $promoCode->promotion;
 
-        if ($promotion->expiry_date) {
-            $datePromo = Carbon::parse($promotion->expiry_date);
-            if ($datePromo < Carbon::now()) {
-                $validator->errors()->add('promo_code', 'The Promotion code is invalid');
-            }
-        }
-
         $eligibleUsers = $promoCode->users()->pluck('users.id');
 
         $promoDisciplines = $promoCode->promotion->disciplines()->pluck('disciplines.id')->toArray();
@@ -79,12 +72,12 @@ class ValidatePromotionCode {
         }
 
         if ($schedule instanceof Schedule) {
-            if ($promotion->valid_from && Carbon::parse($promotion->valid_from) >= Carbon::parse($schedule->start_date)) {
+            if ($promotion->valid_from && Carbon::parse($promotion->valid_from) < Carbon::parse($schedule->start_date)) {
                 $validator->errors()->add('promo_code',
                                           'Sorry, this code is not valid for the date of Booking');
             }
 
-            if ($promotion->expiry_date && Carbon::parse($promotion->expiry_date) <= Carbon::parse($schedule->end_date)) {
+            if ($promotion->expiry_date && Carbon::parse($promotion->expiry_date) < Carbon::parse($schedule->end_date)) {
                 $validator->errors()->add('promo_code', "Sorry, this code is not valid for the date of Booking");
             }
         }
