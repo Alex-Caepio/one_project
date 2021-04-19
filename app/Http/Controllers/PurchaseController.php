@@ -217,6 +217,16 @@ class PurchaseController extends Controller
             return abort(500);
         }
 
+        Log::channel('stripe_purchase_schedule_success')->info("Client purchased schedule", [
+            'user_id'        => $request->user()->id,
+            'price_id'       => $price->id,
+            'service_id'     => $schedule->service->id,
+            'schedule_id'    => $schedule->id,
+            'payment_intent' => $paymentIntent->id,
+            'payment_method' => $payment_method_id,
+            'amount'         => $request->amount,
+        ]);
+
         try {
             run_action(TransferFundsWithCommissions::class, $cost, $practitioner, $schedule);
 
@@ -244,18 +254,9 @@ class PurchaseController extends Controller
                 'amount'         => $request->amount,
                 'message'        => $e->getMessage(),
             ]);
-            return abort(500);
-        }
 
-        Log::channel('stripe_purchase_schedule_success')->info("Client purchased schedule", [
-            'user_id'        => $request->user()->id,
-            'price_id'       => $price->id,
-            'service_id'     => $schedule->service->id,
-            'schedule_id'    => $schedule->id,
-            'payment_intent' => $paymentIntent->id,
-            'payment_method' => $payment_method_id,
-            'amount'         => $request->amount,
-        ]);
+        }
+        return true;
     }
 
 }
