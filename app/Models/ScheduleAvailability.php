@@ -35,12 +35,15 @@ class ScheduleAvailability extends Model
     }
 
     public function fitsDay(string $datetime): bool {
+
         $daysFormatted = strtolower($this->days);
 
         if ($daysFormatted === 'everyday') {
             return true;
         }
-        $datetime = new Carbon($datetime);
+
+        $datetime = Carbon::createFromFormat('d-m-Y', $datetime);
+
         if ($daysFormatted === 'weekdays' && $datetime->isWeekday()) {
             return true;
         }
