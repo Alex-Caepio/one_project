@@ -25,13 +25,22 @@ class ValidatePromotionCode {
     public static function validate(Validator $validator, string $promocodeName, Service $service,
                                     ?Schedule $schedule, $totalCost = 0): void {
         if (!$promoCode = PromotionCode::where('name', $promocodeName)->whereHas('promotion', function($query) {
-            $query->where('status', Promotion::STATUS_ACTIVE)->where('expiry_date', '>=', date('Y-m-d H:i:s'));
+            $query->where('status', Promotion::STATUS_ACTIVE);
         })->where('status', PromotionCode::STATUS_ACTIVE)->with(['promotion'])->first()) {
             $validator->errors()->add('promo_code', 'The Promotion code is invalid');
             return;
         }
+
         //initialise variables
         $promotion = $promoCode->promotion;
+
+        if ($promotion->expiry_date) {
+            $datePromo = Carbon::parse($promotion->expiry_date);
+            if ($datePromo < Carbon::now()) {
+                $validator->errors()->add('promo_code', 'The Promotion code is invalid');
+            }
+        }
+
         $eligibleUsers = $promoCode->users()->pluck('users.id');
 
         $promoDisciplines = $promoCode->promotion->disciplines()->pluck('disciplines.id')->toArray();
