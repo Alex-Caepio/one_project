@@ -35,7 +35,7 @@ class CancelBooking {
             $totalFee = 0;
             $stripeRefund = null;
 
-            if (Auth::user()->isClient()) {
+            if (Auth::id() === $booking->user_id) {
                 $refundValue = $this->clientRefund($booking);
             } else {
                 $refundValue = $booking->cost;
@@ -60,7 +60,7 @@ class CancelBooking {
                                     'practitioner_id'     => $booking->practitioner_id,
                                     'amount'              => $refundValue,
                                     'fee'                 => $totalFee > 0 ? $totalFee : null,
-                                    'cancelled_by_client' => Auth::user()->isClient(),
+                                    'cancelled_by_client' => Auth::id() === $booking->user_id,
                                     'stripe_id'           => $stripeRefund->id ?? null
                                 ]);
             $cancellation->save();
@@ -87,11 +87,7 @@ class CancelBooking {
                     'statement_descriptor_suffix' => $booking->reference
                 ]);
             }
-            if (Auth::user()->isClient()) {
-                event(new BookingCancelledByClient($booking, $cancellation, $booking->practitioner));
-            } else {
-                event(new BookingCancelledByPractitioner($booking, Auth::user()));
-            }
+
         } catch (ApiErrorException $e) {
             Log::channel('stripe_refund_fail')->info('Stripe refund error: ', [
                 'user_id'         => $booking->user_id ?? null,
@@ -100,12 +96,17 @@ class CancelBooking {
                 'payment_stripe'  => $booking->purchase->stripe_id ?? null,
                 'message'         => $e->getMessage(),
             ]);
-            return abort(500);
+        }
+
+        if (Auth::id() === $booking->user_id) {
+            event(new BookingCancelledByClient($booking, $cancellation, $booking->practitioner));
+        } else {
+            event(new BookingCancelledByPractitioner($booking, Auth::user()));
         }
 
         $notification = new Notification();
 
-        if (Auth::user()->isPractitioner()) {
+        if (Auth::user()->isPractitioner() && $booking->practitioner_id === Auth::id()) {
             $notification->type = 'booking_canceled_by_practitioner';
             $notification->receiver_id = $booking->user_id;
         } else {
