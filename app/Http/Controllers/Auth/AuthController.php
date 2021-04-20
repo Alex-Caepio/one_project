@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Actions\Auth\GetUsersPermissions;
+use App\Actions\Cancellation\CancelBooking;
 use App\Actions\Stripe\CreateStripeUserByEmail;
 use App\Actions\User\CreateUserFromRequest;
 use App\Events\UserRegistered;
@@ -11,6 +12,7 @@ use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\PublishRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\UpdateRequest;
+use App\Models\Booking;
 use App\Models\Keyword;
 use App\Models\User;
 use App\Traits\hasMediaItems;
@@ -95,6 +97,20 @@ class AuthController extends Controller
     public function update(UpdateRequest $request, StripeClient $stripe)
     {
         $user = $request->user();
+
+        if ($request->cancel_bookings_on_unpublish && $request->is_published == false && $user->is_published == true) {
+            $bookings = Booking::where('user_id', $user->id)->where('status', 'upcoming')->get();
+
+            foreach ($bookings as $booking) {
+                run_action(CancelBooking::class, $booking);
+            }
+        }
+
+        if ($user->is_published == false && $request->is_published == true) {
+            $user->published_at = now();
+            $user->save();
+        }
+
         if ($request->is_published === true) {
             $user->is_published = true;
             $user->save();
@@ -160,6 +176,7 @@ class AuthController extends Controller
         if ($request->filled('media_videos')) {
             $this->syncVideos($request->media_videos, $user);
         }
+
         return fractal($user, new UserTransformer())->respond();
     }
 

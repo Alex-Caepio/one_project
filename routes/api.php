@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\BookingMyClientController;
 use App\Http\Controllers\CancellationController;
+use App\Http\Controllers\LatestTwoController;
 use App\Http\Controllers\MainPageController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PaymentMethodController;
@@ -82,6 +83,8 @@ Route::get('users/{slug}', [AuthController::class, 'show']);
 Route::get('/services/{service}/schedules', [ScheduleController::class, 'index']);
 
 Route::get('/search', [SearchController::class, 'index']);
+Route::get('/latest-two', [LatestTwoController::class, 'index']);
+Route::get('/practitioners/{user}', [UserController::class, 'show']);
 
 Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::get('auth/profile', [AuthController::class, 'profile']);
@@ -93,7 +96,6 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::get('auth/quotes/articles', [QuoteController::class, 'quotesArticles']);
     Route::get('auth/quotes/services/{service}/schedules', [QuoteController::class, 'quotesServices']);
     Route::get('auth/quotes/schedules/{schedule}/prices', [QuoteController::class, 'quotesPrices']);
-
 
     Route::get('stripe/link', [StripeAccountController::class, 'link']);
     Route::get('stripe/account', [StripeAccountController::class, 'account']);

@@ -14,6 +14,13 @@ use Illuminate\Support\Facades\Auth;
 
 
 class UserController extends Controller {
+
+    public function show(Request $request, User $user)
+    {
+        $query = User::with($request->getIncludes())->find($user->id);
+        return fractal($query, new UserTransformer())->parseIncludes($request->getIncludes())->toArray();
+    }
+
     public function serviceFavorites(Request $request) {
         $serviceFavorites = Auth::user()->favourite_services;
         return fractal($serviceFavorites, new ServiceTransformer())

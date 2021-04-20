@@ -75,6 +75,10 @@ class RouteServiceProvider extends ServiceProvider {
             return Discipline::where('id', $value)->orWhere('slug', $value)->firstOrFail();
         });
 
+        Route::bind('user', function($value) {
+            return User::where('id', $value)->orWhere('slug', $value)->firstOrFail();
+        });
+
         parent::boot();
     }
 

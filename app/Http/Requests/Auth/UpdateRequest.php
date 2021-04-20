@@ -24,7 +24,7 @@ class UpdateRequest extends Request
      */
     public function rules()
     {
-
+        $user = $this->user();
         return [
             'about_me'                    => 'max:10000',
             'emails_holistify_update'     => 'bool',
@@ -57,6 +57,13 @@ class UpdateRequest extends Request
             'last_name'                   => 'string|min:2|max:30',
             'mobile_country_code'         => 'exists:countries,id|integer|required_with:mobile_number',
             'business_phone_country_code' => 'exists:countries,id|integer|required_with:business_phone_number',
+            'cancel_bookings_on_unpublish' => ['bool',
+                Rule::requiredIf(
+                    $user->isPractitioner() &&
+                    $user->is_published == true &&
+                    $user->bookings()->exists() &&
+                    $this->is_published == false
+                )]
         ];
     }
 
@@ -70,7 +77,6 @@ class UpdateRequest extends Request
 
     public function withValidator($validator)
     {
-
         $user = $this->user();
         $validator->after(function ($validator) use($user){
             if ($this->getBoolFromRequest('is_published') === true || $user->is_published){
@@ -116,7 +122,6 @@ class UpdateRequest extends Request
                         'You have not filled in the field "Timezone"'
                     );
                 }
-
             }
         });
         $validator->after(function ($validator) use ($user) {
