@@ -42,7 +42,7 @@ class ScheduleAvailability extends Model
             return true;
         }
 
-        $datetime = Carbon::createFromFormat('d-m-Y', $datetime);
+        $datetime = new Carbon($datetime);
 
         if ($daysFormatted === 'weekdays' && $datetime->isWeekday()) {
             return true;
