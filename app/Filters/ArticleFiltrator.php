@@ -66,7 +66,7 @@ class ArticleFiltrator {
             }
         }
 
-        $practitioners = $request->getArrayFromRequest('practitioner');
+        $practitioners = $request->getArrayFromRequest('practitioners');
         if (count($practitioners)) {
             $queryBuilder->whereHas('user', function($query) use ($practitioners) {
                 $query->whereIn('id', $practitioners);
