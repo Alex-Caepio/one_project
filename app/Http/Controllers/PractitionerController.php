@@ -20,6 +20,10 @@ class PractitionerController extends Controller
             });
         }
 
+        if ($request->filled('is_published')) {
+            $query->where('is_published', $request->getBoolFromRequest('is_published'));
+        }
+
         if ($request->hasSearch()) {
             $search = $request->search();
 
