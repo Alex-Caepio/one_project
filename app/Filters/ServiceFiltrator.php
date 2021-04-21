@@ -13,18 +13,21 @@ class ServiceFiltrator {
     public function apply(Builder $queryBuilder, Request $request) {
         if ($request->filled('start_date')) {
             $queryBuilder->whereHas('schedules', function($query) use ($request) {
-                $query->where('start_date', '>=', $request->start_date);
+                $date = Carbon::parse(urldecode($request->start_date))->toDateTimeString();
+                $query->where('start_date', '>=', $date);
             });
         }
         if ($request->filled('end_date')) {
             $queryBuilder->whereHas('schedules', function($query) use ($request) {
-                $query->where('end_date', '<=', $request->end_date);
+                $date = Carbon::parse(urldecode($request->end_date))->toDateTimeString();
+                $query->where('end_date', '<=', $date);
             });
         }
 
         if ($request->filled('date_after')) {
             $queryBuilder->whereHas('schedules', function($query) use ($request) {
-                $query->where('start_date', '>=', $request->date_after);
+                $date = Carbon::parse(urldecode($request->date_after))->toDateTimeString();
+                $query->where('start_date', '>=', $date);
             });
         }
 
@@ -97,6 +100,12 @@ class ServiceFiltrator {
         if ($request->filled('discipline_id')) {
             $queryBuilder->whereHas('disciplines', function($q) use ($request){
                 $q->where('discipline_id', $request->discipline_id);
+            });
+        }
+
+        if ($request->getBoolFromRequest('online')) {
+            $queryBuilder->whereHas('schedules', function($query) use ($request) {
+                $query->where('appointment', 'virtual');
             });
         }
 

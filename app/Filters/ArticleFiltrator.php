@@ -37,11 +37,13 @@ class ArticleFiltrator {
         }
 
         if ($request->filled('published_from')) {
-            $queryBuilder->where('created_at', '>=', Carbon::parse($request->published_from)->startOfDay());
+            $date = Carbon::parse(urldecode($request->published_from))->startOfDay();
+            $queryBuilder->where('created_at', '>=', $date);
         }
 
         if ($request->filled('published_to')) {
-            $queryBuilder->where('created_at', '<=', Carbon::parse($request->published_to)->endOfDay());
+            $date = Carbon::parse(urldecode($request->published_from))->endOfDay();
+            $queryBuilder->where('created_at', '<=', $date);
         }
 
         // Or Condition
