@@ -107,7 +107,7 @@ class PurchaseController extends Controller
 
         if ($cost && !$price->is_free) {
             if ($request->instalments && $schedule->deposit_accepted) {
-                $this->payInInstallments($request, $schedule, $price, $practitioner, $cost);
+                $this->payInInstallments($request, $schedule, $price, $practitioner, $cost, $purchase);
             } else {
                 $this->payInstant($request, $schedule, $price, $cost, $stripe, $purchase, $practitioner);
             }
@@ -131,7 +131,7 @@ class PurchaseController extends Controller
             new PromocodeCalculateTransformer());
     }
 
-    protected function payInInstallments($request, $schedule, $price, $practitioner, $cost): void
+    protected function payInInstallments($request, $schedule, $price, $practitioner, $cost, $purchase): void
     {
         $payment_method_id = run_action(GetViablePaymentMethod::class, $practitioner, $request->payment_method_id);
         $depositCost = $schedule->deposit_amount * 100 * $request->amount;
@@ -154,7 +154,7 @@ class PurchaseController extends Controller
         }
 
         try {
-            run_action(TransferFundsWithCommissions::class, $depositCost, $practitioner, $schedule);
+            run_action(TransferFundsWithCommissions::class, $depositCost, $practitioner, $schedule, $request->user(), $purchase);
 
             Log::channel('stripe_transfer_success')->info("The practitioner received transfer", [
                 'user_id'        => $request->user()->id,
@@ -228,7 +228,7 @@ class PurchaseController extends Controller
         ]);
 
         try {
-            run_action(TransferFundsWithCommissions::class, $cost, $practitioner, $schedule);
+            run_action(TransferFundsWithCommissions::class, $cost, $practitioner, $schedule, $request->user(), $purchase);
 
             Log::channel('stripe_transfer_success')->info("The practitioner received transfer", [
                 'user_id'        => $request->user()->id,

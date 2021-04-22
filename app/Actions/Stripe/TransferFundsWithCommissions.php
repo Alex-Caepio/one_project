@@ -9,7 +9,7 @@ use Stripe\StripeClient;
 
 
 class TransferFundsWithCommissions {
-    public function execute($cost, $practitoner, $schedule = null) {
+    public function execute($cost, $practitoner, $schedule = null, $client, $purchase) {
         $stripe = app()->make(StripeClient::class);
 
         $practitionerPlan = $practitoner->plan->commission_on_sale;
@@ -30,11 +30,23 @@ class TransferFundsWithCommissions {
             $amount -= $reduction;
         }
 
+        $refference = implode(', ', $purchase->bookings->pluck('reference')->toArray());
+
         $stripe->transfers->create([
-                                       'amount'      => $amount,
-                                       'currency'    => config('app.platform_currency'),
-                                       'destination' => $practitoner->stripe_account_id,
-                                   ]);
+            'amount'      => $amount * 100,
+            'currency'    => config('app.platform_currency'),
+            'destination' => $practitoner->stripe_account_id,
+            'metadata'    => [
+                'Practitioner business email'       => $practitoner->business_email,
+                'Practitioner busines name'         => $practitoner->business_name,
+                'Practitioner stripe id'            => $practitoner->stripe_customer_id,
+                'Practitioner connected account id' => $practitoner->stripe_account_id,
+                'Client first name'                 => $client->first_name,
+                'Client last name'                  => $client->last_name,
+                'Client stripe id'                  => $client->stripe_customer_id,
+                'Booking refference'                => $refference
+            ]
+        ]);
 
         $transfer = new Transfer();
         $transfer->user_id = $practitoner->id;
