@@ -36,7 +36,7 @@ class MarkExpiredPromocodes extends Command {
                 $cntPromocodes = $promo->promotion_codes->count();
                 $cntLimit =  $cntPromocodes > 0 ? $promo->promotion_codes->first()->uses_per_code * $cntPromocodes : 0;
                 $cntPurchases = Purchase::whereIn('promocode_id', $promo->promotion_codes->pluck('id'))->count();
-                $promo->status = $cntPurchases === $cntLimit ? Promotion::STATUS_COMPLETE : Promotion::STATUS_EXPIRED;
+                $promo->status = $cntPurchases === $cntLimit && $cntPurchases > 0 ? Promotion::STATUS_COMPLETE : Promotion::STATUS_EXPIRED;
                 $promo->save();
             }
         }
