@@ -44,7 +44,7 @@ class TransferFundsWithCommissions {
                 'Client first name'                 => $client->first_name,
                 'Client last name'                  => $client->last_name,
                 'Client stripe id'                  => $client->stripe_customer_id,
-                'Booking refference'                => $refference
+                'Booking reference'                => $refference
             ]
         ]);
 
