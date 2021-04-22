@@ -9,13 +9,13 @@ use Stripe\StripeClient;
 
 
 class TransferFundsWithCommissions {
-    public function execute($cost, $practitoner, $schedule = null, $client, $purchase) {
+    public function execute($cost, $practitioner, $schedule = null, $client, $purchase) {
         $stripe = app()->make(StripeClient::class);
 
-        $practitionerPlan = $practitoner->plan->commission_on_sale;
+        $practitionerPlan = $practitioner->plan->commission_on_sale;
 
         $practitionerCommissions =
-            PractitionerCommission::where('practitioner_id', $practitoner->id)->where(function($q) {
+            PractitionerCommission::where('practitioner_id', $practitioner->id)->where(function($q) {
                     $q->where('is_dateless', true)->orWhereRaw('date_from <= NOW() AND date_to >= NOW()');
                 })->get();
 
@@ -35,12 +35,12 @@ class TransferFundsWithCommissions {
         $stripe->transfers->create([
             'amount'      => $amount * 100,
             'currency'    => config('app.platform_currency'),
-            'destination' => $practitoner->stripe_account_id,
+            'destination' => $practitioner->stripe_account_id,
             'metadata'    => [
-                'Practitioner business email'       => $practitoner->business_email,
-                'Practitioner busines name'         => $practitoner->business_name,
-                'Practitioner stripe id'            => $practitoner->stripe_customer_id,
-                'Practitioner connected account id' => $practitoner->stripe_account_id,
+                'Practitioner business email'       => $practitioner->business_email,
+                'Practitioner busines name'         => $practitioner->business_name,
+                'Practitioner stripe id'            => $practitioner->stripe_customer_id,
+                'Practitioner connected account id' => $practitioner->stripe_account_id,
                 'Client first name'                 => $client->first_name,
                 'Client last name'                  => $client->last_name,
                 'Client stripe id'                  => $client->stripe_customer_id,
@@ -49,8 +49,8 @@ class TransferFundsWithCommissions {
         ]);
 
         $transfer = new Transfer();
-        $transfer->user_id = $practitoner->id;
-        $transfer->stripe_account_id = $practitoner->stripe_account_id;
+        $transfer->user_id = $practitioner->id;
+        $transfer->stripe_account_id = $practitioner->stripe_account_id;
         $transfer->status = 'success';
         $transfer->amount = $amount;
         $transfer->amount_original = $cost;
