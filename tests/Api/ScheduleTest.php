@@ -124,15 +124,17 @@ class ScheduleTest extends TestCase {
         $priceToUpdate =
             Price::factory()->create(['schedule_id' => $schedule->id, 'stripe_id' => $stripePriceToUpdate->id]);
 
-        $response = $this->json('put', "api/schedules/{$schedule->id}", [
+        $response = $this->json('put', "api/schedules/{$schedule->id}?with=prices", [
             'title'  => '123',
+            'refund_terms' => 12,
             'prices' => [
                 [
                     'name' => 'Test price to create'
                 ],
                 [
                     'id'   => $priceToUpdate->id,
-                    'name' => 'New price name'
+                    'name' => 'New price name',
+                    'duration' => '03:10'
                 ],
             ]
         ]);

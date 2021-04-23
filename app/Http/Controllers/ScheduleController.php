@@ -109,7 +109,7 @@ class ScheduleController extends Controller
             $schedule->media_files()->createMany($request->get('media_files'));
         }
         if ($request->has('prices')) {
-            run_action(HandlePricesUpdate::class, $request->get('prices'), $schedule);
+            run_action(HandlePricesUpdate::class, $request->prices, $schedule);
         }
         if ($request->filled('schedule_availabilities')) {
             $schedule->schedule_availabilities()->delete();
