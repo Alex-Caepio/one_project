@@ -107,7 +107,7 @@ class PurchaseController extends Controller
 
         if ($cost && !$price->is_free) {
             if ($request->instalments && $schedule->deposit_accepted) {
-                $this->payInInstallments($request, $schedule, $price, $practitioner, $cost);
+                $this->payInInstallments($request, $schedule, $price, $practitioner, $cost, $purchase);
             } else {
                 $this->payInstant($request, $schedule, $price, $cost, $stripe, $purchase, $practitioner);
             }
@@ -131,7 +131,7 @@ class PurchaseController extends Controller
             new PromocodeCalculateTransformer());
     }
 
-    protected function payInInstallments($request, $schedule, $price, $practitioner, $cost): void
+    protected function payInInstallments($request, $schedule, $price, $practitioner, $cost, $purchase): void
     {
         $payment_method_id = run_action(GetViablePaymentMethod::class, $practitioner, $request->payment_method_id);
         $depositCost = $schedule->deposit_amount * 100 * $request->amount;
@@ -154,7 +154,7 @@ class PurchaseController extends Controller
         }
 
         try {
-            run_action(TransferFundsWithCommissions::class, $depositCost, $practitioner, $schedule);
+            run_action(TransferFundsWithCommissions::class, $depositCost, $practitioner, $schedule, $request->user(), $purchase);
 
             Log::channel('stripe_transfer_success')->info("The practitioner received transfer", [
                 'user_id'        => $request->user()->id,
@@ -186,13 +186,24 @@ class PurchaseController extends Controller
         $payment_method_id = run_action(GetViablePaymentMethod::class, $practitioner, $request->payment_method_id);
         $paymentIntent = null;
         try {
-
+            $client = $request->user();
+            $refference = implode(', ', $purchase->bookings->pluck('reference')->toArray());
             $paymentIntent = $stripe->paymentIntents->create([
                 'amount'               => $cost * 100,
                 'currency'             => config('app.platform_currency'),
                 'payment_method_types' => ['card'],
                 'customer'             => Auth::user()->stripe_customer_id,
-                'payment_method'       => $payment_method_id
+                'payment_method'       => $payment_method_id,
+                'metadata'    => [
+                    'Practitioner business email'       => $practitioner->business_email,
+                    'Practitioner busines name'         => $practitioner->business_name,
+                    'Practitioner stripe id'            => $practitioner->stripe_customer_id,
+                    'Practitioner connected account id' => $practitioner->stripe_account_id,
+                    'Client first name'                 => $client->first_name,
+                    'Client last name'                  => $client->last_name,
+                    'Client stripe id'                  => $client->stripe_customer_id,
+                    'Booking reference'                => $refference
+                ]
             ]);
 
             $paymentIntent       =
@@ -228,7 +239,7 @@ class PurchaseController extends Controller
         ]);
 
         try {
-            run_action(TransferFundsWithCommissions::class, $cost, $practitioner, $schedule);
+            run_action(TransferFundsWithCommissions::class, $cost, $practitioner, $schedule, $client, $purchase);
 
             Log::channel('stripe_transfer_success')->info("The practitioner received transfer", [
                 'user_id'        => $request->user()->id,
