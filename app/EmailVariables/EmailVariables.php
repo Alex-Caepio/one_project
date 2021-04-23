@@ -47,6 +47,8 @@ class EmailVariables {
             $newBody = substr_replace($body, $this->$variable, $openBracket, $length);
             return $this->replace($newBody);
         }
+
+        return '';
     }
 
 
