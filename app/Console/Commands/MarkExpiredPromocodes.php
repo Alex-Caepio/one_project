@@ -32,16 +32,16 @@ class MarkExpiredPromocodes extends Command {
     public function handle(): int {
         $promotions = Promotion::where('status', Promotion::STATUS_ACTIVE)->with('promotion_codes')->get();
         foreach ($promotions as $promo) {
-            if ($promo->expiry_date) {
-                if (Carbon::parse($promo->expiry_date) < Carbon::now()) {
-                    $cntPromocodes = $promo->promotion_codes->count();
-                    $cntLimit =
-                        $cntPromocodes > 0 ? $promo->promotion_codes->first()->uses_per_code * $cntPromocodes : 0;
-                    $cntPurchases = Purchase::whereIn('promocode_id', $promo->promotion_codes->pluck('id'))->count();
-                    $promo->status = $cntPurchases === $cntLimit &&
-                                     $cntPurchases > 0 ? Promotion::STATUS_COMPLETE : Promotion::STATUS_EXPIRED;
-                    $promo->save();
-                }
+            $cntPromocodes = $promo->promotion_codes->count();
+            $cntLimit = $cntPromocodes > 0 ? $promo->promotion_codes->first()->uses_per_code * $cntPromocodes : 0;
+            $cntPurchases = Purchase::whereIn('promocode_id', $promo->promotion_codes->pluck('id'))->count();
+            if ($promo->expiry_date && Carbon::parse($promo->expiry_date) < Carbon::now()) {
+                $promo->status = $cntPurchases === $cntLimit &&
+                                 $cntPurchases > 0 ? Promotion::STATUS_COMPLETE : Promotion::STATUS_EXPIRED;
+                $promo->save();
+            } elseif (!$promo->expiry_date && $cntPurchases === $cntLimit && $cntPurchases > 0) {
+                $promo->status = Promotion::STATUS_COMPLETE;
+                $promo->save();
             }
         }
         return 0;
