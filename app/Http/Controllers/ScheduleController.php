@@ -46,9 +46,9 @@ class ScheduleController extends Controller
             ->groupBy('schedules.id');
 
         if ($request->filled('exclude')) {
-            $scheduleQuery->where('id', '<>', (int)$request->get('exclude'));
+            $scheduleQuery->where('schedules.id', '<>', (int)$request->get('exclude'));
         }
-        
+
         $schedule = $scheduleQuery->get();
 
         return fractal($schedule, new ScheduleTransformer())
