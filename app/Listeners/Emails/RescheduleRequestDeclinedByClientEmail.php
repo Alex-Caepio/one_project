@@ -13,7 +13,6 @@ class RescheduleRequestDeclinedByClientEmail extends SendEmailHandler {
     public function handle(RescheduleRequestDeclinedByClient $event): void {
         $this->toEmail = $event->practitioner->email;
         $this->type = 'practitioner';
-        $this->event->recipient = $event->practitioner;
         $this->sendCustomEmail();
 
     }

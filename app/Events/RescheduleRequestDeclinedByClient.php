@@ -28,5 +28,6 @@ class RescheduleRequestDeclinedByClient {
         $this->booking = $this->reschedule->booking;
         $this->reschedule_schedule = $this->reschedule->new_schedule;
         $this->fillEvent();
+        $this->recipient = $this->practitioner;
     }
 }
