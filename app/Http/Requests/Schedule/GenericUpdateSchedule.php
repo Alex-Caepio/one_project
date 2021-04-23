@@ -23,7 +23,7 @@ class GenericUpdateSchedule extends Request implements CreateScheduleInterface
      */
     public function rules()
     {
-        if($this->schedule->service->service_type_id == 'appointment') {
+        if ($this->schedule->service->service_type_id === 'appointment') {
             return [
                 'schedule_unavailabilities.*.start_date' => 'required_with:schedule_unavailabilities',
                 'schedule_unavailabilities.*.end_date'   => 'required_with:schedule_unavailabilities',
@@ -38,6 +38,10 @@ class GenericUpdateSchedule extends Request implements CreateScheduleInterface
 
     public function withValidator($validator): void
     {
+        if ($this->is_published === false) {
+            return;
+        }
+
         $validator->after(function ($validator) {
             $plan           = $this->user()->plan;
             $service = $this->schedule->service;
