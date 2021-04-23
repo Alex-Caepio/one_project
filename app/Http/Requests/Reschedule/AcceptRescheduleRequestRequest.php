@@ -16,9 +16,6 @@ class AcceptRescheduleRequestRequest extends FormRequest {
      */
     public function authorize() {
         $loggedUser = Auth::user();
-        Log::info($loggedUser->id);
-        Log::info($this->rescheduleRequest->booking->user_id);
-        Log::info($this->rescheduleRequest->booking->practitioner_id);
 
         return $this->rescheduleRequest->booking->user_id === $loggedUser->id ||
                $this->rescheduleRequest->booking->practitioner_id === $loggedUser->id;

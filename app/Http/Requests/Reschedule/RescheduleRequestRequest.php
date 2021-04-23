@@ -28,11 +28,9 @@ class RescheduleRequestRequest extends Request {
 
         if ($this->filled('booking_ids')) {
             $countBookings = count($this->get('booking_ids'));
-            Log::info('Count: '.$countBookings);
             $realBookingCnt = Booking::where(static function($query) use ($loggedUser) {
                 $query->where('practitioner_id', $loggedUser->id)->orWhere('user_id', $loggedUser->id);
             })->whereIn('id', $this->get('booking_ids'))->count();
-            Log::info('Count2: '.$realBookingCnt);
             return $countBookings === $realBookingCnt;
         }
 

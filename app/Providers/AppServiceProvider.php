@@ -19,6 +19,7 @@ use App\Models\Discipline;
 use App\Models\Promotion;
 use App\Models\PromotionCode;
 use App\Models\Purchase;
+use App\Models\RescheduleRequest;
 use App\Models\Schedule;
 use App\Models\Service;
 use App\Models\User;
@@ -27,6 +28,7 @@ use App\Observers\BookingObserver;
 use App\Observers\PromotionCodeObserver;
 use App\Observers\PromotionObserver;
 use App\Observers\PurchaseObserver;
+use App\Observers\RescheduleRequestObserver;
 use App\Observers\ScheduleObserver;
 use App\Observers\ServiceObserver;
 use App\Observers\UserObserver;
@@ -72,6 +74,7 @@ class AppServiceProvider extends ServiceProvider
         Booking::observe(BookingObserver::class);
         Purchase::observe(PurchaseObserver::class);
         Schedule::observe(ScheduleObserver::class);
+        RescheduleRequest::observe(RescheduleRequestObserver::class);
 
         $this->app->bind(CreateScheduleInterface::class, function () {
             switch (request()->service->service_type->id) {
