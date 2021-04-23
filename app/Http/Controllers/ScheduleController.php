@@ -29,7 +29,7 @@ class ScheduleController extends Controller
 {
     public function index(Service $service, Request $request)
     {
-        $schedule = Schedule::selectRaw('schedules.*')
+        $scheduleQuery = Schedule::selectRaw('schedules.*')
             ->where('service_id', $service->id)
             ->join('services', function($join)
             {
@@ -43,8 +43,13 @@ class ScheduleController extends Controller
                 $q->where('schedules.start_date', '>=', now())
                   ->orWhereNull('schedules.start_date');
             })
-            ->groupBy('schedules.id')
-            ->get();
+            ->groupBy('schedules.id');
+
+        if ($request->filled('exclude')) {
+            $scheduleQuery->where('id', '<>', (int)$request->get('exclude'));
+        }
+        
+        $schedule = $scheduleQuery->get();
 
         return fractal($schedule, new ScheduleTransformer())
             ->parseIncludes($request->getIncludes())
