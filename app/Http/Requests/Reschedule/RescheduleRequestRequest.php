@@ -17,26 +17,20 @@ class RescheduleRequestRequest extends Request {
      */
     public function authorize() {
         $loggedUser = Auth::user();
-        Log::info('Logged: '.$loggedUser->id);
 
         if ($loggedUser->is_admin) {
             return true;
         }
 
         if ($this->booking) {
-            Log::info('Booking user_id: '.$this->booking->user_id);
-            Log::info('Booking practitioner_id: '.$this->booking->practitioner_id);
             return $this->booking->user_id === $loggedUser->id || $this->booking->practitioner_id === $loggedUser->id;
         }
 
         if ($this->filled('booking_ids')) {
-            Log::info($this->booking_ids);
             $countBookings = count($this->getArrayFromRequest('booking_ids'));
-            Log::info('Count: '.$countBookings);
             $realBookingCnt = Booking::where(static function($query) use ($loggedUser) {
                 $query->where('practitioner_id', $loggedUser->id)->orWhere('user_id', $loggedUser->id);
             })->whereIn('id', $this->get('booking_ids'))->count();
-            Log::info('Count real: '.$realBookingCnt);
             return $countBookings === $realBookingCnt;
         }
 
