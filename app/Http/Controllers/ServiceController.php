@@ -133,11 +133,14 @@ class ServiceController extends Controller {
     public function copy(Service $service) {
         $serviceCopy = $service->replicate();
         $serviceCopy->title = "{$service->title} (copy)";
+        $serviceCopy->is_published = false;
+        $serviceCopy->published_at = null;
         $serviceCopy->save();
 
         foreach($service->schedules as $schedule) {
             $scheduleCopy = $schedule->replicate();
             $scheduleCopy->service_id = $serviceCopy->id;
+            $scheduleCopy->is_published = false;
             $scheduleCopy->save();
 
             foreach ($schedule->prices as $price) {

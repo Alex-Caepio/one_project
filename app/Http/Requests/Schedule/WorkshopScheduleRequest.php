@@ -35,18 +35,18 @@ class WorkshopScheduleRequest extends GenericSchedule
             'city' => 'nullable|required_if:appointment,physical|string',
             'country' => 'nullable|required_if:appointment,physical|string',
             'location_displayed' => 'string',
-            'post_code' => 'required_if:appointment,physical',
+            'post_code' => 'required_if:appointment,physical|nullable',
             'refund_terms' => 'required',
             'prices' => 'required|array',
             'prices.*.name' => 'required',
-            'prices.*.cost' => 'required_if:prices.*.is_free,false',
+            'prices.*.cost' => 'required_if:prices.*.is_free,false|nullable',
             'prices.*.is_free' => 'required',
             'prices.*.available_till' => 'before:end_date',
 
-            'deposit_amount' => 'required_if:deposit_accepted,true',
-            'deposit_final_date' => 'required_if:deposit_accepted,true',
+            'deposit_amount' => 'required_if:deposit_accepted,true|nullable',
+            'deposit_final_date' => 'required_if:deposit_accepted,true|nullable',
 
-            'url' => 'nullable|required_if:appointment,virtual|string',
+            'url' => 'nullable|required_if:appointment,virtual|string|nullable',
         ];
     }
 

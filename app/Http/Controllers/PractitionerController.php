@@ -20,10 +20,6 @@ class PractitionerController extends Controller
             });
         }
 
-        if ($request->filled('is_published')) {
-            $query->where('is_published', $request->getBoolFromRequest('is_published'));
-        }
-
         if ($request->hasSearch()) {
             $search = $request->search();
 
@@ -31,7 +27,6 @@ class PractitionerController extends Controller
                 function ($query) use ($search) {
                     $query->where('first_name', 'like', "%{$search}%")
                         ->orWhere('last_name', 'like', "%{$search}%")
-                        ->orWhere('business_city', 'like', "%{$search}%")
                         ->orWhere('business_name', 'like', "%{$search}%");
                 }
             );

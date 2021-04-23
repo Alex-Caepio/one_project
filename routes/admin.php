@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\BookingController;
 use App\Http\Controllers\Admin\MainPageController;
 use App\Http\Controllers\Admin\PlanController;
 use App\Http\Controllers\Admin\ClientController;
+use App\Http\Controllers\Admin\PractitionerSubscriptionCommissionController;
 use App\Http\Controllers\Admin\PromotionController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\ProfileController;
@@ -113,5 +114,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/practitioner-commissions',[PractitionerCommissionController::class,'store']);
         Route::put('/practitioner-commissions/{practitionerCommission}',[PractitionerCommissionController::class,'update']);
         Route::delete('/practitioner-commissions/{practitionerCommission}',[PractitionerCommissionController::class,'delete']);
+
+        Route::get('/practitioner-subscription-commissions',[PractitionerSubscriptionCommissionController::class,'index']);
+        Route::get('/practitioner-subscription-commissions/{subscriptionCommission}',[PractitionerSubscriptionCommissionController::class,'show']);
+        Route::post('/practitioner-subscription-commissions',[PractitionerSubscriptionCommissionController::class,'store']);
+        Route::put('/practitioner-subscription-commissions/{subscriptionCommission}',[PractitionerSubscriptionCommissionController::class,'update']);
+        Route::delete('/practitioner-subscription-commissions/{subscriptionCommission}',[PractitionerSubscriptionCommissionController::class,'delete']);
     });
 });

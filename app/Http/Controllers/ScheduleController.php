@@ -200,6 +200,7 @@ class ScheduleController extends Controller
 
             $scheduleCopy = $schedule->replicate();
             $scheduleCopy->title = "{$schedule->title} (copy)";
+            $scheduleCopy->is_published = false;
             $scheduleCopy->save();
 
             foreach ($schedule->prices as $price) {

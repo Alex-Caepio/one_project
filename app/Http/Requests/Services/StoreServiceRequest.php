@@ -42,6 +42,25 @@ class StoreServiceRequest extends Request
             if ($this->user()->services()->where('user_id', $this->user()->id)->where('title', $this->get('title'))->exists()) {
                 $validator->errors()->add('title', 'Service name should be unique!');
             }
+
+            if ($this->user()->services()->where('user_id', $this->user()->id)->where('slug', $this->slug)->exists()) {
+                $validator->errors()->add('slug', 'Service slug should be unique!');
+            }
         });
+    }
+
+    protected function getSlug(): string
+    {
+        $titleSlug = $this->get('title') ?? '';
+        return $this->get('slug') ?? to_url($titleSlug);
+    }
+
+    protected function prepareForValidation()
+    {
+        if(!$this->has('slug')) {
+            $this->merge([
+                'slug' => $this->getSlug(),
+            ]);
+        }
     }
 }

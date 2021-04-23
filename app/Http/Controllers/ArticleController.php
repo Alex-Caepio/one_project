@@ -179,6 +179,7 @@ class ArticleController extends Controller
         $newArticle = $article->replicate();
         $newArticle->title = "{$article->title} (copy)";
         $newArticle->is_published = false;
+        $newArticle->published_at = null;
         $newArticle->save();
 
         return fractal($newArticle, new ArticleTransformer())->respond();
