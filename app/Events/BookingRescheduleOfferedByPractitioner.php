@@ -25,7 +25,7 @@ class BookingRescheduleOfferedByPractitioner {
                                     'booking.schedule.service',
                                     'user',
                                     'new_schedule',
-                                    'practitioner'
+                                    'booking.practitioner'
                                 ]);
         $this->booking = $reschedule->booking;
         $this->fillEvent();
