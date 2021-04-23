@@ -8,18 +8,17 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
-class AcceptRescheduleRequestRequest extends FormRequest
-{
+class AcceptRescheduleRequestRequest extends FormRequest {
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
-    public function authorize()  {
-            $loggedUser = Auth::user();
-            return $this->rescheduleRequest->requested_by === User::ACCOUNT_PRACTITIONER
-                ? $this->rescheduleRequest->user_id === $loggedUser->id
-                : $this->rescheduleRequest->booking->practitioner_id === $loggedUser->id;
+    public function authorize() {
+        $loggedUser = Auth::user();
+        return $this->rescheduleRequest->booking->user_id === $loggedUser->id ||
+               $this->rescheduleRequest->booking->practitioner_id === $loggedUser->id;
+
     }
 
     /**
@@ -27,8 +26,7 @@ class AcceptRescheduleRequestRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
-    {
+    public function rules() {
         return [];
     }
 }
