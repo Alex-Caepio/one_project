@@ -12,11 +12,15 @@
     @if($logoContent)
         <tr>
             <td>
-                <img src="{{ $message->embedData($logoContent, $emailData->logo_filename) }}" alt="{{$replacedSubject}}">
+                <img src="{{ $message->embedData($logoContent, $emailData->logo_filename) }}"
+                     alt="{{$replacedSubject}}">
             </td>
         </tr>
     @endif
     {!! $replacedContent !!}
+    @if ($footer)
+        {!! $footer !!}
+    @endif
 </table>
 </body>
 </html>

@@ -92,6 +92,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
         Route::get('/transactional-emails', [CustomEmailController::class, 'index']);
         Route::post('/transactional-emails', [CustomEmailController::class, 'store']);
+        Route::post('/transactional-emails/footer', [CustomEmailController::class, 'storeFooter']);
+        Route::get('/transactional-emails/footer', [CustomEmailController::class, 'getFooter']);
         Route::get('/transactional-emails/{customEmail}', [CustomEmailController::class, 'show']);
         Route::put('/transactional-emails/{customEmail}', [CustomEmailController::class, 'update']);
         Route::delete('/transactional-emails/{customEmail}', [CustomEmailController::class, 'destroy']);

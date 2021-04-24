@@ -20,7 +20,8 @@ class CustomEmail extends Model {
         'text',
         'delay',
         'from_email',
-        'from_title'
+        'from_title',
+        'footer'
     ];
 
 

@@ -4,13 +4,16 @@ namespace App\Http\Controllers\Admin;
 
 use App\Actions\Email\SaveEmailTemplate;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\CustomEmailFooterStoreRequest;
 use App\Http\Requests\Admin\CustomEmailSaveRequest;
 use App\Http\Requests\Request;
 use App\Models\CustomEmail;
+use App\Transformers\CustomEmailFooterTransformer;
 use App\Transformers\CustomEmailTransformer;
 use Illuminate\Support\Facades\Auth;
 
 class CustomEmailController extends Controller {
+
     public function index(Request $request) {
         $customEmailQuery = CustomEmail::query();
         if ($request->hasSearch()) {
@@ -40,4 +43,19 @@ class CustomEmailController extends Controller {
         $customEmail->delete();
         return response(null, 204);
     }
+
+    public function getFooter(Request $request) {
+        $customEmail = CustomEmail::limit(1)->first();
+        return fractal($customEmail, new CustomEmailFooterTransformer())->respond();
+    }
+
+    public function storeFooter(CustomEmailFooterStoreRequest $request) {
+        $customEmail = CustomEmail::limit(1)->first();
+        if (!$customEmail) {
+            abort(500);
+        }
+        CustomEmail::query()->update(['footer' => $request->get('footer')]);
+        return response(null, 204);
+    }
+
 }

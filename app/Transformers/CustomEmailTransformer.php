@@ -18,6 +18,7 @@ class CustomEmailTransformer extends Transformer {
             'logo'          => $customEmail->logo,
             'logo_filename' => $customEmail->logo_filename,
             'text'          => $customEmail->text,
+            'footer'        => $customEmail->footer,
             'delay'         => $customEmail->delay,
             'created_at'    => $customEmail->created_at,
             'updated_at'    => $customEmail->updated_at,

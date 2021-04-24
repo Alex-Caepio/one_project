@@ -19,12 +19,14 @@ class TransactionalEmail extends Mailable {
     public string $replacedSubject;
     public string $replacedContent;
     public ?string $logoContent;
+    public ?string $footer;
 
     /**
      * Create a new message instance.
      *
      * @param \App\Models\CustomEmail $emailData
      * @param \App\EmailVariables\EmailVariables $emailVariables
+     * @param string $recipient
      */
     public function __construct(CustomEmail $emailData, EmailVariables $emailVariables, string $recipient) {
         $this->emailData = $emailData;
@@ -33,6 +35,7 @@ class TransactionalEmail extends Mailable {
         $this->replacedSubject = $this->emailVariables->replace($this->emailData->subject);
         $this->replacedContent = $this->emailVariables->replace($this->emailData->text);
         $this->logoContent = $this->emailData->getEmbedImageContent();
+        $this->footer = $this->emailData->footer;
     }
 
     /**
