@@ -201,5 +201,7 @@
 # Emails
 /admin/transactional-emails:
   $ref: "./AdminCustomEmail.yaml#/transactional-emails"
+/admin/transactional-emails/footer:
+  $ref: "./AdminCustomEmail.yaml#/transactional-emails~1footer"
 /admin/transactional-emails/{id}:
   $ref: "./AdminCustomEmail.yaml#/transactional-emails~1{id}"

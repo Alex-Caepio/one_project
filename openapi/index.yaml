@@ -5495,6 +5495,48 @@ paths:
                 items:
                   $ref: "#/paths/~1admin~1transactional-emails/post/responses/200/content/applica\
                     tion~1json/schema"
+  /admin/transactional-emails/footer:
+    get:
+      tags:
+        - EmailFooter
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    footer:
+                      type: string
+    post:
+      tags:
+        - EmailFooter
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                footer:
+                  type: string
+                  example: Custom text
+        responses:
+          "204":
+            description: OK
+          "422":
+            description: Validation error
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      example: The given data was invalid.
   "/admin/transactional-emails/{id}":
     put:
       parameters:

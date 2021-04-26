@@ -64,7 +64,37 @@ transactional-emails:
               type: array
               items:
                 $ref: '../schemas/Email.yaml'
-
+transactional-emails/footer:
+  get:
+    tags:
+      - EmailFooter
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../schemas/EmailFooter.yaml'
+  post:
+    tags:
+      - EmailFooter
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/forms/admin/EmailFooter.yaml'
+      responses:
+        '204':
+          description: OK
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/422/EmailFooter.yaml'
 transactional-emails/{id}:
   put:
     parameters:
