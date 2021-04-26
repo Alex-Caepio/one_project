@@ -10,6 +10,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -36,6 +37,7 @@ use Laravel\Sanctum\HasApiTokens;
  * @package App\Models
  */
 class User extends Authenticatable implements MustVerifyEmail {
+
     use Notifiable, HasApiTokens, HasFactory, PublishedScope, SoftDeletes;
 
     public const ACCOUNT_PRACTITIONER = 'practitioner';
@@ -264,4 +266,9 @@ class User extends Authenticatable implements MustVerifyEmail {
             ->where('is_published', true)
             ->orderBy('published_at', 'desc');
     }
+
+    public function calendar(): HasOne {
+        return $this->hasOne(GoogleCalendar::class);
+    }
+
 }

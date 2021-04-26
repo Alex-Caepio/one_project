@@ -2,8 +2,10 @@
 
 namespace App\Transformers;
 
+use App\Models\GoogleCalendar;
 use App\Models\User;
 use League\Fractal\Resource\Collection;
+use League\Fractal\Resource\Item;
 
 class UserTransformer extends Transformer {
     protected $availableIncludes = [
@@ -28,6 +30,7 @@ class UserTransformer extends Transformer {
         'practitioner_bookings',
         'latest_articles',
         'latest_services',
+        'calendar'
     ];
 
     public function transform(User $user) {
@@ -56,7 +59,7 @@ class UserTransformer extends Transformer {
             'business_phone_number'       => $user->business_phone_number,
             'email_verified_at'           => $user->email_verified_at,
             'email'                       => $user->email,
-            'is_admin'                    => (bool) $user->is_admin,
+            'is_admin'                    => (bool)$user->is_admin,
             'account_type'                => $user->account_type,
             'avatar_url'                  => $user->avatar_url,
             'background_url'              => $user->background_url,
@@ -169,4 +172,10 @@ class UserTransformer extends Transformer {
     public function includeLatestServices(User $user): ?Collection {
         return $this->collectionOrNull($user->latest_services, new ServiceTransformer());
     }
+
+    public function includeCalendar(User $user): ?Item {
+        return $this->itemOrNull($user->calendar, new GoogleCalendarTransformer());
+    }
+
+
 }

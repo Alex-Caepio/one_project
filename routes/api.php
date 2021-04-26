@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\BookingMyClientController;
 use App\Http\Controllers\CancellationController;
+use App\Http\Controllers\GoogleCalendarIntegrationController;
 use App\Http\Controllers\LatestTwoController;
 use App\Http\Controllers\MainPageController;
 use App\Http\Controllers\NotificationController;
@@ -88,6 +89,12 @@ Route::get('/practitioners/{user}', [UserController::class, 'show']);
 
 Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::get('auth/profile', [AuthController::class, 'profile']);
+    Route::post('/gcal/auth', [GoogleCalendarIntegrationController::class, 'auth']);
+    Route::get('/gcal/events', [GoogleCalendarIntegrationController::class, 'getEventList']);
+    Route::post('/gcal/event', [GoogleCalendarIntegrationController::class, 'addEvent']);
+    Route::get('/gcal/settings', [GoogleCalendarIntegrationController::class, 'getSettings']);
+    Route::post('/gcal/settings', [GoogleCalendarIntegrationController::class, 'updateSettings']);
+
     Route::put('auth/profile', [AuthController::class, 'update']);
     Route::delete('auth/profile', [AuthController::class, 'delete']);
     Route::post('auth/resend-verification', [AuthController::class, 'resendVerification']);
