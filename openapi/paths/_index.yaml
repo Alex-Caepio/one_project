@@ -136,6 +136,15 @@
   $ref: "./Cancellation.yaml#/cancellations"
 /cancellations/{booking}:
   $ref: "./Cancellation.yaml#/cancellations~1{booking}"
+# Calendar
+/gcal/auth:
+  $ref: "./Calendar.yaml#/gcal~1auth"
+/gcal/events:
+  $ref: "./Calendar.yaml#/gcal~1events"
+/gcal/settings:
+  $ref: "./Calendar.yaml#/gcal~1settings"
+
+
 
 ## ADMIN ENDPOINTS
 /admin/profile:

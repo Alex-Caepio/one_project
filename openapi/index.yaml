@@ -3273,6 +3273,140 @@ paths:
       responses:
         "204":
           description: OK
+  /gcal/auth:
+    post:
+      tags:
+        - Calendar
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+            properties:
+              code:
+                type: string
+                required: true
+      responses:
+        "204":
+          description: OK
+  /gcal/events:
+    get:
+      tags:
+        - Calendar
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    user_id:
+                      type: integer
+                    practitioner_id:
+                      type: integer
+                    schedule_id:
+                      type: integer
+                    availability_id:
+                      type: integer
+                      nullable: true
+                    datetime_from:
+                      type: string
+                      format: date-time
+                      nullable: true
+                    datetime_to:
+                      type: string
+                      format: date-time
+                      nullable: true
+                    quantity:
+                      type: integer
+                    created_at:
+                      type: string
+                      format: date-time
+                    updated_at:
+                      type: string
+                      format: date-time
+                    cost:
+                      type: number
+                      format: double
+                    promocode_id:
+                      type: integer
+                    reference:
+                      type: string
+                    purchase_id:
+                      type: integer
+                    cancelled_at:
+                      type: string
+                      format: date-time
+  /gcal/settings:
+    get:
+      tags:
+        - Calendar
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    user_id:
+                      type: integer
+                    calendar_id:
+                      type: string
+                    timezone_id:
+                      type: integer
+                    created_at:
+                      type: string
+                      format: date-time
+                    updated_at:
+                      type: string
+                      format: date-time
+    post:
+      tags:
+        - Calendar
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+            properties:
+              timezone:
+                type: integer
+                required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1gcal~1settings/get/responses/200/content/application~1json/sch\
+                  ema/items"
+        "422":
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: The given data was invalid.
+                  errors:
+                    type: object
+                    example:
+                      timezone:
+                        - The timezone id field is required.
   /admin/profile:
     get:
       operationId: get-profile

@@ -1,0 +1,71 @@
+gcal/auth:
+  post:
+    tags:
+      - Calendar
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+          properties:
+            code:
+              type: string
+              required: true
+    responses:
+      '204':
+        description: OK
+gcal/events:
+  get:
+      tags:
+       - Calendar
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '../schemas/CalendarEvents.yaml'
+gcal/settings:
+  get:
+    tags:
+      - Calendar
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../schemas/CalendarSettings.yaml'
+  post:
+    tags:
+      - Calendar
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+          properties:
+            timezone:
+              type: integer
+              required: true
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/CalendarSettings.yaml'
+      '422':
+        description: Validation errors
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/422/CalendarSettings.yaml'
+
+
