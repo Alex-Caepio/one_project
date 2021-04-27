@@ -11,6 +11,9 @@ properties:
   created_at:
     type: string
     format: date-time
+  unavailabilities:
+    type: array
+    format: object
   updated_at:
     type: string
     format: date-time

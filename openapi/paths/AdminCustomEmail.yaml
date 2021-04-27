@@ -86,15 +86,15 @@ transactional-emails/footer:
         application/json:
           schema:
             $ref: '../schemas/forms/admin/EmailFooter.yaml'
-      responses:
-        '204':
-          description: OK
-        '422':
-          description: Validation error
-          content:
-            application/json:
-              schema:
-                $ref: '../schemas/422/EmailFooter.yaml'
+    responses:
+      '204':
+        description: OK
+      '422':
+        description: Validation error
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/422/EmailFooter.yaml'
 transactional-emails/{id}:
   put:
     parameters:

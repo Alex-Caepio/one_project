@@ -46,7 +46,7 @@
 /services/{id}/publish:
   $ref: "./Service.yaml#/services~1{id}~1publish"
 /services/{id}/unpublish:
-  $ref: "./Service.yaml#/services~1{id}~1publish"
+  $ref: "./Service.yaml#/services~1{id}~1unpublish"
 /services/practitioner:
   $ref: "./Service.yaml#/services~1practitioner"
 /services/practitioner/{id}:
@@ -214,3 +214,13 @@
   $ref: "./AdminCustomEmail.yaml#/transactional-emails~1footer"
 /admin/transactional-emails/{id}:
   $ref: "./AdminCustomEmail.yaml#/transactional-emails~1{id}"
+
+# Services
+/admin/services:
+  $ref: "./AdminService.yaml#/services"
+/admin/services/{id}:
+  $ref: "./AdminService.yaml#/services~1{id}"
+/admin/services/{id}/publish:
+  $ref: "./AdminService.yaml#/services~1{id}~1publish"
+/admin/services/{id}/unpublish:
+  $ref: "./AdminService.yaml#/services~1{id}~1unpublish"

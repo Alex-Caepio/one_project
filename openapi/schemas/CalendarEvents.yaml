@@ -1,41 +1,16 @@
 type: object
 properties:
   id:
-    type: integer
-  user_id:
-    type: integer
-  practitioner_id:
-    type: integer
-  schedule_id:
-    type: integer
-  availability_id:
-      type: integer
-      nullable: true
-  datetime_from:
+    type: string
+  сlients:
+    type: array
+  start_date:
     type: string
     format: date-time
-    nullable: true
-  datetime_to:
+  end_date:
     type: string
     format: date-time
-    nullable: true
-  quantity:
-    type: integer
-  created_at:
+  location:
     type: string
-    format: date-time
-  updated_at:
+  summary:
     type: string
-    format: date-time
-  cost:
-    type: number
-    format: double
-  promocode_id:
-    type: integer
-  reference:
-    type: string
-  purchase_id:
-    type: integer
-  cancelled_at:
-    type: string
-    format: date-time

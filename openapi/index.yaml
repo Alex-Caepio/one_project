@@ -2292,7 +2292,19 @@ paths:
         "204":
           description: OK
   "/services/{id}/unpublish":
-    $ref: "#/paths/~1services~1%7Bid%7D~1publish"
+    post:
+      tags:
+        - Service
+      parameters:
+        - name: id
+          in: path
+          description: Service ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: OK
   /services/practitioner: {}
   "/services/practitioner/{id}": {}
   /service-types:
@@ -3283,10 +3295,12 @@ paths:
           application/json:
             schema:
               type: object
-            properties:
-              code:
-                type: string
-                required: true
+              required:
+                - code
+              properties:
+                code:
+                  type: string
+                  example: asd7887a9sad
       responses:
         "204":
           description: OK
@@ -3305,44 +3319,19 @@ paths:
                   type: object
                   properties:
                     id:
-                      type: integer
-                    user_id:
-                      type: integer
-                    practitioner_id:
-                      type: integer
-                    schedule_id:
-                      type: integer
-                    availability_id:
-                      type: integer
-                      nullable: true
-                    datetime_from:
+                      type: string
+                    сlients:
+                      type: array
+                    start_date:
                       type: string
                       format: date-time
-                      nullable: true
-                    datetime_to:
+                    end_date:
                       type: string
                       format: date-time
-                      nullable: true
-                    quantity:
-                      type: integer
-                    created_at:
+                    location:
                       type: string
-                      format: date-time
-                    updated_at:
+                    summary:
                       type: string
-                      format: date-time
-                    cost:
-                      type: number
-                      format: double
-                    promocode_id:
-                      type: integer
-                    reference:
-                      type: string
-                    purchase_id:
-                      type: integer
-                    cancelled_at:
-                      type: string
-                      format: date-time
   /gcal/settings:
     get:
       tags:
@@ -3353,7 +3342,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
+                type: object
                 items:
                   type: object
                   properties:
@@ -3368,6 +3357,9 @@ paths:
                     created_at:
                       type: string
                       format: date-time
+                    unavailabilities:
+                      type: array
+                      format: object
                     updated_at:
                       type: string
                       format: date-time
@@ -3380,10 +3372,22 @@ paths:
           application/json:
             schema:
               type: object
-            properties:
-              timezone:
-                type: integer
-                required: true
+              required:
+                - timezone_id
+              properties:
+                timezone_id:
+                  type: string
+                  example: Yoga practice
+                unavailabilities:
+                  type: array
+                  items:
+                    type: object
+                  example:
+                    - start_date: Y-m-d H:i:s
+                      end_date: Y-m-d H:i:s
+                    - start_date: Y-m-d H:i:s
+                      end_date: Y-m-d H:i:s
+                  nullable: true
       responses:
         "200":
           description: OK
@@ -5666,19 +5670,19 @@ paths:
                 footer:
                   type: string
                   example: Custom text
-        responses:
-          "204":
-            description: OK
-          "422":
-            description: Validation error
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    message:
-                      type: string
-                      example: The given data was invalid.
+      responses:
+        "204":
+          description: OK
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: The given data was invalid.
   "/admin/transactional-emails/{id}":
     put:
       parameters:
@@ -5733,3 +5737,134 @@ paths:
                 items:
                   $ref: "#/paths/~1admin~1transactional-emails/post/responses/200/content/applica\
                     tion~1json/schema"
+  /admin/services:
+    get:
+      tags:
+        - List of Services
+      parameters:
+        - name: page
+          in: query
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: limit
+          in: query
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: x-page
+          in: header
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: x-limit
+          in: header
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: with
+          in: query
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles,media_images,media_videos,media_files
+        - name: x-with
+          in: header
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles,media_images,media_videos,media_files
+        - name: service_type
+          in: query
+          description: Include service types
+          required: false
+          schema:
+            type: string
+            example: workshop,events,retreat,appointment,cources
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/schemas/Service"
+  "/admin/services/{id}":
+    get:
+      tags:
+        - Service
+      parameters:
+        - name: id
+          in: path
+          description: Service ID
+          required: true
+          schema:
+            type: integer
+        - name: with
+          in: query
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles,media_images,media_videos,media_files,last_published
+        - name: x-with
+          in: header
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles,media_images,media_videos,media_files,last_published
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/schemas/Service"
+    delete:
+      tags:
+        - Service
+      parameters:
+        - $ref: "#/paths/~1admin~1services~1%7Bid%7D/get/parameters/0"
+      responses:
+        "204":
+          description: OK
+  "/admin/services/{id}/publish":
+    post:
+      tags:
+        - Service
+      parameters:
+        - name: id
+          in: path
+          description: Service ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: OK
+  "/admin/services/{id}/unpublish":
+    post:
+      tags:
+        - Service
+      parameters:
+        - name: id
+          in: path
+          description: Service ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: OK

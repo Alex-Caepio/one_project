@@ -7,11 +7,7 @@ gcal/auth:
       content:
         application/json:
           schema:
-            type: object
-          properties:
-            code:
-              type: string
-              required: true
+            $ref: '../schemas/forms/CalendarAuth.yaml'
     responses:
       '204':
         description: OK
@@ -38,7 +34,7 @@ gcal/settings:
         content:
           application/json:
             schema:
-              type: array
+              type: object
               items:
                 $ref: '../schemas/CalendarSettings.yaml'
   post:
@@ -49,11 +45,7 @@ gcal/settings:
       content:
         application/json:
           schema:
-            type: object
-          properties:
-            timezone:
-              type: integer
-              required: true
+            $ref: '../schemas/forms/CalendarSettings.yaml'
     responses:
       '200':
         description: OK
