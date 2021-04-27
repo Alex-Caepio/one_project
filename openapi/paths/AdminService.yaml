@@ -1,7 +1,7 @@
 services:
   get:
     tags:
-      - List of Services
+      - Admin Services
     parameters:
       - name: page
         in: query
@@ -61,11 +61,10 @@ services:
               type: array
               items:
                 $ref: "../schemas/Service.yaml"
-
 services/{id}:
   get:
     tags:
-      - Service
+      - Admin Services
     parameters:
       - $ref: "#/parameters/id"
       - name: with
@@ -91,27 +90,25 @@ services/{id}:
               $ref: "../schemas/Service.yaml"
   delete:
     tags:
-      - Service
+      - Admin Services
     parameters:
       - $ref: "#/parameters/id"
     responses:
       '204':
         description: OK
-
 services/{id}/publish:
   post:
     tags:
-      - Service
+      - Admin Services
     parameters:
       - $ref: "#/parameters/id"
     responses:
       '204':
         description: OK
-
 services/{id}/unpublish:
   post:
     tags:
-      - Service
+      - Admin Services
     parameters:
       - $ref: "#/parameters/id"
     responses:

@@ -3,11 +3,12 @@
 namespace App\Transformers;
 
 use App\Models\GoogleCalendar;
+use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
 
 class GoogleCalendarTransformer extends Transformer {
 
-    protected $availableIncludes = ['user', 'timezone'];
+    protected $availableIncludes = ['user', 'timezone', 'unavailabilities'];
 
     public function transform(GoogleCalendar $calendar) {
         return [
@@ -26,6 +27,10 @@ class GoogleCalendarTransformer extends Transformer {
 
     public function includeTimezone(GoogleCalendar $calendar): ?Item {
         return $this->itemOrNull($calendar->timezone, new TimezoneTransformer());
+    }
+
+    public function includeUnavailabilities(GoogleCalendar $calendar): ?Collection  {
+        return $this->collectionOrNull($calendar->unavailabilities, new UserUnavailabilitiesTransformer());
     }
 
 }

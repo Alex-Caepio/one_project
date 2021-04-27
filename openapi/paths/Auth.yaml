@@ -34,7 +34,7 @@ auth/profile:
         required: false
         schema:
           type: string
-          example: calendar,plan
+          example: calendar,plan,unavailabilities
     responses:
       '200':
         description: OK

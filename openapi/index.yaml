@@ -1467,7 +1467,7 @@ paths:
           required: false
           schema:
             type: string
-            example: calendar,plan
+            example: calendar,plan,unavailabilities
       responses:
         "200":
           description: OK
@@ -3322,6 +3322,7 @@ paths:
                       type: string
                     сlients:
                       type: array
+                      items: {}
                     start_date:
                       type: string
                       format: date-time
@@ -3336,6 +3337,14 @@ paths:
     get:
       tags:
         - Calendar
+      parameters:
+        - name: with
+          in: query
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: unavailabilities
       responses:
         "200":
           description: OK
@@ -3359,7 +3368,7 @@ paths:
                       format: date-time
                     unavailabilities:
                       type: array
-                      format: object
+                      items: {}
                     updated_at:
                       type: string
                       format: date-time
@@ -5740,7 +5749,7 @@ paths:
   /admin/services:
     get:
       tags:
-        - List of Services
+        - Admin Services
       parameters:
         - name: page
           in: query
@@ -5803,7 +5812,7 @@ paths:
   "/admin/services/{id}":
     get:
       tags:
-        - Service
+        - Admin Services
       parameters:
         - name: id
           in: path
@@ -5834,7 +5843,7 @@ paths:
                 $ref: "#/schemas/Service"
     delete:
       tags:
-        - Service
+        - Admin Services
       parameters:
         - $ref: "#/paths/~1admin~1services~1%7Bid%7D/get/parameters/0"
       responses:
@@ -5843,7 +5852,7 @@ paths:
   "/admin/services/{id}/publish":
     post:
       tags:
-        - Service
+        - Admin Services
       parameters:
         - name: id
           in: path
@@ -5857,7 +5866,7 @@ paths:
   "/admin/services/{id}/unpublish":
     post:
       tags:
-        - Service
+        - Admin Services
       parameters:
         - name: id
           in: path

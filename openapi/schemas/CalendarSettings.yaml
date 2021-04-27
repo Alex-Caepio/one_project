@@ -13,7 +13,7 @@ properties:
     format: date-time
   unavailabilities:
     type: array
-    format: object
+    items: {}
   updated_at:
     type: string
     format: date-time

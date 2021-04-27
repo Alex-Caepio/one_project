@@ -16,6 +16,7 @@ class SettingsRequest extends Request {
     public function rules(): array {
         return [
             'timezone_id' => 'required|exists:timezones,id',
+            'unavailabilities' => 'nullable|array'
         ];
     }
 

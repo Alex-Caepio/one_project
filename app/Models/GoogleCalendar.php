@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class GoogleCalendar extends Model
 {
@@ -30,5 +31,9 @@ class GoogleCalendar extends Model
 
     public function timezone() {
         return $this->hasOne(Timezone::class, 'id', 'timezone_id');
+    }
+
+    public function unavailabilities(): HasMany {
+        return $this->hasMany(UserUnavailabilities::class, 'practitioner_id', 'user_id');
     }
 }

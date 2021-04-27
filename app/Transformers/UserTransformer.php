@@ -30,7 +30,8 @@ class UserTransformer extends Transformer {
         'practitioner_bookings',
         'latest_articles',
         'latest_services',
-        'calendar'
+        'calendar',
+        'unavailabilities'
     ];
 
     public function transform(User $user) {
@@ -177,5 +178,8 @@ class UserTransformer extends Transformer {
         return $this->itemOrNull($user->calendar, new GoogleCalendarTransformer());
     }
 
+    public function includeUnavailabilities(User $user): ?Collection  {
+        return $this->collectionOrNull($user->unavailabilities, new UserUnavailabilitiesTransformer());
+    }
 
 }

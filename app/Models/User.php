@@ -271,4 +271,8 @@ class User extends Authenticatable implements MustVerifyEmail {
         return $this->hasOne(GoogleCalendar::class);
     }
 
+    public function unavailabilities(): HasMany {
+        return $this->hasMany(UserUnavailabilities::class, 'id', 'practitioner_id');
+    }
+
 }

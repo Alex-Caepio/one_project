@@ -28,6 +28,14 @@ gcal/settings:
   get:
     tags:
       - Calendar
+    parameters:
+      - name: with
+        in: query
+        description: Include additional objects in response
+        required: false
+        schema:
+          type: string
+          example: unavailabilities
     responses:
       '200':
         description: OK
