@@ -5,6 +5,7 @@ namespace App\Transformers;
 
 
 use App\Models\Schedule;
+use Carbon\Carbon;
 
 class ScheduleTransformer extends Transformer
 {
@@ -28,8 +29,8 @@ class ScheduleTransformer extends Transformer
             'title'                         => $schedule->title,
             'location_id'                   => $schedule->location_id,
             'service_id'                    => $schedule->service_id,
-            'start_date'                    => $schedule->start_date,
-            'end_date'                      => $schedule->end_date,
+            'start_date'                    => Carbon::parse($schedule->start_date),
+            'end_date'                      => Carbon::parse($schedule->end_date),
             'attendees'                     => $schedule->attendees,
             'attendees_available'           => $attendees_available,
             'cost'                          => $schedule->cost,
@@ -48,7 +49,7 @@ class ScheduleTransformer extends Transformer
             'deposit_amount'                => $schedule->deposit_amount,
             'deposit_instalments'           => $schedule->deposit_instalments,
             'deposit_instalment_frequency'  => $schedule->deposit_instalment_frequency,
-            'deposit_final_date'            => $schedule->deposit_final_date,
+            'deposit_final_date'            => Carbon::parse($schedule->deposit_final_date),
             'booking_message'               => $schedule->booking_message,
             'url'                           => $schedule->url,
             'book_full_series'              => $schedule->book_full_series,

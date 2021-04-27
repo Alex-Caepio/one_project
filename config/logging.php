@@ -191,6 +191,16 @@ return [
             'driver' => 'daily',
         ],
 
+        'google_calendar_failed' => [
+            'path' => storage_path('logs/google_calendar_failed.log'),
+            'driver' => 'daily',
+        ],
+
+        'google_calendar_success' => [
+            'path' => storage_path('logs/google_calendar_success.log'),
+            'driver' => 'daily',
+        ],
+
     ],
 
 ];

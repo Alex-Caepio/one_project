@@ -22,6 +22,10 @@ class GoogleCalendarIntegrationController extends Controller {
         $calendar->timezone_id = $request->get('timezone_id');
         // add availabilities save
         $calendar->save();
+        if ($calendar->calendar_id) {
+            $gcHelper = new GoogleCalendarHelper($calendar);
+            $gcHelper->updateTimezone();
+        }
         return response(fractal($calendar, new GoogleCalendarTransformer())->toArray());
     }
 
@@ -42,15 +46,9 @@ class GoogleCalendarIntegrationController extends Controller {
         abort(500, 'Google authorization failed');
     }
 
-
     public function getEventList(EventListRequest $request) {
         $gcHelper = new GoogleCalendarHelper(Auth::user()->calendar);
         return response()->json($gcHelper->getEventList());
     }
-
-    public function addEvent(Request $request) {
-
-    }
-
 
 }

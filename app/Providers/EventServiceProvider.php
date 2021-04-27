@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Events\AccountDeleted;
 use App\Events\AccountTerminatedByAdmin;
 use App\Events\AccountUpgradedToPractitioner;
+use App\Events\AppointmentBooked;
 use App\Events\ArticlePublished;
 use App\Events\ArticleUnpublished;
 use App\Events\BookingCancelledByPractitioner;
@@ -34,6 +35,7 @@ use App\Events\ServiceUpdatedByPractitionerContractual;
 use App\Events\ServiceUpdatedByPractitionerNonContractual;
 use App\Events\SubscriptionConfirmation;
 use App\Events\UserRegistered;
+use App\Listeners\AppointmentBookedEventHandler;
 use App\Listeners\Emails\AccountDeletedEmail;
 use App\Listeners\Emails\AccountTerminatedByAdminEmail;
 use App\Listeners\Emails\AccountUpgradedToPractitionerEmail;
@@ -99,10 +101,10 @@ class EventServiceProvider extends ServiceProvider {
         ArticleUnpublished::class                               => [
             ArticleUnpublishedEmail::class
         ],
-        BookingCancelledByPractitioner::class => [
+        BookingCancelledByPractitioner::class                   => [
             BookingCancelledByPractitionerEmail::class,
         ],
-        BookingCancelledByClient::class => [
+        BookingCancelledByClient::class                         => [
             BookingCancelledByClientEmail::class,
         ],
         BookingConfirmation::class                              => [
@@ -120,7 +122,7 @@ class EventServiceProvider extends ServiceProvider {
         BookingRescheduleClientToSelectAppt::class              => [
             BookingRescheduleClientToSelectApptEmail::class
         ],
-        BookingRescheduleOfferedByPractitioner::class => [
+        BookingRescheduleOfferedByPractitioner::class           => [
             BookingRescheduleOfferedByPractitionerEmail::class
         ],
         BusinessProfileLive::class                              => [
@@ -177,6 +179,10 @@ class EventServiceProvider extends ServiceProvider {
 
         SubscriptionConfirmation::class => [
             SubscriptionConfirmationEmail::class
+        ],
+
+        AppointmentBooked::class => [
+            AppointmentBookedEventHandler::class
         ]
     ];
 

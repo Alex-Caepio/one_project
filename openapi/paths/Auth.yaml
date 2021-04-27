@@ -27,6 +27,14 @@ auth/profile:
     operationId: get-current-user-info
     tags:
       - Auth
+    parameters:
+      - name: with
+        in: query
+        description: Include additional objects in response
+        required: false
+        schema:
+          type: string
+          example: calendar,plan
     responses:
       '200':
         description: OK

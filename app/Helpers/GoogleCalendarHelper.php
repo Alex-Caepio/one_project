@@ -4,10 +4,14 @@
 namespace App\Helpers;
 
 
+use App\Events\AppointmentBooked;
 use App\Http\Requests\Request;
+use App\Models\Booking;
 use App\Models\GoogleCalendar;
 use App\Models\User;
 use Carbon\Carbon;
+use Google_Service_Calendar_Event;
+use Google_Service_Calendar_EventDateTime;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
 
@@ -105,7 +109,7 @@ class GoogleCalendarHelper {
         $calendarEntry = null;
         $calendarList = $service->calendarList->listCalendarList();
 
-        while(true) {
+        while (true) {
             foreach ($calendarList->getItems() as $calendarListEntry) {
                 if ($calendarListEntry->getSummary() === config('app.platform_calendar')) {
                     $calendarEntry = $calendarListEntry;
@@ -120,18 +124,19 @@ class GoogleCalendarHelper {
                 break;
             }
         }
-       if ($calendarEntry === null) {
-           $calendarId = $this->createNewCalendar();
-       } else {
-           $calendarId = $calendarEntry->getId();
-       }
+        if ($calendarEntry === null) {
+            $calendarId = $this->createNewCalendar();
+        } else {
+            $calendarId = $calendarEntry->getId();
+        }
 
-       return $calendarId;
+        return $calendarId;
     }
 
     private function createNewCalendar(): \Google_Service_Calendar_Calendar {
         $newCalendar = new \Google_Service_Calendar_Calendar();
         $newCalendar->setSummary(config('app.platform_calendar'));
+        $newCalendar->setTimeZone($this->_calendar->timezone->getGMTCalendarValue());
         $result = $this->getService()->calendars->insert($newCalendar);
         return $result->getId();
     }
@@ -143,5 +148,61 @@ class GoogleCalendarHelper {
         return $this->getService()->calendars->get($this->_calendar->calendar_id);
     }
 
+    public function updateTimezone(): bool {
+        if (!$this->_calendar->calendar_id) {
+            Log::channel('google_calendar_failed')->info('Unable to update timezone. Calendar not linked:', [
+                'user_id'     => $this->_calendar->user_id,
+                'id'          => $this->_calendar->id,
+                'timezone_id' => $this->_calendar->timezone_id
+            ]);
+            return false;
+        }
+        $gCal = $this->getUserCalendar();
+        $gCal->setTimeZone($this->_calendar->timezone->getGMTCalendarValue());
+        $this->getService()->calendars->update($this->_calendar->calendar_id, $gCal);
+        return true;
+    }
+
+    public function setEvent(AppointmentBooked $event) {
+        $booking = $event->booking;
+
+        $startTime = Carbon::parse($booking->datetime_from);
+        $endTime = Carbon::parse($booking->datetime_to);
+
+        $googleStartTime = new Google_Service_Calendar_EventDateTime();
+        $googleStartTime->setTimeZone($this->_calendar->timezone->getGMTCalendarValue());
+        $googleStartTime->setDateTime($startTime->format('c'));
+
+        $googleEndTime = new Google_Service_Calendar_EventDateTime();
+        $googleEndTime->setTimeZone($this->_calendar->timezone->getGMTCalendarValue());
+        $googleEndTime->setDateTime($endTime->format('c'));
+
+        $gEvent = new \Google_Service_Calendar_Event();
+        $gEvent->setStart($googleStartTime);
+        $gEvent->setEnd($googleEndTime);
+        $gEvent->setSummary($event->service->title.' - '.$event->schedule->title);
+        $gEvent->setLocation($event->schedule->venue_address.', '.$event->schedule->city.', '.$event->schedule->country.', '.$event->schedule->post_code);
+
+        $attendee = new \Google_Service_Calendar_EventAttendee();
+        $attendee->setDisplayName($event->client->first_name.' '.$event->client->last_name);
+        $attendee->setEmail($event->client->email);
+
+        $gEvent->setAttendees([$attendee]);
+        $createdEvent = $this->getService()->events->insert($this->_calendar->calendar_id, $gEvent);
+
+        if (!empty($createdEvent->id)) {
+            Log::channel('google_calendar_success')->info('Google event successfully created', [
+                'booking_id'  => $booking->id,
+                'calendar_id' => $this->_calendar->id,
+                'event_id'    => $createdEvent->id
+            ]);
+        } else {
+            Log::channel('google_calendar_failed')->info('Unable to сreate event', [
+                'booking_id'  => $booking->id,
+                'calendar_id' => $this->_calendar->id,
+                'message'     => 'Empty response'
+            ]);
+        }
+    }
 
 }

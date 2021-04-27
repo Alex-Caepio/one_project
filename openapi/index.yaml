@@ -1460,6 +1460,14 @@ paths:
       operationId: get-current-user-info
       tags:
         - Auth
+      parameters:
+        - name: with
+          in: query
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: calendar,plan
       responses:
         "200":
           description: OK
@@ -2443,14 +2451,14 @@ paths:
           required: false
           schema:
             type: string
-            example: access_token,services,articles,schedules,disciplines,promotion_codes,favourite_services,favourite_articles,favourite_practitioners
+            example: access_token,services,articles,schedules,disciplines,promotion_codes,favourite_services,favourite_articles,favourite_practitioners,calendar
         - name: x-with
           in: header
           description: Include additional objects in response
           required: false
           schema:
             type: integer
-            example: access_token,services,articles,schedules,disciplines,promotion_codes,favourite_services,favourite_articles,favourite_practitioners
+            example: access_token,services,articles,schedules,disciplines,promotion_codes,favourite_services,favourite_articles,favourite_practitioners,calendar
         - name: is_author
           in: query
           description: User has articles
