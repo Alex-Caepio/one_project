@@ -42,7 +42,7 @@ class SendUserMail extends Mailable
      */
     public function build()
     {
-        return $this->view('mails.send_user',
+        return $this->from($this->sender->email, $this->sender->first_name.' '.$this->sender->last_name)->view('mails.send_user',
             [
                 'text' => $this->text,
                 'sender' => $this->sender,
