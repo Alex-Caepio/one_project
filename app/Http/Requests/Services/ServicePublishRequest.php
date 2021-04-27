@@ -14,7 +14,7 @@ class ServicePublishRequest extends Request {
      */
     public function authorize() {
         $service = $this->route('service');
-        return $service->user_id === Auth::id();
+        return $service->user_id === Auth::id() || Auth::user()->is_admin;
     }
 
     /**
