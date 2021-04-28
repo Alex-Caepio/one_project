@@ -11,11 +11,13 @@ return [
     | any other location as required by the application or its packages.
     |
     */
-    'platform_name'             => env('PLATFORM_NAME', 'Oneness'),
-    'platform_email'            => env('PLATFORM_EMAIL', 'hello@holistify.me'),
-    'platform_cancellation_fee' => env('PLATFORM_CANCELLATION_FEE', 0),
-    'platform_currency'         => env('PLATFORM_CURRENCY', 'gbp'),
-    'platform_calendar'         => env('PLATFORM_CALENDAR_NAME', 'Oneness Holistify'),
+    'platform_name'                 => env('PLATFORM_NAME', 'Oneness'),
+    'platform_email'                => env('PLATFORM_EMAIL', 'hello@holistify.me'),
+    'platform_cancellation_fee'     => env('PLATFORM_CANCELLATION_FEE', 0),
+    'platform_currency'             => env('PLATFORM_CURRENCY', 'gbp'),
+    'platform_calendar'             => env('PLATFORM_CALENDAR_NAME', 'Oneness Holistify'),
+    'platform_subject_practitioner' => env('PLATFORM_SUBJECT_PREFIX_PRACTITIONER', 'Message from: '),
+    'platform_subject_client'       => env('PLATFORM_SUBJECT_PREFIX_CLIENT', 'Message from: '),
 
 
     /*

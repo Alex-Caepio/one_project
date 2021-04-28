@@ -7,8 +7,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class SendUserMail extends Mailable
-{
+class SendUserMail extends Mailable {
     use Queueable, SerializesModels;
 
     public $text;
@@ -24,12 +23,11 @@ class SendUserMail extends Mailable
     /**
      * Create a new message instance.
      *
-     * @param User   $sender
-     * @param User   $receiver
+     * @param User $sender
+     * @param User $receiver
      * @param string $text
      */
-    public function __construct(User $sender, User $receiver, string $text)
-    {
+    public function __construct(User $sender, User $receiver, string $text) {
         $this->text = $text;
         $this->sender = $sender;
         $this->receiver = $receiver;
@@ -40,13 +38,16 @@ class SendUserMail extends Mailable
      *
      * @return $this
      */
-    public function build()
-    {
-        return $this->from($this->sender->email, $this->sender->first_name.' '.$this->sender->last_name)->view('mails.send_user',
-            [
-                'text' => $this->text,
-                'sender' => $this->sender,
-                'receiver' => $this->receiver,
-            ]);
+    public function build() {
+        $subject =
+            $this->sender->isPractitioner() ? config('app.platform_subject_practitioner') : config('app.platform_subject_client');
+        $subject .= $this->sender->isPractitioner() ? $this->sender->business_name : $this->sender->first_name . ' ' .
+                                                                                     $this->sender->last_name;
+        return $this->from($this->sender->email, $this->sender->first_name . ' ' . $this->sender->last_name)
+                    ->subject($subject)->view('mails.send_user', [
+                                                                   'text'     => $this->text,
+                                                                   'sender'   => $this->sender,
+                                                                   'receiver' => $this->receiver,
+                                                               ]);
     }
 }
