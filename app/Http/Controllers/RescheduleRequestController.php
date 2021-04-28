@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\Events\BookingRescheduleAcceptedByClient;
 use App\Events\RescheduleRequestDeclinedByClient;
 use App\Http\Requests\Reschedule\RescheduleRequestRequest;
+use App\Http\Requests\Reschedule\ScheduleRescheduleRequestRequest;
 use App\Models\Booking;
 use App\Http\Requests\Reschedule\AcceptRescheduleRequestRequest;
 use App\Http\Requests\Reschedule\DeclineRescheduleRequestRequest;
 use App\Http\Requests\Request;
 use App\Models\RescheduleRequest;
 use App\Actions\RescheduleRequest\RescheduleRequestStore;
+use App\Models\Schedule;
 use App\Transformers\RescheduleRequestTransformer;
 use Illuminate\Support\Facades\Auth;
 
@@ -50,13 +52,27 @@ class RescheduleRequestController extends Controller {
     }
 
     public function allReschedule(RescheduleRequestRequest $request) {
-        RescheduleRequest::whereIn('booking_id', $request->booking_ids)->delete();
-        $bookings = Booking::whereIn('id', $request->booking_ids)->get();
-        foreach ($bookings as $bookingItem) {
-            run_action(RescheduleRequestStore::class, $bookingItem, $request);
+        $this->rescheduleByBookingIds($request->booking_ids, $request);
+        return response(null, 200);
+    }
+
+    public function scheduleReschedule(Schedule $schedule, ScheduleRescheduleRequestRequest $request) {
+        $bookings = $schedule->bookings()->get();
+        if (count($bookings)) {
+            $this->rescheduleByBookingIds($bookings->pluck('id')->all(), $request);
         }
         return response(null, 200);
     }
+
+    private function rescheduleByBookingIds(array $bookingIds, $request): void {
+        RescheduleRequest::whereIn('booking_id', $bookingIds)->delete();
+        $bookings = Booking::whereIn('id', $bookingIds)->get();
+        foreach ($bookings as $bookingItem) {
+            run_action(RescheduleRequestStore::class, $bookingItem, $request);
+        }
+    }
+
+
 
     public function accept(AcceptRescheduleRequestRequest $request, RescheduleRequest $rescheduleRequest) {
         $booking = $rescheduleRequest->booking;

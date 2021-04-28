@@ -79,6 +79,7 @@ Route::get('disciplines/{discipline}', [DisciplineController::class, 'show']);
 Route::get('/focus-areas', [FocusAreaController::class, 'index']);
 Route::get('/focus-areas/{focusArea}', [FocusAreaController::class, 'show']);
 
+
 Route::get('practitioners', [PractitionerController::class, 'index']);
 Route::get('users/{slug}', [AuthController::class, 'show']);
 Route::get('/services/{service}/schedules', [ScheduleController::class, 'index']);
@@ -88,13 +89,14 @@ Route::get('/latest-two', [LatestTwoController::class, 'index']);
 Route::get('/practitioners/{user}', [UserController::class, 'show']);
 
 Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
-    Route::get('auth/profile', [AuthController::class, 'profile']);
+
     Route::post('/gcal/auth', [GoogleCalendarIntegrationController::class, 'auth']);
     Route::get('/gcal/events', [GoogleCalendarIntegrationController::class, 'getEventList']);
     Route::post('/gcal/event', [GoogleCalendarIntegrationController::class, 'addEvent']);
     Route::get('/gcal/settings', [GoogleCalendarIntegrationController::class, 'getSettings']);
     Route::post('/gcal/settings', [GoogleCalendarIntegrationController::class, 'updateSettings']);
 
+    Route::get('auth/profile', [AuthController::class, 'profile']);
     Route::put('auth/profile', [AuthController::class, 'update']);
     Route::delete('auth/profile', [AuthController::class, 'delete']);
     Route::post('auth/resend-verification', [AuthController::class, 'resendVerification']);
@@ -178,6 +180,7 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
 
     Route::post('/bookings/{booking}/reschedule', [RescheduleRequestController::class, 'reschedule']);
     Route::post('/bookings/reschedule', [RescheduleRequestController::class, 'allReschedule']);
+    Route::post('/bookings/schedule/{schedule}/reschedule', [RescheduleRequestController::class, 'scheduleReschedule']);
 
 
     /* Payments */
@@ -220,9 +223,11 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::post('/payment-methods/default-fee', [PaymentMethodController::class, 'defaultFee']);
     Route::put('/payment-methods', [PaymentMethodController::class, 'update']);
     Route::delete('/payment-methods', [PaymentMethodController::class, 'detach']);
+
     /* Cancellation */
     Route::get('/cancellations', [CancellationController::class, 'index']);
     Route::post('/cancellations/bookings', [CancellationController::class, 'cancelManyBookings']);
+    Route::post('/cancellations/schedule/{schedule}', [CancellationController::class, 'cancelSchedule']);
     Route::post('/cancellations/{booking}', [CancellationController::class, 'cancelBooking']);
 
     Route::post('/images', [ImageController::class, 'upload']);

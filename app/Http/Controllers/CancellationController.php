@@ -6,10 +6,13 @@ namespace App\Http\Controllers;
 use App\Actions\Cancellation\CancelBooking;
 use App\Http\Requests\Cancellation\CancelBookingRequest;
 use App\Http\Requests\Cancellation\CancelManyBookingsRequest;
+use App\Http\Requests\Cancellation\CancelScheduleRequest;
 use App\Http\Requests\Request;
 use App\Models\Booking;
 use App\Models\Cancellation;
+use App\Models\Schedule;
 use App\Transformers\CancellationTransformer;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 
 class CancellationController extends Controller {
@@ -36,15 +39,22 @@ class CancellationController extends Controller {
         return run_action(CancelBooking::class, $booking);
     }
 
-    public function cancelManyBookings(CancelManyBookingsRequest $request)
-    {
-        $bookings = Booking::find($request->get('booking_ids'));
-
-        foreach ($bookings as $booking) {
-            run_action(CancelBooking::class, $booking);
-        }
-
+    public function cancelManyBookings(CancelManyBookingsRequest $request) {
+        $this->cancelCollection(Booking::find($request->get('booking_ids')));
         return response(null, 204);
+    }
+
+    public function cancelSchedule(Schedule $schedule, CancelScheduleRequest $request) {
+        $this->cancelCollection($schedule->bookings);
+        return response(null, 204);
+    }
+
+    private function cancelCollection(?Collection $bookings): void {
+        if (count($bookings)) {
+            foreach ($bookings as $booking) {
+                run_action(CancelBooking::class, $booking);
+            }
+        }
     }
 
 }
