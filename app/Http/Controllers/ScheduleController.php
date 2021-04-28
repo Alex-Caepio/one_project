@@ -184,8 +184,7 @@ class ScheduleController extends Controller
         return response($fractal)->withPaginationHeaders($paginator);
     }
 
-    public function destroy(Schedule $schedule)
-    {
+    public function destroy(Schedule $schedule) {
         $schedule->delete();
         return response(null, 204);
     }
@@ -193,8 +192,6 @@ class ScheduleController extends Controller
     public function appointmentsOnDate(Price $price, $date) {
         return run_action(GetAvailableAppointmentTimeOnDate::class, $price, $date);
     }
-
-
 
     public function copy(Schedule $schedule) {
 

@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\PlanController;
 use App\Http\Controllers\Admin\ClientController;
 use App\Http\Controllers\Admin\PractitionerSubscriptionCommissionController;
 use App\Http\Controllers\Admin\PromotionController;
+use App\Http\Controllers\Admin\ScheduleController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\FocusAreaController;
@@ -122,5 +123,16 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/practitioner-subscription-commissions',[PractitionerSubscriptionCommissionController::class,'store']);
         Route::put('/practitioner-subscription-commissions/{subscriptionCommission}',[PractitionerSubscriptionCommissionController::class,'update']);
         Route::delete('/practitioner-subscription-commissions/{subscriptionCommission}',[PractitionerSubscriptionCommissionController::class,'delete']);
+
+
+        Route::get('/schedules', [ScheduleController::class, 'index']);
+        //Route::post('/schedules', [ServiceController::class, 'store']);
+        Route::get('/schedules/{schedule}', [ScheduleController::class, 'show']);
+        //Route::put('/schedules/{schedule}', [ServiceController::class, 'update']);
+        Route::delete('/schedules/{schedule}', [ScheduleController::class, 'destroy']);
+        //Route::post('/schedules/{schedule}/publish', [ServiceController::class, 'publish']);
+        //Route::post('/schedules/{schedule}/unpublish', [ServiceController::class, 'unpublish']);
+
+
     });
 });
