@@ -27,9 +27,10 @@ class PractitionerSubscriptionCommissionTransformer extends Transformer
             'date_from'          => $practitionerSubscriptionCommission->date_from,
             'date_to'            => $practitionerSubscriptionCommission->date_to,
             'is_dateless'        => $practitionerSubscriptionCommission->is_dateless,
-            'discount_id'        => $practitionerSubscriptionCommission->discount_id,
             'created_at'         => $practitionerSubscriptionCommission->created_at,
             'updated_at'         => $practitionerSubscriptionCommission->updated_at,
+            'stripe_coupon_id'   => $practitionerSubscriptionCommission->stripe_coupon_id,
+            'subscription_schedule_id' => $practitionerSubscriptionCommission->subscription_schedule_id,
         ];
     }
 

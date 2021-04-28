@@ -15,9 +15,10 @@ class PractitionerSubscriptionCommission extends Model
         'date_from',
         'date_to',
         'is_dateless',
-        'discount_id',
         'created_at',
         'updated_at',
+        'stripe_coupon_id',
+        'subscription_schedule_id',
     ];
 
     public function user()

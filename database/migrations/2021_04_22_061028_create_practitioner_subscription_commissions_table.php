@@ -20,7 +20,6 @@ class CreatePractitionerSubscriptionCommissionsTable extends Migration
             $table->dateTime('date_from')->nullable();
             $table->dateTime('date_to')->nullable();
             $table->boolean('is_dateless')->default(false);
-            $table->string('discount_id')->nullable();
             $table->dateTime('created_at')->default(now());
             $table->dateTime('updated_at')->default(now());
         });
