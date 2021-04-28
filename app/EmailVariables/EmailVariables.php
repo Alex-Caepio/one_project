@@ -472,7 +472,7 @@ class EmailVariables {
      * @return string
      */
     public function getView_booking(): string {
-        return config('app.frontend_booking_url') . $this->event->booking->reference;
+        return config('app.frontend_booking_url') . $this->event->booking->id;
     }
 
     /**
@@ -486,7 +486,7 @@ class EmailVariables {
      * @return string
      */
     public function getRebook(): string {
-        return config('app.frontend_booking_url') . $this->event->booking->reference;
+        return config('app.frontend_booking_url') . $this->event->booking->id;
     }
 
     /**
