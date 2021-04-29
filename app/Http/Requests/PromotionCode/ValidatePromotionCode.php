@@ -39,6 +39,8 @@ class ValidatePromotionCode {
         $promoDisciplines = $promoCode->promotion->disciplines()->pluck('disciplines.id')->toArray();
         $promoFocusAreas = $promoCode->promotion->focus_areas()->pluck('focus_areas.id')->toArray();
         $promoServiceTypes = $promoCode->promotion->service_types()->pluck('service_types.id')->toArray();
+        $promoPractitioners = $promoCode->promotion->practitioners()->pluck('users.id')->toArray();
+
 
         $serviceDisciplines = $service->disciplines()->pluck('disciplines.id')->toArray();
         $serviceFocusAreas = $service->focus_areas()->pluck('focus_areas.id')->toArray();
@@ -88,6 +90,8 @@ class ValidatePromotionCode {
             $validator->errors()->add('promo_code', 'You are not allowed to use the promocode with this focus area');
         } elseif (count($promoServiceTypes) && !in_array($service->service_type_id, $promoServiceTypes)) {
             $validator->errors()->add('promo_code', 'Sorry, this code cannot be used on this service');
+        } elseif (count($promoPractitioners) && !in_array($service->user_id, $promoPractitioners)) {
+            $validator->errors()->add('promo_code', 'Sorry, this code cannot be used with this practitioner');
         }
 
     }
