@@ -100,6 +100,9 @@
   $ref: "./Booking.yaml#/bookings~1{id}~1reschedule"
 /bookings/reschedule:
   $ref: "./Booking.yaml#/bookings~1reschedule"
+/bookings/schedule/{schedule}/reschedule:
+  $ref: "./Booking.yaml#/bookings~1schedule~1{schedule}~1reschedule"
+
 #keywords
 /keywords:
   $ref: "./Keyword.yaml#/keywords"

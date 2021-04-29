@@ -12,21 +12,6 @@ bookings:
                 items:
                   $ref: '../schemas/Booking.yaml'
 
-bookings/schedule/{schedule}/reschedule:
-  post:
-    tags:
-      - Booking
-    parameters:
-      - in: path
-        name: schedule
-        required: true
-        schema:
-          type: integer
-        description: Schedule ID
-    responses:
-      '204':
-        description: OK
-
 bookings/{id}/reschedule:
   post:
     tags:
@@ -48,6 +33,21 @@ bookings/reschedule:
             application/json:
               schema:
                   $ref: '../schemas/Booking.yaml'
+
+bookings/schedule/{schedule}/reschedule:
+  post:
+    tags:
+      - Booking
+    parameters:
+      - in: path
+        name: schedule
+        required: true
+        schema:
+          type: integer
+        description: Schedule ID
+    responses:
+      '204':
+        description: OK
 
 parameters:
   id:

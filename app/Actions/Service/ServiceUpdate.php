@@ -9,7 +9,7 @@ use App\Models\Service;
 class ServiceUpdate extends ServiceAction {
 
     /**
-     * @param \App\Http\Requests\Services\StoreServiceRequest $request
+     * @param \App\Http\Requests\Services\UpdateServiceRequest $request
      * @param \App\Models\Service $service
      * @return \App\Models\Service
      */

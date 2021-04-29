@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Storage;
 abstract class ServiceAction {
 
     use hasMediaItems;
+
     /**
      * @param \App\Models\Service $service
      * @param \App\Http\Requests\Request $request
@@ -41,8 +42,8 @@ abstract class ServiceAction {
             'image_url'       => $request->get('image_url'),
             'icon_url'        => $request->get('icon_url'),
             'service_type_id' => $request->get('service_type_id'),
-            'user_id'         => Auth::id(),
         ];
+
         $service->forceFill($params);
         $service->save();
         return $service;
@@ -53,24 +54,13 @@ abstract class ServiceAction {
      * @param \App\Http\Requests\Request $request
      */
     protected function fillRelations(Service $service, Request $request): void {
-        if ($request->filled('media_images'))
-        {
-//            foreach ($request->media_images as $mediaImage)
-//            {
-//                if (Storage::disk(config('image.image_storage'))->missing(file_get_contents($mediaImage)))
-//                {
-//                    $image = Storage::disk(config('image.image_storage'))
-//                        ->put("/images/services/{$service->id}/media_images/", file_get_contents($mediaImage));
-//                    $image_urls[] = Storage::url($image);
-//                }
-//            }
-//            $request->media_images = $image_urls;
-            $this->syncImages($request->media_images,$service);
+        if ($request->filled('media_images')) {
+            $this->syncImages($request->media_images, $service);
         }
 
 
         if ($request->filled('media_videos')) {
-            $this->syncVideos($request->media_videos,$service);
+            $this->syncVideos($request->media_videos, $service);
         }
 
         if ($request->has('media_files')) {
@@ -109,8 +99,7 @@ abstract class ServiceAction {
         return $ids;
     }
 
-    protected function getSlug($request): string
-    {
+    protected function getSlug($request): string {
         $titleSlug = $request->get('title') ?? '';
         return $request->get('slug') ?? to_url($titleSlug);
     }

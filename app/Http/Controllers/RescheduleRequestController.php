@@ -48,12 +48,12 @@ class RescheduleRequestController extends Controller {
     public function reschedule(RescheduleRequestRequest $request, Booking $booking) {
         RescheduleRequest::where('booking_id', $booking->id)->delete();
         run_action(RescheduleRequestStore::class, $booking, $request);
-        return response(null, 200);
+        return response(null, 204);
     }
 
     public function allReschedule(RescheduleRequestRequest $request) {
         $this->rescheduleByBookingIds($request->booking_ids, $request);
-        return response(null, 200);
+        return response(null, 204);
     }
 
     public function scheduleReschedule(Schedule $schedule, ScheduleRescheduleRequestRequest $request) {
@@ -61,7 +61,7 @@ class RescheduleRequestController extends Controller {
         if (count($bookings)) {
             $this->rescheduleByBookingIds($bookings->pluck('id')->all(), $request);
         }
-        return response(null, 200);
+        return response(null, 204);
     }
 
     private function rescheduleByBookingIds(array $bookingIds, $request): void {

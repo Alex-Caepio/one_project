@@ -15,7 +15,7 @@ class StoreServiceRequest extends Request
      */
     public function authorize()
     {
-        return Auth::user()->isPractitioner();
+        return Auth::user()->isPractitioner() || Auth::user()->is_admin;
     }
 
     /**

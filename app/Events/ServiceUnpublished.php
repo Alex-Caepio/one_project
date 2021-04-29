@@ -14,8 +14,8 @@ class ServiceUnpublished {
     public Service $service;
     public User $user;
 
-    public function __construct(Service $service, User $user) {
+    public function __construct(Service $service) {
         $this->service = $service;
-        $this->user = $user;
+        $this->user = $service->user;
     }
 }
