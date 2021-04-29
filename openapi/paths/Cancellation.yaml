@@ -22,6 +22,21 @@ cancellations/{booking}:
       '204':
         description: OK
 
+cancellations/schedule/{schedule}:
+  post:
+    tags:
+      - Cancellation
+    parameters:
+      - in: path
+        name: schedule
+        required: true
+        schema:
+          type: integer
+        description: Schedule ID
+    responses:
+      '204':
+        description: OK
+
 parameters:
   booking:
     name: booking

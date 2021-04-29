@@ -2677,29 +2677,8 @@ paths:
           schema:
             type: integer
       responses:
-        "200":
+        "204":
           description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/schemas/Booking"
-        "422":
-          description: Validation errors
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: The given data was invalid.
-                  errors:
-                    type: object
-                    example:
-                      new_schedule_id:
-                        - This schedule does not belong to the service.
   /bookings/reschedule:
     post:
       tags:
@@ -3271,6 +3250,20 @@ paths:
                 type: array
                 items:
                   $ref: "#/schemas/Cancellation"
+  "/cancellations/schedule/{schedule}":
+    post:
+      tags:
+        - Cancellation
+      parameters:
+        - in: path
+          name: schedule
+          required: true
+          schema:
+            type: integer
+          description: Schedule ID
+      responses:
+        "204":
+          description: OK
   "/cancellations/{booking}":
     post:
       tags:
@@ -5871,6 +5864,102 @@ paths:
         - name: id
           in: path
           description: Service ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: OK
+  /admin/schedules:
+    get:
+      tags:
+        - Admin Schedules
+      parameters:
+        - name: page
+          in: query
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: limit
+          in: query
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: x-page
+          in: header
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: x-limit
+          in: header
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/schemas/Schedule"
+  "/admin/schedules/{id}":
+    get:
+      tags:
+        - Admin Schedules
+      parameters:
+        - name: id
+          in: path
+          description: Schedule ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/schemas/Schedule"
+    delete:
+      tags:
+        - Admin Schedules
+      parameters:
+        - $ref: "#/paths/~1admin~1schedules~1%7Bid%7D/get/parameters/0"
+      responses:
+        "204":
+          description: OK
+  "/admin/schedules/{id}/publish":
+    post:
+      tags:
+        - Admin Schedules
+      parameters:
+        - name: id
+          in: path
+          description: Schedule ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: OK
+  "/admin/schedules/{id}/unpublish":
+    post:
+      tags:
+        - Admin Schedules
+      parameters:
+        - name: id
+          in: path
+          description: Schedule ID
           required: true
           schema:
             type: integer

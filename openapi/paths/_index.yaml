@@ -134,6 +134,8 @@
 # Cancellation
 /cancellations:
   $ref: "./Cancellation.yaml#/cancellations"
+/cancellations/schedule/{schedule}:
+  $ref: "./Cancellation.yaml#/cancellations~1schedule~1{schedule}"
 /cancellations/{booking}:
   $ref: "./Cancellation.yaml#/cancellations~1{booking}"
 # Calendar
@@ -224,3 +226,13 @@
   $ref: "./AdminService.yaml#/services~1{id}~1publish"
 /admin/services/{id}/unpublish:
   $ref: "./AdminService.yaml#/services~1{id}~1unpublish"
+
+# Schedules
+/admin/schedules:
+  $ref: "./AdminSchedule.yaml#/schedules"
+/admin/schedules/{id}:
+  $ref: "./AdminSchedule.yaml#/schedules~1{id}"
+/admin/schedules/{id}/publish:
+  $ref: "./AdminSchedule.yaml#/schedules~1{id}~1publish"
+/admin/schedules/{id}/unpublish:
+  $ref: "./AdminSchedule.yaml#/schedules~1{id}~1unpublish"

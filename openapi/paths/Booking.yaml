@@ -12,6 +12,21 @@ bookings:
                 items:
                   $ref: '../schemas/Booking.yaml'
 
+bookings/schedule/{schedule}/reschedule:
+  post:
+    tags:
+      - Booking
+    parameters:
+      - in: path
+        name: schedule
+        required: true
+        schema:
+          type: integer
+        description: Schedule ID
+    responses:
+      '204':
+        description: OK
+
 bookings/{id}/reschedule:
   post:
     tags:
@@ -19,20 +34,8 @@ bookings/{id}/reschedule:
     parameters:
       - $ref: "#/parameters/id"
     responses:
-      '200':
+      '204':
         description: OK
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                $ref: '../schemas/Booking.yaml'
-      '422':
-        description: Validation errors
-        content:
-          application/json:
-            schema:
-              $ref: '../schemas/422/Booking.yaml'
 
 bookings/reschedule:
   post:
