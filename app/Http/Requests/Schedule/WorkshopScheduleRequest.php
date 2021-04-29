@@ -41,7 +41,7 @@ class WorkshopScheduleRequest extends GenericSchedule
             'prices.*.name' => 'required',
             'prices.*.cost' => 'nullable|required_if:prices.*.is_free,false',
             'prices.*.is_free' => 'required',
-            'prices.*.available_till' => 'before:end_date',
+            'prices.*.available_till' => 'nullable|before:end_date',
 
             'deposit_amount' => 'nullable|required_if:deposit_accepted,true',
             'deposit_final_date' => 'nullable|required_if:deposit_accepted,true',
