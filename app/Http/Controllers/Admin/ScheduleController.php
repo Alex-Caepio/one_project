@@ -16,7 +16,7 @@ use App\Http\Requests\Request;
 class ScheduleController extends Controller {
 
     public function index(Request $request) {
-        $scheduleQuery = Schedule::query();
+        $scheduleQuery = Schedule::query()->whereHas('service');
         $scheduleQuery->where(function($q) {
             $q->where('schedules.start_date', '>=', now())->orWhereNull('schedules.start_date');
         });
