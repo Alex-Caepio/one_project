@@ -27,7 +27,7 @@ class ScheduleObserver {
 
     public function deleted(Schedule $schedule) {
         if ($schedule->is_published) {
-            event(new ServiceScheduleCancelled($schedule, Auth::user()));
+            event(new ServiceScheduleCancelled($schedule));
         }
     }
 
