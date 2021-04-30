@@ -90,7 +90,7 @@ Route::get('/practitioners/{user}', [UserController::class, 'show']);
 
 Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
 
-    Route::post('/gcal/auth', [GoogleCalendarIntegrationController::class, 'auth']);
+    Route::post('/gcal/auth', [GoogleCalendarIntegrationController::class, 'auth'])->name('gcal-auth');
     Route::get('/gcal/events', [GoogleCalendarIntegrationController::class, 'getEventList']);
     Route::post('/gcal/event', [GoogleCalendarIntegrationController::class, 'addEvent']);
     Route::get('/gcal/settings', [GoogleCalendarIntegrationController::class, 'getSettings']);
