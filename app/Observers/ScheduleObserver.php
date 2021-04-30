@@ -18,9 +18,9 @@ class ScheduleObserver {
     public function saved(Schedule $schedule): void {
         if ($schedule->isDirty('is_published')) {
             if (!$schedule->is_published && !$schedule->wasRecentlyCreated) {
-                event(new ServiceScheduleCancelled($schedule, Auth::user()));
+                event(new ServiceScheduleCancelled($schedule));
             } elseif ($schedule->is_published) {
-                event(new ServiceScheduleLive($schedule, Auth::user()));
+                event(new ServiceScheduleLive($schedule));
             }
         }
     }

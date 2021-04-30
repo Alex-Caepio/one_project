@@ -18,10 +18,10 @@ class ServiceScheduleLive {
     public Schedule $schedule;
     public ?string $template;
 
-    public function __construct(Schedule $schedule, User $user) {
+    public function __construct(Schedule $schedule) {
         $this->schedule = $schedule;
         $this->service = $schedule->service;
-        $this->user = $user;
+        $this->user = $schedule->service->user;
         $this->template = $this->getTemplate($schedule);
     }
 

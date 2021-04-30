@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Actions\Schedule\CreateRescheduleRequestsOnScheduleUpdate;
 use App\Actions\Schedule\GetAvailableAppointmentTimeOnDate;
 use App\Actions\Schedule\HandlePricesUpdate;
+use App\Actions\Schedule\ScheduleStore;
+use App\Actions\Schedule\ScheduleUpdate;
 use App\Events\ServiceScheduleCancelled;
 use App\Events\ServiceScheduleLive;
 use App\Http\Requests\Schedule\PurchaseScheduleRequest;
@@ -64,76 +66,18 @@ class ScheduleController extends Controller
             ->toArray();
     }
 
-    public function store(CreateScheduleInterface $request, Service $service, StripeClient $stripe)
+    public function store(CreateScheduleInterface $request, Service $service)
     {
-        $data               = $request->all();
-        $data['service_id'] = $service->id;
-        $schedule           = Schedule::create($data);
-
-        if ($request->filled('media_files')) {
-            $schedule->media_files()->createMany($request->get('media_files'));
-        }
-        if ($request->filled('prices')) {
-
-            $prices = $data['prices'];
-            foreach  ($prices as $key => $price ){
-                $stripePrice = $stripe->prices->create([
-                    'unit_amount' => $prices[$key]['cost'],
-                    'currency' => config('app.platform_currency'),
-                    'product' => $service->stripe_id,
-                ]);
-
-                $prices[$key]['stripe_id'] = $stripePrice->id;
-            }
-            $schedule->prices()->createMany($prices);
-        }
-        if ($request->filled('schedule_availabilities')) {
-            $schedule->schedule_availabilities()->createMany($request->get('schedule_availabilities'));
-        }
-        if ($request->filled('schedule_unavailabilities')) {
-            $schedule->schedule_unavailabilities()->createMany($request->get('schedule_unavailabilities'));
-        }
-        if ($request->filled('schedule_files')) {
-            $schedule->schedule_files()->createMany($request->get('schedule_files'));
-        }
-        if ($request->filled('schedule_hidden_files')) {
-            $schedule->schedule_hidden_files()->createMany($request->get('schedule_hidden_files'));
-        }
+        $schedule = run_action(ScheduleStore::class, $request, $service);
 
         return fractal($schedule, new ScheduleTransformer())
             ->parseIncludes($request->getIncludes())
             ->toArray();
     }
 
-    public function update(GenericUpdateSchedule $request, Schedule $schedule, StripeClient $stripe)
+    public function update(GenericUpdateSchedule $request, Schedule $schedule)
     {
-        $schedule->update($request->all());
-
-        if ($request->has('media_files')) {
-            $schedule->media_files()->delete();
-            $schedule->media_files()->createMany($request->get('media_files'));
-        }
-        if ($request->has('prices')) {
-            run_action(HandlePricesUpdate::class, $request->prices, $schedule);
-        }
-        if ($request->filled('schedule_availabilities')) {
-            $schedule->schedule_availabilities()->delete();
-            $schedule->schedule_availabilities()->createMany($request->get('schedule_availabilities'));
-        }
-        if ($request->filled('schedule_unavailabilities')) {
-            $schedule->schedule_unavailabilities()->delete();
-            $schedule->schedule_unavailabilities()->createMany($request->get('schedule_unavailabilities'));
-        }
-        if ($request->has('schedule_files')) {
-            $schedule->schedule_files()->delete();
-            $schedule->schedule_files()->createMany($request->get('schedule_files'));
-        }
-        if ($request->has('schedule_hidden_files')) {
-            $schedule->schedule_hidden_files()->delete();
-            $schedule->schedule_hidden_files()->createMany($request->get('schedule_hidden_files'));
-        }
-
-        run_action(CreateRescheduleRequestsOnScheduleUpdate::class, $request, $schedule);
+        $schedule = run_action(ScheduleUpdate::class, $request, $schedule);
 
         return fractal($schedule, new ScheduleTransformer())
             ->parseIncludes($request->getIncludes())

@@ -4,21 +4,39 @@
 namespace App\Actions\Schedule;
 
 
-use App\Http\Requests\Request;
+use App\Http\Requests\Schedule\CreateScheduleInterface;
 use App\Models\Schedule;
 use App\Models\Service;
+use Stripe\StripeClient;
 
-class ScheduleStore {
-    public function execute(Request $request, Service $service) {
-        $schedule = new Schedule();
-        $schedule->forceFill([
-                                 'title'      => $request->get('title'),
-                                 'service_id' => $service->id,
-                                 'start_date' => $request->get('start_date'),
-                                 'end_date'   => $request->get('end_date'),
-                                 'cost'       => $request->get('cost'),
-                             ]);
-        $schedule->save();
+class ScheduleStore extends ScheduleSave {
+
+    public function execute(CreateScheduleInterface $request, Service $service): Schedule {
+        $data = $request->all();
+        $data['service_id'] = $service->id;
+        $schedule = Schedule::create($data);
+        $this->savePrices($schedule, $service, $request);
+        $this->saveRelations($request, $schedule);
         return $schedule;
     }
+
+    private function savePrices(Schedule $schedule, Service $service, CreateScheduleInterface $request): void {
+        if ($request->filled('prices')) {
+            $stripe = app(StripeClient::class);
+            $data = $request->all();
+            $prices = $data['prices'];
+            foreach ($prices as $key => $price) {
+                $stripePrice = $stripe->prices->create([
+                                                           'unit_amount' => $prices[$key]['cost'],
+                                                           'currency'    => config('app.platform_currency'),
+                                                           'product'     => $service->stripe_id,
+                                                       ]);
+
+                $prices[$key]['stripe_id'] = $stripePrice->id;
+            }
+            $schedule->prices()->createMany($prices);
+        }
+    }
+
+
 }

@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Actions\Schedule\ScheduleStore;
+use App\Actions\Schedule\ScheduleUpdate;
 use App\Events\ServiceListingLive;
 use App\Filters\ServiceFiltrator;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\UpdateServiceRequest;
+use App\Http\Requests\Schedule\CreateScheduleInterface;
+use App\Http\Requests\Schedule\GenericUpdateSchedule;
 use App\Http\Requests\Services\ServicePublishRequest;
 use App\Models\Schedule;
 use App\Models\Service;
@@ -31,13 +35,34 @@ class ScheduleController extends Controller {
         return response($fractal)->withPaginationHeaders($paginator);
     }
 
-
     public function show(Schedule $schedule, Request $request) {
         return fractal($schedule, new ScheduleTransformer())->parseIncludes($request->getIncludes())->toArray();
     }
 
     public function destroy(Schedule $schedule) {
         $schedule->delete();
+        return response(null, 204);
+    }
+
+    public function update(GenericUpdateSchedule $request, Schedule $schedule) {
+        $schedule = run_action(ScheduleUpdate::class, $request, $schedule);
+        return fractal($schedule, new ScheduleTransformer())->parseIncludes($request->getIncludes())->toArray();
+    }
+
+    public function store(CreateScheduleInterface $request, Service $service) {
+        $schedule = run_action(ScheduleStore::class, $request, $service);
+        return fractal($schedule, new ScheduleTransformer())->parseIncludes($request->getIncludes())->toArray();
+    }
+
+    public function publish(Request $request, Schedule $schedule) {
+        $schedule->is_published = true;
+        $schedule->save();
+        return response(null, 204);
+    }
+
+    public function unpublish(Request $request, Schedule $schedule) {
+        $schedule->is_published = false;
+        $schedule->save();
         return response(null, 204);
     }
 
