@@ -82,6 +82,7 @@ Route::get('/focus-areas/{focusArea}', [FocusAreaController::class, 'show']);
 
 Route::get('practitioners', [PractitionerController::class, 'index']);
 Route::get('users/{slug}', [AuthController::class, 'show']);
+
 Route::get('/services/{service}/schedules', [ScheduleController::class, 'index']);
 
 Route::get('/search', [SearchController::class, 'index']);
@@ -133,6 +134,7 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
         Route::delete('services/{service}', [ServiceController::class, 'destroy']);
         Route::post('/services/{service}/copy', [ServiceController::class, 'copy']);
 
+        Route::get('/services/{service}/practitioner-schedules', [ScheduleController::class, 'ownerScheduleList']);
     });
 
     Route::post('/articles/{article}/favourite', [ArticleController::class, 'storeFavorite']);
