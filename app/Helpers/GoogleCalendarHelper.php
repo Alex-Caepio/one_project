@@ -18,8 +18,6 @@ class GoogleCalendarHelper {
     private ?GoogleCalendar $_calendar = null;
 
     public function __construct(?GoogleCalendar $calendar) {
-        Log::info('Auth File Path: '.config('google-calendar.auth_profiles.service_account.credentials_json'));
-        Log::info('Redirect URL: '.config('google-calendar.calendar_redirect_uri'));
         $this->_client = new \Google_Client();
         $this->_client->setApplicationName(config('app.platform_name'));
         $this->_client->setAuthConfig(config('google-calendar.auth_profiles.service_account.credentials_json'));
@@ -31,7 +29,6 @@ class GoogleCalendarHelper {
         if ($calendar instanceof GoogleCalendar) {
             $this->setUserCalendar($calendar);
         }
-        Log::info('Redirect URI in CLIENT: '.$this->_client->getRedirectUri());
         $this->setAccessToken();
     }
 
@@ -47,8 +44,9 @@ class GoogleCalendarHelper {
                                            'access_token'  => $this->_calendar->access_token,
                                            'refresh_token' => $this->_calendar->refresh_token
                                        ]);
-
+        
         if ($this->_client->isAccessTokenExpired()) {
+
             if ($this->_client->getRefreshToken()) {
                 $this->_client->fetchAccessTokenWithRefreshToken($this->_client->getRefreshToken());
                 $this->updateUserTokens($this->_client->getAccessToken());
@@ -66,6 +64,7 @@ class GoogleCalendarHelper {
 
     public function updateUserTokens(array $accessToken): bool {
         $logData = array_merge(['user_id' => $this->_calendar->user_id], $accessToken);
+        Log::info($accessToken);
         if (isset($accessToken['access_token'])) {
             $this->_calendar->access_token = $accessToken['access_token'];
             $this->_calendar->refresh_token = $accessToken['refresh_token'] ?? null;
