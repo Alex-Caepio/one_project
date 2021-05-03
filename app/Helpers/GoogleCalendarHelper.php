@@ -27,7 +27,7 @@ class GoogleCalendarHelper {
         $this->_client->setIncludeGrantedScopes(true);
         $this->_client->setApprovalPrompt('force');
         $this->_client->addScope(\Google_Service_Calendar::CALENDAR);
-        $this->_client->setRedirectUri(config('google-calendar.calendar_redirect_uri'));
+        //$this->_client->setRedirectUri(config('google-calendar.calendar_redirect_uri'));
         if ($calendar instanceof GoogleCalendar) {
             $this->setUserCalendar($calendar);
         }
