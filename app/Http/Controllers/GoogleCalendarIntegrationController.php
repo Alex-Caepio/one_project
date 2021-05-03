@@ -15,6 +15,7 @@ use App\Transformers\GoogleCalendarTransformer;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 
 class GoogleCalendarIntegrationController extends Controller {
@@ -56,7 +57,10 @@ class GoogleCalendarIntegrationController extends Controller {
         $user = Auth::user();
         $calendar = !$user->calendar ? new GoogleCalendar(['user_id' => $user->id]) : $user->calendar;
         $gcHelper = new GoogleCalendarHelper($calendar);
-        if ($gcHelper->updateUserTokens($gcHelper->getTokenByAuthCode($request->get('code')))) {
+        $tokenData = $gcHelper->getTokenByAuthCode($request->get('code'));
+        Log::info('TOKEN DATA^: ');
+        Log::info($tokenData);
+        if ($gcHelper->updateUserTokens($tokenData)) {
             return response('', 204);
         }
         abort(500, 'Google authorization failed');

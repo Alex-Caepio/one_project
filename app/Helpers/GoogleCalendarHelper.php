@@ -50,6 +50,8 @@ class GoogleCalendarHelper {
             $refreshToken = $this->_client->getRefreshToken();
             if ($refreshToken !== null) {
                 $newCredentials = $this->_client->fetchAccessTokenWithRefreshToken($refreshToken);
+                Log::info('NEW CREDENTIALS: ');
+                Log::info($newCredentials);
                 $this->updateUserTokens($newCredentials);
                 return;
             }
