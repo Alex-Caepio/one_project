@@ -67,11 +67,12 @@ class GoogleCalendarHelper {
 
     public function updateUserTokens(array $accessToken): bool {
         $logData = array_merge(['user_id' => $this->_calendar->user_id], $accessToken);
+        Log::info('Access Token from args: ');
         Log::info($accessToken);
         if (isset($accessToken['access_token'])) {
             $this->_calendar->access_token = $accessToken['access_token'];
             $this->_calendar->refresh_token = $accessToken['refresh_token'] ?? null;
-            $this->_calendar->expired_at = Carbon::now()->addSeconds($accessToken['expires_in']);
+            $this->_calendar->expired_at = isset($accessToken['expires_in']) ? Carbon::now()->addSeconds($accessToken['expires_in']) : null;
             $this->_calendar->save();
             Log::channel('google_authorisation_success')->info('Authorisation Token Success:', $logData);
             return true;
