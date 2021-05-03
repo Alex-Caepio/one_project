@@ -18,6 +18,8 @@ class GoogleCalendarHelper {
     private ?GoogleCalendar $_calendar = null;
 
     public function __construct(?GoogleCalendar $calendar) {
+        Log::info('Auth File Path: '.config('google-calendar.auth_profiles.service_account.credentials_json'));
+        Log::info('Redirect URL: '.config('google-calendar.calendar_redirect_uri'));
         $this->_client = new \Google_Client();
         $this->_client->setApplicationName(config('app.platform_name'));
         $this->_client->setAuthConfig(config('google-calendar.auth_profiles.service_account.credentials_json'));
