@@ -3,7 +3,7 @@
 return [
 
     'default_auth_profile'  => env('GOOGLE_CALENDAR_AUTH_PROFILE', 'service_account'),
-    'calendar_redirect_uri' => env('PLATFORM_CALENDAR_REDIRECT'),
+    'calendar_redirect_uri' => env('PLATFORM_CALENDAR_REDIRECT', 'https://dev-oneness.andersenlab.com/account/calendar-settings'),
     'auth_profiles'         => [
 
         /*
