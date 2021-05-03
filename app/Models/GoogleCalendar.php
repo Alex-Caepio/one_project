@@ -36,4 +36,13 @@ class GoogleCalendar extends Model
     public function unavailabilities(): HasMany {
         return $this->hasMany(UserUnavailabilities::class, 'practitioner_id', 'user_id');
     }
+
+    public function cleanupState(): void {
+        $this->access_token = null;
+        $this->refresh_token = null;
+        $this->expired_at = null;
+    }
+
+
+
 }
