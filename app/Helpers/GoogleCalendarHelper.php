@@ -20,12 +20,12 @@ class GoogleCalendarHelper {
     public function __construct(?GoogleCalendar $calendar) {
         $this->_client = new \Google_Client();
         $this->_client->setApplicationName(config('app.platform_name'));
-        $this->_client->setAuthConfig(storage_path('app/google-calendar/service-account-credentials.json'));
+        $this->_client->setAuthConfig(config('google-calendar.auth_profiles.service_account.credentials_json'));
         $this->_client->setAccessType("offline");
         $this->_client->setIncludeGrantedScopes(true);
         $this->_client->setApprovalPrompt('force');
         $this->_client->addScope(\Google_Service_Calendar::CALENDAR);
-        $this->_client->setRedirectUri(Url::to('/'));
+        $this->_client->setRedirectUri(config('google-calendar.calendar_redirect_uri'));
         if ($calendar instanceof GoogleCalendar) {
             $this->setUserCalendar($calendar);
         }
