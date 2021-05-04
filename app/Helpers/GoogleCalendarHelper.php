@@ -24,7 +24,7 @@ class GoogleCalendarHelper {
         $this->_client->setAccessType('offline');
         $this->_client->setIncludeGrantedScopes(true);
         $this->_client->setApprovalPrompt('force');
-        $this->_client->addScope(\Google_Service_Calendar::CALENDAR);
+        $this->_client->setScopes([\Google_Service_Calendar::CALENDAR,\Google_Service_Calendar::CALENDAR_EVENTS]);
         $this->_client->setRedirectUri(config('google-calendar.calendar_redirect_uri'));
         if ($calendar instanceof GoogleCalendar) {
             $this->setUserCalendar($calendar);
@@ -49,14 +49,14 @@ class GoogleCalendarHelper {
                                            'created'       => $this->_calendar->access_created_at,
                                        ]);
 
-        if ($this->_client->isAccessTokenExpired()) {
+        if ($this->_calendar->refresh_token && $this->_client->isAccessTokenExpired()) {
             Log::info('Google Authorization Token Expired');
             $refreshToken = $this->_client->getRefreshToken();
             if ($refreshToken !== null) {
                 $newCredentials = $this->_client->fetchAccessTokenWithRefreshToken($refreshToken);
                 Log::info('NEW CREDENTIALS: ');
                 Log::info($newCredentials);
-                $this->updateUserTokens($newCredentials);
+                $this->updateUserToken($newCredentials);
                 return;
             }
             Log::channel('google_authorisation_failed')->info('Unable to refresh token:', [
@@ -69,16 +69,13 @@ class GoogleCalendarHelper {
         }
     }
 
-    public function updateUserTokens(array $accessToken): bool {
+    public function updateUserToken(array $accessToken): bool {
         $logData = array_merge(['user_id' => $this->_calendar->user_id], $accessToken);
         Log::info('Access Token from args: ');
         Log::info($accessToken);
         if (isset($accessToken['access_token'])) {
             $this->_calendar->token_info = json_encode($accessToken);
             $this->_calendar->access_token = $accessToken['access_token'];
-            if (isset($accessToken['refresh_token'])) {
-                $this->_calendar->refresh_token = $accessToken['refresh_token'];
-            }
             $this->_calendar->expired_at =
                 isset($accessToken['expires_in']) ? Carbon::now()->addSeconds($accessToken['expires_in']) : null;
             $this->_calendar->expires_in = $accessToken['expires_in'] ?? null;
@@ -103,7 +100,11 @@ class GoogleCalendarHelper {
             $this->revokeTokens();
             $this->_calendar->token_info = json_encode($accessToken);
             $this->_calendar->access_token = $accessToken['access_token'];
-            $this->_calendar->refresh_token = $accessToken['refresh_token'];
+            if (isset($accessToken['refresh_token'])) {
+                $this->_calendar->refresh_token = $accessToken['refresh_token'];
+            } else {
+                Log::channel('google_authorisation_failed')->info('Refresh token was not found:', $logData);
+            }
             $this->_calendar->expired_at =
                 isset($accessToken['expires_in']) ? Carbon::now()->addSeconds($accessToken['expires_in']) : null;
             $this->_calendar->expires_in = $accessToken['expires_in'] ?? null;
@@ -113,7 +114,7 @@ class GoogleCalendarHelper {
             Log::channel('google_authorisation_success')->info('Authorisation Token Success:', $logData);
             return true;
         }
-        Log::channel('google_authorisation_failed')->info('Unable to update access token:', $logData);
+        Log::channel('google_authorisation_failed')->info('Unable to store new tokens:', $logData);
         return false;
     }
 
@@ -123,26 +124,19 @@ class GoogleCalendarHelper {
     }
 
     public function revokeTokens(): void {
-        $logData = [
-            'user_id'       => $this->_calendar->user_id,
-            'refresh_token' => $this->_calendar->refresh_token,
-            'access_token'  => $this->_calendar->access_token
-        ];
         if ($this->_calendar->access_token) {
+            $logData = [
+                'user_id'       => $this->_calendar->user_id,
+                'refresh_token' => $this->_calendar->refresh_token,
+                'access_token'  => $this->_calendar->access_token
+            ];
             if (!$this->_client->revokeToken($this->_calendar->access_token)) {
                 Log::channel('google_authorisation_failed')->info('Unable to revoke access token:', $logData);
             } else {
                 Log::channel('google_authorisation_success')->info('Successfully revoke access token:', $logData);
             }
+            $this->_calendar->cleanupState();
         }
-        if ($this->_calendar->refresh_token) {
-            if (!$this->_client->revokeToken($this->_calendar->refresh_token)) {
-                Log::channel('google_authorisation_failed')->info('Unable to revoke refresh token:', $logData);
-            } else {
-                Log::channel('google_authorisation_success')->info('Successfully revoke refresh token:', $logData);
-            }
-        }
-        $this->_calendar->cleanupState();
     }
 
 
