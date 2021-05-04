@@ -57,7 +57,7 @@ class GoogleCalendarIntegrationController extends Controller {
         $user = Auth::user();
         $calendar = !$user->calendar ? new GoogleCalendar(['user_id' => $user->id]) : $user->calendar;
 
-        $gcHelper = new GoogleCalendarHelper();
+        $gcHelper = new GoogleCalendarHelper(null);
         $tokenData = $gcHelper->getTokenByAuthCode($request->get('code'));
 
         $gcHelper->setUserCalendar($calendar);
