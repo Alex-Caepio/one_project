@@ -3370,6 +3370,8 @@ paths:
                       type: string
                     timezone_id:
                       type: integer
+                    is_connected:
+                      type: boolean
                     created_at:
                       type: string
                       format: date-time

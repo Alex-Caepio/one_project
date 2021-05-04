@@ -6,8 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class GoogleCalendar extends Model
-{
+class GoogleCalendar extends Model {
     use HasFactory;
 
     public $table = 'user_google_calendar';
@@ -22,7 +21,10 @@ class GoogleCalendar extends Model
     protected $hidden = [
         'access_token',
         'refresh_token',
+        'token_info',
         'expired_at',
+        'expires_in',
+        'access_created_at',
     ];
 
     public function user() {
@@ -41,8 +43,10 @@ class GoogleCalendar extends Model
         $this->access_token = null;
         $this->refresh_token = null;
         $this->expired_at = null;
+        $this->token_info = null;
+        $this->is_connected = false;
+        $this->save();
     }
-
 
 
 }

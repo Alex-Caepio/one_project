@@ -21,15 +21,16 @@ class GoogleCalendarHelper {
         $this->_client = new \Google_Client();
         $this->_client->setApplicationName(config('app.platform_name'));
         $this->_client->setAuthConfig(config('google-calendar.auth_profiles.service_account.credentials_json'));
-        $this->_client->setAccessType("offline");
+        $this->_client->setAccessType('offline');
         $this->_client->setIncludeGrantedScopes(true);
         $this->_client->setApprovalPrompt('force');
         $this->_client->addScope(\Google_Service_Calendar::CALENDAR);
         $this->_client->setRedirectUri(config('google-calendar.calendar_redirect_uri'));
         if ($calendar instanceof GoogleCalendar) {
             $this->setUserCalendar($calendar);
+            $this->setAccessToken();
         }
-        $this->setAccessToken();
+
     }
 
     public function setUserCalendar(GoogleCalendar $calendar): void {
@@ -37,12 +38,15 @@ class GoogleCalendarHelper {
     }
 
     public function setAccessToken(): void {
-        if (!$this->_calendar->access_token) {
-            return;
+        if (!$this->_calendar instanceof GoogleCalendar || !$this->_calendar->is_connected) {
+            abort(500, 'Calendar was not connected');
         }
+
         $this->_client->setAccessToken([
                                            'access_token'  => $this->_calendar->access_token,
-                                           'refresh_token' => $this->_calendar->refresh_token
+                                           'refresh_token' => $this->_calendar->refresh_token,
+                                           'expires_in'    => $this->_calendar->expires_in,
+                                           'created'       => $this->_calendar->access_created_at,
                                        ]);
 
         if ($this->_client->isAccessTokenExpired()) {
@@ -70,9 +74,41 @@ class GoogleCalendarHelper {
         Log::info('Access Token from args: ');
         Log::info($accessToken);
         if (isset($accessToken['access_token'])) {
+            $this->_calendar->token_info = json_encode($accessToken);
             $this->_calendar->access_token = $accessToken['access_token'];
-            $this->_calendar->refresh_token = $accessToken['refresh_token'] ?? null;
-            $this->_calendar->expired_at = isset($accessToken['expires_in']) ? Carbon::now()->addSeconds($accessToken['expires_in']) : null;
+            if (isset($accessToken['refresh_token'])) {
+                $this->_calendar->refresh_token = $accessToken['refresh_token'];
+            }
+            $this->_calendar->expired_at =
+                isset($accessToken['expires_in']) ? Carbon::now()->addSeconds($accessToken['expires_in']) : null;
+            $this->_calendar->expires_in = $accessToken['expires_in'] ?? null;
+            $this->_calendar->access_created_at = $accessToken['created'] ?? null;
+            $this->_calendar->save();
+            Log::channel('google_authorisation_success')->info('Authorisation Token Success:', $logData);
+            return true;
+        }
+        Log::channel('google_authorisation_failed')->info('Unable to update access token:', $logData);
+        return false;
+    }
+
+
+    public function storeNewUserTokens(array $accessToken): bool {
+        if (!$this->_calendar) {
+            abort(500, 'Calendar was not defined');
+        }
+        $logData = array_merge(['user_id' => $this->_calendar->user_id], $accessToken);
+        Log::info('Store user tokens: ');
+        Log::info($accessToken);
+        if (isset($accessToken['access_token'])) {
+            $this->revokeTokens();
+            $this->_calendar->token_info = json_encode($accessToken);
+            $this->_calendar->access_token = $accessToken['access_token'];
+            $this->_calendar->refresh_token = $accessToken['refresh_token'];
+            $this->_calendar->expired_at =
+                isset($accessToken['expires_in']) ? Carbon::now()->addSeconds($accessToken['expires_in']) : null;
+            $this->_calendar->expires_in = $accessToken['expires_in'] ?? null;
+            $this->_calendar->access_created_at = $accessToken['created'] ?? null;
+            $this->_calendar->is_connected = true;
             $this->_calendar->save();
             Log::channel('google_authorisation_success')->info('Authorisation Token Success:', $logData);
             return true;
@@ -82,8 +118,33 @@ class GoogleCalendarHelper {
     }
 
     public function getTokenByAuthCode(string $code): array {
+
         return $this->_client->fetchAccessTokenWithAuthCode($code);
     }
+
+    public function revokeTokens(): void {
+        $logData = [
+            'user_id'       => $this->_calendar->user_id,
+            'refresh_token' => $this->_calendar->refresh_token,
+            'access_token'  => $this->_calendar->access_token
+        ];
+        if ($this->_calendar->access_token) {
+            if (!$this->_client->revokeToken($this->_calendar->access_token)) {
+                Log::channel('google_authorisation_failed')->info('Unable to revoke access token:', $logData);
+            } else {
+                Log::channel('google_authorisation_success')->info('Successfully revoke access token:', $logData);
+            }
+        }
+        if ($this->_calendar->refresh_token) {
+            if (!$this->_client->revokeToken($this->_calendar->refresh_token)) {
+                Log::channel('google_authorisation_failed')->info('Unable to revoke refresh token:', $logData);
+            } else {
+                Log::channel('google_authorisation_success')->info('Successfully revoke refresh token:', $logData);
+            }
+        }
+        $this->_calendar->cleanupState();
+    }
+
 
     public function getService(): \Google_Service_Calendar {
         if (!$this->_service) {
@@ -182,11 +243,12 @@ class GoogleCalendarHelper {
         $gEvent = new \Google_Service_Calendar_Event();
         $gEvent->setStart($googleStartTime);
         $gEvent->setEnd($googleEndTime);
-        $gEvent->setSummary($event->service->title.' - '.$event->schedule->title);
-        $gEvent->setLocation($event->schedule->venue_address.', '.$event->schedule->city.', '.$event->schedule->country.', '.$event->schedule->post_code);
+        $gEvent->setSummary($event->service->title . ' - ' . $event->schedule->title);
+        $gEvent->setLocation($event->schedule->venue_address . ', ' . $event->schedule->city . ', ' .
+                             $event->schedule->country . ', ' . $event->schedule->post_code);
 
         $attendee = new \Google_Service_Calendar_EventAttendee();
-        $attendee->setDisplayName($event->client->first_name.' '.$event->client->last_name);
+        $attendee->setDisplayName($event->client->first_name . ' ' . $event->client->last_name);
         $attendee->setEmail($event->client->email);
 
         $gEvent->setAttendees([$attendee]);
