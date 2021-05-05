@@ -6,6 +6,7 @@ namespace App\Helpers;
 
 use App\Events\AppointmentBooked;
 use App\Models\GoogleCalendar;
+use App\Models\Timezone;
 use Carbon\Carbon;
 use Google_Service_Calendar_EventDateTime;
 use Illuminate\Support\Facades\Log;
@@ -193,7 +194,9 @@ class GoogleCalendarHelper {
     private function createNewCalendar(): \Google_Service_Calendar_Calendar {
         $newCalendar = new \Google_Service_Calendar_Calendar();
         $newCalendar->setSummary(config('app.platform_calendar'));
-        $newCalendar->setTimeZone($this->_calendar->timezone->getGMTCalendarValue());
+        if ($this->_calendar->timezone instanceof Timezone) {
+            $newCalendar->setTimeZone($this->_calendar->timezone->getGMTCalendarValue());
+        }
         $result = $this->getService()->calendars->insert($newCalendar);
         return $result->getId();
     }
