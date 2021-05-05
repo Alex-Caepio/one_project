@@ -255,6 +255,34 @@ services/{id}/unpublish:
       '204':
         description: OK
 
+services/{id}/practitioner-schedules:
+  get:
+    tags:
+      - Service
+    parameters:
+      - $ref: "#/parameters/id"
+      - name: with
+        in: query
+        description: Include additional objects in response
+        required: false
+        schema:
+          type: string
+          example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles,media_images,media_videos,media_files,last_published
+      - name: x-with
+        in: header
+        description: Include additional objects in response
+        required: false
+        schema:
+          type: string
+          example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles,media_images,media_videos,media_files,last_published
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/Service.yaml"
+
 parameters:
   id:
     name: id

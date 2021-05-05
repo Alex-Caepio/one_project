@@ -51,6 +51,8 @@
   $ref: "./Service.yaml#/services~1practitioner"
 /services/practitioner/{id}:
   $ref: "./Service.yaml#/services~1practitioner~1{id}"
+/services/{id}/practitioner-schedules:
+  $ref: "./Service.yaml#/services~1{id}~1practitioner-schedules"
 
 #service types
 /service-types:
@@ -115,6 +117,7 @@
   $ref: "./Location.yaml#/locations"
 /locations/list:
   $ref: "./Location.yaml#/locations~1list"
+
 #schedules
 /services/{serviceid}/schedules:
   $ref: "./Schedules.yaml#/services~1{serviceid}~1schedules"
@@ -128,6 +131,9 @@
   $ref: "./Schedules.yaml#/schedules~1{id}~1freeze"
 /schedules/{id}/availabilities:
   $ref: "./Schedules.yaml#/schedules~1{id}~1availabilities"
+/schedules/{id}/reschedule-available:
+  $ref: "./Schedules.yaml#/schedules~1{id}~1reschedule-available"
+
 #purchases
 /purchases:
   $ref: "./Purchase.yaml#/purchases"

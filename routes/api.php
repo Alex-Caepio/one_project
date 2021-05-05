@@ -93,7 +93,6 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
 
     Route::post('/gcal/auth', [GoogleCalendarIntegrationController::class, 'auth'])->name('gcal-auth');
     Route::get('/gcal/events', [GoogleCalendarIntegrationController::class, 'getEventList']);
-    Route::post('/gcal/event', [GoogleCalendarIntegrationController::class, 'addEvent']);
     Route::get('/gcal/settings', [GoogleCalendarIntegrationController::class, 'getSettings']);
     Route::post('/gcal/settings', [GoogleCalendarIntegrationController::class, 'updateSettings']);
 
@@ -170,6 +169,7 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::get('/prices/{price}/appointments-dates/{date}', [ScheduleController::class, 'appointmentsOnDate']);
     Route::post('/schedules/{schedule}/copy', [ScheduleController::class, 'copy']);
     Route::get('/schedules/{schedule}/available-instalments', [ScheduleController::class, 'availableInstalments']);
+    Route::get('/schedules/{schedule}/reschedule-available', [ScheduleController::class, 'rescheduleScheduleList']);
 
     Route::put('/price/{price}', [PriceController::class, 'update']);
     Route::delete('/price/{price}', [PriceController::class, 'destroy']);

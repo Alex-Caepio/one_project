@@ -2307,6 +2307,38 @@ paths:
           description: OK
   /services/practitioner: {}
   "/services/practitioner/{id}": {}
+  "/services/{id}/practitioner-schedules":
+    get:
+      tags:
+        - Service
+      parameters:
+        - name: id
+          in: path
+          description: Service ID
+          required: true
+          schema:
+            type: integer
+        - name: with
+          in: query
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles,media_images,media_videos,media_files,last_published
+        - name: x-with
+          in: header
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles,media_images,media_videos,media_files,last_published
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/schemas/Service"
   /service-types:
     get:
       tags:
@@ -3144,6 +3176,26 @@ paths:
                     - amount_left
                     - amount_bought
                     - amount_freezed
+  "/schedules/{id}/reschedule-available":
+    get:
+      tags:
+        - Schedules
+      parameters:
+        - name: id
+          in: path
+          description: Schedule ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/schemas/Schedule"
   /purchases:
     get:
       tags:

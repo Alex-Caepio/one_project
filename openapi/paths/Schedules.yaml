@@ -133,6 +133,21 @@ schedules/{id}/availabilities:
                 - amount_bought
                 - amount_freezed
 
+schedules/{id}/reschedule-available:
+  get:
+    tags:
+      - Schedules
+    parameters:
+      - $ref: "#/parameters/id"
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../schemas/Schedule.yaml'
 
 parameters:
   id:

@@ -12,12 +12,14 @@ use App\Events\ServiceScheduleLive;
 use App\Http\Requests\Schedule\PurchaseScheduleRequest;
 use App\Http\Requests\Schedule\GenericUpdateSchedule;
 use App\Http\Requests\Schedule\ScheduleOwnerRequest;
+use App\Models\Booking;
 use App\Models\Price;
 use App\Models\Service;
 use App\Models\Schedule;
 use App\Models\ScheduleUser;
 use App\Models\ScheduleFreeze;
 use App\Http\Requests\Request;
+use App\Models\User;
 use App\Transformers\BookingTransformer;
 use App\Transformers\ServiceTransformer;
 use App\Transformers\UserTransformer;
@@ -33,10 +35,6 @@ class ScheduleController extends Controller {
     public function index(Service $service, Request $request) {
         $scheduleQuery = Schedule::where('service_id', $service->id);
 
-        if ($request->filled('exclude')) {
-            $scheduleQuery->where('id', '<>', (int)$request->get('exclude'));
-        }
-
         $scheduleQuery->where('schedules.is_published', true)->where(function($q) {
             $q->where('schedules.start_date', '>=', now())->orWhereNull('schedules.start_date');
         });
@@ -50,10 +48,6 @@ class ScheduleController extends Controller {
 
         $scheduleQuery = Schedule::where('service_id', $service->id);
 
-        if ($request->filled('exclude')) {
-            $scheduleQuery->where('id', '<>', (int)$request->get('exclude'));
-        }
-
         $scheduleQuery->whereHas('service', static function($query) {
             $query->where('user_id', Auth::id());
         });
@@ -62,6 +56,31 @@ class ScheduleController extends Controller {
 
         return fractal($schedule, new ScheduleTransformer())->parseIncludes($request->getIncludes())->toArray();
     }
+
+    public function rescheduleScheduleList(Schedule $schedule, Request $request) {
+
+        $scheduleQuery = Schedule::where('service_id', $schedule->service->id)->where('id', '<>', $schedule->id)
+                                                                              ->where('is_published', true);
+
+        // price option for client
+        if (Auth::user()->account_type === User::ACCOUNT_CLIENT && $request->filled('booking_id')) {
+            $booking = Booking::with('price')
+                              ->where('id', (int)$request->get('booking_id'))
+                              ->where('schedule_id', $schedule->id)
+                              ->first();
+            if (!$booking) {
+                return response('Booking not found', 500);
+            }
+            $scheduleQuery->whereHas('prices', static function($query) use($booking) {
+                $query->where('prices.cost', '<=', $booking->price->cost);
+            });
+        }
+
+        $schedule = $scheduleQuery->get();
+
+        return fractal($schedule, new ScheduleTransformer())->parseIncludes($request->getIncludes())->toArray();
+    }
+
 
     public function show(Schedule $schedule, Request $request) {
         $schedule->with($request->getIncludes());
