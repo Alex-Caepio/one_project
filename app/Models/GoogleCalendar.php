@@ -11,7 +11,7 @@ class GoogleCalendar extends Model {
 
     public $table = 'user_google_calendar';
 
-    public $fillable = ['user_id'];
+    public $fillable = ['user_id', 'timezone_id'];
 
     /**
      * The attributes that should be hidden for arrays.
@@ -45,6 +45,11 @@ class GoogleCalendar extends Model {
         $this->token_info = null;
         $this->is_connected = false;
         $this->save();
+    }
+
+
+    public static function createDefaultModel(User $user) {
+        return new self(['user_id' => $user->id, 'timezone_id' => (int)config('app.platform_default_timezone')]);
     }
 
 

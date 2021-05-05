@@ -134,6 +134,7 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
         Route::post('/services/{service}/copy', [ServiceController::class, 'copy']);
 
         Route::get('/services/{service}/practitioner-schedules', [ScheduleController::class, 'ownerScheduleList']);
+
     });
 
     Route::post('/articles/{article}/favourite', [ArticleController::class, 'storeFavorite']);

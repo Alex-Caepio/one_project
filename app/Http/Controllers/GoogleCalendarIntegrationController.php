@@ -22,7 +22,7 @@ class GoogleCalendarIntegrationController extends Controller {
 
     public function updateSettings(SettingsRequest $request) {
         $user = Auth::user();
-        $calendar = !$user->calendar ? new GoogleCalendar(['user_id' => $user->id]) : $user->calendar;
+        $calendar = !$user->calendar ? GoogleCalendar::createDefaultModel($user) : $user->calendar;
         $calendar->timezone_id = $request->get('timezone_id');
         $calendar->save();
         if ($request->filled('unavailabilities')) {
@@ -55,7 +55,7 @@ class GoogleCalendarIntegrationController extends Controller {
 
     public function auth(AuthRequest $request) {
         $user = Auth::user();
-        $calendar = !$user->calendar ? new GoogleCalendar(['user_id' => $user->id]) : $user->calendar;
+        $calendar = !$user->calendar ? GoogleCalendar::createDefaultModel($user) : $user->calendar;
 
         $gcHelper = new GoogleCalendarHelper(null);
         $tokenData = $gcHelper->getTokenByAuthCode($request->get('code'));

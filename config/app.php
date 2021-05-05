@@ -16,6 +16,7 @@ return [
     'platform_cancellation_fee'     => env('PLATFORM_CANCELLATION_FEE', 0),
     'platform_currency'             => env('PLATFORM_CURRENCY', 'gbp'),
     'platform_calendar'             => env('PLATFORM_CALENDAR_NAME', 'Oneness Holistify'),
+    'platform_default_timezone'     => env('PLATFORM_CALENDAR_DEFAULT_TIMEZONE', null),
     'platform_subject_practitioner' => env('PLATFORM_SUBJECT_PREFIX_PRACTITIONER', 'Message from: '),
     'platform_subject_client'       => env('PLATFORM_SUBJECT_PREFIX_CLIENT', 'Message from: '),
 
