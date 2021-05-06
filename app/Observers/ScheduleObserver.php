@@ -6,6 +6,7 @@ use App\Events\ServiceScheduleCancelled;
 use App\Events\ServiceScheduleLive;
 use App\Models\Schedule;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class ScheduleObserver {
 
