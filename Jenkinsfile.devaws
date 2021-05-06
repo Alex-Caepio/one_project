@@ -14,6 +14,22 @@ pipeline{
     }
 
     stages{
+        stage ('Git clone') {
+            steps {
+                checkout([
+                    $class: 'GitSCM',
+                    branches: [[name: "dev"]],
+                    extensions: [[$class: 'WipeWorkspace']],
+                    userRemoteConfigs: [
+                        [
+                            url: 'https://git.andersenlab.com/oneness/back.git',
+                            credentialsId: 'gitlab_andersen'
+                        ]
+                    ]
+                ])
+            }
+        }
+
 
         stage("Build docker image"){
             steps{
