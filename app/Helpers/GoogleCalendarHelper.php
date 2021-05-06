@@ -191,7 +191,7 @@ class GoogleCalendarHelper {
         return $calendarId;
     }
 
-    private function createNewCalendar(): \Google_Service_Calendar_Calendar {
+    private function createNewCalendar(): string {
         $newCalendar = new \Google_Service_Calendar_Calendar();
         $newCalendar->setSummary(config('app.platform_calendar'));
         if ($this->_calendar->timezone instanceof Timezone) {
