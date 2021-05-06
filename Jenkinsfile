@@ -12,6 +12,22 @@ pipeline{
         label "master"
     }
     stages{
+        stage ('Git clone') {
+            steps {
+                checkout([
+                    $class: 'GitSCM',
+                    branches: [[name: "dev"]],
+                    extensions: [[$class: 'WipeWorkspace']],
+                    userRemoteConfigs: [
+                        [
+                            url: 'https://git.andersenlab.com/oneness/back.git',
+                            credentialsId: 'Jenkins'
+                        ]
+                    ]
+                ])
+            }
+        }
+
         stage("Sonarqube"){
             environment{
                 scannerHome = tool 'SonarQube'
