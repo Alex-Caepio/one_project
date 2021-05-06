@@ -21,7 +21,7 @@ pipeline{
                     userRemoteConfigs: [
                         [
                             url: 'https://git.andersenlab.com/oneness/back.git',
-                            credentialsId: 'Jenkins'
+                            credentialsId: 'gitlab_andersen'
                         ]
                     ]
                 ])
