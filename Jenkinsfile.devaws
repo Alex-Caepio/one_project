@@ -72,12 +72,6 @@ pipeline{
             }
         }
 
-        stage("Clean from docker images"){
-            steps{
-                sh '''docker rmi -f $(docker images --filter=reference=${projectName} -q) >/dev/null 2>&1'''
-            }
-        }
-
         stage('ECS Service update') {
             steps {
                 withAWS(credentials: "$registryCredentials", region: "$AWSregion") {
@@ -85,6 +79,12 @@ pipeline{
                      aws ecs update-service --cluster fargate-test --service back-cron --task-definition fargate-back-artisan:1 --force-new-deployment
                      aws ecs run-task --cluster fargate-test --count 1 --launch-type FARGATE --task-definition fargate-back-artisan --network-configuration "awsvpcConfiguration={subnets=[subnet-05c45b7a5c26118c5,subnet-0c8925d4d4c95bfb9],securityGroups=[sg-0df3e2cc47174798d],assignPublicIp=DISABLED}"'''
                 }
+            }
+        }
+
+        stage("Clean from docker images"){
+            steps{
+                sh '''docker rmi -f $(docker images --filter=reference="$registryName/$projectName" -q) >/dev/null 2>&1'''
             }
         }
 
