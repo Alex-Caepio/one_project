@@ -1,11 +1,13 @@
 pipeline{
     environment{
         projectName = "oneness-dev-back"
+        projectSonarName = "oneness_back"
+        projectKey = "oneness_back:1"
         workingEnv = "dev"
         registryName = "262543608829.dkr.ecr.eu-west-1.amazonaws.com"
         registryURL = "https://262543608829.dkr.ecr.eu-west-1.amazonaws.com"
         AWSregion = "eu-west-1"
-        registryCredentials = "oneness_dev_partner"
+        registryCredentials = "oneness-dev-andersenaws"
         jenkins_envfile = "oneness_envconfig_dev_aws"
     }
 
@@ -30,24 +32,43 @@ pipeline{
             }
         }
 
+        stage("Sonarqube"){
+            environment{
+                scannerHome = tool 'SonarQube'
+            }
+            steps{
+                withSonarQubeEnv('SonarQube_6.0'){
+                    sh "${scannerHome}/bin/sonar-scanner \
+                    -Dsonar.projectKey=${projectKey} \
+                    -Dsonar.projectName=${projectSonarName} \
+                    -Dsonar.projectVersion=1.0 \
+                    -Dsonar.sources=./"
+                    sh "/var/lib/jenkins/workspace/waitForSonarQube.sh"
+                }
+            }
+        }
 
         stage("Build docker image"){
             steps{
                 configFileProvider([configFile(fileId: "$jenkins_envfile", targetLocation: '.env')]){
                     script{
-                        dockerImage = docker.build('$projectName:$workingEnv', "-f ./Dockerfile.aws ./")
+                        dockerImage = docker.build("$registryName/$projectName:$workingEnv", "-f ./Dockerfile.aws ./")
                     }
                 }
             }
         }
 
-        stage("Deploy docker image to AWS ECR"){
+        stage("Push docker image to AWS ECR"){
             steps{
-                script{
-                    docker.withRegistry("$registryURL","ecr:$AWSregion:$registryCredentials"){
-                        dockerImage.push()
-                    }
+                withAWS(credentials: "$registryCredentials", region: "$AWSregion") {
+                    sh 'aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 262543608829.dkr.ecr.eu-west-1.amazonaws.com'
+                    sh 'docker push "$registryName/$projectName:$workingEnv"'
                 }
+//                script{
+//                    docker.withRegistry("$registryURL","ecr:$AWSregion:$registryCredentials"){
+//                        dockerImage.push()
+//                    }
+//                }
             }
         }
 
