@@ -18,7 +18,7 @@ pipeline{
             steps{
                 configFileProvider([configFile(fileId: 'oneness_envconfig_prod', targetLocation: '.env')]){
                     script{
-                        dockerImage = docker.build('$projectName:$workingEnv', "-f ./Dockerfile.prod ./")
+                        dockerImage = docker.build("$registryName/$projectName:$workingEnv", "-f ./Dockerfile.prod ./")
                     }
                 }
             }
@@ -26,17 +26,22 @@ pipeline{
 
         stage("Deploy docker image to AWS ECR"){
             steps{
-                script{
-                    docker.withRegistry("$registryURL","ecr:$AWSregion:$registryCredentials"){
-                        dockerImage.push()
-                    }
+                withAWS(credentials: "$registryCredentials", region: "$AWSregion") {
+                    sh 'aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin 214053718704.dkr.ecr.eu-west-2.amazonaws.com'
+                    sh 'docker push "$registryName/$projectName:$workingEnv"'
                 }
+
+//                script{
+//                    docker.withRegistry("$registryURL","ecr:$AWSregion:$registryCredentials"){
+//                       dockerImage.push()
+//                    }
+//                }
             }
         }
 
         stage("Clean from docker images"){
             steps{
-                sh '''docker rmi -f $(docker images --filter=reference=${projectName} -q) >/dev/null 2>&1'''
+                sh '''docker rmi -f $(docker images --filter=reference="$registryName/$projectName" -q) >/dev/null 2>&1'''
             }
         }
 
