@@ -9,9 +9,6 @@ use Illuminate\Support\Facades\Mail;
 
 class PurchaseCancelledByPractitionerEmail
 {
-    public function __construct()
-    {
-    }
 
     public function handle(PurchaseCancelledByPractitioner $event): void
     {

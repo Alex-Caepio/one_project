@@ -9,9 +9,6 @@ use Illuminate\Support\Facades\Mail;
 
 class BookingEventVirtualWithDepositEmail
 {
-    public function __construct()
-    {
-    }
 
     public function handle(BookingEventVirtualWithDeposit $event): void
     {

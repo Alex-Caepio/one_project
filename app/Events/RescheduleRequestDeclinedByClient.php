@@ -14,6 +14,7 @@ class RescheduleRequestDeclinedByClient {
 
     public RescheduleRequest $reschedule;
     public User $recipient;
+    public Schedule $reschedule_schedule;
 
     public function __construct(RescheduleRequest $reschedule) {
         $this->reschedule = $reschedule;
