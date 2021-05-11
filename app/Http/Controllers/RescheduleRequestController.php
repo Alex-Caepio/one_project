@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Cancellation\CancelBooking;
 use App\Events\BookingRescheduleAcceptedByClient;
 use App\Events\RescheduleRequestDeclinedByClient;
 use App\Http\Requests\Reschedule\RescheduleRequestRequest;
@@ -13,6 +14,7 @@ use App\Http\Requests\Request;
 use App\Models\RescheduleRequest;
 use App\Actions\RescheduleRequest\RescheduleRequestStore;
 use App\Models\Schedule;
+use App\Models\User;
 use App\Transformers\RescheduleRequestTransformer;
 use Illuminate\Support\Facades\Auth;
 
@@ -90,6 +92,12 @@ class RescheduleRequestController extends Controller {
 
     public function decline(DeclineRescheduleRequestRequest $request, RescheduleRequest $rescheduleRequest) {
         event(new RescheduleRequestDeclinedByClient($rescheduleRequest));
+
+        // declined by client of the booking
+        if ($rescheduleRequest->requested_by === User::ACCOUNT_PRACTITIONER && $rescheduleRequest->user_id === Auth::id()) {
+            run_action(CancelBooking::class, $rescheduleRequest->booking, true);
+        }
+
         $rescheduleRequest->delete();
         return response(null, 204);
     }

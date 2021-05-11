@@ -23,7 +23,7 @@ use Stripe\StripeClient;
 class CancelBooking {
     private StripeClient $stripe;
 
-    public function execute(Booking $booking) {
+    public function execute(Booking $booking, bool $declineRescheduleRequest = false) {
         $this->stripe = app()->make(StripeClient::class);
 
         try {
@@ -36,7 +36,7 @@ class CancelBooking {
             $stripeRefund = null;
 
             if (Auth::id() === $booking->user_id) {
-                $refundValue = $this->clientRefund($booking);
+                $refundValue = $this->clientRefund($booking, $declineRescheduleRequest);
             } else {
                 $refundValue = $booking->cost;
                 $totalFee = round(((double)$booking->cost / 100) * (int)config('app.platform_cancellation_fee'));
@@ -107,7 +107,7 @@ class CancelBooking {
 
         $notification = new Notification();
 
-        if (Auth::user()->isPractitioner() && $booking->practitioner_id === Auth::id()) {
+        if ($booking->practitioner_id === Auth::id()) {
             $notification->type = 'booking_canceled_by_practitioner';
             $notification->receiver_id = $booking->user_id;
         } else {
@@ -115,16 +115,16 @@ class CancelBooking {
             $notification->receiver_id = $booking->practitioner_id;
         }
 
-            $notification->client_id = $booking->user_id;
-            $notification->practitioner_id = $booking->practitioner_id;
-            $notification->title = $booking->schedule->service->title.' '.$booking->schedule->title;
-            $notification->old_address = $booking->schedule->location_displayed;
-            $notification->datetime_from = $booking->datetime_from;
-            $notification->datetime_to = $booking->datetime_to;
-            $notification->price_id = $booking->price_id;
-            $notification->price_refunded = $chargeAmount;
+        $notification->client_id = $booking->user_id;
+        $notification->practitioner_id = $booking->practitioner_id;
+        $notification->title = $booking->schedule->service->title . ' ' . $booking->schedule->title;
+        $notification->old_address = $booking->schedule->location_displayed;
+        $notification->datetime_from = $booking->datetime_from;
+        $notification->datetime_to = $booking->datetime_to;
+        $notification->price_id = $booking->price_id;
+        $notification->price_refunded = $refundValue;
 
-            $notification->save();
+        $notification->save();
 
 
         return response(null, 204);
@@ -133,14 +133,22 @@ class CancelBooking {
 
     /**
      * @param \App\Models\Booking $booking
+     * @param bool $declineRescheduleRequest
      * @return bool
      */
-    private function clientRefund(Booking $booking): bool {
-        $scheduleDate = Carbon::parse($booking->schedule->start_date);
-        $now = Carbon::now();
-        if ($scheduleDate < $now && $now->diffInHours($scheduleDate) > $booking->schedule->refund_terms) {
+    private function clientRefund(Booking $booking, bool $declineRescheduleRequest): bool {
+        if ($declineRescheduleRequest === true) {
             return $booking->cost;
         }
+
+        if ($booking->datetime_from) {
+            $bookingDate = Carbon::parse($booking->datetime_from);
+            $now = Carbon::now();
+            if ($bookingDate < $now && $now->diffInHours($bookingDate) > $booking->schedule->refund_terms) {
+                return $booking->cost;
+            }
+        }
+
         return 0;
     }
 
