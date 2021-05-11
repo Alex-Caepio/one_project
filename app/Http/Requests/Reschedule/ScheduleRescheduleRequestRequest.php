@@ -34,6 +34,10 @@ class ScheduleRescheduleRequestRequest extends Request {
 
     public function withValidator($validator): void {
         $validator->after(function($validator) {
+            if ((int)$this->schedule->id === (int)$this->get('new_schedule_id')) {
+                $validator->errors()->add('error', 'Please, select new schedule for reschedule');
+            }
+
             if ($this->schedule->start_date && Carbon::parse($this->schedule->start_date) < Carbon::now()) {
                 $validator->errors()->add('error', 'The schedule cannot be cancelled');
             }

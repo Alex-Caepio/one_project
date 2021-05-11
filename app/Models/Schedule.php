@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class Schedule
@@ -72,7 +73,16 @@ class Schedule extends Model {
     ];
 
     protected $casts = [
-        'is_published' => 'boolean',
+        'is_published'              => 'boolean',
+        'meals_breakfast'           => 'boolean',
+        'meals_lunch'               => 'boolean',
+        'meals_dinner'              => 'boolean',
+        'meals_alcoholic_beverages' => 'boolean',
+        'meals_dietry_accomodated'  => 'boolean',
+        'deposit_accepted'          => 'boolean',
+        'deposit_final_date'        => 'datetime:Y-m-d H:i:s',
+        'start_date'                => 'datetime:Y-m-d H:i:s',
+        'end_date'                  => 'datetime:Y-m-d H:i:s',
     ];
 
     public function location() {
@@ -218,7 +228,9 @@ class Schedule extends Model {
             $q->whereNotBetween('datetime_from', [$unavailability->start_date, $unavailability->end_date]);
         }
 
-        return $this->bookings()->whereNotIn('id', $q->pluck('id'))->get();
+        return $this->bookings()->whereNotIn('id', $q->pluck('id'))
+                                ->whereNotIn('status', ['completed', 'canceled'])
+                                ->get();
     }
 
     public function bookings(): HasMany {
@@ -228,4 +240,53 @@ class Schedule extends Model {
     public function purchases(): HasMany {
         return $this->hasMany(Purchase::class);
     }
+
+
+    public function hasNonContractualChanges(): bool {
+        $changes = $this->getRealChangesList();
+        $result = false;
+        if (count($changes)) {
+            if ($this->service->service_type_id === 'bespoke') {
+                $result = true;
+            } else {
+                // Unset, because another event will be fired for Reschedule Request
+                unset($changes['end_date'], $changes['start_date'], $changes['location_id'],
+                    $changes['venue'], $changes['city'], $changes['country'], $changes['post_code'],
+                    $changes['location_displayed'], $changes['is_virtual'],);
+                $result = count($changes) > 0;
+            }
+        }
+        return $result;
+    }
+
+
+    public function getRealChangesList(): array {
+        $changes = $this->getChanges();
+        unset($changes['updated_at'], $changes['created_at'], $changes['is_published'], $changes['deleted_at']);
+
+        if (isset($changes['start_date']) && !empty($changes['start_date'])) {
+            $startDate = Carbon::parse($changes['start_date'])->format('Y-m-d H:i:s');
+            if ($startDate === (string)$this->getOriginal('start_date')) {
+                unset($changes['start_date']);
+            }
+        }
+
+        if (isset($changes['end_date']) && !empty($changes['end_date'])) {
+            $endDate = Carbon::parse($changes['end_date'])->format('Y-m-d H:i:s');
+            if ($endDate === (string)$this->getOriginal('end_date')) {
+                unset($changes['end_date']);
+            }
+        }
+
+        if (isset($changes['deposit_final_date']) && !empty($changes['deposit_final_date'])) {
+            $depositFinal = Carbon::parse($changes['deposit_final_date'])->format('Y-m-d H:i:s');
+            if ($depositFinal === (string)$this->getOriginal('deposit_final_date')) {
+                unset($changes['deposit_final_date']);
+            }
+        }
+
+        return $changes;
+    }
+
+
 }

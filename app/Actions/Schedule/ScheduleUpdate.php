@@ -9,14 +9,16 @@ use App\Http\Requests\Schedule\CreateScheduleInterface;
 use App\Http\Requests\Schedule\GenericUpdateSchedule;
 use App\Models\Schedule;
 use App\Models\Service;
+use Illuminate\Support\Facades\Log;
 
 class ScheduleUpdate extends ScheduleSave {
 
     public function execute(GenericUpdateSchedule $request, Schedule $schedule): Schedule {
-        $schedule->update($request->all());
+        $data = $request->all();
+        $schedule->update($data);
         $this->updatePrices($request, $schedule);
         $this->saveRelations($request, $schedule);
-        run_action(CreateRescheduleRequestsOnScheduleUpdate::class, $request, $schedule);
+
         return $schedule;
     }
 

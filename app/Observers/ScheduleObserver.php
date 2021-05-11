@@ -2,10 +2,12 @@
 
 namespace App\Observers;
 
+use App\Actions\Schedule\CreateRescheduleRequestsOnScheduleUpdate;
 use App\Events\ServiceScheduleCancelled;
 use App\Events\ServiceScheduleLive;
+use App\Events\ServiceUpdatedByPractitionerNonContractual;
+use App\Http\Requests\Request;
 use App\Models\Schedule;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class ScheduleObserver {
@@ -29,6 +31,15 @@ class ScheduleObserver {
     public function deleted(Schedule $schedule) {
         if ($schedule->is_published) {
             event(new ServiceScheduleCancelled($schedule));
+        }
+    }
+
+    public function updated(Schedule $schedule) {
+        if ($schedule->hasNonContractualChanges()) {
+            event(new ServiceUpdatedByPractitionerNonContractual($schedule));
+        }
+        if (in_array($schedule->service->service_type_id, ['workshop', 'events', 'retreat', 'appointment'])) {
+            run_action(CreateRescheduleRequestsOnScheduleUpdate::class, $schedule);
         }
     }
 

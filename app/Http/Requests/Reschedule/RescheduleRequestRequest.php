@@ -51,6 +51,10 @@ class RescheduleRequestRequest extends Request {
 
     public function withValidator($validator): void {
         $validator->after(function($validator) {
+            if ((int)$this->booking->schedule_id === (int)$this->get('new_schedule_id')) {
+                $validator->errors()->add('error', 'Please, select new schedule for reschedule');
+            }
+
             if ($this->booking &&
                 $this->booking->schedule->service->id !== Schedule::find($this->get('new_schedule_id'))->service->id) {
                 $validator->errors()->add('new_schedule_id', 'This schedule does not belong to the service.');

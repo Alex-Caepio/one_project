@@ -3,92 +3,91 @@
 namespace App\Actions\Schedule;
 
 use App\Events\ServiceUpdatedByPractitionerContractual;
-use App\Events\ServiceUpdatedByPractitionerNonContractual;
-use App\Http\Requests\Request;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\Request;
 use App\Models\Booking;
 use App\Models\RescheduleRequest;
 use App\Models\Schedule;
 use Carbon\Carbon;
 
-class CreateRescheduleRequestsOnScheduleUpdate
-{
-    public function execute(Request $request, Schedule $schedule){
+class CreateRescheduleRequestsOnScheduleUpdate {
 
-        if ($this->requiresReschedule($request, $schedule)) {
-            //should be moved to constant
-            $bookings = $schedule->service->service_type === 'appointment'
-                ? $schedule->getOutsiderBookings()
-                : Booking::where('schedule_id', $schedule->id)->get();
+    private Schedule $schedule;
+    private array $changesList;
 
+    public function execute(Schedule $schedule) {
+        $this->schedule = $schedule;
+        $this->changesList = $this->schedule->getRealChangesList();
+        if ($this->requiresReschedule()) {
+            $this->proceedRescheduleRequests();
+        }
+    }
+
+    private function proceedRescheduleRequests(): void {
+        //should be moved to constant
+        $bookings = $this->getBookings();
+        if ($bookings->count()) {
             //In order to avoid duplicated reschedule request we have to delete all previous first
-            $schedule->rescheduleRequests()->whereIn('booking_id', $bookings->pluck('id'))->delete();
+            $this->schedule->rescheduleRequests()->whereIn('booking_id', $bookings->pluck('id'))->delete();
 
             $rescheduleRequests = [];
             foreach ($bookings as $booking) {
                 $rescheduleRequests[] = [
-                    'user_id' => $booking->user_id,
-                    'booking_id' => $booking->id,
-                    'schedule_id' => $booking->schedule_id,
-                    'new_schedule_id' => $schedule->id,
-                    'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                    'requested_by' => 'practitioner'
+                    'user_id'         => $booking->user_id,
+                    'booking_id'      => $booking->id,
+                    'schedule_id'     => $booking->schedule_id,
+                    'new_schedule_id' => $this->schedule->id,
+                    'created_at'      => Carbon::now()->format('Y-m-d H:i:s'),
+                    'requested_by'    => 'practitioner'
                 ];
             }
 
-            if ($this->locationHasChanged($request, $schedule)) {
+            if ($this->locationHasChanged() && isset($this->changesList['location_displayed'])) {
                 foreach ($rescheduleRequests as $key => $reschedule) {
-                    $rescheduleRequests[$key]['old_location_displayed'] = $schedule->location_displayed;
-                    $rescheduleRequests[$key]['new_location_displayed'] = $request->get('location_displayed');
+                    $rescheduleRequests[$key]['old_location_displayed'] = $this->schedule->getOriginal('location_displayed');
+                    $rescheduleRequests[$key]['new_location_displayed'] = $this->changesList['location_displayed'];
                 }
             }
 
-            if ($this->dateHasChanged($request, $schedule)) {
+            if ($this->dateHasChanged()) {
                 foreach ($rescheduleRequests as $key => $reschedule) {
-                    $rescheduleRequests[$key]['old_start_date'] = $schedule->start_date;
-                    $rescheduleRequests[$key]['new_start_date'] = $request->get('start_date');
-                    $rescheduleRequests[$key]['old_end_date'] = $schedule->end_date;
-                    $rescheduleRequests[$key]['new_end_date'] = $request->get('end_date');
+                    $rescheduleRequests[$key]['old_start_date'] = $this->schedule->getOriginal('start_date');
+                    $rescheduleRequests[$key]['new_start_date'] = $this->schedule->start_date;
+                    $rescheduleRequests[$key]['old_end_date'] = $this->schedule->getOriginal('end_date');
+                    $rescheduleRequests[$key]['new_end_date'] = $this->schedule->end_date;
                 }
             }
             // without events handler
             RescheduleRequest::insert($rescheduleRequests);
-            event(new ServiceUpdatedByPractitionerContractual($schedule));
-        } else {
-            event(new ServiceUpdatedByPractitionerNonContractual($schedule));
+            event(new ServiceUpdatedByPractitionerContractual($this->schedule));
         }
     }
 
-    protected function requiresReschedule(Request $request, Schedule $schedule): bool
-    {
-        return $this->dateHasChanged($request, $schedule)
-            || $this->locationHasChanged($request, $schedule)
-            || $request->filled('schedule_unavailabilities')
-            || $request->filled('schedule_availabilities');
+
+    private function getBookings(): ?Collection {
+        return $this->schedule->service->service_type ===
+               'appointment' ? $this->schedule->getOutsiderBookings() : Booking::where('schedule_id',
+                                                                                       $this->schedule->id)
+                                                                               ->whereNotIn('status',
+                                                                                            ['completed', 'canceled'])
+                                                                               ->get();
     }
 
-    protected function dateHasChanged(Request $request, Schedule $schedule): bool
-    {
-        if ($request['start_date'] !== $schedule->start_date || $request['end_date'] !== $schedule->end_date) {
-            return true;
-        }
 
-        return false;
+    protected function requiresReschedule(): bool {
+        return $this->dateHasChanged() || $this->locationHasChanged();
     }
 
-    protected function locationHasChanged(Request $request, Schedule $schedule): bool
-    {
-        if (
-            $request['location_id'] != $schedule->location_id
-            || $request['venue'] != $schedule->venue
-            || $request['city'] != $schedule->city
-            || $request['country'] != $schedule->country
-            || $request['post_code'] != $schedule->post_code
-            || $request['location_displayed'] != $schedule->location_displayed
-            || $request['is_virtual'] != $schedule->is_virtual
-        ) {
-            return true;
-            }
-
-        return false;
+    protected function dateHasChanged(): bool {
+        return isset($this->changesList['start_date']) || isset($this->changesList['end_date']);
     }
+
+    protected function locationHasChanged(): bool {
+        return isset($this->changesList['location_id']) || isset($this->changesList['venue']) ||
+               isset($this->changesList['city']) || isset($this->changesList['country']) ||
+               isset($this->changesList['post_code']) || isset($this->changesList['location_displayed']) ||
+               isset($this->changesList['is_virtual']);
+    }
+
+
 }
