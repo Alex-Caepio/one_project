@@ -86,14 +86,14 @@ class BookingMyClientController extends Controller {
                 'bookings.reference as reference',
                 'purchases.price as paid',
                 'bookings.datetime_to as closure_date',
-                '"Complete" as status',
+                'IF (bookings.status = "completed", "Complete", "Cancel") as status',
             ]))->join('schedules', 'schedules.id', '=', 'bookings.schedule_id')
                             ->join('services', 'services.id', '=', 'schedules.service_id')
                             ->join('service_types', 'service_types.id', '=', 'services.service_type_id')
                             ->join('purchases', 'purchases.id', '=', 'bookings.purchase_id')
                             ->join('users', 'users.id', '=', 'bookings.user_id')
                             ->where('services.user_id', $request->user()->id)
-                            ->where('bookings.datetime_from', '<=', DB::raw('now()'))->paginate($request->getLimit());
+                            ->whereIn('bookings.status', ['completed', 'canceled'])->paginate($request->getLimit());
 
         $bookings = $paginator->getCollection();
 
