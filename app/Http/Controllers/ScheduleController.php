@@ -62,6 +62,7 @@ class ScheduleController extends Controller {
         $scheduleQuery = Schedule::where('service_id', $schedule->service->id)->where('id', '<>', $schedule->id)
                                                                               ->where('is_published', true);
 
+        $requestIncludes = $request->getIncludes();
         // price option for client
         if (Auth::user()->account_type === User::ACCOUNT_CLIENT && $request->filled('booking_id')) {
             $booking = Booking::with('price')
@@ -78,10 +79,10 @@ class ScheduleController extends Controller {
                 $q->where('schedules.start_date', '>=', now())->orWhereNull('schedules.start_date');
             });
         }
-
+        
         $schedule = $scheduleQuery->get();
 
-        return fractal($schedule, new ScheduleTransformer())->parseIncludes($request->getIncludes())->toArray();
+        return fractal($schedule, new ScheduleTransformer())->parseIncludes($requestIncludes)->toArray();
     }
 
 
