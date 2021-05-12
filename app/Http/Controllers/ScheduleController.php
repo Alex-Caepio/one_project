@@ -59,7 +59,7 @@ class ScheduleController extends Controller {
 
     public function rescheduleScheduleList(Schedule $schedule, Request $request) {
 
-        $scheduleQuery = Schedule::where('service_id', $schedule->service->id)->where('id', '<>', $schedule->id)
+        $scheduleQuery = Schedule::where('service_id', $schedule->service_id)->where('id', '<>', $schedule->id)
                                                                               ->where('is_published', true);
 
         $requestIncludes = $request->getIncludes();
@@ -79,12 +79,11 @@ class ScheduleController extends Controller {
                 $q->where('schedules.start_date', '>=', now())->orWhereNull('schedules.start_date');
             });
         }
-        
+
         $schedule = $scheduleQuery->get();
 
         return fractal($schedule, new ScheduleTransformer())->parseIncludes($requestIncludes)->toArray();
     }
-
 
     public function show(Schedule $schedule, Request $request) {
         $schedule->with($request->getIncludes());
