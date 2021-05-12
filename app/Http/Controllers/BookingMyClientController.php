@@ -58,8 +58,7 @@ class BookingMyClientController extends Controller
 
     public function upcoming(Request $request)
     {
-        $paginator = Schedule::query()
-            ->selectRaw(implode(', ', [
+        $paginator = Schedule::query()->selectRaw(implode(', ', [
                 'schedules.id as id',
                 'services.id as service_id',
                 'services.title as service_name',
@@ -69,14 +68,16 @@ class BookingMyClientController extends Controller
                 'concat(count(bookings.id), " of ", schedules.attendees) as bookings',
                 'concat(count(bookings.id), " of ", count(bookings.id)) as full_paid',
                 'schedules.refund_terms as refund_terms',
-            ]))
-            ->join('services', 'services.id', '=', 'schedules.service_id')
-            ->join('service_types', 'service_types.id', '=', 'services.service_type_id')
-            ->join('bookings', 'bookings.schedule_id', '=', 'schedules.id')
-            ->where('services.user_id', $request->user()->id)
-            ->where('bookings.datetime_from', '>', DB::raw('now()'))
-            ->groupBy('schedules.id')
-            ->paginate($request->getLimit());
+            ]))->join('services', 'services.id', '=', 'schedules.service_id')
+                             ->join('service_types', 'service_types.id', '=', 'services.service_type_id')
+                             ->join('bookings', static function($join) {
+                                 $join->on(function($join) {
+                                     $join->on('bookings.schedule_id', '=', 'schedules.id')
+                                          ->whereNotIn('bookings.status', ['canceled', 'completed']);
+                                 });
+                             })->where('services.user_id', $request->user()->id)
+                             ->where('bookings.datetime_from', '>', DB::raw('now()'))->groupBy('schedules.id')
+                             ->paginate($request->getLimit());
 
         $schedules = $paginator->getCollection();
 
