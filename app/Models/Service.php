@@ -50,13 +50,13 @@ class Service extends Model {
      * @var array
      */
     protected $casts = [
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-        'deleted_at' => 'datetime',
+        'created_at'   => 'datetime',
+        'updated_at'   => 'datetime',
+        'deleted_at'   => 'datetime',
+        'is_published' => 'boolean',
     ];
 
-    public function scopeFilter(Builder $builder, QueryFilter $filters)
-    {
+    public function scopeFilter(Builder $builder, QueryFilter $filters) {
         return $filters->apply($builder);
     }
 

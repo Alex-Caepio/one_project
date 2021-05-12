@@ -236,5 +236,6 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::post('/images', [ImageController::class, 'upload']);
 
     Route::get('/notifications/practitioner', [NotificationController::class, 'index']);
+    Route::get('/notifications/client', [NotificationController::class, 'clientNotifications']);
     Route::post('/notifications/{notification}/mark-as-read', [NotificationController::class, 'markAsRead']);
 });

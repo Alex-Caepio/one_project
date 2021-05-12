@@ -25,6 +25,23 @@ class NotificationController extends Controller
             ->withPaginationHeaders($paginator);
     }
 
+
+    public function clientNotifications(Request $request)
+    {
+        $query = Notification::where('client_id', Auth::id())
+                             ->where('receiver_id', Auth::id())
+                             ->where('read_at', null)
+                             ->with($request->getIncludes());
+
+        $paginator = $query->paginate($request->getLimit());
+        $notification  = $paginator->getCollection();
+
+        return response(fractal($notification, new NotificationTransformer())
+                            ->parseIncludes($request->getIncludes()))
+            ->withPaginationHeaders($paginator);
+    }
+
+
     public function markAsRead(Notification $notification) {
         $notification->read_at = now();
         $notification->save();

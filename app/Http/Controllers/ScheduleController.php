@@ -58,7 +58,6 @@ class ScheduleController extends Controller {
     }
 
     public function rescheduleScheduleList(Schedule $schedule, Request $request) {
-
         $scheduleQuery = Schedule::where('service_id', $schedule->service_id)->where('id', '<>', $schedule->id)
                                                                               ->where('is_published', true);
 
