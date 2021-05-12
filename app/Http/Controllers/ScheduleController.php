@@ -74,11 +74,10 @@ class ScheduleController extends Controller {
             $scheduleQuery->whereHas('prices', static function($query) use($booking) {
                 $query->where('prices.cost', '<=', $booking->price->cost);
             });
-            $scheduleQuery->where(function($q) {
-                $q->where('schedules.start_date', '>=', now())->orWhereNull('schedules.start_date');
-            });
         }
-
+        $scheduleQuery->where(function($q) {
+            $q->where('schedules.start_date', '>=', now())->orWhereNull('schedules.start_date');
+        });
         $schedule = $scheduleQuery->get();
 
         return fractal($schedule, new ScheduleTransformer())->parseIncludes($requestIncludes)->toArray();
