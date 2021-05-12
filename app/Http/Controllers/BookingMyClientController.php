@@ -64,9 +64,8 @@ class BookingMyClientController extends Controller {
                                      $join->on('bookings.schedule_id', '=', 'schedules.id')
                                           ->whereNotIn('bookings.status', ['canceled', 'completed']);
                                  });
-                             })->where('services.user_id', $request->user()->id)->where(function($query) {
-                $query->where('bookings.datetime_from', '>=', Carbon::now())->orWhereNull('services.service_type_id', 'bespoke');
-            })->groupBy('schedules.id')->paginate($request->getLimit());
+                             })->where('services.user_id', $request->user()->id)
+                               ->groupBy('schedules.id')->paginate($request->getLimit());
 
         $schedules = $paginator->getCollection();
 
