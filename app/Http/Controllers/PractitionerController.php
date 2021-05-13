@@ -12,7 +12,7 @@ class PractitionerController extends Controller
 {
     public function index(Request $request)
     {
-        $query = User::query()->where('account_type', 'practitioner');
+        $query = User::query()->where('account_type', User::ACCOUNT_PRACTITIONER);
 
         if ($request->filled('discipline_id')) {
             $query->whereHas('disciplines', function($q) use ($request){
@@ -46,7 +46,7 @@ class PractitionerController extends Controller
 
     public function list()
     {
-        $user = User::where('account_type', 'practitioner');
+        $user = User::where('account_type', User::ACCOUNT_PRACTITIONER);
         return $user->selectRaw('concat(first_name, " ", last_name) username, id')->pluck('username', 'id');
     }
 

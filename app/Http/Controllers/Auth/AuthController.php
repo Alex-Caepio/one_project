@@ -99,15 +99,15 @@ class AuthController extends Controller
     {
         $user = $request->user();
 
-        if ($request->cancel_bookings_on_unpublish && $request->is_published == false && $user->is_published == true) {
-            $bookings = Booking::where('user_id', $user->id)->where('status', 'upcoming')->get();
+        if ($request->cancel_bookings_on_unpublish && !$request->is_published && !$user->is_published) {
+            $bookings = Booking::where('user_id', $user->id)->active()->get();
 
             foreach ($bookings as $booking) {
                 run_action(CancelBooking::class, $booking);
             }
         }
 
-        if ($user->is_published == false && $request->is_published == true) {
+        if (!$user->is_published && $request->is_published) {
             $user->published_at = now();
             $user->save();
         }
