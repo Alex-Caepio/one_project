@@ -36,6 +36,7 @@ class Booking extends Model {
         'is_installment'
     ];
 
+
     /**
      * @param \Illuminate\Database\Eloquent\Builder $query
      * @return \Illuminate\Database\Eloquent\Builder

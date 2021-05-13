@@ -58,12 +58,15 @@ class ScheduleController extends Controller {
     }
 
     public function rescheduleScheduleList(Schedule $schedule, Request $request) {
+        Log::info('Schedule Requested to Reschedule: '.$schedule->id);
         $scheduleQuery = Schedule::where('service_id', $schedule->service_id)->where('id', '<>', $schedule->id)
                                                                               ->where('is_published', true);
 
         $requestIncludes = $request->getIncludes();
+
         // price option for client
-        if (Auth::user()->account_type === User::ACCOUNT_CLIENT && $request->filled('booking_id')) {
+        if (Auth::user()->account_type !== User::ACCOUNT_CLIENT && $request->filled('booking_id')) {
+            Log::info('Find with bookingID: '.$request->get('booking_id'));
             $booking = Booking::with('price')
                               ->where('id', (int)$request->get('booking_id'))
                               ->where('schedule_id', $schedule->id)
@@ -71,6 +74,7 @@ class ScheduleController extends Controller {
             if (!$booking) {
                 return response('Booking not found', 500);
             }
+            Log::info('Cost: '.$booking->price->cost);
             $scheduleQuery->whereHas('prices', static function($query) use($booking) {
                 $query->where('prices.cost', '<=', $booking->price->cost);
             });
@@ -78,9 +82,10 @@ class ScheduleController extends Controller {
         $scheduleQuery->where(function($q) {
             $q->where('schedules.start_date', '>=', now())->orWhereNull('schedules.start_date');
         });
-        $schedule = $scheduleQuery->get();
-
-        return fractal($schedule, new ScheduleTransformer())->parseIncludes($requestIncludes)->toArray();
+        $scheduleCollection = $scheduleQuery->get();
+        Log::info('Found schedules: '.$scheduleCollection->count());
+        Log::info($scheduleCollection->pluck('id'));
+        return fractal($scheduleCollection, new ScheduleTransformer())->parseIncludes($requestIncludes)->toArray();
     }
 
     public function show(Schedule $schedule, Request $request) {
