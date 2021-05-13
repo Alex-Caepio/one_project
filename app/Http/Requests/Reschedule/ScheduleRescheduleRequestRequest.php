@@ -17,7 +17,7 @@ class ScheduleRescheduleRequestRequest extends Request {
      * @return bool
      */
     public function authorize() {
-        return Auth::user()->is_admin || $this->schedule->service->user_id === Auth::id();
+        return Auth::user()->is_admin || ($this->schedule->service && $this->schedule->service->user_id === Auth::id());
     }
 
     /**

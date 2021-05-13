@@ -79,6 +79,9 @@ class ScheduleController extends Controller {
                 $query->where('prices.cost', '<=', $booking->price->cost);
             });
         }
+
+
+        Log::info('Now: '.now());
         $scheduleQuery->where(function($q) {
             $q->where('schedules.start_date', '>=', now())->orWhereNull('schedules.start_date');
         });
