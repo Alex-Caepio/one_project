@@ -65,7 +65,7 @@ class ScheduleController extends Controller {
         $requestIncludes = $request->getIncludes();
 
         // price option for client
-        if (Auth::user()->account_type !== User::ACCOUNT_CLIENT && $request->filled('booking_id')) {
+        if (Auth::user()->account_type === User::ACCOUNT_CLIENT && $request->filled('booking_id')) {
             Log::info('Find with bookingID: '.$request->get('booking_id'));
             $booking = Booking::with('price')
                               ->where('id', (int)$request->get('booking_id'))
