@@ -36,7 +36,7 @@ class CancellationController extends Controller {
     }
 
     public function cancelBooking(Booking $booking, CancelBookingRequest $request) {
-        return run_action(CancelBooking::class, $booking);
+        return run_action(CancelBooking::class, $booking, false, $request);
     }
 
     public function cancelManyBookings(CancelManyBookingsRequest $request) {

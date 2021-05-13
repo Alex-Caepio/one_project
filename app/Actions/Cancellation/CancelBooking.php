@@ -5,9 +5,11 @@ namespace App\Actions\Cancellation;
 
 use App\Events\BookingCancelledByPractitioner;
 use App\Events\BookingCancelledByClient;
+use App\Http\Requests\Cancellation\CancelBookingRequest;
 use App\Models\Booking;
 use App\Models\Cancellation;
 use App\Models\Notification;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -23,60 +25,39 @@ use Stripe\StripeClient;
 class CancelBooking {
     private StripeClient $stripe;
 
-    public function execute(Booking $booking, bool $declineRescheduleRequest = false) {
+    public function execute(Booking $booking, bool $declineRescheduleRequest = false,
+                            ?CancelBookingRequest $request = null) {
         $this->stripe = app()->make(StripeClient::class);
+        $booking->load(['user', 'practitioner', 'purchase', 'schedule', 'schedule.service']);
+        if (!$booking->purchase || !$booking->practitioner) {
+            throw new \Exception('Incorrect model relation in booking #' . $booking->id);
+        }
 
-        try {
-            $booking->load(['user', 'practitioner', 'purchase', 'schedule', 'schedule.service']);
-            if (!$booking->purchase || !$booking->practitioner) {
-                throw new \Exception('Incorrect model relation in booking #' . $booking->id);
-            }
+        $totalFee = 0;
+        $stripeRefund = null;
 
-            $totalFee = 0;
-            $stripeRefund = null;
+        if ($request->filled('role')) {
+            $actionRole = $request->get('role');
+        } else {
+            $actionRole = Auth::id() === $booking->user_id ? User::ACCOUNT_CLIENT : User::ACCOUNT_PRACTITIONER;
+        }
 
-            if (Auth::id() === $booking->user_id) {
-                $refundValue = $this->clientRefund($booking, $declineRescheduleRequest);
-            } else {
-                $refundValue = $booking->cost;
-                $totalFee = round(((double)$booking->cost / 100) * (int)config('app.platform_cancellation_fee'));
-            }
+        if ($actionRole === User::ACCOUNT_CLIENT) {
+            $refundValue = $this->clientRefund($booking, $declineRescheduleRequest);
+        } else {
+            $refundValue = $booking->cost;
+            $totalFee = round(((double)$booking->cost / 100) * (int)config('app.platform_cancellation_fee'));
+        }
 
-            if ($refundValue > 0) {
+        $chargeAmount = $refundValue + $totalFee;
+
+        if ($refundValue > 0) {
+            try {
                 $paymentIntent = $this->stripe->paymentIntents->retrieve($booking->purchase->stripe_id);
                 $stripeRefund = $this->stripe->refunds->create([
                                                                    'amount'         => $refundValue,
                                                                    'payment_intent' => $paymentIntent->id
                                                                ]);
-            }
-            $booking->cancelled_at = Carbon::now();
-            $booking->status = 'canceled';
-            $booking->save();
-
-            $cancellation = new Cancellation();
-            $cancellation->fill([
-                                    'user_id'             => $booking->user_id,
-                                    'booking_id'          => $booking->id,
-                                    'purchase_id'         => $booking->purchase_id,
-                                    'practitioner_id'     => $booking->practitioner_id,
-                                    'amount'              => $refundValue,
-                                    'fee'                 => $totalFee > 0 ? $totalFee : null,
-                                    'cancelled_by_client' => Auth::id() === $booking->user_id,
-                                    'stripe_id'           => $stripeRefund->id ?? null
-                                ]);
-            $cancellation->save();
-
-            $chargeAmount = $refundValue + $totalFee;
-            if ($chargeAmount > 0) {
-                $this->stripe->charges->create([
-                                                   'amount'                      => $chargeAmount,
-                                                   'currency'                    => config('app.platform_currency'),
-                                                   'source'                      => $booking->practitioner->stripe_account_id,
-                                                   'statement_descriptor_suffix' => $booking->reference
-                                               ]);
-            }
-
-            if ($refundValue > 0) {
                 Log::channel('stripe_refund_success')->info('Stripe refund success: ', [
                     'user_id'                     => $booking->user_id ?? null,
                     'practitioner_id'             => $booking->practitioner_id ?? null,
@@ -87,32 +68,52 @@ class CancelBooking {
                     'refund_stripe_id'            => $stripeRefund->id,
                     'statement_descriptor_suffix' => $booking->reference
                 ]);
+
+                if ($chargeAmount > 0 && $booking->practitioner->stripe_account_id) {
+                    $this->stripe->charges->create([
+                                                       'amount'                      => $chargeAmount,
+                                                       'currency'                    => config('app.platform_currency'),
+                                                       'source'                      => $booking->practitioner->stripe_account_id,
+                                                       'statement_descriptor_suffix' => $booking->reference
+                                                   ]);
+                }
+
+            } catch (ApiErrorException $e) {
+                Log::channel('stripe_refund_fail')->info('Stripe refund error: ', [
+                    'user_id'         => $booking->user_id ?? null,
+                    'practitioner_id' => $booking->practitioner_id ?? null,
+                    'booking_id'      => $booking->id ?? null,
+                    'payment_stripe'  => $booking->purchase->stripe_id ?? null,
+                    'message'         => $e->getMessage(),
+                ]);
             }
-
-        } catch (ApiErrorException $e) {
-            Log::channel('stripe_refund_fail')->info('Stripe refund error: ', [
-                'user_id'         => $booking->user_id ?? null,
-                'practitioner_id' => $booking->practitioner_id ?? null,
-                'booking_id'      => $booking->id ?? null,
-                'payment_stripe'  => $booking->purchase->stripe_id ?? null,
-                'message'         => $e->getMessage(),
-            ]);
         }
 
-        if (Auth::id() === $booking->user_id) {
-            event(new BookingCancelledByClient($booking, $cancellation));
-        } else {
-            event(new BookingCancelledByPractitioner($booking));
-        }
+        $booking->cancelled_at = Carbon::now();
+        $booking->status = 'canceled';
+        $booking->save();
+
+        $cancellation = new Cancellation();
+        $cancellation->fill([
+                                'user_id'             => $booking->user_id,
+                                'booking_id'          => $booking->id,
+                                'purchase_id'         => $booking->purchase_id,
+                                'practitioner_id'     => $booking->practitioner_id,
+                                'amount'              => $refundValue,
+                                'fee'                 => $totalFee > 0 ? $totalFee : null,
+                                'cancelled_by_client' => $actionRole === User::ACCOUNT_CLIENT,
+                                'stripe_id'           => $stripeRefund->id ?? null
+                            ]);
+        $cancellation->save();
 
         $notification = new Notification();
 
-        if ($booking->practitioner_id === Auth::id()) {
-            $notification->type = 'booking_canceled_by_practitioner';
-            $notification->receiver_id = $booking->user_id;
-        } else {
+        if ($actionRole === User::ACCOUNT_CLIENT) {
             $notification->type = 'booking_canceled_by_client';
             $notification->receiver_id = $booking->practitioner_id;
+        } else {
+            $notification->type = 'booking_canceled_by_practitioner';
+            $notification->receiver_id = $booking->user_id;
         }
 
         $notification->client_id = $booking->user_id;
@@ -126,6 +127,11 @@ class CancelBooking {
 
         $notification->save();
 
+        if ($actionRole === User::ACCOUNT_CLIENT) {
+            event(new BookingCancelledByClient($booking, $cancellation));
+        } else {
+            event(new BookingCancelledByPractitioner($booking));
+        }
 
         return response(null, 204);
     }

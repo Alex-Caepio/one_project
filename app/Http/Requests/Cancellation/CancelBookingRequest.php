@@ -2,9 +2,11 @@
 
 namespace App\Http\Requests\Cancellation;
 
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 /**
  * @property Booking booking
@@ -28,7 +30,12 @@ class CancelBookingRequest extends FormRequest {
      * @return array
      */
     public function rules() {
-        return [];
+        return [
+            'role' => [
+                'nullable',
+                Rule::in([User::ACCOUNT_PRACTITIONER, User::ACCOUNT_CLIENT]),
+            ],
+        ];
     }
 
     public function withValidator($validator): void {
