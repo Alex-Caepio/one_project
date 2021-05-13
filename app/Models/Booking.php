@@ -13,8 +13,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 /**
  * @property float commission_on_sale
  */
-class Booking extends Model
-{
+class Booking extends Model {
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
@@ -37,33 +36,39 @@ class Booking extends Model
         'is_installment'
     ];
 
-    public function user()
-    {
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeActive(Builder $query): Builder {
+        return $query->whereNotIn('status', ['canceled', 'completed']);
+    }
+
+    public function isActive(): bool {
+        return !in_array($this->status, ['canceled', 'completed']);
+    }
+
+    public function user() {
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
-    public function practitioner()
-    {
+    public function practitioner() {
         return $this->belongsTo(User::class, 'practitioner_id', 'id');
     }
 
-    public function schedule()
-    {
+    public function schedule() {
         return $this->belongsTo(Schedule::class);
     }
 
-    public function price()
-    {
+    public function price() {
         return $this->belongsTo(Price::class);
     }
 
-    public function schedule_availability()
-    {
+    public function schedule_availability() {
         return $this->belongsTo(ScheduleAvailability::class);
     }
 
-    public function purchase()
-    {
+    public function purchase() {
         return $this->belongsTo(Purchase::class);
     }
 
@@ -71,8 +76,7 @@ class Booking extends Model
         return $this->hasOne(Cancellation::class);
     }
 
-    public function scopeFilter(Builder $builder, QueryFilter $filters)
-    {
+    public function scopeFilter(Builder $builder, QueryFilter $filters) {
         return $filters->apply($builder);
     }
 

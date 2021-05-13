@@ -59,7 +59,7 @@ class RescheduleRequestController extends Controller {
     }
 
     public function scheduleReschedule(Schedule $schedule, ScheduleRescheduleRequestRequest $request) {
-        $bookings = $schedule->bookings()->get();
+        $bookings = $schedule->bookings()->active()->get();
         if (count($bookings)) {
             $this->rescheduleByBookingIds($bookings->pluck('id')->all(), $request);
         }
@@ -68,13 +68,11 @@ class RescheduleRequestController extends Controller {
 
     private function rescheduleByBookingIds(array $bookingIds, $request): void {
         RescheduleRequest::whereIn('booking_id', $bookingIds)->delete();
-        $bookings = Booking::whereIn('id', $bookingIds)->get();
+        $bookings = Booking::whereIn('id', $bookingIds)->active()->get();
         foreach ($bookings as $bookingItem) {
             run_action(RescheduleRequestStore::class, $bookingItem, $request);
         }
     }
-
-
 
     public function accept(AcceptRescheduleRequestRequest $request, RescheduleRequest $rescheduleRequest) {
         $booking = $rescheduleRequest->booking;
@@ -96,7 +94,7 @@ class RescheduleRequestController extends Controller {
         // declined by client of the booking
         if ($rescheduleRequest->requested_by === User::ACCOUNT_PRACTITIONER && $rescheduleRequest->user_id === Auth::id()) {
             run_action(CancelBooking::class, $rescheduleRequest->booking,
-                       (int)$rescheduleRequest->schedule->id === (int)$rescheduleRequest->new_schedule_id);
+                       (int)$rescheduleRequest->schedule_id === (int)$rescheduleRequest->new_schedule_id);
         }
 
         $rescheduleRequest->delete();

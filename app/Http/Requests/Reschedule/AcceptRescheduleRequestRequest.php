@@ -30,4 +30,13 @@ class AcceptRescheduleRequestRequest extends FormRequest {
     public function rules() {
         return [];
     }
+
+    public function withValidator($validator): void {
+        $validator->after(function($validator) {
+            if (!$this->booking->isActive()) {
+                $validator->errors()->add('error', 'Booking is completed or canceled');
+            }
+        });
+    }
+
 }

@@ -51,6 +51,10 @@ class RescheduleRequestRequest extends Request {
 
     public function withValidator($validator): void {
         $validator->after(function($validator) {
+            if (!$this->booking->isActive()) {
+                $validator->errors()->add('error', 'Booking is completed or canceled');
+            }
+
             if ((int)$this->booking->schedule_id === (int)$this->get('new_schedule_id')) {
                 $validator->errors()->add('error', 'Please, select new schedule for reschedule');
             }

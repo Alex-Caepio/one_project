@@ -40,6 +40,7 @@ class AuthController extends Controller
                 'type'  => 'standard',
                 'email' => $request->email,
             ]);
+
             $user           = run_action(CreateUserFromRequest::class, $request, [
                 'stripe_customer_id' => $stripeCustomer->id,
                 'stripe_account_id'  => $stripeAccount->id

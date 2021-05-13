@@ -31,4 +31,12 @@ class CancelBookingRequest extends FormRequest {
         return [];
     }
 
+    public function withValidator($validator): void {
+        $validator->after(function($validator) {
+            if (!$this->booking->isActive()) {
+                $validator->errors()->add('error', 'Booking is completed or canceled');
+            }
+        });
+    }
+
 }

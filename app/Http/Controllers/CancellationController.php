@@ -40,12 +40,12 @@ class CancellationController extends Controller {
     }
 
     public function cancelManyBookings(CancelManyBookingsRequest $request) {
-        $this->cancelCollection(Booking::find($request->get('booking_ids')));
+        $this->cancelCollection(Booking::whereIn('id', $request->get('booking_ids'))->active()->get());
         return response(null, 204);
     }
 
     public function cancelSchedule(Schedule $schedule, CancelScheduleRequest $request) {
-        $this->cancelCollection($schedule->bookings);
+        $this->cancelCollection(Booking::where('schedule_id', $schedule->id)->active()->get());
         return response(null, 204);
     }
 
