@@ -43,7 +43,7 @@ class BookingTransformer extends Transformer {
             'status'          => $booking->status,
             'amount'          => $booking->amount,
             'is_installment'  => $booking->is_installment,
-            'is_active'       => $booking->is_active
+            'is_active'       => $booking->isActive()
         ];
     }
 
