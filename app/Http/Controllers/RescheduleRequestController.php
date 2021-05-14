@@ -92,9 +92,10 @@ class RescheduleRequestController extends Controller {
         event(new RescheduleRequestDeclinedByClient($rescheduleRequest));
 
         // declined by client of the booking
-        if ($rescheduleRequest->requested_by === User::ACCOUNT_PRACTITIONER && $rescheduleRequest->user_id === Auth::id()) {
+        if ($rescheduleRequest->requested_by === User::ACCOUNT_PRACTITIONER && $rescheduleRequest->user_id === Auth::id()
+            &&  (int)$rescheduleRequest->schedule_id === (int)$rescheduleRequest->new_schedule_id) {
             run_action(CancelBooking::class, $rescheduleRequest->booking,
-                       (int)$rescheduleRequest->schedule_id === (int)$rescheduleRequest->new_schedule_id);
+                       true);
         }
 
         $rescheduleRequest->delete();
