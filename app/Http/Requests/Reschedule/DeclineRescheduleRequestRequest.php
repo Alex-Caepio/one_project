@@ -31,7 +31,7 @@ class DeclineRescheduleRequestRequest extends FormRequest {
 
     public function withValidator($validator): void {
         $validator->after(function($validator) {
-            if (!$this->booking->isActive()) {
+            if (!$this->rescheduleRequest->booking->isActive()) {
                 $validator->errors()->add('error', 'Booking is completed or canceled');
             }
         });
