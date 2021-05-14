@@ -36,7 +36,7 @@ class CancelBooking {
         $totalFee = 0;
         $stripeRefund = null;
 
-        if ($request->filled('role')) {
+        if ($request !== null && $request->filled('role')) {
             $actionRole = $request->get('role');
         } else {
             $actionRole = Auth::id() === $booking->user_id ? User::ACCOUNT_CLIENT : User::ACCOUNT_PRACTITIONER;
