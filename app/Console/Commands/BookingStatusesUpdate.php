@@ -28,6 +28,8 @@ class BookingStatusesUpdate extends Command {
      * @return void
      */
     public function handle(): void {
-        Booking::whereIn('status', ['upcoming', 'rescheduled'])->where('datetime_from', '<', Carbon::now())->whereNull('cancelled_at')->update(['status' => 'completed']);
+        Booking::where('datetime_from', '<', Carbon::now())
+               ->active()
+               ->update(['status' => 'completed']);
     }
 }

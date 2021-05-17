@@ -71,6 +71,8 @@ class GoogleCalendarIntegrationController extends Controller {
     }
 
     public function getEventList(EventListRequest $request) {
+        Log::info('Get Events: ');
+        Log::info(Auth::user()->calendar);
         $gcHelper = new GoogleCalendarHelper(Auth::user()->calendar);
         return response(fractal($gcHelper->getEventList(), new GoogleCalendarEventTransformer())
                             ->parseIncludes($request->getIncludes())->toArray());

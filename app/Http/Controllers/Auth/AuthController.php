@@ -76,7 +76,6 @@ class AuthController extends Controller
         return fractal($user, new UserTransformer())->respond();
     }
 
-
     public function login(LoginRequest $request) {
         $user = User::where('email', $request->get('email'))->first();
 
@@ -130,6 +129,7 @@ class AuthController extends Controller
         }
 
         $user->update($request->all());
+
         if ($request->filled('password')) {
             $user->password = Hash::make($request->get('password'));
             $user->save();

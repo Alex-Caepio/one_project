@@ -25,7 +25,7 @@ class GoogleCalendarHelper {
         $this->_client->setAccessType('offline');
         $this->_client->setIncludeGrantedScopes(true);
         $this->_client->setApprovalPrompt('force');
-        $this->_client->addScope(\Google_Service_Calendar::CALENDAR);
+        $this->_client->addScope([\Google_Service_Calendar::CALENDAR, \Google_Service_Calendar::CALENDAR_EVENTS]);
         $this->_client->setRedirectUri(config('google-calendar.calendar_redirect_uri'));
         if ($calendar instanceof GoogleCalendar) {
             $this->setUserCalendar($calendar);
@@ -50,7 +50,7 @@ class GoogleCalendarHelper {
                                            'created'       => $this->_calendar->access_created_at,
                                        ]);
 
-        if ($this->_calendar->refresh_token && $this->_client->isAccessTokenExpired()) {
+        if ($this->_client->isAccessTokenExpired()) {
             Log::info('Google Authorization Token Expired');
             $refreshToken = $this->_client->getRefreshToken();
             if ($refreshToken !== null) {
@@ -67,6 +67,8 @@ class GoogleCalendarHelper {
                 'access_token'  => $this->_calendar->access_token
             ]);
             throw new \Exception('Google Calendar Integration in not valid');
+        } else {
+            Log::info('Access token is not expired... Continue...');
         }
     }
 

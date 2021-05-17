@@ -15,6 +15,7 @@ class UserFactory extends Factory
     public function definition()
     {
         $type = ['client', 'practitioner'];
+
         return [
             'first_name' => Str::random(10),
             'last_name' => Str::random(10),
@@ -28,7 +29,8 @@ class UserFactory extends Factory
             'business_email' => $this->faker->sentence(),
             'business_introduction' => $this->faker->sentence(),
             'business_time_zone_id' => $this->faker->randomDigit,
-            'business_country' => $this->faker->sentence(),
+            'business_country_id' => $this->faker->randomNumber(),
+            'country_id' => $this->faker->randomNumber(),
             'business_city' => $this->faker->sentence(),
             'business_postal_code' => $this->faker->sentence(),
             'business_time_zone' => $this->faker->sentence(),

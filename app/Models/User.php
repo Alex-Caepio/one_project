@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
@@ -79,7 +80,7 @@ class User extends Authenticatable implements MustVerifyEmail {
         'avatar_url',
         'background_url',
         'termination_message',
-        'business_country',
+        'business_country_id',
         'business_city',
         'business_postal_code',
         'business_time_zone',
@@ -88,7 +89,7 @@ class User extends Authenticatable implements MustVerifyEmail {
         'address',
         'city',
         'postal_code',
-        'country',
+        'country_id',
         'gender',
         'accepted_practitioner_agreement'
     ];
@@ -271,8 +272,18 @@ class User extends Authenticatable implements MustVerifyEmail {
         return $this->hasOne(GoogleCalendar::class);
     }
 
+    public function country(): BelongsTo {
+        return $this->belongsTo(Country::class, 'country_id');
+    }
+
+    public function business_country(): BelongsTo {
+        return $this->belongsTo(Country::class, 'business_country_id');
+    }
+
     public function unavailabilities(): HasMany {
         return $this->hasMany(UserUnavailabilities::class, 'id', 'practitioner_id');
     }
+
+
 
 }
