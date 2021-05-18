@@ -13,6 +13,7 @@ use App\Http\Requests\Auth\PublishRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\UpdateRequest;
 use App\Models\Booking;
+use App\Models\Country;
 use App\Models\Keyword;
 use App\Models\User;
 use App\Traits\hasMediaItems;
@@ -24,26 +25,20 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
+use Stripe\Account;
 use Stripe\StripeClient;
 
 
-class AuthController extends Controller
-{
+class AuthController extends Controller {
     use hasMediaItems;
 
-    public function register(RegisterRequest $request, StripeClient $stripe)
-    {
+    public function register(RegisterRequest $request, StripeClient $stripe) {
         try {
 
             $stripeCustomer = run_action(CreateStripeUserByEmail::class, $request->email);
-            $stripeAccount  = $stripe->accounts->create([
-                'type'  => 'standard',
-                'email' => $request->email,
-            ]);
 
-            $user           = run_action(CreateUserFromRequest::class, $request, [
-                'stripe_customer_id' => $stripeCustomer->id,
-                'stripe_account_id'  => $stripeAccount->id
+            $user = run_action(CreateUserFromRequest::class, $request, [
+                'stripe_customer_id' => $stripeCustomer->id
             ]);
 
         } catch (\Stripe\Exception\ApiErrorException $e) {
@@ -54,7 +49,6 @@ class AuthController extends Controller
                 'business_email'     => $request->business_email,
                 'email'              => $request->email,
                 'stripe_customer_id' => $stripeCustomer->id,
-                'stripe_account_id'  => $stripeAccount->id,
                 'message'            => $e->getMessage(),
             ]);
 
@@ -68,7 +62,6 @@ class AuthController extends Controller
             'business_email'     => $request->business_email,
             'email'              => $request->email,
             'stripe_customer_id' => $stripeCustomer->id,
-            'stripe_account_id'  => $stripeAccount->id,
         ]);
 
         event(new UserRegistered($user));
@@ -82,20 +75,14 @@ class AuthController extends Controller
         $permissions = run_action(GetUsersPermissions::class, $user);
         $user->withAccessToken($user->createToken('access-token', $permissions));
 
-        return fractal($user, new UserTransformer())
-            ->parseIncludes('access_token')
-            ->respond();
+        return fractal($user, new UserTransformer())->parseIncludes('access_token')->respond();
     }
 
-    public function profile(Request $request)
-    {
-        return fractal($request->user(), new UserTransformer())
-            ->parseIncludes($request->getIncludes())
-            ->respond();
+    public function profile(Request $request) {
+        return fractal($request->user(), new UserTransformer())->parseIncludes($request->getIncludes())->respond();
     }
 
-    public function update(UpdateRequest $request, StripeClient $stripe)
-    {
+    public function update(UpdateRequest $request, StripeClient $stripe) {
         $user = $request->user();
 
         if ($request->cancel_bookings_on_unpublish && !$request->is_published && !$user->is_published) {
@@ -106,29 +93,63 @@ class AuthController extends Controller
             }
         }
 
-        if (!$user->is_published && $request->is_published) {
-            $user->published_at = now();
-            $user->save();
+
+        if ($request->filled('email') && auth()->user()->email !== $request->get('email')) {
+            $stripe->customers->update(auth()->user()->stripe_customer_id, ['email' => $request->get('email')]);
         }
 
-        if ($request->is_published === true) {
-            $user->is_published = true;
-            $user->save();
-        } elseif($request->is_published === false) {
-            $user->is_published = false;
-            $user->save();
-        }
+        $requestData = $request->all();
 
-        if ($request->has('email')) {
-            if (auth()->user()->email != $request->get('email')) {
-                $stripe->customers->update(
-                    auth()->user()->stripe_customer_id,
-                    ['email' => $request->get('email')]
-                );
+        // first filling of STRIPE country
+        if (auth()->user()->isPractitioner()) {
+
+            if ($request->getBoolFromRequest('is_published') === true) {
+                $user->is_published = true;
+                if (!$user->published_at) {
+                    $user->published_at = now();
+                }
+            } elseif ($request->getBoolFromRequest('is_published') === false) {
+                $user->is_published = false;
+            }
+
+            if (!auth()->user()->business_country_id && $request->filled('business_country_id')) {
+                try {
+                    $country = Country::findOrFail((int)$request->get('business_country_id'));
+                    $stripeAccount = $stripe->accounts->create([
+                                                                   'country'      => $country->iso,
+                                                                   'type'         => Account::TYPE_CUSTOM,
+                                                                   'capabilities' => [
+                                                                       Account::CAPABILITY_CARD_PAYMENTS     => [
+                                                                           'requested' => true,
+                                                                       ],
+                                                                       Account::CAPABILITY_TRANSFERS         => [
+                                                                           'requested' => true,
+                                                                       ],
+                                                                       Account::CAPABILITY_PLATFORM_PAYMENTS => [
+                                                                           'requested' => true,
+                                                                       ]
+                                                                   ],
+                                                                   'email'        => $user->email,
+                                                               ]);
+                    $user->stripe_account_id = $stripeAccount->id;
+                } catch (\Exception $e) {
+                    Log::channel('stripe_client_error')->info("New Account could not registered in stripe", [
+                        'user_id'    => $user->id,
+                        'email'      => $user->email,
+                        'message'    => $e->getMessage(),
+                        'country_id' => (int)$request->get('business_country_id')
+                    ]);
+                    return abort(500);
+                }
+                Log::channel('stripe_client_success')->info("New account has been registered in stripe", [
+                    'user_id'           => $user->id,
+                    'email'             => $request->email,
+                    'stripe_account_id' => $user->stripe_account_id,
+                ]);
             }
         }
 
-        $user->update($request->all());
+        $user->update($requestData);
 
         if ($request->filled('password')) {
             $user->password = Hash::make($request->get('password'));
@@ -151,7 +172,7 @@ class AuthController extends Controller
         if ($request->filled('keywords')) {
             $user->keywords()->whereNotIn('title', $request->keywords)->delete();
             foreach ($request->keywords as $keyword) {
-                $ids        = Keyword::firstOrCreate(['title' => $keyword])->pluck('id');
+                $ids = Keyword::firstOrCreate(['title' => $keyword])->pluck('id');
                 $keywordIds = collect($ids);
             }
 
@@ -219,19 +240,15 @@ class AuthController extends Controller
                                                 ]);
     }
 
-    public function delete(Request $request)
-    {
+    public function delete(Request $request) {
         $request->user()->delete();
 
         return response(null, 204);
     }
 
-    public function show($slug, Request $request)
-    {
+    public function show($slug, Request $request) {
         $user = User::where('slug', $slug)->with($request->getIncludes())->firstOrFail();
 
-        return fractal($user, new UserTransformer())
-            ->parseIncludes($request->getIncludes())
-            ->respond();
+        return fractal($user, new UserTransformer())->parseIncludes($request->getIncludes())->respond();
     }
 }

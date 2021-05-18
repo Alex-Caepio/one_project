@@ -18,7 +18,7 @@ class CreateUserFromRequest
             $attributes['password'] = Hash::make($attributes['password']);
         }
 
-        if($request->account_type == 'practitioner') {
+        if($request->account_type === User::ACCOUNT_PRACTITIONER) {
             $plan = Plan::where('is_free', 1)->first();
 
             if($plan){
