@@ -835,8 +835,11 @@ schemas:
       business_company_houses_id:
         type: string
         nullable: true
-      business_country:
-        type: string
+      business_country_id:
+        type: integer
+        nullable: true
+      country_id:
+        type: integer
         nullable: true
       business_city:
         type: string
@@ -1467,7 +1470,7 @@ paths:
           required: false
           schema:
             type: string
-            example: calendar,plan,unavailabilities
+            example: calendar,plan,unavailabilities,country,business_country
       responses:
         "200":
           description: OK
@@ -2495,14 +2498,14 @@ paths:
           required: false
           schema:
             type: string
-            example: access_token,services,articles,schedules,disciplines,promotion_codes,favourite_services,favourite_articles,favourite_practitioners,calendar
+            example: access_token,services,articles,schedules,disciplines,promotion_codes,favourite_services,favourite_articles,favourite_practitioners,calendar,country,business_country
         - name: x-with
           in: header
           description: Include additional objects in response
           required: false
           schema:
             type: integer
-            example: access_token,services,articles,schedules,disciplines,promotion_codes,favourite_services,favourite_articles,favourite_practitioners,calendar
+            example: access_token,services,articles,schedules,disciplines,promotion_codes,favourite_services,favourite_articles,favourite_practitioners,calendar,country,business_country
         - name: is_author
           in: query
           description: User has articles

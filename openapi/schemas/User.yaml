@@ -24,8 +24,11 @@ properties:
   business_company_houses_id:
     type: string
     nullable: true
-  business_country:
-    type: string
+  business_country_id:
+    type: integer
+    nullable: true
+  country_id:
+    type: integer
     nullable: true
   business_city:
     type: string
