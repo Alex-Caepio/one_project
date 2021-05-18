@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Admin;
 
 use App\Http\Requests\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Validator;
 
 class ArticlePublishRequest extends Request {
@@ -31,14 +32,16 @@ class ArticlePublishRequest extends Request {
                                  'description'  => 'required|string|min:5|max:3000',
                                  'introduction' => 'required|string|min:5|max:200'
                              ])->setData($this->article->toArray())->validate();
-        if (!$validator->fails()) {
+        
+        if (!$validator->fails() && !Auth::user()->is_admin) {
             $validator->after(function($validator) {
                 if (!$this->article->user->is_published) {
                     $validator->errors()->add('name', "Please publish Business Profile before publishing the Article");
                 }
 
-                if(!$this->article->user->plan->article_publishing) {
-                    $validator->errors()->add('is_published', "Please upgrade your subscription to be able to publish articles");
+                if (!$this->article->user->plan->article_publishing) {
+                    $validator->errors()
+                              ->add('is_published', "Please upgrade your subscription to be able to publish articles");
                 }
             });
         }
