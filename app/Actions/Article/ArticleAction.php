@@ -40,8 +40,7 @@ abstract class ArticleAction {
                                 'is_published' => $request->getBoolFromRequest('is_published'),
                                 'introduction' => $request->get('introduction'),
                                 'slug'         => $request->get('slug'),
-                                'image_url'    => $request->get('image_url'),
-                                'user_id'      => Auth::id(),
+                                'image_url'    => $request->get('image_url')
                             ]);
         $article->save();
         return $article;

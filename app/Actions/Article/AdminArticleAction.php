@@ -39,8 +39,7 @@ abstract class AdminArticleAction {
                                 'is_published' => $request->getBoolFromRequest('is_published'),
                                 'introduction' => $request->get('introduction'),
                                 'slug'         => $request->get('slug'),
-                                'image_url'    => $request->get('image_url'),
-                                'user_id'      => Auth::id(),
+                                'image_url'    => $request->get('image_url')
                             ]);
         $article->save();
         return $article;
@@ -48,23 +47,14 @@ abstract class AdminArticleAction {
 
     /**
      * @param \App\Models\Article $article
-     * @param \App\Http\Requests\Articles\ArticleRequest $request
+     * @param \App\Http\Requests\Admin\ArticleUpdateRequest $request
      */
     protected function fillRelations(Article $article, ArticleUpdateRequest $request): void {
 
-        if ($request->filled('media_images')){
-//            foreach ($request->media_images as $mediaImage)
-//            {
-//                if (Storage::disk(config('image.image_storage'))->missing(file_get_contents($mediaImage)))
-//                {
-//                    $image = Storage::disk(config('image.image_storage'))
-//                        ->put("/images/articles/{$article->id}/media_images/", file_get_contents($mediaImage));
-//                    $image_urls[] = Storage::url($image);
-//                }
-//            }
-//            $request->media_images = $image_urls;
+        if ($request->filled('media_images')) {
             $this->syncImages($request->media_images,$article);
         }
+
         if ($request->filled('media_videos')) {
             $this->syncVideos($request->media_videos,$article);
         }

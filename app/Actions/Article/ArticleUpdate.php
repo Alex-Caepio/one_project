@@ -13,6 +13,7 @@ class ArticleUpdate extends ArticleAction {
     /**
      * @param \App\Http\Requests\Articles\ArticleRequest $request
      * @param \App\Models\Article $article
+     * @return \App\Models\Article
      */
     public function execute(ArticleRequest $request, Article $article) {
 
