@@ -9,6 +9,7 @@ use App\Events\SubscriptionConfirmation;
 use App\Models\Article;
 use App\Models\Plan;
 use App\Http\Requests\Request;
+use App\Models\User;
 use App\Transformers\PlanTransformer;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -48,7 +49,8 @@ class PlanController extends Controller
 
             $user->plan_until   = Carbon::createFromTimestamp($subscription->current_period_end);
             $user->plan_from    = Carbon::now();
-            $user->account_type = 'practitioner';
+            $user->account_type = User::ACCOUNT_PRACTITIONER;
+
             $user->save();
 
             if ($isNewPlan) {

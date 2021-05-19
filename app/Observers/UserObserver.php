@@ -21,16 +21,23 @@ class UserObserver {
      * @return void
      */
     public function saving(User $user): void {
-        if ($user->isPractitioner() && $user->isDirty('is_published')) {
-            if (!$user->is_published && !$user->wasRecentlyCreated) {
-                Article::where('user_id', $user->id)->published()->update([
-                                                                              'is_published' => false,
-                                                                              'published_at' => null
-                                                                          ]);
-                Service::where('user_id', $user->id)->published()->update(['is_published' => false]);
-                event(new BusinessProfileUnpublished($user));
-            } elseif ($user->is_published) {
-                event(new BusinessProfileLive($user));
+        if ($user->isPractitioner()) {
+
+            if (!$user->business_email) {
+                $user->business_email = $user->email;
+            }
+
+            if ($user->isDirty('is_published')) {
+                if (!$user->is_published && !$user->wasRecentlyCreated) {
+                    Article::where('user_id', $user->id)->published()->update([
+                                                                                  'is_published' => false,
+                                                                                  'published_at' => null
+                                                                              ]);
+                    Service::where('user_id', $user->id)->published()->update(['is_published' => false]);
+                    event(new BusinessProfileUnpublished($user));
+                } elseif ($user->is_published) {
+                    event(new BusinessProfileLive($user));
+                }
             }
         }
     }

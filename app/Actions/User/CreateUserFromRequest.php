@@ -24,7 +24,7 @@ class CreateUserFromRequest
             if ($plan){
                 $attributes['plan_id'] = $plan->id;
             }
-            
+
             $attributes['business_email'] = $attributes['email'];
 
         }
