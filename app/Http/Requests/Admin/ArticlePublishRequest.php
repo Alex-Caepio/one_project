@@ -32,7 +32,7 @@ class ArticlePublishRequest extends Request {
                                  'description'  => 'required|string|min:5|max:3000',
                                  'introduction' => 'required|string|min:5|max:200'
                              ])->setData($this->article->toArray())->validate();
-        
+
         if (!$validator->fails() && !Auth::user()->is_admin) {
             $validator->after(function($validator) {
                 if (!$this->article->user->is_published) {

@@ -27,7 +27,7 @@ class ArticleRequest extends Request {
         if ($isPublished === true) {
             return [
                 'title'        => 'required|string|min:5|max:120',
-                'description'  => 'required|string|min:5|max:3000',
+                'description'  => 'required|string|min:5|max:15000',
                 'is_published' => 'required|boolean',
                 'introduction' => 'required|string|min:5|max:200',
                 'image_url'    => 'nullable|url',
@@ -35,7 +35,7 @@ class ArticleRequest extends Request {
         }
         return [
             'title'        => 'string|min:5|max:120',
-            'description'  => 'string|min:5|max:3000',
+            'description'  => 'string|min:5|max:15000',
             'is_published' => 'required|boolean',
             'introduction' => 'string|min:5|max:200',
             'image_url'    => 'nullable|url',
