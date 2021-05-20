@@ -136,7 +136,7 @@ class AuthController extends Controller {
                         'message'    => $e->getMessage(),
                         'country_id' => (int)$request->get('business_country_id')
                     ]);
-                    return abort(500);
+                    return abort(500, $e->getMessage());
                 }
                 Log::channel('stripe_client_success')->info("New account has been registered in stripe", [
                     'user_id'           => $user->id,
