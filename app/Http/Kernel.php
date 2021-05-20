@@ -4,6 +4,7 @@ namespace App\Http;
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\CheckAdmin;
 use App\Http\Middleware\CheckForMaintenanceMode;
+use App\Http\Middleware\EmailAuthenticate;
 use App\Http\Middleware\EncryptCookies;
 use App\Http\Middleware\Practitioner;
 use App\Http\Middleware\RedirectIfAuthenticated;
@@ -92,6 +93,7 @@ class Kernel extends HttpKernel
         'throttle' => ThrottleRequests::class,
         'verified' => EnsureEmailIsVerified::class,
         'practitioner' => Practitioner::class,
-        'stripe' => StripeAuthentication::class
+        'stripe' => StripeAuthentication::class,
+        'email-token' => EmailAuthenticate::class
     ];
 }

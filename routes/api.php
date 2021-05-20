@@ -36,6 +36,7 @@ use App\Http\Controllers\MessageController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\TimezoneController;
 use App\Http\Controllers\ImageController;
+use App\Http\Controllers\EmailLinkHandlerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -89,8 +90,12 @@ Route::get('/search', [SearchController::class, 'index']);
 Route::get('/latest-two', [LatestTwoController::class, 'index']);
 Route::get('/practitioners/{user}', [UserController::class, 'show']);
 
-Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
+Route::middleware(['auth:reschedule-token'])->group(function() {
+    Route::match(['post', 'get'], '/accept-reschedule/{reschedule_request}', [EmailLinkHandlerController::class, 'acceptReschedule']);
+    Route::match(['post', 'get'], '/decline-reschedule/{reschedule_request}', [EmailLinkHandlerController::class, 'declineReschedule']);
+});
 
+Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::post('/gcal/auth', [GoogleCalendarIntegrationController::class, 'auth'])->name('gcal-auth');
     Route::get('/gcal/events', [GoogleCalendarIntegrationController::class, 'getEventList']);
     Route::get('/gcal/settings', [GoogleCalendarIntegrationController::class, 'getSettings']);

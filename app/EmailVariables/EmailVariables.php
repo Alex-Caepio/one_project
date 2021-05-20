@@ -7,6 +7,7 @@ use App\Events\BookingConfirmation;
 use App\Models\Schedule;
 use App\Models\User;
 use App\Traits\GenerateCalendarLink;
+use App\Traits\RescheduleEmailLinks;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
@@ -19,7 +20,7 @@ use Illuminate\Support\Facades\URL;
  */
 class EmailVariables {
 
-    use GenerateCalendarLink;
+    use GenerateCalendarLink, RescheduleEmailLinks;
 
     public function __construct($event) {
         $this->event = $event;
@@ -59,9 +60,6 @@ class EmailVariables {
         return $this->event->schedule ?? null;
     }
 
-    private function generatePersonalAccessTokenForEmail(User $user): string {
-
-    }
 
     /**
      * @return string
@@ -458,14 +456,16 @@ class EmailVariables {
      * @return string
      */
     public function getAccept(): string {
-        return config('app.frontend_reschedule_apply') . '/' . $this->event->booking->reference;
+        return config('app.frontend_reschedule_apply') . '/' . $this->event->reschedule->id
+               . '?token='.$this->generatePersonalAccessToken($this->event->client);
     }
 
     /**
      * @return string
      */
     public function getDecline(): string {
-        return config('app.frontend_reschedule_apply') . '/' . $this->event->booking->reference . '/?';
+        return config('app.frontend_reschedule_decline') . '/' . $this->event->reschedule->id
+               . '?token='.$this->generatePersonalAccessToken($this->event->client, 'decline');
     }
 
     /**

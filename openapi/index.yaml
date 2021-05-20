@@ -1389,9 +1389,18 @@ paths:
                     type: string
                     nullable: true
                     example: example.com/users/johndoe
-                  stripe_id:
+                  stripe_customer_id:
                     type: string
                     example: cus_HpyQPawZU9Nw16
+                  stripe_account_id:
+                    type: string
+                    example: cus_HpyQPawZU9Nw16
+                  business_country_id:
+                    type: integer
+                    example: 98
+                  country_id:
+                    type: integer
+                    example: 97
                   business_time_zone_id:
                     type: integer
                     example: 98
