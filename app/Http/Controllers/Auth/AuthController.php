@@ -124,9 +124,6 @@ class AuthController extends Controller {
                                                                        ],
                                                                        Account::CAPABILITY_TRANSFERS         => [
                                                                            'requested' => true,
-                                                                       ],
-                                                                       Account::CAPABILITY_PLATFORM_PAYMENTS => [
-                                                                           'requested' => true,
                                                                        ]
                                                                    ],
                                                                    'email'        => $user->email,
