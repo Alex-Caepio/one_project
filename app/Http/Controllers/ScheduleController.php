@@ -108,7 +108,7 @@ class ScheduleController extends Controller {
     public function availabilities(Schedule $schedule) {
         $time = Carbon::now()->subMinutes(15);
         $amountTotal = $schedule->attendees;
-        $amountBought = ScheduleUser::where('schedule_id', $schedule->id)->count();
+        $amountBought = Booking::where('schedule_id', $schedule->id)->active()->count();
         $amountFreezed =
             ScheduleFreeze::where('schedule_id', $schedule->id)->where('freeze_at', '>', $time->toDateTimeString())
                           ->count();
