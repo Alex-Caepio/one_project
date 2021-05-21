@@ -23,17 +23,6 @@ class ArticleController extends Controller {
     public function index(Request $request): Response {
         $query = Article::query();
 
-        if ($request->hasSearch()) {
-            $search = $request->search();
-
-            $query->where(
-                function ($query) use ($search) {
-                    $query->where('title', 'like', "%{$search}%")
-                        ->orWhere('introduction', 'like', "%{$search}%")
-                        ->orWhere('description', 'like', "%{$search}%");
-                }
-            );
-        }
 
         $articleFilter = new ArticleFiltrator();
         $articleFilter->apply($query, $request);

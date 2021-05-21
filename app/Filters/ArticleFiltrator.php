@@ -27,6 +27,8 @@ class ArticleFiltrator {
                 })->orWhereHas('disciplines', function($dQuery) use ($search) {
                     $dQuery->where('name', 'LIKE', $search);
                 })->orWhere('title', 'LIKE', $search)
+                  ->orWhere('introduction', 'LIKE', $search)
+                  ->orWhere('description', 'LIKE', $search)
                   ->orWhereHas('user', function($userQuery) use ($search) {
                         $userQuery->where('first_name', 'LIKE', $search)->orWhere('last_name', 'LIKE', $search)
                                   ->orWhere('business_name', 'LIKE', $search);

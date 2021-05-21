@@ -44,18 +44,18 @@ class ServiceFiltrator {
 
         $isPublished = $request->getBoolFromRequest('is_published');
         if ($isPublished !== null) {
-            $queryBuilder->where('is_published', $isPublished);
+            $queryBuilder->where('services.is_published', $isPublished);
         }
 
         $practitioners = $request->getArrayFromRequest('practitioners');
         if (!empty($practitioners)) {
-            $queryBuilder->whereIn('user_id', $practitioners);
+            $queryBuilder->whereIn('services.user_id', $practitioners);
         }
 
         $searchString = $request->get('search');
 
         if ($searchString) {
-            $queryBuilder->where('title', 'like', "%{$searchString}%");
+            $queryBuilder->where('services.title', 'like', "%{$searchString}%");
         }
 
         $sortBy = $request->get('sortby');
