@@ -135,9 +135,6 @@ class ArticleController extends Controller
             $queryBuilder->where('user_id', $userId);
         }
 
-
-        $queryBuilder->orderByDesc('id');
-
         if ($request->has('recently_published')) {
             $queryBuilder->orderByDesc('published_at');
         }

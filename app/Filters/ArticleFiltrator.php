@@ -22,16 +22,25 @@ class ArticleFiltrator {
         if ($request->filled('search')) {
             $search = '%' . $request->get('search') . '%';
             $queryBuilder->where(function($query) use ($search) {
-                $query->where('title', 'LIKE', $search)->orWhereHas('user', function($userQuery) use ($search) {
-                    $userQuery->where('first_name', 'LIKE', $search)
-                              ->orWhere('last_name', 'LIKE', $search)
-                              ->orWhere('business_name', 'LIKE', $search);
-                });
+                $query->whereHas('focus_areas', function($focusQuery) use ($search) {
+                    $focusQuery->where('name', 'LIKE', $search);
+                })->orWhereHas('disciplines', function($dQuery) use ($search) {
+                    $dQuery->where('name', 'LIKE', $search);
+                })->orWhere('title', 'LIKE', $search)
+                  ->orWhereHas('user', function($userQuery) use ($search) {
+                        $userQuery->where('first_name', 'LIKE', $search)->orWhere('last_name', 'LIKE', $search)
+                                  ->orWhere('business_name', 'LIKE', $search);
+                    })
+                  ->orWhereHas('keywords', function($kQuery) use ($search) {
+                      $kQuery->where('title', 'LIKE', $search);
+                    });
             });
+        } else {
+            $queryBuilder->orderByDesc('id');
         }
 
         if ($request->filled('discipline_id')) {
-            $queryBuilder->whereHas('disciplines', function($q) use ($request){
+            $queryBuilder->whereHas('disciplines', function($q) use ($request) {
                 $q->where('discipline_id', $request->discipline_id);
             });
         }
