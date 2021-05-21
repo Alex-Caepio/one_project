@@ -65,7 +65,7 @@ class SavePromotion {
                                       ? Carbon::parse($request->get('valid_from'))->startOfDay()
                                       : Carbon::now()->startOfDay(),
                                   'expiry_date'    => $request->filled('expiry_date')
-                                      ? Carbon::parse($request->get('expiry_date'))
+                                      ? Carbon::parse($request->get('expiry_date'))->endOfDay()
                                       : null,
                                   'spend_min'      => $request->get('spend_min'),
                                   'spend_max'      => $request->get('spend_max'),
