@@ -22,9 +22,9 @@ class ClientRescheduledFyi {
                                     'booking',
                                     'booking.schedule',
                                     'booking.schedule.service',
-                                    'user',
+                                    'booking.user',
                                     'new_schedule',
-                                    'practitioner'
+                                    'booking.practitioner'
                                 ]);
         $this->booking = $reschedule->booking;
         $this->fillEvent();
