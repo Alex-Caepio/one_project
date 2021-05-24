@@ -25,10 +25,14 @@ class UserFiltrator {
         }
 
         if ($request->filled('search')) {
-            $search = '%' . $request->get('search') . '%';
-            $queryBuilder->where(function($query) use ($search) {
-                $query->where('first_name', 'LIKE', $search)->orWhere('last_name', 'LIKE', $search)
-                      ->orWhere('email', 'LIKE', $search)->orWhere('business_name', 'LIKE', $search);
+            $search = '%' . trim($request->get('search')) . '%';
+            $emailReplace = str_replace(' ', '+', $search);
+            $queryBuilder->where(function($query) use ($search, $emailReplace) {
+                $query->where('first_name', 'LIKE', $search)
+                      ->orWhere('last_name', 'LIKE', $search)
+                      ->orWhere('business_email', 'LIKE', $emailReplace)
+                      ->orWhere('email', 'LIKE', $emailReplace)
+                      ->orWhere('business_name', 'LIKE', $search);
             });
         }
 

@@ -15,6 +15,7 @@ use App\Http\Requests\Admin\PractitionerShowRequest;
 use App\Http\Requests\Admin\PractitionerUpdateRequest;
 use App\Http\Requests\Admin\PractitionerDestroyRequest;
 use App\Actions\Practitioners\CreatePractitionerFromRequest;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
 
