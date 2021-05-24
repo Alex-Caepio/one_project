@@ -19,7 +19,9 @@
     @endif
     {!! $replacedContent !!}
     @if ($footer)
-        {!! $footer !!}
+        <tr>
+            <td>{!! $footer !!} </td>
+        </tr>
     @endif
 </table>
 </body>
