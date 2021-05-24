@@ -5,6 +5,7 @@ namespace App\Traits;
 
 
 use App\Models\Schedule;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -27,23 +28,24 @@ trait GenerateCalendarLink {
      */
     public function generateGoogleLink(Schedule $schedule): string {
         $location =
-            $schedule->url . $schedule->venue_name . ' ' . $schedule->venue_address . ' ' . $schedule->city . ' ' .
-            $schedule->country . ' ' . $schedule->post_code;
+            urlencode($schedule->url . $schedule->venue_name . ' ' . $schedule->venue_address . ' ' . $schedule->city . ' ' .
+            $schedule->country . ' ' . $schedule->post_code);
         $startDate = Carbon::parse($schedule->start_date);
         $endDate = Carbon::parse($schedule->end_date);
         return 'https://www.google.com/calendar/render?action=TEMPLATE&text=' . $schedule->service->title .
-               '&details=' . $schedule->title . '&location=' . $location . '&dates=' .
+               '&details=' . urlencode($schedule->title) . '&location=' . $location . '&dates=' .
                $startDate->format(self::$format) . '%2F' . $endDate->format(self::$format);
 
     }
 
 
-    public function generateIcs(Schedule $schedule): string {
+    public function generateIcs(Schedule $schedule, User $practitioner): string {
         $calendarName = $schedule->service->title;
         $fileName = Str::slug($calendarName) . date('YmdHis') . '.ics';
         $calendarContent = Calendar::create($calendarName)->event(Event::create($schedule->title)
                                                                        ->startsAt(Carbon::parse($schedule->start_date))
-                                                                       ->endsAt(Carbon::parse($schedule->end_date)))
+                                                                       ->endsAt(Carbon::parse($schedule->end_date))
+                                                                       ->organizer($practitioner->business_email, $practitioner->business_name))
                                    ->get();
         Storage::disk('local')->put($fileName, $calendarContent);
         return $fileName;

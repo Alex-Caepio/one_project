@@ -132,6 +132,13 @@ class EmailVariables {
         return config('app.frontend_public_profile').$this->event->user->slug;
     }
 
+    /**
+     * @return \App\Models\User|null
+     */
+    public function getPractitioner(): ?User {
+        return $this->event->practitioner ?? null;
+    }
+
 
 
     /**

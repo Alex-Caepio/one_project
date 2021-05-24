@@ -5,6 +5,7 @@ namespace App\Mail;
 use App\EmailVariables\EmailVariables;
 use App\Models\CustomEmail;
 use App\Models\Schedule;
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -54,8 +55,9 @@ class TransactionalEmail extends Mailable {
      */
     public function attachCalendar(): Mailable {
         $schedule = $this->emailVariables->getSchedule();
-        if ($this->emailVariables->calendarPresented === true && $schedule instanceof Schedule) {
-            $attachmentName = $this->emailVariables->generateIcs($schedule);
+        $practitioner = $this->emailVariables->getPractitioner();
+        if ($this->emailVariables->calendarPresented === true && $schedule instanceof Schedule && $practitioner instanceof User) {
+            $attachmentName = $this->emailVariables->generateIcs($schedule, $practitioner);
             $this->attach(storage_path('app') . DIRECTORY_SEPARATOR . $attachmentName, [
                 'as'   => $attachmentName,
                 'mime' => 'text/calendar',
