@@ -27,6 +27,10 @@ class UserObserver {
                 $user->business_email = $user->email;
             }
 
+            if (!$user->business_country_id && $user->country_id) {
+                $user->business_country_id = $user->country_id;
+            }
+
             if ($user->isDirty('is_published')) {
                 if (!$user->is_published && !$user->wasRecentlyCreated) {
                     Article::where('user_id', $user->id)->published()->update([

@@ -11,6 +11,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\PublishRequest;
 use App\Http\Requests\Auth\RegisterRequest;
+use App\Http\Requests\Auth\UpdateBusinessRequest;
+use App\Http\Requests\Auth\UpdateMediaRequest;
 use App\Http\Requests\Auth\UpdateRequest;
 use App\Models\Booking;
 use App\Models\Country;
@@ -82,70 +84,87 @@ class AuthController extends Controller {
         return fractal($request->user(), new UserTransformer())->parseIncludes($request->getIncludes())->respond();
     }
 
+    // update simple details
     public function update(UpdateRequest $request, StripeClient $stripe) {
         $user = $request->user();
 
-        if ($request->cancel_bookings_on_unpublish && !$request->is_published && !$user->is_published) {
+        if ($user->email !== $request->get('email')) {
+            $stripe->customers->update($user->stripe_customer_id, ['email' => $request->get('email')]);
+        }
+
+        $user->update($request->all());
+
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->get('password'));
+            $user->save();
+        }
+
+        return fractal($user, new UserTransformer())->respond();
+    }
+
+    //update practitioner business details
+    public function updateBusiness(UpdateBusinessRequest $request, StripeClient $stripe) {
+        $user = $request->user();
+
+        /*
+        if ($request->cancel_bookings_on_unpublish && !$user->is_published) {
             $bookings = Booking::where('user_id', $user->id)->active()->get();
 
             foreach ($bookings as $booking) {
                 run_action(CancelBooking::class, $booking);
             }
         }
-
-
-        if ($request->filled('email') && auth()->user()->email !== $request->get('email')) {
-            $stripe->customers->update(auth()->user()->stripe_customer_id, ['email' => $request->get('email')]);
-        }
+        */
 
         $requestData = $request->all();
 
-        // first filling of STRIPE country
-        if (auth()->user()->isPractitioner()) {
+        $user->is_published = $request->getBoolFromRequest('is_published') === true;
 
-            $user->is_published = $request->getBoolFromRequest('is_published') === true;
-
-            if ($request->filled('business_country_id') && !auth()->user()->business_country_id) {
-                try {
-                    $country = Country::findOrFail((int)$request->get('business_country_id'));
-                    $stripeAccount = $stripe->accounts->create([
-                                                                   'country'      => $country->iso,
-                                                                   'type'         => Account::TYPE_CUSTOM,
-                                                                   'capabilities' => [
-                                                                       Account::CAPABILITY_CARD_PAYMENTS => [
-                                                                           'requested' => true,
-                                                                       ],
-                                                                       Account::CAPABILITY_TRANSFERS     => [
-                                                                           'requested' => true,
-                                                                       ]
+        //first filled business country
+        if (!$user->business_country_id && !$user->stripe_account_id) {
+            try {
+                $country = Country::findOrFail((int)$request->get('business_country_id'));
+                $stripeAccount = $stripe->accounts->create([
+                                                               'country'      => $country->iso,
+                                                               'type'         => Account::TYPE_CUSTOM,
+                                                               'capabilities' => [
+                                                                   Account::CAPABILITY_CARD_PAYMENTS => [
+                                                                       'requested' => true,
                                                                    ],
-                                                                   'email'        => $user->email,
-                                                               ]);
-                    $user->stripe_account_id = $stripeAccount->id;
-                } catch (\Exception $e) {
-                    Log::channel('stripe_client_error')->info("New Account could not registered in stripe", [
-                        'user_id'    => $user->id,
-                        'email'      => $user->email,
-                        'message'    => $e->getMessage(),
-                        'country_id' => (int)$request->get('business_country_id')
-                    ]);
-                    return abort(500, $e->getMessage());
-                }
+                                                                   Account::CAPABILITY_TRANSFERS     => [
+                                                                       'requested' => true,
+                                                                   ]
+                                                               ],
+                                                               'email'        => $user->email,
+                                                           ]);
+                $user->stripe_account_id = $stripeAccount->id;
+                $user->business_published_at = now();
                 Log::channel('stripe_client_success')->info("New account has been registered in stripe", [
                     'user_id'           => $user->id,
-                    'email'             => $request->email,
+                    'email'             => $user->email,
                     'stripe_account_id' => $user->stripe_account_id,
                 ]);
+
+            } catch (\Exception $e) {
+                Log::channel('stripe_client_error')->info("New Account could not registered in stripe", [
+                    'user_id'    => $user->id,
+                    'email'      => $user->email,
+                    'message'    => $e->getMessage(),
+                    'country_id' => (int)$request->get('business_country_id')
+                ]);
+                return abort(500, $e->getMessage());
             }
         }
 
         $user->update($requestData);
 
-        if ($request->filled('password')) {
-            $user->password = Hash::make($request->get('password'));
-            $user->save();
-//            event(new PasswordChanged($user));
-        }
+        return fractal($user, new UserTransformer())->respond();
+    }
+
+    //update practitioner media and profile info
+    public function updateMedia(UpdateMediaRequest $request) {
+        $user = $request->user();
+        $user->update($request->all());
 
         if ($request->filled('disciplines')) {
             $user->disciplines()->sync($request->disciplines);
@@ -172,16 +191,6 @@ class AuthController extends Controller {
         }
 
         if ($request->filled('media_images')) {
-//            foreach ($request->media_images as $mediaImage)
-//            {
-//                if (Storage::disk(config('image.image_storage'))->missing(file_get_contents($mediaImage)))
-//                {
-//                    $image = Storage::disk(config('image.image_storage'))
-//                        ->put("/images/users/{$user->id}/media_images/", file_get_contents($mediaImage));
-//                    $image_urls[] = Storage::url($image);
-//                }
-//            }
-//            $request->media_images = $image_urls;
             $this->syncImages($request->media_images, $user);
         }
 
@@ -191,6 +200,7 @@ class AuthController extends Controller {
 
         return fractal($user, new UserTransformer())->respond();
     }
+
 
     public function avatar(Request $request) {
         $path = public_path('\img\profile\\' . Auth::id() . '\\');
