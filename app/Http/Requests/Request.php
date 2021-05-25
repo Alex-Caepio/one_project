@@ -102,4 +102,9 @@ class Request extends FormRequest {
         return array_map('trim', explode($delimiter, $value));
     }
 
+
+    public function getValidatorKeys(): array {
+        return array_keys($this->rules());
+    }
+
 }

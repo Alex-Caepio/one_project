@@ -86,7 +86,7 @@ class AuthController extends Controller {
 
     // update simple details
     public function update(UpdateRequest $request, StripeClient $stripe) {
-        $user = $request->user();
+        $user = $request->user($request->getValidatorKeys());
 
         if ($user->email !== $request->get('email')) {
             $stripe->customers->update($user->stripe_customer_id, ['email' => $request->get('email')]);
@@ -116,7 +116,7 @@ class AuthController extends Controller {
         }
         */
 
-        $requestData = $request->all();
+        $requestData = $request->all($request->getValidatorKeys());
 
         $user->is_published = $request->getBoolFromRequest('is_published') === true;
 
@@ -164,7 +164,7 @@ class AuthController extends Controller {
     //update practitioner media and profile info
     public function updateMedia(UpdateMediaRequest $request) {
         $user = $request->user();
-        $user->update($request->all());
+        $user->update($request->all($request->getValidatorKeys()));
 
         if ($request->filled('disciplines')) {
             $user->disciplines()->sync($request->disciplines);
