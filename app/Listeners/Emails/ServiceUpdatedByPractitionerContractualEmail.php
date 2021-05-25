@@ -13,15 +13,18 @@ class ServiceUpdatedByPractitionerContractualEmail extends SendEmailHandler {
         $this->templateName = 'Service Updated by Practitioner (Contractual)';
         $this->event = $event;
 
-        $upcomingBookings = Booking::where('schedule_id', $this->event->schedule->id)->whereNull('cancelled_at')
-                                   ->where('datetime_from', '>=', Carbon::now())->with([
-                                                                                       'user',
-                                                                                       'practitioner',
-                                                                                       'schedule',
-                                                                                       'schedule.service'
-                                                                                   ])->get();
+        $upcomingBookings =
+            Booking::where('schedule_id', $this->event->schedule->id)->active()->has('practitioner_reschedule_request')
+                   ->where('datetime_from', '>=', Carbon::now())->with([
+                                                                           'user',
+                                                                           'practitioner',
+                                                                           'schedule',
+                                                                           'schedule.service',
+                                                                           'practitioner_reschedule_request'
+                                                                       ])->get();
         foreach ($upcomingBookings as $booking) {
             $this->event->booking = $booking;
+            $this->event->reschedule = $booking->practitioner_reschedule_request;
             $this->event->fillEvent();
             $this->toEmail = $this->event->user->email;
             $this->sendCustomEmail();

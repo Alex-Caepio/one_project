@@ -9,6 +9,7 @@ use App\Http\Requests\Cancellation\CancelBookingRequest;
 use App\Models\Booking;
 use App\Models\Cancellation;
 use App\Models\Notification;
+use App\Models\RescheduleRequest;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
