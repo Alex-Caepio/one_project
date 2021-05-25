@@ -91,7 +91,9 @@ class User extends Authenticatable implements MustVerifyEmail {
         'postal_code',
         'country_id',
         'gender',
-        'accepted_practitioner_agreement'
+        'accepted_practitioner_agreement',
+        'business_published_at',
+        'connected_at',
     ];
 
     /**

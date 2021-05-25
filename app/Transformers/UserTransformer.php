@@ -90,6 +90,8 @@ class UserTransformer extends Transformer {
             'published_at'                    => $user->published_at,
             'country_id'                      => $user->country_id,
             'business_country_id'             => $user->business_country_id,
+            'business_published_at'           => $user->business_published_at,
+            'connected_at'                    => $user->connected_at,
         ];
     }
 

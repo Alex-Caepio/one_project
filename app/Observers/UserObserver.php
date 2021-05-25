@@ -36,6 +36,7 @@ class UserObserver {
                     Service::where('user_id', $user->id)->published()->update(['is_published' => false]);
                     event(new BusinessProfileUnpublished($user));
                 } elseif ($user->is_published) {
+                    $user->published_at = now();
                     event(new BusinessProfileLive($user));
                 }
             }

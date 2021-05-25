@@ -103,26 +103,19 @@ class AuthController extends Controller {
         // first filling of STRIPE country
         if (auth()->user()->isPractitioner()) {
 
-            if ($request->getBoolFromRequest('is_published') === true) {
-                $user->is_published = true;
-                if (!$user->published_at) {
-                    $user->published_at = now();
-                }
-            } elseif ($request->getBoolFromRequest('is_published') === false) {
-                $user->is_published = false;
-            }
+            $user->is_published = $request->getBoolFromRequest('is_published') === true;
 
-            if (!auth()->user()->business_country_id && $request->filled('business_country_id')) {
+            if ($request->filled('business_country_id') && !auth()->user()->business_country_id) {
                 try {
                     $country = Country::findOrFail((int)$request->get('business_country_id'));
                     $stripeAccount = $stripe->accounts->create([
                                                                    'country'      => $country->iso,
                                                                    'type'         => Account::TYPE_CUSTOM,
                                                                    'capabilities' => [
-                                                                       Account::CAPABILITY_CARD_PAYMENTS     => [
+                                                                       Account::CAPABILITY_CARD_PAYMENTS => [
                                                                            'requested' => true,
                                                                        ],
-                                                                       Account::CAPABILITY_TRANSFERS         => [
+                                                                       Account::CAPABILITY_TRANSFERS     => [
                                                                            'requested' => true,
                                                                        ]
                                                                    ],
@@ -248,4 +241,15 @@ class AuthController extends Controller {
 
         return fractal($user, new UserTransformer())->parseIncludes($request->getIncludes())->respond();
     }
+
+    public function stripeConnected(Request $request) {
+        $user = Auth::user();
+        if ($user->stripe_account_id && !$user->connected_at) {
+            $user->connected_at = now();
+            $user->save();
+        }
+
+        return response(null, 204);
+    }
+
 }

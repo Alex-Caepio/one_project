@@ -123,6 +123,9 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::get('/practitioners/favourites', [UserController::class, 'practitionerFavorites']);
 
     Route::middleware(['practitioner'])->group(function () {
+
+        Route::post('/stripe-connected', [AuthController::class, 'stripeConnected']);
+
         Route::get('articles-practitioner', [ArticleController::class, 'practitionerArticleList']);
         Route::get('articles-practitioner/{article}', [ArticleController::class, 'practitionerArticleShow']);
         Route::post('articles', [ArticleController::class, 'store']);
