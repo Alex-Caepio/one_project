@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Events\BookingConfirmation;
 use App\Models\Booking;
+use App\Models\RescheduleRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
@@ -33,4 +34,19 @@ class BookingObserver {
     public function created(Booking $booking): void {
         event(new BookingConfirmation($booking));
     }
+
+
+    /**
+     * Handle booking update.
+     *
+     * @param \App\Models\Booking $booking
+     * @return void
+     */
+    public function saved(Booking $booking): void {
+        if ($booking->isDirty('status') && !$booking->isActive()) {
+            RescheduleRequest::where('booking_id', $booking->id)->delete();
+        }
+    }
+
+
 }
