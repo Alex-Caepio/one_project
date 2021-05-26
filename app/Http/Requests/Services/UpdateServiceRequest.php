@@ -48,6 +48,13 @@ class UpdateServiceRequest extends Request {
             if ($slugNotUnique) {
                 $validator->errors()->add('slug', 'Service slug should be unique!');
             }
+
+            // Check schedules
+            if (($this->get('service_type_id') !== $this->service->service_type_id) &&
+                $this->service->schedules()->count()) {
+                    $validator->errors()->add('slug', 'You are not able change service type for service with existing schedules');
+                }
+
         });
     }
 
