@@ -15,6 +15,9 @@ class ResetPasswordAsk extends FormRequest
             if (!$result) {
                 $validator->errors()->add('email', 'The Email is not valid');
             }
+            if (!$result->email_verified_at) {
+                $validator->errors()->add('email', 'Please, verify your email');
+            }
         });
     }
     /**
