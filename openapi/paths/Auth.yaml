@@ -60,6 +60,45 @@ auth/profile:
             schema:
               $ref: '../schemas/User.yaml'
 
+auth/business-profile:
+  put:
+    operationId: update-current-user-businessinfo
+    tags:
+      - Auth
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/forms/UserBusinessUpdate.yaml'
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/User.yaml'
+
+auth/business-media:
+  put:
+    operationId: update-current-user-mediainfo
+    tags:
+      - Auth
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/forms/UserMediaUpdate.yaml'
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/User.yaml'
+
+
 auth/login:
   post:
     operationId: login

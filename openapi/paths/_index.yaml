@@ -5,6 +5,10 @@
   $ref: "./Auth.yaml#/auth~1verify-email"
 /api/auth/profile:
   $ref: "./Auth.yaml#/auth~1profile"
+/api/auth/business-media:
+  $ref: "./Auth.yaml#/auth~1business-media"
+/api/auth/business-profile:
+  $ref: "./Auth.yaml#/auth~1business-profile"
 /api/auth/login:
   $ref: "./Auth.yaml#/auth~1login"
 /api/auth/profile/publish:

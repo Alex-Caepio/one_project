@@ -27,6 +27,7 @@ class UpdateRequest extends Request {
             'email'               => [
                 'required',
                 'email',
+                'max:255',
                 Rule::unique('users', 'email')->ignore($this->user()->id)
             ],
             'current_password'    => 'required_with:password',

@@ -1502,18 +1502,128 @@ paths:
                 current_password:
                   type: string
                   example: Qwerty123
+                  nullable: true
                 password:
                   type: string
                   example: Qwerty1234
+                  nullable: true
+                date_of_birth:
+                  type: string
+                  nullable: true
                 first_name:
                   type: string
                   example: John
                 last_name:
                   type: string
                   example: Doe
-                business_time_zone_id:
+                mobile_country_code:
                   type: integer
-                  example: 98
+                  nullable: true
+                mobile_number:
+                  type: string
+                  nullable: true
+                email:
+                  type: string
+                  nullable: false
+                  example: test@test.com
+                country_id:
+                  type: integer
+                  nullable: false
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/schemas/User"
+  /api/auth/business-media:
+    put:
+      operationId: update-current-user-mediainfo
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                is_published:
+                  type: boolean
+                  nullable: false
+                about_my_business:
+                  type: string
+                  nullable: true
+                avatar_url:
+                  type: string
+                  nullable: true
+                background_url:
+                  type: string
+                  nullable: true
+                business_city:
+                  type: string
+                  nullable: false
+                business_country_id:
+                  type: integer
+                  nullable: false
+                business_name:
+                  type: string
+                  nullable: false
+                business_introduction:
+                  type: string
+                  nullable: false
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/schemas/User"
+  /api/auth/business-profile:
+    put:
+      operationId: update-current-user-businessinfo
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                is_published:
+                  type: boolean
+                  nullable: false
+                business_name:
+                  type: string
+                  nullable: false
+                business_address:
+                  type: string
+                  nullable: false
+                business_email:
+                  type: string
+                  nullable: false
+                business_introduction:
+                  type: string
+                  nullable: false
+                business_vat:
+                  type: string
+                  nullable: true
+                business_postal_code:
+                  type: string
+                  nullable: true
+                business_city:
+                  type: string
+                  nullable: true
+                business_phone_number:
+                  type: string
+                  nullable: true
+                business_phone_country_code:
+                  type: integer
+                  nullable: true
+                business_country_id:
+                  type: integer
+                  nullable: false
       responses:
         "200":
           description: OK

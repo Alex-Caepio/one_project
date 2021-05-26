@@ -75,8 +75,6 @@ Route::get('/service-types', [ServiceTypeController::class, 'index']);
 Route::get('disciplines', [DisciplineController::class, 'index']);
 Route::get('disciplines/{discipline}', [DisciplineController::class, 'show']);
 
-//Route::get('/focus-areas/{focusArea}/images', [FocusAreaController::class, 'indexImage']);
-//Route::get('/focus-areas/{focusArea}/videos', [FocusAreaController::class, 'indexVideo']);
 Route::get('/focus-areas', [FocusAreaController::class, 'index']);
 Route::get('/focus-areas/{focusArea}', [FocusAreaController::class, 'show']);
 

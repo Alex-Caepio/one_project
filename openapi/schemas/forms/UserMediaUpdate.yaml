@@ -1,0 +1,27 @@
+type: object
+properties:
+  is_published:
+    type: boolean
+    nullable: false
+  about_my_business:
+    type: string
+    nullable: true
+  avatar_url:
+    type: string
+    nullable: true
+  background_url:
+    type: string
+    nullable: true
+  business_city:
+    type: string
+    nullable: false
+  business_country_id:
+    type: integer
+    nullable: false
+  business_name:
+    type: string
+    nullable: false
+  business_introduction:
+    type: string
+    nullable: false
+
