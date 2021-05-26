@@ -24,7 +24,7 @@ class CreateSubscriptionSchedule
             'duration' => 'forever'
         ]);
 
-        $subscriptionSchedule = $stripe->subscriptionSchedules->create([
+        return $stripe->subscriptionSchedules->create([
             'customer' => $user->stripe_customer_id,
             'start_date' => strtotime($request->date_from ?? now()),
             'end_behavior' => 'release',
@@ -43,6 +43,5 @@ class CreateSubscriptionSchedule
             ],
         ]);
 
-        return $subscriptionSchedule;
     }
 }

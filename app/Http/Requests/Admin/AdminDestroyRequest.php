@@ -13,7 +13,7 @@ class AdminDestroyRequest extends FormRequest
      */
     public function authorize()
     {
-        return $this->admin->is_admin == true;
+        return $this->admin->is_admin;
     }
 
     /**

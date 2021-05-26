@@ -14,14 +14,14 @@ use Illuminate\Support\Facades\Auth;
 
 class BookingController extends Controller {
     public function index(Request $request, BookingFilters $filters) {
-        $Query = Booking::filter($filters)->where('user_id', $request->user()->id)->with($request->getIncludes());
+        $query = Booking::filter($filters)->where('user_id', $request->user()->id)->with($request->getIncludes());
 
         if ($request->hasOrderBy()) {
             $order = $request->getOrderBy();
-            $Query->orderBy($order['column'], $order['direction']);
+            $query->orderBy($order['column'], $order['direction']);
         }
 
-        $paginator = $Query->paginate($request->getLimit());
+        $paginator = $query->paginate($request->getLimit());
         $booking = $paginator->getCollection();
 
         return response(fractal($booking,

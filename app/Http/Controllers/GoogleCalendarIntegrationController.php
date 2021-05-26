@@ -29,10 +29,8 @@ class GoogleCalendarIntegrationController extends Controller {
             UserUnavailabilities::where('practitioner_id', $user->id)->delete();
             $requestData = $request->get('unavailabilities');
             $additionalParams = ['practitioner_id' => $user->id, 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()];
-            $dataToInsert = array_map(function($value) use($additionalParams) {
-                $value = array_merge($value, $additionalParams);
-                return $value;
-
+            $dataToInsert = array_map(static function($value) use($additionalParams) {
+                return array_merge($value, $additionalParams);
             }, $requestData);
             UserUnavailabilities::insert($dataToInsert);
         } else {

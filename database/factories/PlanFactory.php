@@ -24,7 +24,7 @@ class PlanFactory extends Factory
 
     public function best()
     {
-        return $this->state(function (array $attributes) {
+        return $this->state(function () {
             return [
                 'list_paid_services'              => true,
                 'list_free_services'              => true,

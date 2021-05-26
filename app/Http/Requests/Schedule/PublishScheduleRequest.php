@@ -4,15 +4,13 @@ namespace App\Http\Requests\Schedule;
 
 use App\Http\Requests\Request;
 
-class GenericSchedule extends Request implements CreateScheduleInterface
-{
+class GenericSchedule extends Request implements CreateScheduleInterface {
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
-    public function authorize()
-    {
+    public function authorize() {
         return Auth::user()->is_admin;
     }
 
@@ -21,15 +19,13 @@ class GenericSchedule extends Request implements CreateScheduleInterface
      *
      * @return array
      */
-    public function rules()
-    {
+    public function rules() {
         return [];
     }
 
-    public function withValidator($validator): void
-    {
-        $validator->after(function ($validator) {
-            $plan           = $this->user()->plan;
+    public function withValidator($validator): void {
+        $validator->after(function($validator) {
+            $plan = $this->user()->plan;
             $totalSchedules = $this->service->schedules()->count();
 
             if (!$plan->unlimited_bookings && $this->attendees > $plan->amount_bookings) {
@@ -58,29 +54,25 @@ class GenericSchedule extends Request implements CreateScheduleInterface
         });
     }
 
-    protected function hasPaidPrices()
-    {
-        return !collect($this->prices)->filter(function ($item) {
+    protected function hasPaidPrices() {
+        return !collect($this->prices)->filter(function($item) {
             return isset($item['cost']) && $item['cost'] > 0;
         })->isEmpty();
     }
 
-    protected function hasFreePrices()
-    {
-        return !collect($this->prices)->filter(function ($item) {
+    protected function hasFreePrices() {
+        return !collect($this->prices)->filter(function($item) {
             return isset($item['cost']) && in_array($item['cost'], [0, null]);
         })->isEmpty();
     }
 
-    public function prepareForValidation()
-    {
-        $plan = $this->user()->plan;
+    public function prepareForValidation() {
 
         if ($this->prices) {
             foreach ($this->prices as $key => $value) {
                 $another[$key] = $value;
 
-                if($another[$key]['is_free']){
+                if ($another[$key]['is_free']) {
                     $another[$key]['cost'] = 0;
                 }
 

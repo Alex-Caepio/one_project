@@ -31,14 +31,5 @@ class CancelManyBookingsRequest extends FormRequest
         return [];
     }
 
-    public function withValidator($validator)
-    {
-//        $validator->after(function($validator) {
-//            $this->booking->load('schedule');
-//            if (Carbon::parse($this->booking->schedule->start_date) < Carbon::now()) {
-//                $validator->errors()->add('error', 'The schedule cannot be cancelled');
-//            }
-//        });
-    }
 
 }

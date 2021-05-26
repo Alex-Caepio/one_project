@@ -9,7 +9,7 @@ class GetUsersPermissions
         $permissions = [];
         $plan = $user->plan;
 
-        if($user->is_admin == true)
+        if($user->is_admin)
         {
             $permissions[] = 'admin_panel:view';
         }

@@ -24,8 +24,6 @@ class ScheduleFreezeFiltrator {
         $userId = $request->filled('user_id') ? $request->get('user_id') : Auth::id();
         $queryBuilder->where('user_id', $userId);
 
-//        $queryBuilder->where('freeze_at', '>', Carbon::now()->subMinutes(15));
-
         return $queryBuilder;
     }
 }

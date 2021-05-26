@@ -51,13 +51,13 @@ class BookingFilters extends QueryFilter {
         $isVirtual = strtolower($isVirtual);
 
         if ($isVirtual === 'virtual') {
-            return $this->builder->whereHas('schedule', function($q) use ($isVirtual) {
+            return $this->builder->whereHas('schedule', function($q) {
                 $q->where('is_virtual', '=', true);
             });
         }
 
         if ($isVirtual === 'physical') {
-            return $this->builder->whereHas('schedule', function($q) use ($isVirtual) {
+            return $this->builder->whereHas('schedule', function($q) {
                 $q->where('is_virtual', '!=', true);
             });
         }

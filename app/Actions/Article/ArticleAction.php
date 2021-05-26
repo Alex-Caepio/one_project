@@ -53,16 +53,6 @@ abstract class ArticleAction {
     protected function fillRelations(Article $article, ArticleRequest $request): void {
 
         if ($request->filled('media_images')){
-//            foreach ($request->media_images as $mediaImage)
-//            {
-//                if (Storage::disk(config('image.image_storage'))->missing(file_get_contents($mediaImage)))
-//                {
-//                    $image = Storage::disk(config('image.image_storage'))
-//                        ->put("/images/articles/{$article->id}/media_images/", file_get_contents($mediaImage));
-//                    $image_urls[] = Storage::url($image);
-//                }
-//            }
-//            $request->media_images = $image_urls;
             $this->syncImages($request->media_images,$article);
         }
         if ($request->filled('media_videos')) {

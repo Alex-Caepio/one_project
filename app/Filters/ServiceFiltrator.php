@@ -90,7 +90,7 @@ class ServiceFiltrator {
         }
 
         if ($request->has('starting_soon')) {
-            $queryBuilder->whereHas('schedules', function($query) use ($request) {
+            $queryBuilder->whereHas('schedules', function($query) {
                 $nextWeek = Carbon::now()->addDays(7)->toDateString();
                 $query->where('start_date', '>=', NOW())
                 ->orWhere('start_date', '<=', $nextWeek);
@@ -104,7 +104,7 @@ class ServiceFiltrator {
         }
 
         if ($request->getBoolFromRequest('online')) {
-            $queryBuilder->whereHas('schedules', function($query) use ($request) {
+            $queryBuilder->whereHas('schedules', function($query) {
                 $query->where('appointment', 'virtual');
             });
         }

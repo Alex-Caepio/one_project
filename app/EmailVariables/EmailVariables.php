@@ -128,7 +128,6 @@ class EmailVariables {
      * @return string
      */
     public function getPractitioner_Url(): ?string {
-        //return $this->event->user->public_link;
         return config('app.frontend_public_profile').$this->event->user->slug;
     }
 
