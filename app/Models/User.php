@@ -114,6 +114,7 @@ class User extends Authenticatable implements MustVerifyEmail {
         'email_verified_at' => 'datetime',
         'date_of_birth' => 'datetime',
         'published_at' => 'datetime',
+        'is_published' => 'boolean',
     ];
 
     public function services() {
