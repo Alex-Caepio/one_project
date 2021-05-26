@@ -63,6 +63,10 @@ class ScheduleController extends Controller {
 
         $requestIncludes = $request->getIncludes();
 
+        $scheduleQuery->where(function($q) {
+            $q->where('schedules.start_date', '>=', now())->orWhereNull('schedules.start_date');
+        });
+
         // price option for client
         if (Auth::user()->account_type === User::ACCOUNT_CLIENT && $request->filled('booking_id')) {
 
@@ -77,13 +81,15 @@ class ScheduleController extends Controller {
             $scheduleQuery->whereHas('prices', static function($query) use($booking) {
                 $query->where('prices.cost', '<=', $booking->price->cost);
             });
+
+            // attendees filtator
+            $scheduleCollection = $scheduleQuery->get()->filter(static function($item) {
+                return $item->attendees === null || (int)$item->attendees > Booking::where('schedule_id', $item->id)->active()->count();
+            });
+
+        } else {
+            $scheduleCollection = $scheduleQuery->get();
         }
-
-        $scheduleQuery->where(function($q) {
-            $q->where('schedules.start_date', '>=', now())->orWhereNull('schedules.start_date');
-        });
-
-        $scheduleCollection = $scheduleQuery->get();
 
         return fractal($scheduleCollection, new ScheduleTransformer())->parseIncludes($requestIncludes)->toArray();
     }
