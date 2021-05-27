@@ -36,10 +36,9 @@ class PurchaseInstallment
         $this->service  = $this->schedule->service;
 
         $deposit     = $this->chargeDeposit($paymentMethodId);
-        $installment = $this->chargeInstallment($paymentMethodId, $installments, $cost);
-// < 28 - 2 payments
-// < 14 - 1 payment
-        return $installment;
+        $subscription = $this->chargeInstallment($paymentMethodId, $installments, $cost);
+
+        return $subscription;
     }
 
     protected function chargeDeposit($paymentMethodId): \Stripe\PaymentIntent

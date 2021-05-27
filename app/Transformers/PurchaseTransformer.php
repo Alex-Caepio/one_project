@@ -27,22 +27,23 @@ class PurchaseTransformer extends Transformer {
      */
     public function transform(Purchase $purchase): array {
         return [
-            'id'             => $purchase->id,
-            'reference'      => $purchase->reference,
-            'user_id'        => $purchase->user_id,
-            'schedule_id'    => $purchase->schedule_id,
-            'service_id'     => $purchase->service_id,
-            'price_id'       => $purchase->price_id,
-            'promocode_id'   => $purchase->promocode_id,
-            'price_original' => $purchase->price_original,
-            'price'          => $purchase->price,
-            'created_at'     => $purchase->created_at,
-            'updated_at'     => $purchase->updated_at,
-            'deleted_at'     => $purchase->deleted_at,
-            'is_deposit'     => $purchase->is_deposit,
-            'deposit_amount' => $purchase->deposit_amount,
-            'stripe_id'      => $purchase->stripe_id,
-            'amount'         => $purchase->amount
+            'id'              => $purchase->id,
+            'reference'       => $purchase->reference,
+            'user_id'         => $purchase->user_id,
+            'schedule_id'     => $purchase->schedule_id,
+            'service_id'      => $purchase->service_id,
+            'price_id'        => $purchase->price_id,
+            'promocode_id'    => $purchase->promocode_id,
+            'price_original'  => $purchase->price_original,
+            'price'           => $purchase->price,
+            'created_at'      => $purchase->created_at,
+            'updated_at'      => $purchase->updated_at,
+            'deleted_at'      => $purchase->deleted_at,
+            'is_deposit'      => $purchase->is_deposit,
+            'deposit_amount'  => $purchase->deposit_amount,
+            'stripe_id'       => $purchase->stripe_id,
+            'amount'          => $purchase->amount,
+            'subscription_id' => $purchase->subscription_id,
         ];
     }
 

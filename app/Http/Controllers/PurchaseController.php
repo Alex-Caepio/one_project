@@ -134,7 +134,9 @@ class PurchaseController extends Controller {
         $depositCost = $schedule->deposit_amount * 100 * $request->amount;
 
         try {
-            run_action(PurchaseInstallment::class, $price, $request, $payment_method_id, $request->instalments, $cost);
+            $subscription = run_action(PurchaseInstallment::class, $price, $request, $payment_method_id, $request->instalments, $cost);
+            $purchase->subscription_id = $subscription->id;
+            $purchase->save();
             DB::commit();
         } catch (\Stripe\Exception\ApiErrorException $e) {
             Log::channel('stripe_installment_fail')->info('The client could not purchase installment', [
