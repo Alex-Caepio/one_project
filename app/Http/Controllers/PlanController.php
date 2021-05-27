@@ -60,7 +60,7 @@ class PlanController extends Controller
                 event(new ChangeOfSubscription($user, $plan));
             }
 
-            if(!$plan->article_publishing){
+            if (!$plan->article_publishing) {
                 Article::where('user_id', $user->id)->update(['is_published' => false]);
             }
 

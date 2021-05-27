@@ -155,7 +155,10 @@ class CancelBooking {
         if ($booking->datetime_from) {
             $bookingDate = Carbon::parse($booking->datetime_from);
             $now = Carbon::now();
-            if ($bookingDate < $now && $now->diffInHours($bookingDate) > $booking->schedule->refund_terms) {
+            $diffValue = $booking->schedule->service === 'appointment'
+                ? $now->diffInHours($bookingDate)
+                : $now->diffInDays($bookingDate);
+            if ($bookingDate < $now && $diffValue > $booking->schedule->refund_terms) {
                 return $booking->cost;
             }
         }
