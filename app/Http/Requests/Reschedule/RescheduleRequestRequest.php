@@ -59,9 +59,16 @@ class RescheduleRequestRequest extends Request {
                 $validator->errors()->add('error', 'Please, select new schedule for reschedule');
             }
 
-            if ($this->booking &&
-                $this->booking->schedule->service->id !== Schedule::find($this->get('new_schedule_id'))->service->id) {
-                $validator->errors()->add('new_schedule_id', 'This schedule does not belong to the service.');
+            $newSchedule =
+                Schedule::where('id', $this->get('new_schedule_id'))->where('is_published', true)->with('service')
+                        ->first();
+            if (!$newSchedule) {
+                $validator->errors()->add('new_schedule_id', 'New schedule is not available');
+            }
+
+            if ($this->booking->schedule->attendees !== null
+                && $this->booking->schedule->attendees <= Booking::where('schedule_id', $newSchedule->id)->active()->count()) {
+                $validator->errors()->add('new_schedule_id', 'There are no free tickets in schedule');
             }
         });
     }
