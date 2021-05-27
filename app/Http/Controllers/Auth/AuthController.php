@@ -86,13 +86,13 @@ class AuthController extends Controller {
 
     // update simple details
     public function update(UpdateRequest $request, StripeClient $stripe) {
-        $user = $request->user($request->getValidatorKeys());
+        $user = $request->user();
 
         if ($user->email !== $request->get('email')) {
             $stripe->customers->update($user->stripe_customer_id, ['email' => $request->get('email')]);
         }
 
-        $user->update($request->all());
+        $user->update($request->all($request->getValidatorKeys()));
 
         if ($request->filled('password')) {
             $user->password = Hash::make($request->get('password'));
