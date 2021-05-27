@@ -69,6 +69,10 @@ schemas:
         type: string
         nullable: true
         format: date-time
+      last_published:
+        type: string
+        nullable: true
+        format: date-time
   Discipline:
     type: object
     properties:
@@ -790,6 +794,14 @@ schemas:
         nullable: true
         format: date-time
       deleted_at:
+        type: string
+        nullable: true
+        format: date-time
+      published_at:
+        type: string
+        nullable: true
+        format: date-time
+      last_published:
         type: string
         nullable: true
         format: date-time

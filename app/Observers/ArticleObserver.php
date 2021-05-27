@@ -38,7 +38,11 @@ class ArticleObserver {
             if (!$article->is_published) {
                 $this->clearPublishedState($article);
             } else {
-                $article->forceFill(['published_at' => Carbon::now()->format('Y-m-d H:i:s')]);
+                $publishedDate = Carbon::now()->format('Y-m-d H:i:s');
+                $article->last_published = $publishedDate;
+                if (!$article->getOriginal('published_at')) {
+                    $article->published_at = $publishedDate;
+                }
             }
         }
     }
@@ -61,7 +65,7 @@ class ArticleObserver {
      * @param \App\Models\Article $article
      */
     private function clearPublishedState(Article $article): void {
-        $article->forceFill(['is_published' => false, 'published_at' => null]);
+        $article->forceFill(['is_published' => false]);
     }
 
 }

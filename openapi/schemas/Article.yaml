@@ -28,18 +28,19 @@ properties:
     type: string
     nullable: true
     format: date-time
-
   updated_at:
     type: string
     nullable: true
     format: date-time
-
   deleted_at:
     type: string
     nullable: true
     format: date-time
-
   published_at:
+    type: string
+    nullable: true
+    format: date-time
+  last_published:
     type: string
     nullable: true
     format: date-time

@@ -40,3 +40,11 @@ properties:
     type: string
     nullable: true
     format: date-time
+  published_at:
+    type: string
+    nullable: true
+    format: date-time
+  last_published:
+    type: string
+    nullable: true
+    format: date-time

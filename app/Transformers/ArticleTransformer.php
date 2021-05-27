@@ -35,18 +35,19 @@ class ArticleTransformer extends Transformer {
      */
     public function transform(Article $article) {
         return [
-            'id'           => $article->id,
-            'title'        => $article->title,
-            'description'  => $article->description,
-            'user_id'      => $article->user_id,
-            'is_published' => (bool)$article->is_published,
-            'introduction' => $article->introduction,
-            'slug'         => $article->slug,
-            'image_url'    => $article->image_url,
-            'created_at'   => $article->created_at,
-            'updated_at'   => $article->updated_at,
-            'deleted_at'   => $article->deleted_at,
-            'published_at' => $article->published_at,
+            'id'             => $article->id,
+            'title'          => $article->title,
+            'description'    => $article->description,
+            'user_id'        => $article->user_id,
+            'is_published'   => (bool)$article->is_published,
+            'introduction'   => $article->introduction,
+            'slug'           => $article->slug,
+            'image_url'      => $article->image_url,
+            'created_at'     => $article->created_at,
+            'updated_at'     => $article->updated_at,
+            'deleted_at'     => $article->deleted_at,
+            'published_at'   => $article->published_at,
+            'last_published' => $this->dateTime($article->last_published)
         ];
     }
 
@@ -128,12 +129,8 @@ class ArticleTransformer extends Transformer {
      * @return \League\Fractal\Resource\Collection|null
      */
     public function includeLastPublished(Article $article): ?Collection {
-        return $this->collectionOrNull(Article::where('id', '<>', $article->id)
-                                              ->where('user_id', $article->user_id)
-                                              ->with('user')
-                                              ->published()
-                                              ->orderBy('published_at', 'desc')
-                                              ->limit(3)
+        return $this->collectionOrNull(Article::where('id', '<>', $article->id)->where('user_id', $article->user_id)
+                                              ->with('user')->published()->orderBy('published_at', 'desc')->limit(3)
                                               ->get(), new self());
     }
 }

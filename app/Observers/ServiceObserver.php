@@ -31,7 +31,11 @@ class ServiceObserver {
             if (!$service->is_published) {
                 $this->clearPublishedState($service);
             } else {
-                $service->forceFill(['published_at' => Carbon::now()->format('Y-m-d H:i:s')]);
+                $publishedDate = Carbon::now()->format('Y-m-d H:i:s');
+                $service->last_published = $publishedDate;
+                if (!$service->getOriginal('published_at')) {
+                    $service->published_at = $publishedDate;
+                }
             }
         }
     }
@@ -53,7 +57,7 @@ class ServiceObserver {
      * @param \App\Models\Service $service
      */
     private function clearPublishedState(Service $service): void {
-        $service->forceFill(['is_published' => false, 'published_at' => null]);
+        $service->forceFill(['is_published' => false]);
     }
 
 }
