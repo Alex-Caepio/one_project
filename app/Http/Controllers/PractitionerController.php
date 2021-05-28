@@ -37,8 +37,15 @@ class PractitionerController extends Controller
             );
         }
 
+        $loggedInUser = $request->user('sanctum');
+        if ($request->getBoolFromRequest('upcoming') && $loggedInUser) {
+            $query->whereHas('practitioner_bookings', static function($subQuery) use($loggedInUser) {
+                $subQuery->where('bookings.user_id', $loggedInUser->id);
+            });
+        }
+
         $paginator = $query->paginate($request->getLimit());
-        $user = $paginator->getCollection();;
+        $user = $paginator->getCollection();
 
         return response(fractal($user, new UserTransformer())->parseIncludes($request->getIncludes()))
             ->withPaginationHeaders($paginator);
