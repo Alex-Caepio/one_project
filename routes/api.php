@@ -89,8 +89,8 @@ Route::get('/latest-two', [LatestTwoController::class, 'index']);
 Route::get('/practitioners/{user}', [UserController::class, 'show']);
 
 Route::middleware(['auth:reschedule-token'])->group(function() {
-    Route::match(['post', 'get'], '/accept-reschedule/{reschedule_request}', [EmailLinkHandlerController::class, 'acceptReschedule']);
-    Route::match(['post', 'get'], '/decline-reschedule/{reschedule_request}', [EmailLinkHandlerController::class, 'declineReschedule']);
+    Route::match(['post', 'get'], '/accept_reschedule/{reschedule_request}', [EmailLinkHandlerController::class, 'acceptReschedule']);
+    Route::match(['post', 'get'], '/decline_reschedule/{reschedule_request}', [EmailLinkHandlerController::class, 'declineReschedule']);
 });
 
 Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
