@@ -425,6 +425,13 @@ class EmailVariables {
     }
 
     /**
+     * @return integer
+     */
+    public function getTickets_count(): int {
+        return (int)$this->event->booking->amount;
+    }
+
+    /**
      * @return string
      */
     public function getClient_name(): string {
