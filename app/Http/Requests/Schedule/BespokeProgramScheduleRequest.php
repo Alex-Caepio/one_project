@@ -30,7 +30,7 @@ class BespokeProgramScheduleRequest extends GenericSchedule
             'prices.*.is_free' => 'required',
             'deposit_amount' => 'required_if:deposit_accepted,true',
             'deposit_final_date' => 'required_if:deposit_accepted,true',
-            'refund_terms'   => 'required',
+            'refund_terms'   => 'nullable',
         ];
     }
 

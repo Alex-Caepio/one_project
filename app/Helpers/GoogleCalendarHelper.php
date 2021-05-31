@@ -51,14 +51,18 @@ class GoogleCalendarHelper {
                                        ]);
 
         if ($this->_client->isAccessTokenExpired()) {
-            Log::info('Google Authorization Token Expired');
             $refreshToken = $this->_client->getRefreshToken();
+            Log::info('Google Authorization Token Expired. Use refresh token: '.$refreshToken);
             if ($refreshToken !== null) {
                 $newCredentials = $this->_client->fetchAccessTokenWithRefreshToken($refreshToken);
-                Log::info('NEW CREDENTIALS: ');
-                Log::info($newCredentials);
-                $this->updateUserToken($newCredentials);
-                return;
+                if (!isset($newCredentials['error'])) {
+                    Log::info('NEW CREDENTIALS: ');
+                    Log::info($newCredentials);
+                    $this->updateUserToken($newCredentials);
+                    return;
+                } else {
+                    Log::channel('google_authorisation_failed')->info('Cannot fetch to token with refresh:', $newCredentials);
+                }
             }
             Log::channel('google_authorisation_failed')->info('Unable to refresh token:', [
                 'user_id'       => $this->_calendar->user_id,
