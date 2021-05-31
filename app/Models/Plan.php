@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Plan extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'name', 'description', 'image_url', 'stripe_id', 'price', 'is_free', 'unlimited_bookings', 'commission_on_sale',
         'schedules_per_service', 'pricing_options_per_service', 'list_paid_services',
@@ -30,9 +31,19 @@ class Plan extends Model
         'amount_bookings', 'discount_codes', 'order'
     ];
 
+    protected $casts = [
+        'article_publishing_unlimited'          => 'boolean',
+        'list_free_services'                    => 'boolean',
+        'list_paid_services'                    => 'boolean',
+        'pricing_options_per_service_unlimited' => 'boolean',
+        'unlimited_bookings'                    => 'boolean',
+    ];
+
     public function service_types(): BelongsToMany
     {
         return $this->belongsToMany(ServiceType::class);
     }
+
+
 }
 
