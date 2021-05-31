@@ -21,15 +21,12 @@ class UserRightsHelper {
             return true;
         }
 
-        if (!$user->plan) {
+        if ($user->isFullyRestricted()) {
             return false;
         }
 
-        if ($user->plan->article_publishing_unlimited) {
-            return true;
-        }
-
-        return $user->articles()->published()->count() < (int)$user->plan->article_publishing;
+        return $user->plan->article_publishing_unlimited
+               || $user->articles()->published()->count() < (int)$user->plan->article_publishing;
     }
 
     /**
@@ -41,7 +38,11 @@ class UserRightsHelper {
             return true;
         }
 
-        return $user->plan && $user->plan->list_free_services;
+        if ($user->isFullyRestricted()) {
+            return false;
+        }
+
+        return $user->plan->list_free_services;
     }
 
     /**
@@ -53,7 +54,11 @@ class UserRightsHelper {
             return true;
         }
 
-        return $user->plan && $user->plan->list_free_services;
+        if ($user->isFullyRestricted()) {
+            return false;
+        }
+
+        return $user->plan->list_paid_services;
     }
 
     /**
@@ -67,15 +72,11 @@ class UserRightsHelper {
             return true;
         }
 
-        if (!$user->plan) {
+        if ($user->isFullyRestricted()) {
             return false;
         }
 
-        if ($user->plan->pricing_options_per_service_unlimited) {
-            return true;
-        }
-
-        return $pricesCnt <= (int)$user->plan->pricing_options_per_service;
+        return $user->plan->pricing_options_per_service_unlimited || $pricesCnt <= (int)$user->plan->pricing_options_per_service;
     }
 
     /**
@@ -89,7 +90,7 @@ class UserRightsHelper {
             return true;
         }
 
-        if (!$user->plan) {
+        if ($user->isFullyRestricted()) {
             return false;
         }
 
@@ -112,7 +113,7 @@ class UserRightsHelper {
             return true;
         }
 
-        if (!$user->plan) {
+        if ($user->isFullyRestricted()) {
             return false;
         }
 
@@ -131,7 +132,7 @@ class UserRightsHelper {
             return true;
         }
 
-        if (!$service->user->plan) {
+        if ($service->user->isFullyRestricted()) {
             return false;
         }
 
@@ -139,6 +140,12 @@ class UserRightsHelper {
                || $service->user->plan->amount_bookings > Booking::where('practitioner_id', $service->user->id)->count();
     }
 
+    public static function unpublishPractitioner(): void {
+        // unpublish all
+    }
 
+    public static function downgradePractitioner(): void {
+        // downgrade all
+    }
 
 }

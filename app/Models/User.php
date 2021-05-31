@@ -287,4 +287,9 @@ class User extends Authenticatable implements MustVerifyEmail {
     }
 
 
+    public function isFullyRestricted(): bool {
+        return !$this->is_admin || $this->is_published || !$this->plan;
+    }
+
+
 }
