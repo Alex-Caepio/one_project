@@ -16,6 +16,8 @@ class DeclineRescheduleRequestEmailRequest extends FormRequest {
      */
     public function authorize() {
         $loggedUser = Auth::user();
+        Log::info('LoggedUserID: '.$loggedUser->id);
+        Log::info('BookingID: '.$this->rescheduleRequest->booking->user_id);
         return $this->rescheduleRequest->booking->user_id === $loggedUser->id &&
                $loggedUser->currentAccessToken()->can('reschedule_request:decline');
     }

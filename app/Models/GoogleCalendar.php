@@ -41,7 +41,10 @@ class GoogleCalendar extends Model {
 
     public function cleanupState(): void {
         $this->access_token = null;
+        $this->refresh_token = null;
+        $this->access_created_at = null;
         $this->expired_at = null;
+        $this->expires_in = null;
         $this->token_info = null;
         $this->is_connected = false;
         $this->save();
