@@ -18,16 +18,6 @@ class CreateUserFromRequest
             $attributes['password'] = Hash::make($attributes['password']);
         }
 
-        if($request->account_type === User::ACCOUNT_PRACTITIONER) {
-            $plan = Plan::where('is_free', 1)->first();
-
-            if ($plan){
-                $attributes['plan_id'] = $plan->id;
-            }
-
-            $attributes['business_email'] = $attributes['email'];
-
-        }
 
         $attributes = array_merge($attributes, $overrides);
 
