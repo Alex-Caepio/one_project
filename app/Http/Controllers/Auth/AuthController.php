@@ -118,7 +118,10 @@ class AuthController extends Controller {
 
         $requestData = $request->all($request->getValidatorKeys());
 
-        $user->is_published = $request->getBoolFromRequest('is_published') === true;
+        $isPublished = $request->getBoolFromRequest('is_published');
+        if ($isPublished !== null) {
+            $user->is_published = $isPublished;
+        }
 
         //first filled business country
         if (!$user->business_country_id && !$user->stripe_account_id) {
@@ -164,7 +167,8 @@ class AuthController extends Controller {
     //update practitioner media and profile info
     public function updateMedia(UpdateMediaRequest $request) {
         $user = $request->user();
-        $user->update($request->all($request->getValidatorKeys()));
+        $user->forceFill($request->all($request->getValidatorKeys()));
+        $user->save();
 
         if ($request->filled('disciplines')) {
             $user->disciplines()->sync($request->disciplines);
