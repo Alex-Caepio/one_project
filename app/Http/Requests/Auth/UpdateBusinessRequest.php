@@ -27,7 +27,6 @@ class UpdateBusinessRequest extends Request {
             'business_name'               => 'required|max:255|min:2',
             'business_address'            => 'required|max:255',
             'business_email'              => 'required|max:255|email',
-            'business_introduction'       => 'sometimes|string|max:150',
             'business_vat'                => 'nullable|string|max:20',
             'business_postal_code'        => 'required|string|max:20',
             'business_city'               => 'required|string|max:150',
@@ -53,10 +52,7 @@ class UpdateBusinessRequest extends Request {
                 if (!$user->business_email && !$this->business_email) {
                     $validator->errors()->add('business_email', 'You have not filled in the field "Business email"');
                 }
-                if (!$user->business_introduction && !$this->business_introduction) {
-                    $validator->errors()->add('business_introduction',
-                                              'You have not filled in the field "Business introduction"');
-                }
+
                 if (!$user->business_city && !$this->business_city) {
                     $validator->errors()->add('business_city', 'You have not filled in the field "Business City"');
                 }
