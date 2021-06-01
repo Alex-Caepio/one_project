@@ -27,9 +27,17 @@ trait GenerateCalendarLink {
      * @return string
      */
     public function generateGoogleLink(Schedule $schedule): string {
-        $location =
-            urlencode($schedule->url . $schedule->venue_name . ' ' . $schedule->venue_address . ' ' . $schedule->city . ' ' .
-            $schedule->country . ' ' . $schedule->post_code);
+        $locationData = array_filter([
+                                         $schedule->url,
+                                         $schedule->venue_name,
+                                         $schedule->venue_address,
+                                         $schedule->city,
+                                         $schedule->country,
+                                         $schedule->post_code
+                                     ], static function($value) {
+            return !empty(trim($value));
+        });
+        $location = urlencode(implode(',', $locationData));
         $startDate = Carbon::parse($schedule->start_date);
         $endDate = Carbon::parse($schedule->end_date);
         return 'https://www.google.com/calendar/render?action=TEMPLATE&text=' . $schedule->service->title .
@@ -45,7 +53,8 @@ trait GenerateCalendarLink {
         $calendarContent = Calendar::create($calendarName)->event(Event::create($schedule->title)
                                                                        ->startsAt(Carbon::parse($schedule->start_date))
                                                                        ->endsAt(Carbon::parse($schedule->end_date))
-                                                                       ->organizer($practitioner->business_email, $practitioner->business_name))
+                                                                       ->organizer($practitioner->business_email,
+                                                                                   $practitioner->business_name))
                                    ->get();
         Storage::disk('local')->put($fileName, $calendarContent);
         return $fileName;
