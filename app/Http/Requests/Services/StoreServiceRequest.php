@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Services;
 
+use App\Helpers\UserRightsHelper;
 use App\Http\Requests\Request;
 use App\Models\Service;
 use Illuminate\Support\Facades\Auth;
@@ -15,7 +16,7 @@ class StoreServiceRequest extends Request
      */
     public function authorize()
     {
-        return Auth::user()->isPractitioner() || Auth::user()->is_admin;
+        return !Auth::user()->isFullyRestricted();
     }
 
     /**
@@ -46,6 +47,12 @@ class StoreServiceRequest extends Request
             if ($this->user()->services()->where('user_id', $this->user()->id)->where('slug', $this->slug)->exists()) {
                 $validator->errors()->add('slug', 'Service slug should be unique!');
             }
+
+            $tmpService = new Service(['service_type_id' => $this->service_type_id]);
+            if (!UserRightsHelper::userAllowPublishService($this->user(), $tmpService)) {
+                $validator->errors()->add('service_type_id', "You are not able to publish this type of service");
+            }
+
         });
     }
 

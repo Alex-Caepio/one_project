@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Actions\Service\ServiceStore;
 use App\Actions\Service\ServiceUpdate;
 use App\Events\ServiceUnpublished;
+use App\Http\Requests\Services\CopyServiceRequest;
 use App\Http\Requests\Services\ServiceOwnerRequest;
 use App\Http\Requests\Services\UpdateServiceRequest;
 use App\Models\Service;
@@ -87,7 +88,6 @@ class ServiceController extends Controller {
         return response(null, 204);
     }
 
-
     public function store(StoreServiceRequest $request, StripeClient $stripe) {
         $service = run_action(ServiceStore::class, $request, $stripe);
         if ($service === null)  {
@@ -121,7 +121,7 @@ class ServiceController extends Controller {
         return response(null, 204);
     }
 
-    public function copy(Service $service) {
+    public function copy(Service $service, CopyServiceRequest $request) {
         $serviceCopy = $service->replicate();
         $serviceCopy->title = "{$service->title} (copy)";
         $serviceCopy->is_published = false;

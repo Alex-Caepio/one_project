@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Services;
 
+use App\Helpers\UserRightsHelper;
 use App\Http\Requests\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Validator;
@@ -13,8 +14,7 @@ class ServicePublishRequest extends Request {
      * @return bool
      */
     public function authorize() {
-        $service = $this->route('service');
-        return $service->user_id === Auth::id() || Auth::user()->is_admin;
+        return !Auth::user()->isFullyRestricted() && ($this->service->user_id === Auth::id() || Auth::user()->is_admin);
     }
 
     /**
@@ -38,8 +38,12 @@ class ServicePublishRequest extends Request {
                              ])->setData($this->service->toArray())->validate();
         if (!$validator->fails()) {
             $validator->after(function($validator) {
-                if (!$this->service->user->is_published) {
+                if ($this->service->user->isFullyRestricted()) {
                     $validator->errors()->add('name', "Please publish Business Profile before publishing the Article");
+                }
+
+                if (!UserRightsHelper::userAllowPublishService($this->service->user, $this->service)) {
+                    $validator->errors()->add('name', "You are not able to publish this type of service");
                 }
             });
         }

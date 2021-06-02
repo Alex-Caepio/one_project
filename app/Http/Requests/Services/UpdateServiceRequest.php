@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Services;
 
+use App\Helpers\UserRightsHelper;
 use App\Http\Requests\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -12,7 +13,7 @@ class UpdateServiceRequest extends Request {
      * @return bool
      */
     public function authorize() {
-        return Auth::user()->isPractitioner() || Auth::user()->is_admin;
+        return !Auth::user()->isFullyRestricted();
     }
 
     /**
@@ -52,9 +53,12 @@ class UpdateServiceRequest extends Request {
             // Check schedules
             if (($this->get('service_type_id') !== $this->service->service_type_id) &&
                 $this->service->schedules()->count()) {
-                    $validator->errors()->add('slug', 'You are not able change service type for service with existing schedules');
+                    $validator->errors()->add('service_type_id', 'You are not able change service type for service with existing schedules');
                 }
 
+            if (!UserRightsHelper::userAllowPublishService($this->service->user, $this->service)) {
+                $validator->errors()->add('service_type_id', "You are not able to publish this type of service");
+            }
         });
     }
 
