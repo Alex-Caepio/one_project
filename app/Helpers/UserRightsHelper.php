@@ -3,6 +3,8 @@
 
 namespace App\Helpers;
 
+use App\Models\Article;
+use App\Models\Schedule;
 use App\Models\Service;
 use App\Models\User;
 
@@ -23,8 +25,8 @@ class UserRightsHelper {
             return false;
         }
 
-        return $user->plan->article_publishing_unlimited
-               || $user->articles()->published()->count() < (int)$user->plan->article_publishing;
+        return $user->plan->article_publishing_unlimited ||
+               $user->articles()->published()->count() < (int)$user->plan->article_publishing;
     }
 
     /**
@@ -74,7 +76,8 @@ class UserRightsHelper {
             return false;
         }
 
-        return $user->plan->pricing_options_per_service_unlimited || $pricesCnt <= (int)$user->plan->pricing_options_per_service;
+        return $user->plan->pricing_options_per_service_unlimited ||
+               $pricesCnt <= (int)$user->plan->pricing_options_per_service;
     }
 
     /**
@@ -136,19 +139,26 @@ class UserRightsHelper {
         return !count($serviceTypes) || in_array($service->service_type_id, $serviceTypes, true);
     }
 
-    public static function unpublishPractitioner(): void {
-        // unpublish all
+    public static function unpublishPractitioner(User $user): void {
+        self::unpublishArticles($user);
+        self::unpublishService($user);
     }
 
-    public static function downgradePractitioner(User $user): void {
-        // downgrade all
-        /*
-        $user->refresh();
 
-        if (!$user->plan->article_publishing) {
-            Article::where('user_id', $user->id)->update(['is_published' => false]);
-        }
-        */
+    public static function downgradePractitioner(User $user): void {
+        //self::unpublishArticles($user);
+        //self::unpublishService($user);
+    }
+
+    public static function unpublishArticles(User $user): void {
+        Article::where('user_id', $user->id)->update(['is_published' => false]);
+    }
+
+    public static function unpublishService(User $user): void {
+        $serviceQuery = Service::where('user_id', $user->id);
+        $ids = $serviceQuery->pluck('services.id');
+        Schedule::whereIn('service_id', $ids)->update(['is_published' => false]);
+        $serviceQuery->update(['is_published' => false]);
     }
 
 }

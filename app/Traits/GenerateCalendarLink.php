@@ -37,7 +37,7 @@ trait GenerateCalendarLink {
                                      ], static function($value) {
             return !empty(trim($value));
         });
-        $location = urlencode(implode(',', $locationData));
+        $location = urlencode(implode(', ', $locationData));
         $startDate = Carbon::parse($schedule->start_date);
         $endDate = Carbon::parse($schedule->end_date);
         return 'https://www.google.com/calendar/render?action=TEMPLATE&text=' . $schedule->service->title .

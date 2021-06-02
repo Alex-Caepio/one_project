@@ -454,15 +454,14 @@ class EmailVariables {
             $this->event->schedule->venue_name,
             $this->event->schedule->venue_address,
             $this->event->schedule->city,
-            $this->event->schedule->country,
-            $this->event->schedule->post_code
+            $this->event->schedule->country
         ], static function(?string $value) {
-            if (!empty($value)) {
+            $trimmedValue = trim($value);
+            if (!empty($trimmedValue)) {
                 return str_replace(' ', '+', trim($value));
             }
         });
-
-        return 'https://www.google.com/maps/search/?api=1&map_action=map&query=' . implode(', ', $addressCollection);
+        return 'https://www.google.com/maps/search/?api=1&map_action=map&query=' . urlencode(implode(',', $addressCollection));
     }
 
     /**
