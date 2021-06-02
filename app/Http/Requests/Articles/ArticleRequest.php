@@ -15,7 +15,7 @@ class ArticleRequest extends Request {
      * @return bool
      */
     public function authorize(): bool {
-        return Auth::user()->isPractitioner();
+        return !Auth::user()->isFullyRestricted();
     }
 
     /**
@@ -48,16 +48,10 @@ class ArticleRequest extends Request {
     public function withValidator(Validator $validator) {
         $validator->after(function($validator) {
             $isPublished = $this->getBoolFromRequest('is_published');
-            if ($isPublished) {
-                if (!Auth::user()->is_published) {
-                    $validator->errors()->add('name', "Please publish Business Profile before publishing the Article");
-                }
-
-                if (UserRightsHelper::userAllowToPublishArticle(Auth::user())) {
+            if ($isPublished && !UserRightsHelper::userAllowToPublishArticle(Auth::user())) {
                     $validator->errors()
                               ->add('is_published', "Please upgrade subscription to be able to publish articles");
                 }
-            }
         });
     }
 

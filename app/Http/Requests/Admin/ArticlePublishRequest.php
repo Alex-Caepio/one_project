@@ -24,7 +24,7 @@ class ArticlePublishRequest extends Request {
      * @return array
      */
     public function rules() {
-        return [];
+        return !$this->user->isFullyRestricted();
     }
 
     public function withValidator(Validator $validator) {
@@ -34,14 +34,9 @@ class ArticlePublishRequest extends Request {
                                  'introduction' => 'required|string|min:5|max:200'
                              ])->setData($this->article->toArray())->validate();
 
-        if (!$validator->fails() && !Auth::user()->is_admin) {
-
+        if (!$validator->fails()) {
             $validator->after(function($validator) {
-                if (!$this->article->user->is_published) {
-                    $validator->errors()->add('name', "Please publish Business Profile before publishing the Article");
-                }
-
-                if (UserRightsHelper::userAllowToPublishArticle($this->article->user)) {
+                if (!UserRightsHelper::userAllowToPublishArticle($this->article->user)) {
                     $validator->errors()
                               ->add('is_published', "Please upgrade subscription to be able to publish articles");
                 }
