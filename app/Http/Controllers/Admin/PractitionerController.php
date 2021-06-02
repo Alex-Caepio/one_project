@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Actions\Admin\DeleteUser;
 use App\Filters\UserFiltrator;
+use App\Http\Requests\Admin\PractitionerPublishRequest;
 use App\Models\User;
 use App\Mail\VerifyEmail;
 use App\Http\Requests\Request;
@@ -80,13 +81,14 @@ class PractitionerController extends Controller {
                                      'is_published' => false,
                                  ]);
         $practitioner->update();
-
+        return response(null, 204);
     }
 
-    public function publish(User $practitioner) {
+    public function publish(User $practitioner, PractitionerPublishRequest $request) {
         $practitioner->forceFill([
                                      'is_published' => true,
                                  ]);
         $practitioner->update();
+        return response(null, 204);
     }
 }

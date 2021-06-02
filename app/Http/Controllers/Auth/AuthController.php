@@ -9,6 +9,7 @@ use App\Actions\User\CreateUserFromRequest;
 use App\Events\UserRegistered;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\Auth\PublishPractitionerRequest;
 use App\Http\Requests\Auth\PublishRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\UpdateBusinessRequest;
@@ -263,6 +264,19 @@ class AuthController extends Controller {
             $user->save();
         }
 
+        return response(null, 204);
+    }
+
+
+    public function publish(PublishPractitionerRequest $request) {
+        Auth::user()->is_published = true;
+        Auth::user()->save();
+        return response(null, 204);
+    }
+
+    public function unpublish() {
+        Auth::user()->is_published = false;
+        Auth::user()->save();
         return response(null, 204);
     }
 

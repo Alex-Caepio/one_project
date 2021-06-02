@@ -127,6 +127,8 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
         /* Profile Update */
         Route::put('/auth/business-profile', [AuthController::class, 'updateBusiness']);
         Route::put('/auth/business-media', [AuthController::class, 'updateMedia']);
+        Route::post('/auth/publish', [AuthController::class, 'publish']);
+        Route::post('/auth/unpublish', [AuthController::class, 'unpublish']);
         Route::post('/stripe-connected', [AuthController::class, 'stripeConnected']);
 
         Route::get('articles-practitioner', [ArticleController::class, 'practitionerArticleList']);

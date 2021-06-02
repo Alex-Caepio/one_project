@@ -6,6 +6,7 @@ use App\Events\AccountDeleted;
 use App\Events\AccountTerminatedByAdmin;
 use App\Events\BusinessProfileLive;
 use App\Events\BusinessProfileUnpublished;
+use App\Helpers\UserRightsHelper;
 use App\Models\Article;
 use App\Models\Service;
 use App\Models\User;
@@ -33,11 +34,7 @@ class UserObserver {
 
             if ($user->isDirty('is_published')) {
                 if (!$user->is_published && !$user->wasRecentlyCreated) {
-                    Article::where('user_id', $user->id)->published()->update([
-                                                                                  'is_published' => false,
-                                                                                  'published_at' => null
-                                                                              ]);
-                    Service::where('user_id', $user->id)->published()->update(['is_published' => false]);
+                    UserRightsHelper::unpublishPractitioner($user);
                     event(new BusinessProfileUnpublished($user));
                 } elseif ($user->is_published) {
                     $user->published_at = now();
