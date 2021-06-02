@@ -3,8 +3,6 @@
 
 namespace App\Helpers;
 
-
-use App\Models\Booking;
 use App\Models\Service;
 use App\Models\User;
 
@@ -84,7 +82,7 @@ class UserRightsHelper {
      * @param \App\Models\Service $service
      * @return bool
      */
-    public static function userAllowPublishSchedule(User $user, Service $service): bool {
+    public static function userAllowAddSchedule(User $user, Service $service): bool {
 
         if ($user->is_admin) {
             return true;
@@ -98,9 +96,26 @@ class UserRightsHelper {
             return true;
         }
 
-        return $service->schedules()->published()->count() < (int)$user->plan->schedules_per_service;
+        return $service->schedules()->count() < (int)$user->plan->schedules_per_service;
     }
 
+    /**
+     * @param \App\Models\User $user
+     * @param int $cntAttendies
+     * @return bool
+     */
+    public static function userAllowAttendees(User $user, int $cntAttendies): bool {
+
+        if ($user->is_admin) {
+            return true;
+        }
+
+        if ($user->isFullyRestricted()) {
+            return false;
+        }
+
+        return $user->plan->unlimited_bookings || $cntAttendies < $user->plan->amount_bookings;
+    }
 
     /**
      * @param \App\Models\User $user
@@ -121,31 +136,19 @@ class UserRightsHelper {
         return !count($serviceTypes) || in_array($service->service_type_id, $serviceTypes, true);
     }
 
-
-    /**
-     * @param \App\Models\Service $service
-     * @return bool
-     */
-    public static function userAllowToBook(Service $service): bool {
-
-        if ($service->user->is_admin) {
-            return true;
-        }
-
-        if ($service->user->isFullyRestricted()) {
-            return false;
-        }
-
-        return $service->user->plan->unlimited_bookings
-               || $service->user->plan->amount_bookings > Booking::where('practitioner_id', $service->user->id)->count();
-    }
-
     public static function unpublishPractitioner(): void {
         // unpublish all
     }
 
-    public static function downgradePractitioner(): void {
+    public static function downgradePractitioner(User $user): void {
         // downgrade all
+        /*
+        $user->refresh();
+
+        if (!$user->plan->article_publishing) {
+            Article::where('user_id', $user->id)->update(['is_published' => false]);
+        }
+        */
     }
 
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Admin;
 
+use App\Helpers\UserRightsHelper;
 use App\Http\Requests\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Validator;
@@ -34,14 +35,15 @@ class ArticlePublishRequest extends Request {
                              ])->setData($this->article->toArray())->validate();
 
         if (!$validator->fails() && !Auth::user()->is_admin) {
+
             $validator->after(function($validator) {
                 if (!$this->article->user->is_published) {
                     $validator->errors()->add('name', "Please publish Business Profile before publishing the Article");
                 }
 
-                if (!$this->article->user->plan->article_publishing) {
+                if (UserRightsHelper::userAllowToPublishArticle($this->article->user)) {
                     $validator->errors()
-                              ->add('is_published', "Please upgrade your subscription to be able to publish articles");
+                              ->add('is_published', "Please upgrade subscription to be able to publish articles");
                 }
             });
         }

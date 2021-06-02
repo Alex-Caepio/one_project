@@ -11,11 +11,13 @@ use App\Http\Requests\Request;
 
 
 class QuoteController extends Controller {
+
     public function quotesArticles(Request $request) {
         $articlesCount = $request->user()->articles()->count();
-        $article_publishing = $request->user()->plan->article_publishing;
 
-        if ($request->user()->account_type === User::ACCOUNT_PRACTITIONER && $request->user()->plan) {
+        if ($request->user()->isFullyRestricted() === false) {
+
+            $article_publishing = $request->user()->plan->article_publishing;
 
             if ($request->user()->plan->article_publishing_unlimited) {
                 $quotes = [
@@ -43,21 +45,21 @@ class QuoteController extends Controller {
 
             return $quotes;
 
-        } else {
-            return [
-                'allowed' => false,
-                'current' => $articlesCount,
-                'max'     => null,
-                'message' => 'You\'re no allowed to publish an article'
-            ];
         }
+
+        return [
+            'allowed' => false,
+            'current' => $articlesCount,
+            'max'     => null,
+            'message' => 'You\'re no allowed to publish an article'
+        ];
 
     }
 
     public function quotesServices(Request $request) {
         $schedulesCount = $request->service->schedules()->count();
 
-        if ($request->user()->account_type === User::ACCOUNT_PRACTITIONER && $request->user()->plan) {
+        if ($request->user()->isFullyRestricted() === false) {
 
             $schedulesPerService = $request->user()->plan->schedules_per_service;
             if ($request->user()->plan->schedules_per_service_unlimited) {
@@ -86,22 +88,23 @@ class QuoteController extends Controller {
 
             return $quotes;
 
-        } else {
-            return [
-                'allowed' => false,
-                'current' => $schedulesCount,
-                'max'     => null,
-                'message' => 'You\'re no allowed to publish an schedules'
-            ];
         }
+
+        return [
+            'allowed' => false,
+            'current' => $schedulesCount,
+            'max'     => null,
+            'message' => 'You\'re no allowed to publish an schedules'
+        ];
     }
 
     public function quotesPrices(Request $request) {
         $schedule = Schedule::find($request->schedule);
         $pricesCount = $schedule->prices()->count();
-        $pricingOptionsPerService = $request->user()->plan->pricing_options_per_service;
 
-        if ($request->user()->account_type == 'practitioner' && $request->user()->plan) {
+        if ($request->user()->isFullyRestricted() === false) {
+
+            $pricingOptionsPerService = $request->user()->plan->pricing_options_per_service;
 
             if ($request->user()->plan->pricing_options_per_service_unlimited) {
                 $quotes = [

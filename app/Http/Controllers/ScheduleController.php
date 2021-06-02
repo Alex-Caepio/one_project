@@ -9,6 +9,7 @@ use App\Actions\Schedule\ScheduleStore;
 use App\Actions\Schedule\ScheduleUpdate;
 use App\Events\ServiceScheduleCancelled;
 use App\Events\ServiceScheduleLive;
+use App\Helpers\UserRightsHelper;
 use App\Http\Requests\Schedule\PurchaseScheduleRequest;
 use App\Http\Requests\Schedule\GenericUpdateSchedule;
 use App\Http\Requests\Schedule\ScheduleOwnerRequest;
@@ -165,10 +166,7 @@ class ScheduleController extends Controller {
 
     public function copy(Schedule $schedule) {
 
-        $plan = Auth::user()->plan;
-        $service = $schedule->service;
-
-        if ($plan->schedules_per_service_unlimited || $plan->schedules_per_service > $service->schedules()->count()) {
+        if (UserRightsHelper::userAllowPublishSchedule(Auth::user(), $schedule->service)) {
 
             $scheduleCopy = $schedule->replicate();
             $scheduleCopy->title = "{$schedule->title} (copy)";

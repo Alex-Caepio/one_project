@@ -38,8 +38,8 @@ class PurchaseScheduleRequest extends Request implements CreateScheduleInterface
 
         if ($this->schedule->service->service_type_id === 'appointment') {
             $availabilityRules = [
-                'availabilities.*.datetime_from'   => 'required_with:availabilities',
-                'availabilities'                   => 'required'
+                'availabilities.*.datetime_from' => 'required_with:availabilities',
+                'availabilities'                 => 'required'
             ];
 
             $rules = array_merge($rules, $availabilityRules);
@@ -47,37 +47,38 @@ class PurchaseScheduleRequest extends Request implements CreateScheduleInterface
         return $rules;
     }
 
-   public function withValidator($validator): void {
+    public function withValidator($validator): void {
 
-       $validator->after(function($validator) {
-           $schedule = $this->schedule;
-           $price = $schedule->prices()->where('id', $this->price_id)->first();
+        $validator->after(function($validator) {
+            $schedule = $this->schedule;
+            $price = $schedule->prices()->where('id', $this->price_id)->first();
 
-           if (!$price) {
-               $validator->errors()->add('price_id', 'Price does not belong to the schedule');
-           }
+            if (!$price) {
+                $validator->errors()->add('price_id', 'Price does not belong to the schedule');
+            }
 
-           $bookingsCount = Booking::where('price_id', $this->price_id)->count();
+            $bookingsCount = Booking::where('price_id', $this->price_id)->count();
 
-           if($bookingsCount > 0 && $price->number_available !== null && $bookingsCount >= (int)$price->number_available){
-               $validator->errors()->add('price_id', 'All schedules for that price were sold out');
-           }
+            if ($bookingsCount > 0 && $price->number_available !== null &&
+                $bookingsCount >= (int)$price->number_available) {
+                $validator->errors()->add('price_id', 'All schedules for that price were sold out');
+            }
 
-           if ($this->has('availabilities')) {
-               $this->validateAvailabilities($validator);
-           }
+            if ($this->has('availabilities')) {
+                $this->validateAvailabilities($validator);
+            }
 
-           if (!empty($this->get('promo_code'))) {
-               ValidatePromotionCode::validate($validator, $this->get('promo_code'), $schedule->service, $schedule,
-                                               $this->get('amount') * $price->cost);
-           }
+            if (!empty($this->get('promo_code'))) {
+                ValidatePromotionCode::validate($validator, $this->get('promo_code'), $schedule->service, $schedule,
+                                                $this->get('amount') * $price->cost);
+            }
 
-           if ($schedule->attendees && $schedule->isSoldOut()) {
-               $validator->errors()->add('schedule_id', 'All quotes on the schedule are sold out');
-           }
+            if ($schedule->attendees && $schedule->isSoldOut()) {
+                $validator->errors()->add('schedule_id', 'All quotes on the schedule are sold out');
+            }
 
-       });
-   }
+        });
+    }
 
     protected function validateAvailabilities($validator): void {
         $availabilitiesRequest = $this->get('availabilities');

@@ -11,7 +11,7 @@ class CreateSubscriptionSchedule
     public function execute($request)
     {
         $stripe = app(StripeClient::class);
-        $user = User::where('id', $request->user_id)->first();
+        $user = User::where('id', $request->user_id)->with('plan')->first();
 
         $endDate = $request->date_to;
         if($request->is_dateless) {

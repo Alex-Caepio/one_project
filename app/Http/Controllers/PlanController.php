@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\AccountUpgradedToPractitioner;
 use App\Events\ChangeOfSubscription;
+use App\Helpers\UserRightsHelper;
 use App\Http\Requests\Plans\PlanRequest;
 use App\Events\SubscriptionConfirmation;
 use App\Models\Article;
@@ -37,7 +38,9 @@ class PlanController extends Controller
                     ['price' => $plan->stripe_id],
                 ],
             ]);
+
             $isNewPlan    = true;
+
             if ($subscription->id) {
                 if (!empty($user->stripe_plan_id)) {
                     $isNewPlan = false;
@@ -50,18 +53,16 @@ class PlanController extends Controller
             $user->plan_until   = Carbon::createFromTimestamp($subscription->current_period_end);
             $user->plan_from    = Carbon::now();
             $user->account_type = User::ACCOUNT_PRACTITIONER;
-
+            $isUpgradedToPractitioner = $user->isDirty('account_type');
             $user->save();
 
             if ($isNewPlan) {
-                event(new AccountUpgradedToPractitioner($user, $plan));
+                if ($isUpgradedToPractitioner) {
+                    event(new AccountUpgradedToPractitioner($user, $plan));
+                }
                 event(new SubscriptionConfirmation($user, $plan));
             } else {
                 event(new ChangeOfSubscription($user, $plan));
-            }
-
-            if (!$plan->article_publishing) {
-                Article::where('user_id', $user->id)->update(['is_published' => false]);
             }
 
         } catch (ApiErrorException $e) {

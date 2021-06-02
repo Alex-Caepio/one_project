@@ -58,6 +58,8 @@ Route::post('auth/verify-forgot-password-token', [ResetPasswordController::class
 Route::post('auth/forgot-password-claim', [ResetPasswordController::class, 'claimReset'])
     ->name('claim-reset');
 
+Route::post('/stripe-webhook', [StripeWebhookController::class, 'handler'])->middleware('stripe');
+
 /* Public Routes For Services And Articles */
 Route::get('articles', [ArticleController::class, 'index']);
 Route::get('articles/{publicArticle}', [ArticleController::class, 'show']);

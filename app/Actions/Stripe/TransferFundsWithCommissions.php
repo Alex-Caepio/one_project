@@ -30,7 +30,7 @@ class TransferFundsWithCommissions {
             $amount -= $reduction;
         }
 
-        $refference = implode(', ', $purchase->bookings->pluck('reference')->toArray());
+        $reference = implode(', ', $purchase->bookings->pluck('reference')->toArray());
 
         $stripe->transfers->create([
             'amount'      => $amount * 100,
@@ -44,7 +44,7 @@ class TransferFundsWithCommissions {
                 'Client first name'                 => $client->first_name,
                 'Client last name'                  => $client->last_name,
                 'Client stripe id'                  => $client->stripe_customer_id,
-                'Booking reference'                => $refference
+                'Booking reference'                => $reference
             ]
         ]);
 
