@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Request;
 use App\Models\FocusArea;
 use App\Transformers\FocusAreaTransformer;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class FocusAreaController extends Controller
 {
@@ -50,10 +52,10 @@ class FocusAreaController extends Controller
             ->parseIncludes($includes)->toArray())
             ->withPaginationHeaders($paginator);
     }
-    public function show(FocusArea $focusArea,Request $request)
-    {
+
+    public function show(FocusArea $focusArea, Request $request) {
+        $focusArea->load($request->getIncludesOnlyPublished());
         return fractal($focusArea, new FocusAreaTransformer())
-            ->parseIncludes($request->getIncludes())
-            ->respond();
+            ->parseIncludes($request->getIncludes())->respond();
     }
 }

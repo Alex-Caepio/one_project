@@ -4,15 +4,15 @@ namespace App\Transformers;
 
 use App\Models\MainPage;
 
-class MainPageTransformer extends Transformer
-{
+class MainPageTransformer extends Transformer {
     protected $availableIncludes = [
-        'featured_focus_areas', 'featured_disciplines',
-        'featured_practitioners', 'featured_services'
+        'featured_focus_areas',
+        'featured_disciplines',
+        'featured_practitioners',
+        'featured_services'
     ];
 
-    public function transform(MainPage $mainPage): array
-    {
+    public function transform(MainPage $mainPage): array {
         return [
             'id'                   => $mainPage->id,
             'section_1_image_url'  => $mainPage->section_1_image_url,
@@ -77,7 +77,7 @@ class MainPageTransformer extends Transformer
             'section_11_alt_text'     => $mainPage->section_11_alt_text,
 
             'section_12_h2'                   => $mainPage->section_12_h2,
-            'section_12_text'                   => $mainPage->section_12_text,
+            'section_12_text'                 => $mainPage->section_12_text,
             'section_12_media_1_image_url'    => $mainPage->section_12_media_1_image_url,
             'section_12_media_1_url'          => $mainPage->section_12_media_1_url,
             'section_12_media_1_target_blanc' => (bool)$mainPage->section_12_media_1_target_blanc,
@@ -102,23 +102,19 @@ class MainPageTransformer extends Transformer
         ];
     }
 
-    public function includeFeaturedFocusAreas(MainPage $mainPage)
-    {
+    public function includeFeaturedFocusAreas(MainPage $mainPage) {
         return $this->collectionOrNull($mainPage->featured_focus_areas, new FocusAreaTransformer());
     }
 
-    public function includeFeaturedDisciplines(MainPage $mainPage)
-    {
+    public function includeFeaturedDisciplines(MainPage $mainPage) {
         return $this->collectionOrNull($mainPage->featured_disciplines, new DisciplineTransformer());
     }
 
-    public function includeFeaturedPractitioners(MainPage $mainPage)
-    {
+    public function includeFeaturedPractitioners(MainPage $mainPage) {
         return $this->collectionOrNull($mainPage->featured_practitioners, new UserTransformer());
     }
 
-    public function includeFeaturedServices(MainPage $mainPage)
-    {
+    public function includeFeaturedServices(MainPage $mainPage) {
         return $this->collectionOrNull($mainPage->featured_services, new ServiceTransformer());
     }
 }

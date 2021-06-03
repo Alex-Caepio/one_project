@@ -6,8 +6,7 @@ use App\Models\Discipline;
 use App\Http\Requests\Request;
 use App\Transformers\DisciplineTransformer;
 
-class DisciplineController extends Controller
-{
+class DisciplineController extends Controller {
     public function index(Request $request)
     {
         $query = Discipline::query()->where('is_published', true);
@@ -42,6 +41,7 @@ class DisciplineController extends Controller
 
     public function show(Discipline $discipline, Request $request)
     {
+        $discipline->load($request->getIncludesOnlyPublished());
         return fractal($discipline, new DisciplineTransformer())->parseIncludes($request->getIncludes())
             ->toArray();
     }

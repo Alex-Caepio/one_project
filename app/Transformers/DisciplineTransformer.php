@@ -4,18 +4,23 @@ namespace App\Transformers;
 
 use App\Models\Discipline;
 
-class DisciplineTransformer extends Transformer
-{
+class DisciplineTransformer extends Transformer {
     protected $availableIncludes = [
-        'services', 'articles', 'focus_areas', 'practitioners',
-        'featured_practitioners', 'featured_services',
-        'media_images', 'media_videos', 'media_files',
-        'featured_focus_areas', 'featured_articles',
+        'services',
+        'articles',
+        'focus_areas',
+        'practitioners',
+        'featured_practitioners',
+        'featured_services',
+        'media_images',
+        'media_videos',
+        'media_files',
+        'featured_focus_areas',
+        'featured_articles',
         'related_disciplines'
     ];
 
-    public function transform(Discipline $discipline): array
-    {
+    public function transform(Discipline $discipline): array {
         return [
             'id'           => $discipline->id,
             'name'         => $discipline->name,
@@ -84,63 +89,51 @@ class DisciplineTransformer extends Transformer
         ];
     }
 
-    public function includeFeaturedPractitioners(Discipline $discipline)
-    {
+    public function includeFeaturedPractitioners(Discipline $discipline) {
         return $this->collectionOrNull($discipline->featured_practitioners, new UserTransformer());
     }
 
-    public function includeFeaturedServices(Discipline $discipline)
-    {
+    public function includeFeaturedServices(Discipline $discipline) {
         return $this->collectionOrNull($discipline->featured_services, new ServiceTransformer());
     }
 
-    public function includeServices(Discipline $discipline)
-    {
+    public function includeServices(Discipline $discipline) {
         return $this->collectionOrNull($discipline->services, new ServiceTransformer());
     }
 
-    public function includeArticles(Discipline $discipline)
-    {
+    public function includeArticles(Discipline $discipline) {
         return $this->collectionOrNull($discipline->articles, new ArticleTransformer());
     }
 
-    public function includeFocusAreas(Discipline $discipline)
-    {
+    public function includeFocusAreas(Discipline $discipline) {
         return $this->collectionOrNull($discipline->focus_areas, new FocusAreaTransformer());
     }
 
-    public function includePractitioners(Discipline $discipline)
-    {
+    public function includePractitioners(Discipline $discipline) {
         return $this->collectionOrNull($discipline->practitioners, new UserTransformer());
     }
 
-    public function includeMediaImages(Discipline $discipline)
-    {
+    public function includeMediaImages(Discipline $discipline) {
         return $this->collectionOrNull($discipline->media_images, new MediaImageTransformer());
     }
 
-    public function includeMediaVideos(Discipline $discipline)
-    {
+    public function includeMediaVideos(Discipline $discipline) {
         return $this->collectionOrNull($discipline->media_videos, new MediaVideoTransformer());
     }
 
-    public function includeMediaFiles(Discipline $discipline)
-    {
+    public function includeMediaFiles(Discipline $discipline) {
         return $this->collectionOrNull($discipline->media_files, new MediaFileTransformer());
     }
 
-    public function includeFeaturedFocusAreas(Discipline $discipline)
-    {
+    public function includeFeaturedFocusAreas(Discipline $discipline) {
         return $this->collectionOrNull($discipline->featured_focus_areas, new FocusAreaTransformer());
     }
 
-    public function includeFeaturedArticles(Discipline $discipline)
-    {
+    public function includeFeaturedArticles(Discipline $discipline) {
         return $this->collectionOrNull($discipline->featured_articles, new ArticleTransformer());
     }
 
-    public function includeRelatedDisciplines(Discipline $discipline)
-    {
+    public function includeRelatedDisciplines(Discipline $discipline) {
         return $this->collectionOrNull($discipline->related_disciplines, new DisciplineTransformer());
     }
 }

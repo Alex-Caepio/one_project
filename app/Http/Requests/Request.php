@@ -33,11 +33,18 @@ class Request extends FormRequest {
         return $newIncludes;
     }
 
+    public function getIncludesOnlyPublished(): array {
+        $newIncludes = [];
+        foreach ($this->getIncludes() as $include) {
+            $newIncludes[$include] = static function($query) {
+                $query->where('is_published', true);
+            };
+        }
+        return $newIncludes;
+    }
 
     public function getLimit() {
-        return (int)$this->query->get('limit')
-            ?: (int)$this->header('X-limit')
-                ?: config('api.pagination_limit_default');
+        return (int)$this->query->get('limit') ?: (int)$this->header('X-limit') ?: config('api.pagination_limit_default');
     }
 
     public function getPage(): int {
