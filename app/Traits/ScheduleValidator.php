@@ -34,7 +34,7 @@ trait ScheduleValidator {
         if ($this->has('prices')) {
 
             //if user not allowed to add prices
-            if (!UserRightsHelper::userAllowAddPriceOptions(count($this->prices))) {
+            if (!UserRightsHelper::userAllowAddPriceOptions($this->user(), count($this->prices))) {
                 $validator->errors()->add('prices.*.name', "You`re restricted to {$plan->pricing_options_per_service} prices.");
             }
 
