@@ -6,7 +6,7 @@ use App\Http\Requests\Request;
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 
-class PractitionerShowRequest extends Request
+class PractitionerPublishRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.

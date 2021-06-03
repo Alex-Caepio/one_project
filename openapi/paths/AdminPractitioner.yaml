@@ -105,6 +105,44 @@ practitioners/{id}/delete:
             schema:
               $ref: '../schemas/422/PractitionerDelete.yaml'
 
+practitioners/{id}/publish:
+  post:
+    parameters:
+      - $ref: "#/parameters/id"
+    tags:
+      - User as a Practitioner
+    responses:
+      '422':
+        description: Validation errors
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/422/AuthProfilePublish.yaml'
+      '204':
+        description: OK
+
+practitioners/{id}/unpublish:
+  parameters:
+    - $ref: "#/parameters/id"
+  post:
+    tags:
+      - User as a Practitioner
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/forms/UnpublishPractitioner.yaml'
+    responses:
+      '422':
+        description: Validation errors
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/422/AuthProfileUnpublish.yaml'
+      '204':
+        description: OK
+
 parameters:
   id:
     name: id

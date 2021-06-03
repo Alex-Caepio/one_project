@@ -34,7 +34,6 @@ class UserObserver {
 
             if ($user->isDirty('is_published')) {
                 if (!$user->is_published && !$user->wasRecentlyCreated) {
-                    UserRightsHelper::unpublishPractitioner($user);
                     event(new BusinessProfileUnpublished($user));
                 } elseif ($user->is_published) {
                     $user->published_at = now();

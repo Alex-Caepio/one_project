@@ -196,6 +196,7 @@ articles/{id}:
           application/json:
             schema:
               $ref: '../schemas/Article.yaml'
+
 articles-practitioner/{id}:
   get:
     tags:

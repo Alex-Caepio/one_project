@@ -26,6 +26,7 @@ class MessageController extends Controller
     {
         $sender = $request->user();
         $text = $request->get('text');
+
         Mail::to($user->email)->send(new SendUserMail($sender, $user, $text));
 
 

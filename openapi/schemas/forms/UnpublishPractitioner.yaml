@@ -1,0 +1,8 @@
+type: object
+required:
+  - cancel_bookings
+properties:
+  cancel_bookings:
+    type: boolean
+    nullable: false
+    example: true

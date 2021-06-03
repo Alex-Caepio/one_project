@@ -4,14 +4,17 @@ namespace App\Http\Controllers\Auth;
 
 use App\Actions\Auth\GetUsersPermissions;
 use App\Actions\Cancellation\CancelBooking;
+use App\Actions\Practitioners\UnpublishPractitioner;
 use App\Actions\Stripe\CreateStripeUserByEmail;
 use App\Actions\User\CreateUserFromRequest;
 use App\Events\UserRegistered;
+use App\Helpers\UserRightsHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\PublishPractitionerRequest;
 use App\Http\Requests\Auth\PublishRequest;
 use App\Http\Requests\Auth\RegisterRequest;
+use App\Http\Requests\Auth\UnpublishPractitionerRequest;
 use App\Http\Requests\Auth\UpdateBusinessRequest;
 use App\Http\Requests\Auth\UpdateMediaRequest;
 use App\Http\Requests\Auth\UpdateRequest;
@@ -107,16 +110,6 @@ class AuthController extends Controller {
     public function updateBusiness(UpdateBusinessRequest $request, StripeClient $stripe) {
         $user = $request->user();
 
-        /*
-        if ($request->cancel_bookings_on_unpublish && !$user->is_published) {
-            $bookings = Booking::where('user_id', $user->id)->active()->get();
-
-            foreach ($bookings as $booking) {
-                run_action(CancelBooking::class, $booking);
-            }
-        }
-        */
-
         $requestData = $request->all($request->getValidatorKeys());
 
         $isPublished = $request->getBoolFromRequest('is_published');
@@ -206,7 +199,6 @@ class AuthController extends Controller {
         return fractal($user, new UserTransformer())->respond();
     }
 
-
     public function avatar(Request $request) {
         $path = public_path('\img\profile\\' . Auth::id() . '\\');
         $fileName = $request->file('image')->getClientOriginalName();
@@ -267,16 +259,14 @@ class AuthController extends Controller {
         return response(null, 204);
     }
 
-
     public function publish(PublishPractitionerRequest $request) {
         Auth::user()->is_published = true;
         Auth::user()->save();
         return response(null, 204);
     }
 
-    public function unpublish() {
-        Auth::user()->is_published = false;
-        Auth::user()->save();
+    public function unpublish(UnpublishPractitionerRequest $request) {
+        run_action(UnpublishPractitioner::class, Auth::user(), $request);
         return response(null, 204);
     }
 

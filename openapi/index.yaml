@@ -1672,18 +1672,14 @@ paths:
               schema:
                 $ref: "#/paths/~1api~1auth~1register/post/responses/200/content/application~1js\
                   on/schema"
-  /api/auth/profile/publish:
+  /api/auth/publish:
     post:
-      operationId: client-publish-profile
+      operationId: practitioner-publish-profile
       tags:
         - Auth
       responses:
-        "200":
+        "204":
           description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/schemas/User"
         "422":
           description: Validation errors
           content:
@@ -1706,6 +1702,42 @@ paths:
                       business_introduction:
                         - You have not filled in the field "Business
                           introduction"
+  /api/auth/unpublish:
+    post:
+      operationId: practitioner-unpublish-profile
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - cancel_bookings
+              properties:
+                cancel_bookings:
+                  type: boolean
+                  nullable: false
+                  example: true
+      responses:
+        "204":
+          description: OK
+        "422":
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: The given data was invalid.
+                  errors:
+                    type: object
+                    example:
+                      cancel_bookings:
+                        - Choose Cancel Booking option
   /api/auth/forgot-password-ask:
     post:
       operationId: ask-for-password-reset
@@ -5049,6 +5081,55 @@ paths:
                         - Message field may not be greater than 1000 characters.
                         - Message field may not be less than 10 characters.
                         - Message field may is required.
+  "/admin/practitioners/{id}/publish":
+    post:
+      parameters:
+        - name: id
+          in: path
+          description: Practitioner ID
+          required: true
+          schema:
+            type: integer
+      tags:
+        - User as a Practitioner
+      responses:
+        "204":
+          description: OK
+        "422":
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1api~1auth~1publish/post/responses/422/content/application~1jso\
+                  n/schema"
+  "/admin/practitioners/{id}/unpublish":
+    parameters:
+      - name: id
+        in: path
+        description: Practitioner ID
+        required: true
+        schema:
+          type: integer
+    post:
+      tags:
+        - User as a Practitioner
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/paths/~1api~1auth~1unpublish/post/requestBody/content/application~1jso\
+                n/schema"
+      responses:
+        "204":
+          description: OK
+        "422":
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1api~1auth~1unpublish/post/responses/422/content/application~1j\
+                  son/schema"
   /admin/promotions:
     get:
       tags:

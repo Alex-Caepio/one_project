@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Actions\Admin\DeleteUser;
+use App\Actions\Practitioners\UnpublishPractitioner;
 use App\Filters\UserFiltrator;
 use App\Http\Requests\Admin\PractitionerPublishRequest;
+use App\Http\Requests\Auth\UnpublishPractitionerRequest;
 use App\Models\User;
 use App\Mail\VerifyEmail;
 use App\Http\Requests\Request;
@@ -76,11 +78,8 @@ class PractitionerController extends Controller {
         return response(null, 204);
     }
 
-    public function unpublish(User $practitioner) {
-        $practitioner->forceFill([
-                                     'is_published' => false,
-                                 ]);
-        $practitioner->update();
+    public function unpublish(User $practitioner, UnpublishPractitionerRequest $request) {
+        run_action(UnpublishPractitioner::class, $practitioner, $request);
         return response(null, 204);
     }
 

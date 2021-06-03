@@ -11,8 +11,10 @@
   $ref: "./Auth.yaml#/auth~1business-profile"
 /api/auth/login:
   $ref: "./Auth.yaml#/auth~1login"
-/api/auth/profile/publish:
-  $ref: "./Auth.yaml#/auth~1profile~1publish"
+/api/auth/publish:
+  $ref: "./Auth.yaml#/auth~1publish"
+/api/auth/unpublish:
+  $ref: "./Auth.yaml#/auth~1unpublish"
 /api/auth/forgot-password-ask:
   $ref: "./Auth.yaml#/auth~1forgot-password-ask"
 /api/auth/forgot-password-claim:
@@ -198,6 +200,11 @@
   $ref: "./AdminPractitioner.yaml#/practitioners"
 /admin/practitioners/{id}/delete:
   $ref: "./AdminPractitioner.yaml#/practitioners~1{id}~1delete"
+/admin/practitioners/{id}/publish:
+  $ref: "./AdminPractitioner.yaml#/practitioners~1{id}~1publish"
+/admin/practitioners/{id}/unpublish:
+  $ref: "./AdminPractitioner.yaml#/practitioners~1{id}~1unpublish"
+
 # Promotions
 /admin/promotions:
   $ref: "./AdminPromotion.yaml#/promotions"

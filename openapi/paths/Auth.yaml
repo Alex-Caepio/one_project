@@ -118,9 +118,9 @@ auth/login:
             schema:
               $ref: '../schemas/UserLogin.yaml'
 
-auth/profile/publish:
+auth/publish:
   post:
-    operationId: client-publish-profile
+    operationId: practitioner-publish-profile
     tags:
       - Auth
     responses:
@@ -130,12 +130,29 @@ auth/profile/publish:
           application/json:
             schema:
               $ref: '../schemas/422/AuthProfilePublish.yaml'
-      '200':
+      '204':
         description: OK
+
+auth/unpublish:
+  post:
+    operationId: practitioner-unpublish-profile
+    tags:
+      - Auth
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/forms/UnpublishPractitioner.yaml'
+    responses:
+      '422':
+        description: Validation errors
         content:
           application/json:
             schema:
-              $ref: '../schemas/User.yaml'
+              $ref: '../schemas/422/AuthProfileUnpublish.yaml'
+      '204':
+        description: OK
 
 auth/forgot-password-ask:
   post:

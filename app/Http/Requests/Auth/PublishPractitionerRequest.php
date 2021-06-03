@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\Request;
 use Illuminate\Validation\Rule;
 
-class UpdateMediaRequest extends Request {
+class PublishPractitionerRequest extends Request {
     /**
      * Authorization rules
      *
