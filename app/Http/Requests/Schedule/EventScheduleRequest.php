@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\Schedule;
 
+use Illuminate\Validation\Rule;
+
 class EventScheduleRequest extends GenericSchedule {
 
     /**
@@ -23,7 +25,9 @@ class EventScheduleRequest extends GenericSchedule {
             'url'                     => 'nullable|required_if:appointment,virtual|string',
             'refund_terms'            => 'required',
             'prices'                  => 'required|array',
-            'prices.*.name'           => 'required',
+            'prices.*.name'           => Rule::requiredIf(function() {
+                return count($this->prices) > 1;
+            }),
             'prices.*.cost'           => 'required_if:prices.*.is_free,false',
             'prices.*.is_free'        => 'required',
             'prices.*.available_till' => 'before:end_date',

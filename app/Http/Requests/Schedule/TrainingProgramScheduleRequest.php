@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\Schedule;
 
+use Illuminate\Validation\Rule;
+
 class TrainingProgramScheduleRequest extends GenericSchedule {
 
 
@@ -16,7 +18,9 @@ class TrainingProgramScheduleRequest extends GenericSchedule {
             'location_displayed'      => 'required|string',
             'refund_terms'            => 'required',
             'prices'                  => 'required|array',
-            'prices.*.name'           => 'required',
+            'prices.*.name'           => Rule::requiredIf(function() {
+                return count($this->prices) > 1;
+            }),
             'prices.*.cost'           => 'required_if:prices.*.is_free,false',
             'prices.*.is_free'        => 'required',
             'prices.*.available_till' => 'before:end_date',

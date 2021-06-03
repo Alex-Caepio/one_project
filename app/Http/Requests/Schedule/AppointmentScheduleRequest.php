@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\Schedule;
 
+use Illuminate\Validation\Rule;
+
 class AppointmentScheduleRequest extends GenericSchedule {
 
     /**
@@ -12,7 +14,9 @@ class AppointmentScheduleRequest extends GenericSchedule {
     public function rules() {
         return [
             'prices'                                 => 'required|array',
-            'prices.*.name'                          => 'required',
+            'prices.*.name'                          => Rule::requiredIf(function() {
+                return count($this->prices) > 1;
+            }),
             'prices.*.duration'                      => 'required',
             'prices.*.cost'                          => 'required_if:prices.*.is_free,false',
             'prices.*.is_free'                       => 'required',
