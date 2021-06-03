@@ -108,12 +108,12 @@ class UserRightsHelper {
 
     /**
      * @param \App\Models\User $user
-     * @param int $cntAttendies
+     * @param int|null $cntAttendies
      * @return bool
      */
-    public static function userAllowAttendees(User $user, int $cntAttendies): bool {
+    public static function userAllowAttendees(User $user, ?int $cntAttendies): bool {
 
-        if ($user->is_admin) {
+        if ($cntAttendies === null || $user->is_admin) {
             return true;
         }
 
