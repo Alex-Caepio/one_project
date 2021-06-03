@@ -27,7 +27,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         //delete has post method on purpose and doesn't require refactoring
         Route::post('/practitioners/{practitioner}/delete', [PractitionerController::class, 'destroy']);
         Route::post('/practitioners/{practitioner}/unpublish', [PractitionerController::class, 'unpublish']);
-        Route::post('/practitioners/{practitioner}/publish', [PractitionerController::class, 'publish']);
+        Route::post('/practitioners/{practitioner}/publish', [PractitionerController::class, 'publish'])->name('admin-practitioner-publish');
 
         Route::get('/clients', [ClientController::class, 'index']);
         Route::post('/clients', [ClientController::class, 'store']);

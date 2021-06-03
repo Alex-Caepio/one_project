@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Actions\Admin\DeleteUser;
 use App\Actions\Practitioners\UnpublishPractitioner;
 use App\Filters\UserFiltrator;
-use App\Http\Requests\Admin\PractitionerPublishRequest;
+use App\Http\Requests\Auth\PublishPractitionerRequest;
 use App\Http\Requests\Auth\UnpublishPractitionerRequest;
 use App\Models\User;
 use App\Mail\VerifyEmail;
@@ -18,7 +18,6 @@ use App\Http\Requests\Admin\PractitionerShowRequest;
 use App\Http\Requests\Admin\PractitionerUpdateRequest;
 use App\Http\Requests\Admin\PractitionerDestroyRequest;
 use App\Actions\Practitioners\CreatePractitionerFromRequest;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
 
@@ -83,7 +82,7 @@ class PractitionerController extends Controller {
         return response(null, 204);
     }
 
-    public function publish(User $practitioner, PractitionerPublishRequest $request) {
+    public function publish(User $practitioner, PublishPractitionerRequest $request) {
         $practitioner->forceFill([
                                      'is_published' => true,
                                  ]);
