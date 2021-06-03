@@ -22,6 +22,10 @@ class RescheduleRequestRequest extends Request {
             return true;
         }
 
+        if ($loggedUser->isPractitioner() && $loggedUser->isFullyRestricted()) {
+            return false;
+        }
+
         if ($this->booking) {
             return $this->booking->user_id === $loggedUser->id || $this->booking->practitioner_id === $loggedUser->id;
         }
