@@ -47,14 +47,14 @@ class AuthController extends Controller {
                 'stripe_customer_id' => $stripeCustomer->id
             ]);
 
-        } catch (\Stripe\Exception\ApiErrorException $e) {
+        } catch (\Exception $e) {
 
             Log::channel('stripe_client_error')->info("Client could not registered in stripe", [
                 'first_name'         => $request->first_name,
                 'last_name'          => $request->last_name,
                 'business_email'     => $request->business_email,
                 'email'              => $request->email,
-                'stripe_customer_id' => $stripeCustomer->id,
+                'stripe_customer_id' => $stripeCustomer->id ?? null,
                 'message'            => $e->getMessage(),
             ]);
 
@@ -247,16 +247,6 @@ class AuthController extends Controller {
         $user = User::where('slug', $slug)->with($request->getIncludes())->firstOrFail();
 
         return fractal($user, new UserTransformer())->parseIncludes($request->getIncludes())->respond();
-    }
-
-    public function stripeConnected(Request $request) {
-        $user = Auth::user();
-        if ($user->stripe_account_id && !$user->connected_at) {
-            $user->connected_at = now();
-            $user->save();
-        }
-
-        return response(null, 204);
     }
 
     public function publish(PublishPractitionerRequest $request) {
