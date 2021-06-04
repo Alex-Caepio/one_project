@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Request;
 use App\Http\Requests\Stripe\StripeConnectedRequest;
+use App\Transformers\UserTransformer;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Stripe\StripeClient;
@@ -28,15 +29,16 @@ class StripeAccountController extends Controller {
         // Retrieve AccontDetails from Stripe
         try {
             $account = $stripeClient->accounts->retrieve($user->stripe_account_id);
-            Log::info('ACCOUNT RETRIEVE FRM STRIPE: ');
-            Log::info($account->toArray());
             if ($account->details_submitted) {
+                Log::channel('stripe_client_success')->info("Successfully connected: ", $account->toArray());
                 $user->connected_at = now();
                 $user->save();
+                return fractal($user, new UserTransformer())
+                    ->parseIncludes($request->getIncludes())->respond();
             } else {
+                Log::channel('stripe_client_error')->info("User decline Stripe Connection", $account->toArray());
                 throw new \Exception('Account submitted flag is FALSE');
             }
-            return response(null, 204);
         } catch (\Exception $e) {
             Log::channel('stripe_client_error')->info("Cannot retrieve info regarding stripe account", [
                 'user_id'    => $user->id,
@@ -46,7 +48,7 @@ class StripeAccountController extends Controller {
             ]);
         }
 
-        return response('Cannot update stripe connection info', 500);
+        return response(null, 204);
     }
 
 }
