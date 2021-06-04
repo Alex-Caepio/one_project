@@ -14,9 +14,11 @@ class ChangeOfSubscription {
 
     public User $user;
     public Plan $plan;
+    public Plan $previousPlan;
 
-    public function __construct(User $user, Plan $plan) {
+    public function __construct(User $user, Plan $plan, Plan $previousPlan) {
         $this->user = $user;
         $this->plan = $plan;
+        $this->previousPlan = $previousPlan;
     }
 }

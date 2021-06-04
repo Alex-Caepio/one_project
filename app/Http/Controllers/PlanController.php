@@ -18,40 +18,35 @@ use Illuminate\Support\Facades\Log;
 use Stripe\Exception\ApiErrorException;
 use Stripe\StripeClient;
 
-class PlanController extends Controller
-{
-    public function index(Request $request)
-    {
+class PlanController extends Controller {
+    public function index(Request $request) {
         $plans = Plan::with('service_types')->get();
         return fractal($plans, new PlanTransformer())->parseIncludes($request->getIncludes())->toArray();
     }
 
-    public function purchase(Plan $plan, StripeClient $stripe, PlanRequest $request)
-    {
+    public function purchase(Plan $plan, StripeClient $stripe, PlanRequest $request) {
         $user = Auth::user();
-
+        $previousPlan = $user->plan;
+        $isNewPlan = !empty($user->plan_id);
         try {
             $subscription = $stripe->subscriptions->create([
-                'default_payment_method' => $request->payment_method_id,
-                'customer'               => $user->stripe_customer_id,
-                'items'                  => [
-                    ['price' => $plan->stripe_id],
-                ],
-            ]);
-
-            $isNewPlan    = true;
+                                                               'default_payment_method' => $request->payment_method_id,
+                                                               'customer'               => $user->stripe_customer_id,
+                                                               'items'                  => [
+                                                                   ['price' => $plan->stripe_id],
+                                                               ],
+                                                           ]);
 
             if ($subscription->id) {
                 if (!empty($user->stripe_plan_id)) {
-                    $isNewPlan = false;
                     $stripe->subscriptions->cancel($user->stripe_plan_id, []);
                 }
                 $user->stripe_plan_id = $subscription->id;
-                $user->plan_id        = $plan->id;
+                $user->plan_id = $plan->id;
             }
 
-            $user->plan_until   = Carbon::createFromTimestamp($subscription->current_period_end);
-            $user->plan_from    = Carbon::now();
+            $user->plan_until = Carbon::createFromTimestamp($subscription->current_period_end);
+            $user->plan_from = Carbon::now();
             $user->account_type = User::ACCOUNT_PRACTITIONER;
             $isUpgradedToPractitioner = $user->isDirty('account_type');
             $user->save();
@@ -62,7 +57,7 @@ class PlanController extends Controller
                 }
                 event(new SubscriptionConfirmation($user, $plan));
             } else {
-                event(new ChangeOfSubscription($user, $plan));
+                event(new ChangeOfSubscription($user, $plan, $previousPlan));
             }
 
         } catch (ApiErrorException $e) {
@@ -78,7 +73,8 @@ class PlanController extends Controller
             ]);
 
 
-            return response()->json(['payment_method_id' => 'The payment could not be processed. Please check with your bank or choose another payment option.'], 422);
+            return response()->json(['payment_method_id' => 'The payment could not be processed. Please check with your bank or choose another payment option.'],
+                                    422);
         }
 
         Log::channel('stripe_plans_success')->info('Plan successfully purchased', [
