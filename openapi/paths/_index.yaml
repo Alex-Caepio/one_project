@@ -21,6 +21,8 @@
   $ref: "./Auth.yaml#/auth~1forgot-password-claim"
 /api/auth/verify-forgot-password-token:
   $ref: "./Auth.yaml#/auth~1verify-forgot-password-token"
+/api/auth/resend-verification:
+  $ref: "./Auth.yaml#/auth~1resend-verification"
 
 #articels
 /articles:

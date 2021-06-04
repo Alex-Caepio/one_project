@@ -166,7 +166,22 @@ auth/forgot-password-ask:
           schema:
             $ref: '../schemas/forms/ForgotPasswordAsk.yaml'
     responses:
-      '200':
+      '204':
+        description: OK
+
+auth/resend-verification:
+  post:
+    operationId: ask-for-password-resend
+    tags:
+      - Auth
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/forms/ResendVerification.yaml'
+    responses:
+      '204':
         description: OK
 
 auth/forgot-password-claim:

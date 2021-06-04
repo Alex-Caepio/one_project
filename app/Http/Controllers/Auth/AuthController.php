@@ -18,6 +18,7 @@ use App\Http\Requests\Auth\UnpublishPractitionerRequest;
 use App\Http\Requests\Auth\UpdateBusinessRequest;
 use App\Http\Requests\Auth\UpdateMediaRequest;
 use App\Http\Requests\Auth\UpdateRequest;
+use App\Http\Requests\Auth\VerificationRequest;
 use App\Models\Booking;
 use App\Models\Country;
 use App\Models\Keyword;
@@ -226,9 +227,9 @@ class AuthController extends Controller {
         return fractal($user, new UserTransformer())->parseIncludes('access_token')->respond();
     }
 
-    public function resendVerification(Request $request) {
-        $this->sendVerificationEmail($request->user());
-        response(null, 200);
+    public function resendVerification(VerificationRequest $request) {
+        event(new UserRegistered(User::where('email', $request->email)->first()));
+        return response(null, 204);
     }
 
     protected function invalidate() {

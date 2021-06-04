@@ -1756,7 +1756,7 @@ paths:
                   type: string
                   example: mmorissette@example.net
       responses:
-        "200":
+        "204":
           description: OK
   /api/auth/forgot-password-claim:
     post:
@@ -1810,6 +1810,26 @@ paths:
           description: OK
         "422":
           description: Token has expired
+  /api/auth/resend-verification:
+    post:
+      operationId: ask-for-password-resend
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  example: mmorissette@example.net
+      responses:
+        "204":
+          description: OK
   /articles:
     post:
       tags:

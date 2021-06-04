@@ -57,13 +57,14 @@ Route::post('auth/forgot-password-ask', [ResetPasswordController::class, 'askFor
 Route::post('auth/verify-forgot-password-token', [ResetPasswordController::class, 'verifyToken']);
 Route::post('auth/forgot-password-claim', [ResetPasswordController::class, 'claimReset'])
     ->name('claim-reset');
+Route::post('auth/resend-verification', [AuthController::class, 'resendVerification']);
 
 Route::post('/stripe-webhook', [StripeWebhookController::class, 'handler'])->middleware('stripe');
 
 /* Public Routes For Services And Articles */
 Route::get('articles', [ArticleController::class, 'index']);
 Route::get('articles/{publicArticle}', [ArticleController::class, 'show']);
-Route::post('/articles/{article}/copy', [ArticleController::class, 'copy']);
+Route::post('articles/{article}/copy', [ArticleController::class, 'copy']);
 
 Route::get('services', [ServiceController::class, 'index']);
 Route::get('services/{publicService}', [ServiceController::class, 'show']);
@@ -104,7 +105,6 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::get('auth/profile', [AuthController::class, 'profile']);
     Route::put('auth/profile', [AuthController::class, 'update']);
     Route::delete('auth/profile', [AuthController::class, 'delete']);
-    Route::post('auth/resend-verification', [AuthController::class, 'resendVerification']);
     Route::post('auth/profile/avatar', [AuthController::class, 'avatar']);
     Route::post('auth/profile/background', [AuthController::class, 'background']);
     Route::get('auth/quotes/articles', [QuoteController::class, 'quotesArticles']);
