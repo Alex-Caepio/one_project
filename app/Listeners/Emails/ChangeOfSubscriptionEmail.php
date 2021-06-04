@@ -22,7 +22,7 @@ class ChangeOfSubscriptionEmail extends SendEmailHandler {
 
 
     private function checkDowngradePractitioner(ChangeOfSubscription $event): void {
-        UserRightsHelper::downgradePractitioner($event->user);
+        UserRightsHelper::downgradePractitioner($event->user, $event->plan, $event->previousPlan);
     }
 
 }
