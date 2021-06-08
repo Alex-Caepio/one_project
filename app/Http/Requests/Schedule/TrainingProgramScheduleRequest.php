@@ -26,6 +26,8 @@ class TrainingProgramScheduleRequest extends GenericSchedule {
             'prices.*.available_till' => 'before:end_date',
             'deposit_amount'          => 'required_if:deposit_accepted,true',
             'deposit_final_date'      => 'required_if:deposit_accepted,true',
+            'comments'                => 'nullable|string|max:1000',
+            'booking_message'         => 'nullable|string|max:1000',
         ];
     }
 

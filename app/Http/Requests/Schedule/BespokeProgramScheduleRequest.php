@@ -24,6 +24,8 @@ class BespokeProgramScheduleRequest extends GenericSchedule {
             'deposit_amount'     => 'required_if:deposit_accepted,true',
             'deposit_final_date' => 'required_if:deposit_accepted,true',
             'refund_terms'       => 'nullable',
+            'comments'           => 'nullable|string|max:1000',
+            'booking_message'    => 'nullable|string|max:1000',
         ];
     }
 
