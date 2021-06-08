@@ -27,7 +27,7 @@ class PlanController extends Controller {
     public function purchase(Plan $plan, StripeClient $stripe, PlanRequest $request) {
         $user = Auth::user();
         $previousPlan = $user->plan;
-        $isNewPlan = !empty($user->plan_id);
+        $isNewPlan = empty($user->plan_id);
         try {
             $subscription = $stripe->subscriptions->create([
                                                                'default_payment_method' => $request->payment_method_id,
