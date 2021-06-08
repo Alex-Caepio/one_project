@@ -23,7 +23,7 @@ trait ScheduleValidator {
 
         $plan = $this->user()->plan;
 
-        if (UserRightsHelper::userAllowAddSchedule($this->user(), $service)) {
+        if (!UserRightsHelper::userAllowAddSchedule($this->user(), $service)) {
             $validator->errors()->add('service_id', 'The schedules limit on the service has been exceeded.');
         }
 
