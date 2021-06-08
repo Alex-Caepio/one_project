@@ -238,7 +238,7 @@ class EmailVariables {
      */
     public function getSchedule_start_date(): string {
         return $this->event->schedule->start_date ? Carbon::parse($this->event->schedule->start_date)
-                                                          ->toDateString() : '';
+                                                          ->format('d-m-Y') : '';
     }
 
     /**
@@ -253,7 +253,7 @@ class EmailVariables {
      * @return string
      */
     public function getSchedule_end_date(): string {
-        return $this->event->schedule->end_date ? Carbon::parse($this->event->schedule->end_date)->toDateString() : '';
+        return $this->event->schedule->end_date ? Carbon::parse($this->event->schedule->end_date)->format('d-m-Y') : '';
     }
 
     /**
@@ -347,14 +347,14 @@ class EmailVariables {
      * @return string
      */
     public function getSubscription_start_date(): string {
-        return Carbon::parse($this->event->user->plan_from)->format('d.m.Y');
+        return Carbon::parse($this->event->user->plan_from)->format('d-m-Y');
     }
 
     /**
      * @return string
      */
     public function getSubscription_end_date(): string {
-        return Carbon::parse($this->event->user->plan_until)->format('d.m.Y');
+        return Carbon::parse($this->event->user->plan_until)->format('d-m-Y');
     }
 
     /**
