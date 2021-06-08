@@ -8,6 +8,8 @@ use App\Console\Commands\BookingNotifierWeek;
 use App\Console\Commands\BookingStatusesUpdate;
 use App\Console\Commands\InstalmentsNotifier;
 use App\Console\Commands\MarkExpiredPromocodes;
+use App\Console\Commands\RescheduleNoReplyCommand;
+use App\Console\Commands\RescheduleNoReplyFinishCommand;
 use App\Console\Commands\ScheduleFreezesByCron;
 use App\Console\Commands\ScheduleFreezesTruncate;
 use Illuminate\Console\Scheduling\Schedule;
@@ -26,7 +28,9 @@ class Kernel extends ConsoleKernel {
         BookingNotifierTomorrow::class,
         BookingNotifierTwoWeek::class,
         BookingNotifierWeek::class,
-        BookingStatusesUpdate::class
+        BookingStatusesUpdate::class,
+        RescheduleNoReplyCommand::class,
+        RescheduleNoReplyFinishCommand::class
     ];
 
     /**
@@ -43,6 +47,7 @@ class Kernel extends ConsoleKernel {
         $schedule->command('bookings:notifier-tomorrow')->daily();
         $schedule->command('bookings:status-update')->daily();
         $schedule->command('reschedule:noreply')->daily();
+        $schedule->command('reschedule:noreply-finish')->daily();
     }
 
     /**

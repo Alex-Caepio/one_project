@@ -15,6 +15,9 @@ class RescheduleRequestNoReplyFromClientEmail extends SendEmailHandler {
         $this->toEmail = $event->practitioner->email;
         $this->type = 'practitioner';
         $this->event->recipient = $event->practitioner;
+
         $this->sendCustomEmail();
+        $event->rescheduleRequest->noreply_sent = now();
+        $event->rescheduleRequest->save();
     }
 }

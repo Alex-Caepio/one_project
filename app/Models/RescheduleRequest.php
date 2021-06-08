@@ -24,6 +24,7 @@ class RescheduleRequest extends Model
         'new_end_date',
         'old_price_id',
         'requested_by',
+        'noreply_sent',
     ];
 
     public function old_schedule(){
