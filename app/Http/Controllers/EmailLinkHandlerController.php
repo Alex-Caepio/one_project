@@ -14,7 +14,7 @@ class EmailLinkHandlerController extends Controller {
     public function acceptReschedule(AcceptRescheduleRequestEmailRequest $request, RescheduleRequest $rescheduleRequest) {
         run_action(RescheduleRequestAccept::class, $rescheduleRequest);
         Auth::user()->currentAccessToken()->delete();
-        return response('Accept', 204);
+        return response('', 204);
     }
 
 
