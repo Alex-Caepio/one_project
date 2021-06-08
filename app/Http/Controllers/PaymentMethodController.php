@@ -25,7 +25,7 @@ class PaymentMethodController extends Controller {
         $attachedCard = $stripe->paymentMethods->attach($request->payment_method_id,
                                                         ['customer' => Auth::user()->stripe_customer_id]);
 
-        if (count($cards) == 0) {
+        if (!count($cards)) {
             $user = Auth::user();
 
             //if user had no cards prior to that moment, make that new card his primary
@@ -41,12 +41,19 @@ class PaymentMethodController extends Controller {
         $user = Auth::user();
         $stripe->paymentMethods->detach($request->payment_method_id, []);
 
+        $cards = $stripe->paymentMethods->all([
+                                                  'customer' => Auth::user()->stripe_customer_id,
+                                                  'type'     => 'card',
+                                              ]);
+        $newDefaultCard = $cards->count() ? $cards->first() : null;
+
+
         if ($request->payment_method_id === $user->default_payment_method) {
-            $user->default_payment_method = null;
+            $user->default_payment_method = $newDefaultCard !== null ? $newDefaultCard->id : null;
         }
 
         if ($request->payment_method_id === $user->default_fee_payment_method) {
-            $user->default_fee_payment_method = null;
+            $user->default_fee_payment_method = $newDefaultCard !== null ? $newDefaultCard->id : null;
         }
 
         $user->save();
