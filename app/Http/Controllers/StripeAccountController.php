@@ -7,6 +7,7 @@ use App\Http\Requests\Stripe\StripeConnectedRequest;
 use App\Transformers\UserTransformer;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Stripe\Account;
 use Stripe\StripeClient;
 
 class StripeAccountController extends Controller {
@@ -20,35 +21,52 @@ class StripeAccountController extends Controller {
     }
 
     public function account(Request $request, StripeClient $stripe) {
-        return $stripe->accounts->retrieve($request->user()->stripe_account_id);
+        try {
+            $account = $stripe->accounts->retrieve(Auth::user()->stripe_account_id);
+            $this->setConnected($account);
+        } catch (\Exception $e) {
+            Log::channel('stripe_client_error')->info("Cannot retrieve info regarding stripe account", [
+                'user_id'    => Auth::user()->id,
+                'email'      => Auth::user()->email,
+                'message'    => $e->getMessage(),
+                'account_id' => Auth::user()->stripe_account_id
+            ]);
+        }
+        return $account;
     }
 
 
     public function stripeConnected(StripeConnectedRequest $request, StripeClient $stripeClient) {
-        $user = Auth::user();
         // Retrieve AccontDetails from Stripe
         try {
-            $account = $stripeClient->accounts->retrieve($user->stripe_account_id);
-            if ($account->details_submitted) {
-                Log::channel('stripe_client_success')->info("Successfully connected: ", $account->toArray());
-                $user->connected_at = now();
-                $user->save();
-                return fractal($user, new UserTransformer())
-                    ->parseIncludes($request->getIncludes())->respond();
-            } else {
-                Log::channel('stripe_client_error')->info("User decline Stripe Connection", $account->toArray());
-                throw new \Exception('Account submitted flag is FALSE');
-            }
+            $account = $stripeClient->accounts->retrieve(Auth::user()->stripe_account_id);
+            $this->setConnected($account);
+            return fractal(Auth::user(), new UserTransformer())
+                ->parseIncludes($request->getIncludes())->respond();
         } catch (\Exception $e) {
             Log::channel('stripe_client_error')->info("Cannot retrieve info regarding stripe account", [
-                'user_id'    => $user->id,
-                'email'      => $user->email,
+                'user_id'    => Auth::user()->id,
+                'email'      => Auth::user()->email,
                 'message'    => $e->getMessage(),
-                'account_id' => $user->stripe_account_id
+                'account_id' => Auth::user()->stripe_account_id
             ]);
         }
 
         return response(null, 204);
     }
+
+    private function setConnected(Account $account) {
+        if ($account->details_submitted) {
+            if (!Auth::user()->connected_at) {
+                Log::channel('stripe_client_success')->info("Successfully connected: ", $account->toArray());
+                Auth::user()->connected_at = now();
+                Auth::user()->save();
+            }
+        } else {
+            Log::channel('stripe_client_error')->info("User decline Stripe Connection", $account->toArray());
+            throw new \Exception('Account submitted flag is FALSE');
+        }
+    }
+
 
 }
