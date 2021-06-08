@@ -49,25 +49,14 @@ class PractitionerController extends Controller {
         return fractal($user, new UserTransformer())->parseIncludes('access_token')->respond();
     }
 
-    protected function sendVerificationEmail($user) {
-        $linkApi = URL::temporarySignedRoute('verify-email', now()->addMinute(60), [
-            'user'  => $user->id,
-            'email' => $user->email
-        ]);
-
-        $linkFrontend = config('app.frontend_password_reset_link') . '?' . explode('?', $linkApi)[1];
-
-        Mail::to([
-                     'email' => $user->email
-                 ])->send(new VerifyEmail($linkFrontend));
-    }
-
     public function show(User $practitioner, PractitionerShowRequest $request) {
         return fractal($practitioner, new UserTransformer())->parseIncludes($request->getIncludes())->toArray();
     }
 
     public function update(PractitionerUpdateRequest $request, User $practitioner) {
-        $practitioner->forceFill($request->all());
+        $collectedData = $request->all();
+        unset($collectedData['user_id']);
+        $practitioner->forceFill($collectedData);
         $practitioner->save();
         return fractal($practitioner, new UserTransformer())->respond();
     }
