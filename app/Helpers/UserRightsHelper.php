@@ -100,7 +100,7 @@ class UserRightsHelper {
             return false;
         }
 
-        if ($user->plan->schedules_per_service_unlimited || !$service->is_published) {
+        if ($user->plan->schedules_per_service_unlimited) {
             return true;
         }
 
