@@ -289,7 +289,6 @@ class User extends Authenticatable implements MustVerifyEmail {
 
 
     public function isFullyRestricted(): bool {
-        Log::info('UserData: ('.$this->email.')'.$this->is_admin.' - '.$this->is_published.' - '.$this->plan->id);
         return !$this->is_admin && (!$this->is_published || !$this->plan);
     }
 
