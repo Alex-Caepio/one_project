@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Log;
 use Laravel\Sanctum\HasApiTokens;
 
 /**
@@ -288,6 +289,7 @@ class User extends Authenticatable implements MustVerifyEmail {
 
 
     public function isFullyRestricted(): bool {
+        Log::info('UserData: ('.$this->email.')'.$this->is_admin.' - '.$this->is_published.' - '.$this->plan->id);
         return !$this->is_admin && (!$this->is_published || !$this->plan);
     }
 
