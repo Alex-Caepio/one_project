@@ -19,6 +19,7 @@ class Practitioner {
     public function handle(Request $request, Closure $next) {
         $loggedUser = Auth::user();
         if (!$loggedUser->isPractitioner() || !$loggedUser->plan instanceof Plan) {
+            Log::info('Middleware failed');
             return response(null, 403);
         }
         return $next($request);
