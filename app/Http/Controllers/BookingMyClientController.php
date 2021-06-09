@@ -11,7 +11,6 @@ use App\Transformers\MyClientClosedTransformer;
 use App\Transformers\MyClientPurchaseTransformer;
 use App\Transformers\MyClientTransformer;
 use App\Transformers\MyClientUpcomingTransformer;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class BookingMyClientController extends Controller {

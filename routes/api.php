@@ -60,7 +60,10 @@ Route::post('auth/forgot-password-claim', [ResetPasswordController::class, 'clai
     ->name('claim-reset');
 Route::post('auth/resend-verification', [AuthController::class, 'resendVerification']);
 
-Route::post('/stripe-webhook', [StripeWebhookController::class, 'handler'])->middleware('stripe');
+Route::middleware(['stripe'])->group(function() {
+    Route::match(['post', 'get'], '/stripe-webhook', [StripeWebhookController::class, 'handler']);
+});
+
 
 /* Public Routes For Services And Articles */
 Route::get('articles', [ArticleController::class, 'index']);

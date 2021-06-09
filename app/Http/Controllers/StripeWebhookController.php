@@ -8,10 +8,6 @@ use Illuminate\Support\Facades\Log;
 
 class StripeWebhookController extends Controller {
 
-    /**
-     * @param \App\Http\Requests\Request $request
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
-     */
     public function handler(Request $request) {
         $stripeRequest = new StripeRequest($request);
         $actionClass = $stripeRequest->getRequestHandler();
