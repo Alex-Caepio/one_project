@@ -37,14 +37,14 @@ class PlanController extends Controller {
                                                                ],
                                                            ]);
 
-            if ($subscription->id) {
-                if (!empty($user->stripe_plan_id)) {
-                    Log::info('Try to cancel previous subscription: '.$user->email.' - '.$user->stripe_plan_id);
-                    $stripe->subscriptions->cancel($user->stripe_plan_id, []);
-                }
-                $user->stripe_plan_id = $subscription->id;
-                $user->plan_id = $plan->id;
+
+            if (!empty($user->stripe_plan_id)) {
+                Log::info('Try to cancel previous subscription: ' . $user->email . ' - ' . $user->stripe_plan_id);
+                $stripe->subscriptions->cancel($user->stripe_plan_id, []);
             }
+            $user->stripe_plan_id = $subscription->id;
+            $user->plan_id = $plan->id;
+
 
             $user->plan_until = Carbon::createFromTimestamp($subscription->current_period_end);
             $user->plan_from = Carbon::now();
@@ -61,8 +61,7 @@ class PlanController extends Controller {
                 event(new ChangeOfSubscription($user, $plan, $previousPlan));
             }
 
-        } catch (ApiErrorException $e) {
-
+        } catch (\Exception $e) {
             Log::channel('stripe_plans_errors')->info('Error purchasing a plan', [
                 'user_id'           => $user->id ?? null,
                 'plan_id'           => $plan->id ?? null,
@@ -70,7 +69,7 @@ class PlanController extends Controller {
                 'stripe_plan_id'    => $subscription->id ?? null,
                 'payment_method_id' => $request->payment_method_id ?? null,
                 'price_stripe_id'   => $plan->stripe_id ?? null,
-                'message'           => $e->getMessage() ?? null,
+                'message'           => $e->getMessage(),
             ]);
 
 
