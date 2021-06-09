@@ -140,7 +140,6 @@ return [
             'path' => storage_path('logs/stripe_product_success.log'),
         ],
 
-
         'stripe_purchase_schedule_error' => [
             'driver' => 'daily',
             'path' => storage_path('logs/stripe_purchase_schedule_error.log'),
@@ -175,6 +174,17 @@ return [
             'driver' => 'daily',
             'path' => storage_path('logs/stripe_refund_fail.log'),
         ],
+
+        'stripe_webhooks_error' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/stripe_webhooks_error.log'),
+        ],
+
+        'stripe_webhooks_success' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/stripe_webhooks_success.log'),
+        ],
+
 
         'emails' => [
             'path' => storage_path('logs/emails.log'),
