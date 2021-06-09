@@ -194,7 +194,7 @@ class UserRightsHelper {
                 }
             }
             // check last published schedule for the price options
-            foreach ($service->schedule()->published()->get() as $schedule) {
+            foreach ($service->schedules()->published()->get() as $schedule) {
                 if (!$plan->list_free_services) {
                     $schedule->prices()->where('is_free', true)->delete();
                 }
