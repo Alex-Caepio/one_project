@@ -39,6 +39,7 @@ class PlanController extends Controller {
 
             if ($subscription->id) {
                 if (!empty($user->stripe_plan_id)) {
+                    Log::info('Try to cancel previous subscription: '.$user->email.' - '.$user->stripe_plan_id);
                     $stripe->subscriptions->cancel($user->stripe_plan_id, []);
                 }
                 $user->stripe_plan_id = $subscription->id;
