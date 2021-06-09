@@ -18,6 +18,7 @@ use App\Http\Controllers\SchedulePriceController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\StripeAccountController;
+use App\Http\Controllers\StripeWebhookController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ArticleController;
@@ -147,6 +148,7 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
         Route::post('/services/{service}/copy', [ServiceController::class, 'copy']);
 
         Route::get('/services/{service}/practitioner-schedules', [ScheduleController::class, 'ownerScheduleList']);
+        Route::post('/services/{service}/schedules', [ScheduleController::class, 'store']);
 
     });
 
@@ -170,7 +172,7 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
 
     Route::post('/plans/{plan}/purchase', [PlanController::class, 'purchase']);
 
-    Route::post('/services/{service}/schedules', [ScheduleController::class, 'store']);
+
 
     Route::get('/schedules/{schedule}', [ScheduleController::class, 'show']);
     Route::put('/schedules/{schedule}', [ScheduleController::class, 'update']);

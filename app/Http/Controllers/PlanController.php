@@ -36,7 +36,7 @@ class PlanController extends Controller {
             } else {
                 Log::info('Plan is empty: ' . $user->email);
             }
-            
+
             $subscription = $stripe->subscriptions->create([
                                                                'default_payment_method' => $request->payment_method_id,
                                                                'customer'               => $user->stripe_customer_id,
