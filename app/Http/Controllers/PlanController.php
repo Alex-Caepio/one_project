@@ -29,6 +29,14 @@ class PlanController extends Controller {
         $previousPlan = $user->plan;
         $isNewPlan = empty($user->plan_id);
         try {
+
+            if (!empty($user->stripe_plan_id)) {
+                Log::info('Try to cancel previous subscription: ' . $user->email . ' - ' . $user->stripe_plan_id);
+                $stripe->subscriptions->cancel($user->stripe_plan_id, []);
+            } else {
+                Log::info('Plan is empty: ' . $user->email);
+            }
+            
             $subscription = $stripe->subscriptions->create([
                                                                'default_payment_method' => $request->payment_method_id,
                                                                'customer'               => $user->stripe_customer_id,
@@ -36,16 +44,8 @@ class PlanController extends Controller {
                                                                    ['price' => $plan->stripe_id],
                                                                ],
                                                            ]);
-
-
-            if (!empty($user->stripe_plan_id)) {
-                Log::info('Try to cancel previous subscription: ' . $user->email . ' - ' . $user->stripe_plan_id);
-                $stripe->subscriptions->cancel($user->stripe_plan_id, []);
-            }
             $user->stripe_plan_id = $subscription->id;
             $user->plan_id = $plan->id;
-
-
             $user->plan_until = Carbon::createFromTimestamp($subscription->current_period_end);
             $user->plan_from = Carbon::now();
             $user->account_type = User::ACCOUNT_PRACTITIONER;
