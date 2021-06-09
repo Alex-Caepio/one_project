@@ -16,8 +16,7 @@ class GenericSchedule extends Request implements CreateScheduleInterface {
      * @return bool
      */
     public function authorize() {
-        Log::info('IsRestricted schedule: ('.$this->user()->id.') - '.$this->user()->isFullyRestricted());
-        return !$this->user()->isFullyRestricted();
+        return $this->user()->isFullyRestricted() === false;
     }
 
     /**
