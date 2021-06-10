@@ -45,8 +45,7 @@ class StripeAccountController extends Controller {
         try {
             $account = $stripeClient->accounts->retrieve(Auth::user()->stripe_account_id);
             $this->setConnected($account);
-            return fractal(Auth::user(), new UserTransformer())
-                ->parseIncludes($request->getIncludes())->respond();
+            return fractal(Auth::user(), new UserTransformer())->parseIncludes($request->getIncludes())->respond();
         } catch (\Exception $e) {
             Log::channel('stripe_client_error')->info("Cannot retrieve info regarding stripe account", [
                 'user_id'    => Auth::user()->id,
@@ -61,10 +60,19 @@ class StripeAccountController extends Controller {
 
     private function setConnected(Account $account) {
         if ($account->details_submitted) {
-            if (!Auth::user()->connected_at) {
-                Log::channel('stripe_client_success')->info("Successfully connected: ", $account->toArray());
-                Auth::user()->connected_at = now();
-                Auth::user()->save();
+            if ($account->id === Auth::user()->stripe_account_id) {
+                if (!Auth::user()->connected_at) {
+                    Log::channel('stripe_client_success')->info("Successfully connected: ", $account->toArray());
+                    Auth::user()->connected_at = now();
+                    Auth::user()->save();
+                }
+            } else {
+                Log::channel('stripe_client_error')->info("Account data does not match logged user", [
+                    'user_id'           => Auth::user()->id,
+                    'user_account_id'   => Auth::user()->stripe_account_id,
+                    'stripe_account_id' => $account->id
+                ]);
+                throw new \Exception('Account cannot be connected');
             }
         } else {
             Log::channel('stripe_client_error')->info("User decline Stripe Connection", $account->toArray());
