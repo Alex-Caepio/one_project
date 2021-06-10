@@ -25,18 +25,21 @@ class StripeAccountController extends Controller {
     }
 
     public function account(Request $request, StripeClient $stripe) {
-        try {
-            $account = $stripe->accounts->retrieve(Auth::user()->stripe_account_id);
-            $this->setConnected($account);
-        } catch (\Exception $e) {
-            Log::channel('stripe_client_error')->info("Cannot retrieve info regarding stripe account", [
-                'user_id'    => Auth::user()->id,
-                'email'      => Auth::user()->email,
-                'message'    => $e->getMessage(),
-                'account_id' => Auth::user()->stripe_account_id
-            ]);
+        if (!empty(Auth::user()->stripe_account_id)) {
+            try {
+                $account = $stripe->accounts->retrieve(Auth::user()->stripe_account_id);
+                $this->setConnected($account);
+                return $account;
+            } catch (\Exception $e) {
+                Log::channel('stripe_client_error')->info("Cannot retrieve info regarding stripe account", [
+                    'user_id'    => Auth::user()->id,
+                    'email'      => Auth::user()->email,
+                    'message'    => $e->getMessage(),
+                    'account_id' => Auth::user()->stripe_account_id
+                ]);
+            }
         }
-        return $account;
+        return response('', 204);
     }
 
 
