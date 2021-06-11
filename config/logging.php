@@ -170,6 +170,11 @@ return [
             'path' => storage_path('logs/stripe_refund_success.log'),
         ],
 
+        'stripe_refund_info' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/stripe_refund_info.log'),
+        ],
+
         'stripe_refund_fail' => [
             'driver' => 'daily',
             'path' => storage_path('logs/stripe_refund_fail.log'),

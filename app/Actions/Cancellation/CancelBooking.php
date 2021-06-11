@@ -14,6 +14,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Stripe\Collection;
 use Stripe\Exception\ApiErrorException;
 use Stripe\StripeClient;
 
@@ -43,42 +44,42 @@ class CancelBooking {
             $actionRole = Auth::id() === $booking->user_id ? User::ACCOUNT_CLIENT : User::ACCOUNT_PRACTITIONER;
         }
 
-        if ($actionRole === User::ACCOUNT_CLIENT) {
-            $refundValue = $this->clientRefund($booking, $declineRescheduleRequest);
-        } else {
-            $refundValue = $booking->cost;
-            $totalFee = round(((double)$booking->cost / 100) * (int)config('app.platform_cancellation_fee'));
-        }
+        $refundData = $this->calculateRefundValue($actionRole, $booking, $declineRescheduleRequest);
 
-        $chargeAmount = $refundValue + $totalFee;
+        Log::channel('stripe_refund_info')->info('Stripe refund info: ', [
+            'user_id'                  => $booking->user_id,
+            'practitioner_id'          => $booking->practitioner_id,
+            'booking_id'               => $booking->id,
+            'booking_cost'             => $booking->cost,
+            'refund_amount'            => $refundData['refundTotal'],
+            'refund_smallunits_amount' => $refundData['refundSmallestUnit'],
+            'charge_amount'            => $refundData['practitionerCharge'],
+            'payment_stripe'           => $booking->purchase->stripe_id,
+            'action_role'              => $actionRole,
+            'is_decline'               => $declineRescheduleRequest,
+        ]);
 
-        if ($refundValue > 0) {
+
+        if ($refundData['refundTotal'] > 0) {
             try {
                 $paymentIntent = $this->stripe->paymentIntents->retrieve($booking->purchase->stripe_id);
-                $stripeRefund = $this->stripe->refunds->create([
-                                                                   'amount'         => $refundValue,
-                                                                   'payment_intent' => $paymentIntent->id
-                                                               ]);
+
+                $stripeRefundData = ['payment_intent' => $paymentIntent->id];
+                if ($refundData['isFullRefund']) {
+                    $stripeRefundData['amount'] = $refundData['refundSmallestUnit'];
+                }
+
+                $stripeRefund = $this->stripe->refunds->create($stripeRefundData);
                 Log::channel('stripe_refund_success')->info('Stripe refund success: ', [
                     'user_id'                     => $booking->user_id ?? null,
                     'practitioner_id'             => $booking->practitioner_id ?? null,
                     'booking_id'                  => $booking->id ?? null,
-                    'refund_amount'               => $booking->cost,
-                    'charge_amount'               => $chargeAmount,
+                    'refund_amount'               => $refundData['refundTotal'],
+                    'charge_amount'               => $refundData['practitionerCharge'],
                     'payment_stripe'              => $booking->purchase->stripe_id ?? null,
                     'refund_stripe_id'            => $stripeRefund->id,
                     'statement_descriptor_suffix' => $booking->reference
                 ]);
-
-                if ($chargeAmount > 0 && $booking->practitioner->stripe_account_id) {
-                    $this->stripe->charges->create([
-                                                       'amount'                      => $chargeAmount,
-                                                       'currency'                    => config('app.platform_currency'),
-                                                       'source'                      => $booking->practitioner->stripe_account_id,
-                                                       'statement_descriptor_suffix' => $booking->reference
-                                                   ]);
-                }
-
             } catch (ApiErrorException $e) {
                 Log::channel('stripe_refund_fail')->info('Stripe refund error: ', [
                     'user_id'         => $booking->user_id ?? null,
@@ -90,7 +91,26 @@ class CancelBooking {
             }
         }
 
-        if($booking->is_installment){
+        if ($refundData['practitionerCharge'] > 0 && $booking->practitioner->stripe_account_id) {
+            try {
+                $this->stripe->charges->create([
+                                                   'amount'                      => $refundData['practitionerCharge'],
+                                                   'currency'                    => config('app.platform_currency'),
+                                                   'source'                      => $booking->practitioner->stripe_account_id,
+                                                   'statement_descriptor_suffix' => $booking->reference
+                                               ]);
+            } catch (\Exception $e) {
+                Log::channel('stripe_refund_fail')->info('Stripe refund error: ', [
+                    'user_id'         => $booking->user_id ?? null,
+                    'practitioner_id' => $booking->practitioner_id ?? null,
+                    'booking_id'      => $booking->id ?? null,
+                    'payment_stripe'  => $booking->purchase->stripe_id ?? null,
+                    'message'         => $e->getMessage(),
+                ]);
+            }
+        }
+
+        if ($booking->is_installment) {
             $this->refundInstallment($booking->purchase->subscription_id);
         }
 
@@ -104,8 +124,8 @@ class CancelBooking {
                                 'booking_id'          => $booking->id,
                                 'purchase_id'         => $booking->purchase_id,
                                 'practitioner_id'     => $booking->practitioner_id,
-                                'amount'              => $refundValue,
-                                'fee'                 => $totalFee > 0 ? $totalFee : null,
+                                'amount'              => $refundData['refundTotal'],
+                                'fee'                 => $refundData['practitionerCharge'],
                                 'cancelled_by_client' => $actionRole === User::ACCOUNT_CLIENT,
                                 'stripe_id'           => $stripeRefund->id ?? null
                             ]);
@@ -128,7 +148,7 @@ class CancelBooking {
         $notification->datetime_from = $booking->datetime_from;
         $notification->datetime_to = $booking->datetime_to;
         $notification->price_id = $booking->price_id;
-        $notification->price_refunded = $refundValue;
+        $notification->price_refunded = $refundData['refundTotal'];
 
         $notification->save();
 
@@ -141,45 +161,61 @@ class CancelBooking {
         return response(null, 204);
     }
 
-
-    /**
-     * @param \App\Models\Booking $booking
-     * @param bool $declineRescheduleRequest
-     * @return bool
-     */
-    private function clientRefund(Booking $booking, bool $declineRescheduleRequest): bool {
-        if ($declineRescheduleRequest === true) {
-            return $booking->cost;
-        }
-
-        if ($booking->datetime_from) {
-            $bookingDate = Carbon::parse($booking->datetime_from);
-            $now = Carbon::now();
-            $diffValue = $booking->schedule->service === 'appointment'
-                ? $now->diffInHours($bookingDate)
-                : $now->diffInDays($bookingDate);
-            if ($bookingDate < $now && $diffValue > $booking->schedule->refund_terms) {
-                return $booking->cost;
-            }
-        }
-
-        return 0;
-    }
-
-    private function refundInstallment($subscription_id)
-    {
+    private function refundInstallment($subscription_id): Collection {
         $invoices = $this->stripe->invoices->all([
-            'subscription' => $subscription_id,
-            'status' => 'paid'
-        ]);
+                                                     'subscription' => $subscription_id,
+                                                     'status'       => 'paid'
+                                                 ]);
 
-        foreach ($invoices as $invoice){
+        foreach ($invoices as $invoice) {
             //pi_1IvQI2JM28CvbfqX8gp9BiJG
             $this->stripe->refunds->create([
-                'payment_intent' => $invoice->paymentIntent
-            ]);
+                                               'payment_intent' => $invoice->paymentIntent
+                                           ]);
         }
 
         return $invoices;
     }
+
+
+    private function calculateRefundValue(string $actionRole, Booking $booking, bool $declineRescheduleRequest): array {
+        $result = [
+            'isFullRefund'       => false,
+            'refundTotal'        => 0,
+            'refundSmallestUnit' => 0,
+            'bookingCost'        => $booking->cost,
+            'practitionerFee'    => 0,
+            'practitionerCharge' => 0
+        ];
+
+        $hostFee = (int)config('app.platform_cancellation_fee');
+
+        if ($actionRole === User::ACCOUNT_PRACTITIONER || $declineRescheduleRequest === true) {
+            $result['isFullRefund'] = true;
+            $result['refundTotal'] = (float)$booking->cost;
+            $result['practitionerFee'] = round(($result['refundTotal'] / 100) * $hostFee);
+
+        } else {
+            $result['isFullRefund'] = false;
+            if ($booking->datetime_from) {
+                $bookingDate = Carbon::parse($booking->datetime_from);
+                $now = Carbon::now();
+                $diffValue = $booking->schedule->service ===
+                             'appointment' ? $now->diffInHours($bookingDate) : $now->diffInDays($bookingDate);
+
+                if ($bookingDate < $now && $diffValue > $booking->schedule->refund_terms) {
+                    $result['refundTotal'] = (float)$booking->cost / 100 * (100 - $hostFee);
+                } else {
+                    $result['refundTotal'] = 0;
+                }
+            }
+        }
+
+        $result['practitionerFee'] = round(($result['refundTotal'] / 100) * $hostFee);
+        $result['refundSmallestUnit'] = (int)($result['refundTotal'] * 100);
+        $result['practitionerCharge'] = $result['practitionerFee'] + $result['refundTotal'];
+
+        return $result;
+    }
+
 }

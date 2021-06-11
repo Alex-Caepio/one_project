@@ -2,11 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Actions\Cancellation\CancelBooking;
 use App\Actions\RescheduleRequest\RescheduleRequestAccept;
 use App\Actions\RescheduleRequest\RescheduleRequestDecline;
-use App\Events\BookingRescheduleAcceptedByClient;
-use App\Events\RescheduleRequestDeclinedByClient;
 use App\Http\Requests\Reschedule\RescheduleRequestRequest;
 use App\Http\Requests\Reschedule\ScheduleRescheduleRequestRequest;
 use App\Models\Booking;
@@ -16,7 +13,6 @@ use App\Http\Requests\Request;
 use App\Models\RescheduleRequest;
 use App\Actions\RescheduleRequest\RescheduleRequestStore;
 use App\Models\Schedule;
-use App\Models\User;
 use App\Transformers\RescheduleRequestTransformer;
 use Illuminate\Support\Facades\Auth;
 

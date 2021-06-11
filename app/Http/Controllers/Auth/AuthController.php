@@ -3,16 +3,13 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Actions\Auth\GetUsersPermissions;
-use App\Actions\Cancellation\CancelBooking;
 use App\Actions\Practitioners\UnpublishPractitioner;
 use App\Actions\Stripe\CreateStripeUserByEmail;
 use App\Actions\User\CreateUserFromRequest;
 use App\Events\UserRegistered;
-use App\Helpers\UserRightsHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\PublishPractitionerRequest;
-use App\Http\Requests\Auth\PublishRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\UnpublishPractitionerRequest;
 use App\Http\Requests\Auth\UpdateBusinessRequest;
