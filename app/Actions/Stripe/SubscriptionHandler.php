@@ -36,6 +36,7 @@ class SubscriptionHandler {
      */
     public function execute(StripeRequest $request): void {
         Log::info('[[' . __METHOD__ . ']]: start handle Subscription Event: ' . $request->getSubEventName());
+
         $dataObject = $request->getObject();
 
         if (isset($dataObject['customer'], $dataObject['id'])) {

@@ -190,6 +190,10 @@ return [
             'path' => storage_path('logs/stripe_webhooks_success.log'),
         ],
 
+        'stripe_webhooks_info' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/stripe_webhooks_info.log'),
+        ],
 
         'emails' => [
             'path' => storage_path('logs/emails.log'),
