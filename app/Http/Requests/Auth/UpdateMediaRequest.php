@@ -2,20 +2,23 @@
 
 namespace App\Http\Requests\Auth;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Models\User;
+use App\Traits\PublishPractitionerRequestValidatorTrait;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\Request;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
 class UpdateMediaRequest extends Request {
+
+    use PublishPractitionerRequestValidatorTrait;
     /**
      * Authorization rules
      *
      * @return bool
      */
     public function authorize() {
-        return Auth::user()->isPractitioner();
+        return Auth::user()->isPractitioner() || Auth::user()->id_admin;
     }
 
     /**
@@ -26,8 +29,8 @@ class UpdateMediaRequest extends Request {
             'about_my_business'     => 'max:15000',
             'avatar_url'            => 'nullable|url',
             'background_url'        => 'nullable|url',
-            'business_city'         => 'required|string|max:150',
-            'business_name'         => 'required|max:255|min:2',
+            'business_city'         => 'required_if:is_published,true|string|max:150',
+            'business_name'         => 'required_if:is_published,true|max:255|min:2',
             'business_introduction' => 'sometimes|string|max:150',
             'business_country_id'   => 'required|exists:countries,id|integer',
             'slug'                  => [
@@ -35,6 +38,11 @@ class UpdateMediaRequest extends Request {
             ],
             'is_published'          => 'required|bool',
         ];
+    }
+
+
+    public function withValidator(Validator $validator) {
+       $this->validatePublishState($validator);
     }
 
 }

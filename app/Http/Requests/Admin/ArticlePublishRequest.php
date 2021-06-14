@@ -4,7 +4,6 @@ namespace App\Http\Requests\Admin;
 
 use App\Helpers\UserRightsHelper;
 use App\Http\Requests\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Validator;
 
 class ArticlePublishRequest extends Request {

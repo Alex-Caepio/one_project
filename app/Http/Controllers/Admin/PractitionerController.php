@@ -4,22 +4,20 @@ namespace App\Http\Controllers\Admin;
 
 use App\Actions\Admin\DeleteUser;
 use App\Actions\Practitioners\UnpublishPractitioner;
+use App\Actions\Practitioners\UpdateMediaPractitioner;
 use App\Filters\UserFiltrator;
 use App\Http\Requests\Auth\PublishPractitionerRequest;
 use App\Http\Requests\Auth\UnpublishPractitionerRequest;
+use App\Http\Requests\Auth\UpdateMediaRequest;
 use App\Models\User;
-use App\Mail\VerifyEmail;
 use App\Http\Requests\Request;
 use App\Http\Controllers\Controller;
 use App\Transformers\UserTransformer;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Actions\Stripe\CreateStripeUserByEmail;
 use App\Http\Requests\Admin\PractitionerShowRequest;
-use App\Http\Requests\Admin\PractitionerUpdateRequest;
 use App\Http\Requests\Admin\PractitionerDestroyRequest;
 use App\Actions\Practitioners\CreatePractitionerFromRequest;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\URL;
 
 class PractitionerController extends Controller {
     public function index(Request $request) {
@@ -53,11 +51,8 @@ class PractitionerController extends Controller {
         return fractal($practitioner, new UserTransformer())->parseIncludes($request->getIncludes())->toArray();
     }
 
-    public function update(PractitionerUpdateRequest $request, User $practitioner) {
-        $collectedData = $request->all();
-        unset($collectedData['user_id']);
-        $practitioner->forceFill($collectedData);
-        $practitioner->save();
+    public function update(UpdateMediaRequest $request, User $practitioner) {
+        run_action(UpdateMediaPractitioner::class, $practitioner, $request);
         return fractal($practitioner, new UserTransformer())->respond();
     }
 

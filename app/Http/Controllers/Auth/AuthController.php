@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Actions\Auth\GetUsersPermissions;
 use App\Actions\Practitioners\UnpublishPractitioner;
+use App\Actions\Practitioners\UpdateMediaPractitioner;
 use App\Actions\Stripe\CreateStripeUserByEmail;
 use App\Actions\User\CreateUserFromRequest;
 use App\Events\UserRegistered;
@@ -16,7 +17,6 @@ use App\Http\Requests\Auth\UpdateBusinessRequest;
 use App\Http\Requests\Auth\UpdateMediaRequest;
 use App\Http\Requests\Auth\UpdateRequest;
 use App\Http\Requests\Auth\VerificationRequest;
-use App\Models\Booking;
 use App\Models\Country;
 use App\Models\Keyword;
 use App\Models\User;
@@ -24,7 +24,6 @@ use App\Traits\hasMediaItems;
 use App\Transformers\UserTransformer;
 use DB;
 use App\Http\Requests\Request;
-use http\Env\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
@@ -159,41 +158,7 @@ class AuthController extends Controller {
     //update practitioner media and profile info
     public function updateMedia(UpdateMediaRequest $request) {
         $user = $request->user();
-        $user->forceFill($request->all($request->getValidatorKeys()));
-        $user->save();
-
-        if ($request->filled('disciplines')) {
-            $user->disciplines()->sync($request->disciplines);
-        }
-
-        if ($request->filled('focus_areas')) {
-            $user->focus_areas()->sync($request->focus_areas);
-        }
-
-        if ($request->filled('service_types')) {
-            $user->service_types()->sync($request->service_types);
-        }
-
-        if ($request->filled('keywords')) {
-            $user->keywords()->whereNotIn('title', $request->keywords)->delete();
-            foreach ($request->keywords as $keyword) {
-                $ids = Keyword::firstOrCreate(['title' => $keyword])->pluck('id');
-                $keywordIds = collect($ids);
-            }
-
-            if (isset($keywordIds) && !empty($keywordIds)) {
-                $user->keywords()->sync($keywordIds);
-            }
-        }
-
-        if ($request->filled('media_images')) {
-            $this->syncImages($request->media_images, $user);
-        }
-
-        if ($request->filled('media_videos')) {
-            $this->syncVideos($request->media_videos, $user);
-        }
-
+        run_action(UpdateMediaPractitioner::class, $user, $request);
         return fractal($user, new UserTransformer())->respond();
     }
 
