@@ -6,7 +6,6 @@ use App\Models\User;
 use App\Traits\PublishPractitionerRequestValidatorTrait;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\Request;
-use Illuminate\Support\Facades\Validator;
 
 class PublishPractitionerRequest extends Request {
 
@@ -29,7 +28,7 @@ class PublishPractitionerRequest extends Request {
     }
 
 
-    public function withValidator(Validator $validator) {
+    public function withValidator($validator) {
        $this->validatePublishState($validator);
     }
 

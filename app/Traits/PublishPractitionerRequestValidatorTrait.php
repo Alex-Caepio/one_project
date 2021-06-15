@@ -6,13 +6,12 @@ namespace App\Traits;
 
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
 
 trait PublishPractitionerRequestValidatorTrait {
 
     private static string $adminRouteName = 'admin-practitioner-publish';
 
-    public function validatePublishState(Validator $validator) {
+    public function validatePublishState($validator) {
         $validator->after(function($validator) {
             if ($this->route()->getName() === self::$adminRouteName) {
                 $practitioner = $this->practitioner;
