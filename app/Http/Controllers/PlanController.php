@@ -47,6 +47,9 @@ class PlanController extends Controller {
             $user->plan_from = Carbon::now();
             $user->account_type = User::ACCOUNT_PRACTITIONER;
             $isUpgradedToPractitioner = $user->isDirty('account_type');
+            if ($isUpgradedToPractitioner) {
+                $user->accepted_practitioner_agreement = true;
+            }
             $user->save();
 
             if ($isNewPlan) {

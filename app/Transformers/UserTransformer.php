@@ -87,6 +87,7 @@ class UserTransformer extends Transformer {
             'created_at'                      => $user->created_at,
             'updated_at'                      => $user->updated_at,
             'accepted_practitioner_agreement' => $user->accepted_practitioner_agreement,
+            'accepted_client_agreement'       => $user->accepted_client_agreement,
             'published_at'                    => $user->published_at,
             'country_id'                      => $user->country_id,
             'business_country_id'             => $user->business_country_id,

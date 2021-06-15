@@ -18,7 +18,6 @@ use App\Http\Requests\Auth\UpdateMediaRequest;
 use App\Http\Requests\Auth\UpdateRequest;
 use App\Http\Requests\Auth\VerificationRequest;
 use App\Models\Country;
-use App\Models\Keyword;
 use App\Models\User;
 use App\Traits\hasMediaItems;
 use App\Transformers\UserTransformer;
