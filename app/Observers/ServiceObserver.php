@@ -19,6 +19,7 @@ class ServiceObserver {
     public function saved(Service $service) {
         if ($service->isDirty('is_published')) {
             if (!$service->is_published && !$service->wasRecentlyCreated) {
+                $this->unpublishSchedules($service);
                 event(new ServiceUnpublished($service));
             } elseif ($service->is_published) {
                 event(new ServiceListingLive($service));
@@ -26,6 +27,9 @@ class ServiceObserver {
         }
     }
 
+    /**
+     * @param \App\Models\Service $service
+     */
     public function saving(Service $service) {
         if ($service->isDirty('is_published')) {
             if (!$service->is_published) {
@@ -47,9 +51,10 @@ class ServiceObserver {
      * @param \App\Models\Service $service
      * @return void
      */
-    public function deleting(Service $service) {
+    public function deleting(Service $service): void {
         $this->clearPublishedState($service);
         $service->saveQuietly();
+        $this->deleteSchedules($service);
     }
 
 
@@ -59,5 +64,27 @@ class ServiceObserver {
     private function clearPublishedState(Service $service): void {
         $service->forceFill(['is_published' => false]);
     }
+
+
+    /**
+     * @param \App\Models\Service $service
+     */
+    private function unpublishSchedules(Service $service): void {
+        $service->schedules()->published()->get()->each(static function($schedule, $key) {
+            $schedule->is_published = true;
+            $schedule->save();
+        });
+    }
+
+
+    /**
+     * @param \App\Models\Service $service
+     */
+    private function deleteSchedules(Service $service): void {
+        $service->schedules()->get()->each(static function($schedule, $key) {
+            $schedule->delete();
+        });
+    }
+
 
 }

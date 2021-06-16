@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Actions\Booking\ScheduleAftermath;
 use App\Actions\Cancellation\CancelBooking;
 use App\Actions\Schedule\CreateRescheduleRequestsOnScheduleUpdate;
 use App\Events\ServiceScheduleCancelled;
@@ -24,6 +25,7 @@ class ScheduleObserver {
     public function saved(Schedule $schedule): void {
         if ($schedule->isDirty('is_published')) {
             if (!$schedule->is_published && !$schedule->wasRecentlyCreated) {
+                run_action(ScheduleAftermath::class, $schedule);
                 event(new ServiceScheduleCancelled($schedule));
             } elseif ($schedule->is_published) {
                 event(new ServiceScheduleLive($schedule));
@@ -36,15 +38,7 @@ class ScheduleObserver {
             event(new ServiceScheduleCancelled($schedule));
         }
 
-        RescheduleRequest::where('schedule_id', $schedule->id)->delete();
-        RescheduleRequest::where('new_schedule_id', $schedule->id)->delete();
-
-        $bookings = Booking::where('schedule_id', $schedule->id)->active()->get();
-        if (count($bookings)) {
-            foreach ($bookings as $booking) {
-                run_action(CancelBooking::class, $booking);
-            }
-        }
+       run_action(ScheduleAftermath::class, $schedule);
     }
 
     public function updated(Schedule $schedule) {
