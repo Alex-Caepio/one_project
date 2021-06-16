@@ -33,6 +33,11 @@ class ScheduleStore extends ScheduleSave {
                                                        ]);
 
                 $prices[$key]['stripe_id'] = $stripePrice->id;
+                if ((!isset($prices[$key]['number_available']) || !$prices[$key]['number_available']) &&
+                    $schedule->attendees !== null && $schedule->attendees > 0) {
+                    $prices[$key]['number_available'] = $schedule->attendees;
+                }
+                $prices[$key]['stripe_id'] = $stripePrice->id;
             }
             $schedule->prices()->createMany($prices);
         }
