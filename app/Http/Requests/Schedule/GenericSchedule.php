@@ -16,7 +16,7 @@ class GenericSchedule extends Request implements CreateScheduleInterface {
      * @return bool
      */
     public function authorize() {
-        return $this->user()->isFullyRestricted() === false;
+        return $this->user()->onlyUnpublishedAllowed();
     }
 
     /**

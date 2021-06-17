@@ -12,6 +12,11 @@ trait ScheduleValidator {
 
     public function userScheduleValidator($validator, Service $service) {
 
+        $isPublished = $this->getBoolFromRequest('is_published');
+        if ($isPublished && $service->user->isFullyRestricted()) {
+            $validator->errors()->add('is_published', "Please upgrade subscription or publish profile to be able to publish schedule");
+        }
+
         $schedulesQuery = $service->schedules()->where('title', $this->title);
         if (isset($this->schedule) && $this->schedule instanceof Schedule) {
             $schedulesQuery->where('id', '!=', $this->schedule->id);
