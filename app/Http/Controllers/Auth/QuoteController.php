@@ -15,7 +15,7 @@ class QuoteController extends Controller {
     public function quotesArticles(Request $request) {
         $articlesCount = $request->user()->articles()->count();
 
-        if ($request->user()->isFullyRestricted() === false) {
+        if ($request->user()->onlyUnpublishedAllowed() === true) {
 
             $article_publishing = $request->user()->plan->article_publishing;
 
@@ -59,7 +59,7 @@ class QuoteController extends Controller {
     public function quotesServices(Request $request) {
         $schedulesCount = $request->service->schedules()->count();
 
-        if ($request->user()->isFullyRestricted() === false) {
+        if ($request->user()->onlyUnpublishedAllowed() === true) {
 
             $schedulesPerService = $request->user()->plan->schedules_per_service;
             if ($request->user()->plan->schedules_per_service_unlimited) {
@@ -102,7 +102,7 @@ class QuoteController extends Controller {
         $schedule = Schedule::find($request->schedule);
         $pricesCount = $schedule->prices()->count();
 
-        if ($request->user()->isFullyRestricted() === false) {
+        if ($request->user()->onlyUnpublishedAllowed()) {
 
             $pricingOptionsPerService = $request->user()->plan->pricing_options_per_service;
 
@@ -132,14 +132,14 @@ class QuoteController extends Controller {
 
             return $quotes;
 
-        } else {
-            return [
-                'allowed' => false,
-                'current' => $pricesCount,
-                'max'     => null,
-                'message' => 'You\'re no allowed to publish an prices'
-            ];
         }
+
+        return [
+            'allowed' => false,
+            'current' => $pricesCount,
+            'max'     => null,
+            'message' => 'You\'re no allowed to publish an prices'
+        ];
     }
 
 }

@@ -293,5 +293,8 @@ class User extends Authenticatable implements MustVerifyEmail {
         return !$this->is_admin && (!$this->is_published || !$this->plan);
     }
 
+    public function onlyUnpublishedAllowed(): bool {
+        return $this->is_admin || ($this->account_type === User::ACCOUNT_PRACTITIONER && $this->plan);
+    }
 
 }

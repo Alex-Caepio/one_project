@@ -23,7 +23,7 @@ class ArticlePublishRequest extends Request {
      * @return array
      */
     public function rules() {
-        return !$this->user->isFullyRestricted();
+        return [];
     }
 
     public function withValidator(Validator $validator) {
@@ -37,7 +37,7 @@ class ArticlePublishRequest extends Request {
             $validator->after(function($validator) {
                 if (!UserRightsHelper::userAllowToPublishArticle($this->article->user)) {
                     $validator->errors()
-                              ->add('is_published', "Please upgrade subscription to be able to publish articles");
+                              ->add('is_published', "Please upgrade subscription to be able to publish articles or publish profile");
                 }
             });
         }

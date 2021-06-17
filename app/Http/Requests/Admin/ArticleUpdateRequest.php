@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Admin;
 
+use App\Helpers\UserRightsHelper;
 use App\Http\Requests\Request;
 use Illuminate\Contracts\Validation\Validator;
 
@@ -21,38 +22,22 @@ class ArticleUpdateRequest extends Request {
      * @return array
      */
     public function rules(): array {
-        $isPublished = $this->getBoolFromRequest('is_published');
-        if ($isPublished === true) {
-            return [
-                'title'        => 'required|string|min:5|max:120',
-                'description'  => 'required|string|min:5|max:3000',
-                'is_published' => 'required|boolean',
-                'introduction' => 'required|string|min:5|max:200',
-                'image_url'    => 'nullable|url',
-                'user_id'      => 'required|exists:users,id|integer|min:0'
-            ];
-        }
         return [
-            'title'        => 'string|min:5|max:120',
-            'description'  => 'string|min:5|max:3000',
+            'title'        => 'required_if:is_published,true|string|min:5|max:120',
+            'description'  => 'required_if:is_published,true|string|min:5|max:15000',
             'is_published' => 'required|boolean',
-            'introduction' => 'string|min:5|max:200',
-            'image_url'    => 'nullable|url',
-            'user_id'      => 'required|exists:users,id|integer|min:0'
+            'introduction' => 'required_if:is_published,true|string|min:5|max:200',
+            'image_url'    => 'nullable|url'
         ];
-
     }
 
 
     public function withValidator(Validator $validator) {
-
         $validator->after(function($validator) {
             $isPublished = $this->getBoolFromRequest('is_published');
-            if (!$this->article->user->is_published && $isPublished) {
-                $validator
-                    ->errors()
-                    ->add('name',
-                          'Article not Published. The practitioner must be published before publishing the Article');
+            if ($isPublished && !UserRightsHelper::userAllowToPublishArticle($this->article->user)) {
+                $validator->errors()->add('is_published',
+                                          "Please upgrade subscription plan or publish practitioner to be able to publish articles");
             }
         });
     }

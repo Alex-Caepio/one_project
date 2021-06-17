@@ -15,7 +15,7 @@ class ArticleRequest extends Request {
      * @return bool
      */
     public function authorize(): bool {
-        return !Auth::user()->isFullyRestricted();
+        return Auth::user()->onlyUnpublishedAllowed();
     }
 
     /**
@@ -24,24 +24,13 @@ class ArticleRequest extends Request {
      * @return array
      */
     public function rules(): array {
-        $isPublished = $this->getBoolFromRequest('is_published');
-        if ($isPublished === true) {
-            return [
-                'title'        => 'required|string|min:5|max:120',
-                'description'  => 'required|string|min:5|max:15000',
-                'is_published' => 'required|boolean',
-                'introduction' => 'required|string|min:5|max:200',
-                'image_url'    => 'nullable|url',
-            ];
-        }
         return [
-            'title'        => 'string|min:5|max:120',
-            'description'  => 'string|min:5|max:15000',
+            'title'        => 'required_if:is_published,true|string|min:5|max:120',
+            'description'  => 'required_if:is_published,true|string|min:5|max:15000',
             'is_published' => 'required|boolean',
-            'introduction' => 'string|min:5|max:200',
+            'introduction' => 'required_if:is_published,true|string|min:5|max:200',
             'image_url'    => 'nullable|url',
         ];
-
     }
 
 
@@ -49,9 +38,8 @@ class ArticleRequest extends Request {
         $validator->after(function($validator) {
             $isPublished = $this->getBoolFromRequest('is_published');
             if ($isPublished && !UserRightsHelper::userAllowToPublishArticle(Auth::user())) {
-                    $validator->errors()
-                              ->add('is_published', "Please upgrade subscription to be able to publish articles");
-                }
+                $validator->errors()->add('is_published', "Please upgrade subscription to be able to publish articles");
+            }
         });
     }
 
