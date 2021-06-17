@@ -4,17 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Actions\Schedule\ScheduleStore;
 use App\Actions\Schedule\ScheduleUpdate;
-use App\Events\ServiceListingLive;
-use App\Filters\ServiceFiltrator;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\UpdateServiceRequest;
 use App\Http\Requests\Schedule\CreateScheduleInterface;
 use App\Http\Requests\Schedule\GenericUpdateSchedule;
-use App\Http\Requests\Services\ServicePublishRequest;
 use App\Models\Schedule;
 use App\Models\Service;
 use App\Transformers\ScheduleTransformer;
-use App\Transformers\ServiceTransformer;
 use App\Http\Requests\Request;
 
 class ScheduleController extends Controller {

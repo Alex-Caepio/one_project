@@ -13,7 +13,7 @@ class CopyServiceRequest extends Request {
      * @return bool
      */
     public function authorize() {
-        return !Auth::user()->isFullyRestricted();
+        return Auth::user()->onlyUnpublishedAllowed();
     }
 
 }

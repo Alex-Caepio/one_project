@@ -13,7 +13,7 @@ class UpdateServiceRequest extends Request {
      * @return bool
      */
     public function authorize() {
-        return !Auth::user()->isFullyRestricted();
+        return Auth::user()->is_admin || ($this->service->user->onlyUnpublishedAllowed() && $this->service->user_id === Auth::user()->id);
     }
 
     /**
@@ -34,12 +34,17 @@ class UpdateServiceRequest extends Request {
 
     public function withValidator($validator) {
         $validator->after(function($validator) {
+            $isPublished = $this->getBoolFromRequest('is_published');
+            if ($isPublished && $this->service->user->isFullyRestricted()) {
+                $validator->errors()->add('is_published', "Please upgrade subscription or publish profile to be able to publish service");
+            }
+
             $titleNotUnique =
-                $this->user()->services()->where('user_id', $this->user()->id)->where('id', '!=', $this->service->id)
+                $this->service->user->services()->where('user_id', $this->service->user->id)->where('id', '!=', $this->service->id)
                      ->where('title', $this->get('title'))->exists();
 
             $slugNotUnique =
-                $this->user()->services()->where('user_id', $this->user()->id)->where('id', '!=', $this->service->id)
+                $this->service->user->services()->where('user_id', $this->service->user->id)->where('id', '!=', $this->service->id)
                      ->where('slug', $this->slug)->exists();
 
             if ($titleNotUnique) {

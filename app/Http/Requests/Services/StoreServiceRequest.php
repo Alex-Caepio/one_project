@@ -16,7 +16,7 @@ class StoreServiceRequest extends Request
      */
     public function authorize()
     {
-        return !Auth::user()->isFullyRestricted();
+        return Auth::user()->onlyUnpublishedAllowed();
     }
 
     /**
@@ -40,6 +40,12 @@ class StoreServiceRequest extends Request
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
+
+            $isPublished = $this->getBoolFromRequest('is_published');
+            if ($isPublished && Auth::user()->isFullyRestricted()) {
+                $validator->errors()->add('is_published', "Please upgrade subscription or publish profile to be able to publish service");
+            }
+
             if ($this->user()->services()->where('user_id', $this->user()->id)->where('title', $this->get('title'))->exists()) {
                 $validator->errors()->add('title', 'Service name should be unique!');
             }
