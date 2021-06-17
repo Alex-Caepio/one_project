@@ -11,9 +11,9 @@ use App\Models\Service;
 trait ScheduleValidator {
 
     public function userScheduleValidator($validator, Service $service) {
-
+        $scheduleUser = $service->user;
         $isPublished = $this->getBoolFromRequest('is_published');
-        if ($isPublished && $service->user->isFullyRestricted()) {
+        if ($isPublished && $scheduleUser->isFullyRestricted()) {
             $validator->errors()->add('is_published', "Please upgrade subscription or publish profile to be able to publish schedule");
         }
 
@@ -26,30 +26,30 @@ trait ScheduleValidator {
             $validator->errors()->add('title', 'The schedule name is not unique!');
         }
 
-        $plan = $this->user()->plan;
+        $plan = $scheduleUser->plan;
 
-        if (!UserRightsHelper::userAllowAddSchedule($this->user(), $service)) {
+        if (!UserRightsHelper::userAllowAddSchedule($scheduleUser, $service)) {
             $validator->errors()->add('service_id', 'The schedules limit on the service has been exceeded.');
         }
 
-        if (!UserRightsHelper::userAllowAttendees($this->user(), $this->attendees)) {
+        if (!UserRightsHelper::userAllowAttendees($scheduleUser, $this->attendees)) {
             $validator->errors()->add('attendees', "You're limited to {$plan->amount_bookings} attendees");
         }
 
         if ($this->has('prices')) {
 
             //if user not allowed to add prices
-            if (!UserRightsHelper::userAllowAddPriceOptions($this->user(), count($this->prices))) {
+            if (!UserRightsHelper::userAllowAddPriceOptions($scheduleUser, count($this->prices))) {
                 $validator->errors()->add('prices.*.name', "You`re restricted to {$plan->pricing_options_per_service} prices.");
             }
 
             //if user not allowed to list paid services
-            if ($this->hasPaidPrices() && !UserRightsHelper::userAllowPaidSchedule($this->user())) {
+            if ($this->hasPaidPrices() && !UserRightsHelper::userAllowPaidSchedule($scheduleUser)) {
                 $validator->errors()->add('prices.*.cost', 'Your plan restricts you from publishing paid services.');
             }
 
             //if user not allowed to list free services
-            if ($this->hasFreePrices() && !UserRightsHelper::userAllowFreeSchedule($this->user())) {
+            if ($this->hasFreePrices() && !UserRightsHelper::userAllowFreeSchedule($scheduleUser)) {
                 $validator->errors()->add('prices.*.cost', 'Your plan restricts you from publishing free services.');
             }
         }
