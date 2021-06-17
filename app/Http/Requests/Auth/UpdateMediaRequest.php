@@ -2,11 +2,9 @@
 
 namespace App\Http\Requests\Auth;
 
-use App\Models\User;
 use App\Traits\PublishPractitionerRequestValidatorTrait;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\Request;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
 class UpdateMediaRequest extends Request {
@@ -41,7 +39,7 @@ class UpdateMediaRequest extends Request {
     }
 
 
-    public function withValidator(Validator $validator) {
+    public function withValidator($validator) {
        $this->validatePublishState($validator);
     }
 
