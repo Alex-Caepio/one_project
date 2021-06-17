@@ -3,8 +3,8 @@
 namespace App\Http\Requests\Auth;
 
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\DB;
 
 class ResetPasswordClaim extends FormRequest
 {

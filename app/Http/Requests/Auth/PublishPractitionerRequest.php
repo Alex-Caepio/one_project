@@ -2,10 +2,9 @@
 
 namespace App\Http\Requests\Auth;
 
-use App\Models\User;
+use App\Http\Requests\Request;
 use App\Traits\PublishPractitionerRequestValidatorTrait;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Requests\Request;
 
 class PublishPractitionerRequest extends Request {
 

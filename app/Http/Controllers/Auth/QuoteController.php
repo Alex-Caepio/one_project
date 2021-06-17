@@ -4,10 +4,9 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\PublishRequest;
-use App\Models\Schedule;
-use App\Models\User;
-use DB;
 use App\Http\Requests\Request;
+use App\Models\Schedule;
+use DB;
 
 
 class QuoteController extends Controller {

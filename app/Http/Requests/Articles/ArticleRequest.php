@@ -6,7 +6,6 @@ use App\Helpers\UserRightsHelper;
 use App\Http\Requests\Request;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 
 class ArticleRequest extends Request {
     /**

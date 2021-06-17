@@ -5,9 +5,7 @@ namespace App\Http\Requests\Reschedule;
 use App\Http\Requests\Request;
 use App\Models\Booking;
 use App\Models\Schedule;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 
 class RescheduleRequestRequest extends Request {
     /**

@@ -4,9 +4,8 @@ namespace App\Http\Requests\Schedule;
 
 use App\Http\Requests\PromotionCode\ValidatePromotionCode;
 use App\Http\Requests\Request;
-use App\Models\ScheduleAvailability;
 use App\Models\Booking;
-use App\Models\Price;
+use App\Models\ScheduleAvailability;
 use App\Models\ScheduleUnavailability;
 use Illuminate\Validation\Rule;
 

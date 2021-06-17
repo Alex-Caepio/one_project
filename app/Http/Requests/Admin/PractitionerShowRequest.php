@@ -3,8 +3,6 @@
 namespace App\Http\Requests\Admin;
 
 use App\Http\Requests\Request;
-use App\Models\User;
-use Illuminate\Foundation\Http\FormRequest;
 
 class PractitionerShowRequest extends Request
 {

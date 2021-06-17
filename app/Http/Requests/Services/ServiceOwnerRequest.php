@@ -3,9 +3,7 @@
 namespace App\Http\Requests\Services;
 
 use App\Http\Requests\Request;
-use App\Models\Service;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 
 class ServiceOwnerRequest extends Request {
     /**

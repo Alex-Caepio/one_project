@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\Schedule;
 
-use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 
 class AppointmentScheduleRequest extends GenericSchedule {

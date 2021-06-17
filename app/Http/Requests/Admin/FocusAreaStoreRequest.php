@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\Admin;
 
-use App\Models\FocusArea;
 use App\Http\Requests\Request;
 
 class FocusAreaStoreRequest extends Request

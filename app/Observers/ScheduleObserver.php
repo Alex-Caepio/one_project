@@ -3,16 +3,11 @@
 namespace App\Observers;
 
 use App\Actions\Booking\ScheduleAftermath;
-use App\Actions\Cancellation\CancelBooking;
 use App\Actions\Schedule\CreateRescheduleRequestsOnScheduleUpdate;
 use App\Events\ServiceScheduleCancelled;
 use App\Events\ServiceScheduleLive;
 use App\Events\ServiceUpdatedByPractitionerNonContractual;
-use App\Http\Requests\Request;
-use App\Models\Booking;
-use App\Models\RescheduleRequest;
 use App\Models\Schedule;
-use Illuminate\Support\Facades\Log;
 
 class ScheduleObserver {
 
@@ -25,7 +20,10 @@ class ScheduleObserver {
     public function saved(Schedule $schedule): void {
         if ($schedule->isDirty('is_published')) {
             if (!$schedule->is_published && !$schedule->wasRecentlyCreated) {
-                run_action(ScheduleAftermath::class, $schedule);
+                $requestCancelFlag = request('cancel_bookings', false);
+                if ((bool)$requestCancelFlag === true) {
+                    run_action(ScheduleAftermath::class, $schedule);
+                }
                 event(new ServiceScheduleCancelled($schedule));
             } elseif ($schedule->is_published) {
                 event(new ServiceScheduleLive($schedule));

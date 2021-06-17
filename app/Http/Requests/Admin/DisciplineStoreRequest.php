@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests\Admin;
 
-use App\Models\Discipline;
 use App\Http\Requests\Request;
+use App\Models\Discipline;
 
 class DisciplineStoreRequest extends Request
 {

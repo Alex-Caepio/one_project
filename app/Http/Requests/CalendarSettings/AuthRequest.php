@@ -4,7 +4,6 @@
 namespace App\Http\Requests\CalendarSettings;
 
 use App\Http\Requests\Request;
-use Illuminate\Support\Facades\Auth;
 
 class AuthRequest extends Request {
 

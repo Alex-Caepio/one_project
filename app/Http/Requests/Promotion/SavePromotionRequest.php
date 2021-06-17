@@ -6,8 +6,6 @@ namespace App\Http\Requests\Promotion;
 use App\Http\Requests\Request;
 use App\Models\Promotion;
 use App\Models\PromotionCode;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 

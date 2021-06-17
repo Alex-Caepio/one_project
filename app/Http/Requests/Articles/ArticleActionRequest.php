@@ -3,7 +3,6 @@
 namespace App\Http\Requests\Articles;
 
 use App\Http\Requests\Request;
-use Illuminate\Support\Facades\Log;
 
 
 class ArticleActionRequest extends Request {

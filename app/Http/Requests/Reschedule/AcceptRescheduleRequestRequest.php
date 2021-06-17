@@ -2,11 +2,8 @@
 
 namespace App\Http\Requests\Reschedule;
 
-use App\Models\Schedule;
-use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 
 class AcceptRescheduleRequestRequest extends FormRequest {
     /**

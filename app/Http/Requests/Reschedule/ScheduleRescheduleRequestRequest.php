@@ -3,12 +3,8 @@
 namespace App\Http\Requests\Reschedule;
 
 use App\Http\Requests\Request;
-use App\Models\Booking;
-use App\Models\Schedule;
 use Carbon\Carbon;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 
 class ScheduleRescheduleRequestRequest extends Request {
     /**
