@@ -24,6 +24,7 @@ class UpdateMediaRequest extends Request {
      * @return array
      */
     public function rules() {
+        $practitioner = $this->getPractitioner();
         return [
             'about_my_business'     => 'max:15000',
             'avatar_url'            => 'nullable|url',
@@ -33,7 +34,7 @@ class UpdateMediaRequest extends Request {
             'business_introduction' => 'required_if:is_published,true|string|max:150',
             'business_country_id'   => 'required|exists:countries,id|integer',
             'slug'                  => [
-                Rule::unique('users', 'slug')->ignore($this->user()->id),
+                Rule::unique('users', 'slug')->ignore($practitioner->id),
             ],
             'is_published'          => 'required|bool',
         ];
@@ -42,11 +43,7 @@ class UpdateMediaRequest extends Request {
 
     public function withValidator($validator) {
         $validator->after(function($validator) {
-            if ($this->route()->getName() === self::ADMIN_ROUTE_NAME) {
-                $practitioner = $this->practitioner;
-            } else {
-                $practitioner = Auth::user();
-            }
+            $practitioner = $this->getPractitioner();
             if ($practitioner instanceof User) {
                 $validator->setRules([
                                          'business_address'            => 'required|max:255',
@@ -65,6 +62,14 @@ class UpdateMediaRequest extends Request {
             }
 
         });
+    }
+
+
+    private function getPractitioner() {
+        if ($this->route()->getName() === self::ADMIN_ROUTE_NAME) {
+            return $this->practitioner;
+        }
+        return Auth::user();
     }
 
 }
