@@ -4,7 +4,6 @@ namespace App\Http\Requests\Auth;
 
 use App\Http\Requests\Request;
 use App\Models\User;
-use App\Traits\PublishPractitionerRequestValidatorTrait;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
