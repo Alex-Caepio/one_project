@@ -8,9 +8,11 @@ use App\Http\Requests\Auth\UnpublishPractitionerRequest;
 use App\Http\Requests\Request;
 use App\Models\Keyword;
 use App\Models\User;
+use App\Traits\hasMediaItems;
 
 
 class UpdateMediaPractitioner {
+    use hasMediaItems;
 
     public function execute(User $user, Request $request): void {
 

@@ -42,26 +42,23 @@ class UpdateMediaRequest extends Request {
 
 
     public function withValidator($validator) {
-        $validator->after(function($validator) {
-            $practitioner = $this->getPractitioner();
-            if ($practitioner instanceof User) {
-                $validator->setRules([
-                                         'business_address'            => 'required|max:255',
-                                         'business_email'              => 'required|max:255|email',
-                                         'business_phone_number'       => 'required|digits_between:2,255|numeric',
-                                         'business_phone_country_code' => 'required|exists:countries,id|integer',
-                                     ])->setData([
-                                                     'business_address'            => $practitioner->business_address,
-                                                     'business_email'              => $practitioner->business_email,
-                                                     'business_phone_number'       => $practitioner->business_phone_number,
-                                                     'business_phone_country_code' => $practitioner->business_phone_country_code,
-                                                 ])->validate();
+        $practitioner = $this->getPractitioner();
+        if ($practitioner instanceof User) {
+            $validator->setRules([
+                                     'business_address'            => 'required|max:255',
+                                     'business_email'              => 'required|max:255|email',
+                                     'business_phone_number'       => 'required|digits_between:2,255|numeric',
+                                     'business_phone_country_code' => 'required|exists:countries,id|integer',
+                                 ])->setData([
+                                                 'business_address'            => $practitioner->business_address,
+                                                 'business_email'              => $practitioner->business_email,
+                                                 'business_phone_number'       => $practitioner->business_phone_number,
+                                                 'business_phone_country_code' => $practitioner->business_phone_country_code,
+                                             ])->validate();
 
-            } else {
-                abort(403, 'Practitioner is not defined');
-            }
-
-        });
+        } else {
+            abort(403, 'Practitioner is not defined');
+        }
     }
 
 
