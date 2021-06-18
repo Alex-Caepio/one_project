@@ -62,7 +62,7 @@ class UpdateServiceRequest extends Request {
                 }
 
             if (!UserRightsHelper::userAllowPublishService($this->service->user, $this->service)) {
-                $validator->errors()->add('service_type_id', "You are not able to publish this type of service");
+                $validator->errors()->add('service_type_id', "You are not able to create this type of service");
             }
         });
     }

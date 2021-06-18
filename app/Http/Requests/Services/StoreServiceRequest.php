@@ -56,7 +56,7 @@ class StoreServiceRequest extends Request
 
             $tmpService = new Service(['service_type_id' => $this->service_type_id]);
             if (!UserRightsHelper::userAllowPublishService($this->user(), $tmpService)) {
-                $validator->errors()->add('service_type_id', "You are not able to publish this type of service");
+                $validator->errors()->add('service_type_id', "You are not able to create this type of service");
             }
 
         });

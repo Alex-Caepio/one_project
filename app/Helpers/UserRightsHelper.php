@@ -136,7 +136,7 @@ class UserRightsHelper {
             return true;
         }
 
-        if ($user->isFullyRestricted()) {
+        if (!$user->onlyUnpublishedAllowed()) {
             return false;
         }
 
