@@ -40,7 +40,7 @@ class LoginRequest extends FormRequest
             }
 
             if (!$user->email_verified_at) {
-                $validator->errors()->add('email', 'The email has to be verified first');
+                $validator->errors()->add('email_verified', 'The email has to be verified first');
             }
         });
     }
