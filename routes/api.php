@@ -215,6 +215,7 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::get('/disciplines/{discipline}/videos', [DisciplineController::class, 'indexVideo']);
 
     Route::post('messages/users/{user}', [MessageController::class, 'store']);
+    Route::post('messages/users', [MessageController::class, 'storeMultiple']);
     Route::get('/messages', [MessageController::class, 'index']);
     Route::get('/messages/receiver/{user}', [MessageController::class, 'showByReceiver']);
 

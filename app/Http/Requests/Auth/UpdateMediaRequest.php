@@ -9,6 +9,8 @@ use Illuminate\Validation\Rule;
 
 class UpdateMediaRequest extends Request {
 
+    public const ADMIN_ROUTE_NAME = 'admin-practitioner-publish';
+
     /**
      * Authorization rules
      *
@@ -40,7 +42,7 @@ class UpdateMediaRequest extends Request {
 
     public function withValidator($validator) {
         $validator->after(function($validator) {
-            if ($this->route()->getName() === self::$adminRouteName) {
+            if ($this->route()->getName() === self::ADMIN_ROUTE_NAME) {
                 $practitioner = $this->practitioner;
             } else {
                 $practitioner = Auth::user();

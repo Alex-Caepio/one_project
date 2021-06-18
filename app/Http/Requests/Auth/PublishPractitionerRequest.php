@@ -27,7 +27,7 @@ class PublishPractitionerRequest extends Request {
 
     public function withValidator($validator) {
         $validator->after(function($validator) {
-            if ($this->route()->getName() === self::$adminRouteName) {
+            if ($this->route()->getName() === UpdateMediaRequest::ADMIN_ROUTE_NAME) {
                 $practitioner = $this->practitioner;
             } else {
                 $practitioner = Auth::user();
