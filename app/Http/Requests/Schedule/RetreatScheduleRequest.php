@@ -28,8 +28,8 @@ class RetreatScheduleRequest extends GenericSchedule {
             }),
             'prices.*.cost'           => 'required_if:prices.*.is_free,false',
             'prices.*.is_free'        => 'required',
-            'prices.*.available_till' => 'nullabe|before:end_date',
-
+            'prices.*.available_till' => 'nullable|before:end_date',
+            'prices.*.number_available' => 'nullable|integer|lte:attendees',
             'deposit_amount'     => 'required_if:deposit_accepted,true',
             'deposit_final_date' => 'required_if:deposit_accepted,true',
             'comments'           => 'nullable|string|max:1000',
@@ -39,10 +39,11 @@ class RetreatScheduleRequest extends GenericSchedule {
 
     public function messages() {
         return [
-            'prices.*.name.required'         => 'The name field is required when setting prices.',
-            'prices.*.cost.required_if'      => 'The cost field is required when setting prices.',
-            'prices.*.is_free.required'      => 'The is_free field is required when setting prices.',
-            'prices.*.available_till.before' => 'The available_till field should be before the end_date field.',
+            'prices.*.name.required'                  => 'The name field is required when setting prices.',
+            'prices.*.cost.required_if'               => 'The cost field is required when setting prices.',
+            'prices.*.is_free.required'               => 'The is_free field is required when setting prices.',
+            'prices.*.available_till.before'          => 'The available_till field should be before the end_date field.',
+            'prices.*.number_available.lte:attendees' => 'The tickets_available field should be less or equal max attendees.',
         ];
     }
 }

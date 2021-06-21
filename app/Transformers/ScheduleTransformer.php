@@ -18,7 +18,7 @@ class ScheduleTransformer extends Transformer
 
     public function transform(Schedule $schedule)
     {
-        $attendees_available = $schedule->attendees - $schedule->bookings()->active()->count();
+        $attendees_available = $schedule->attendees - $schedule->bookings()->count();
 
         if(!$schedule->attendees || $attendees_available < 0){
             $attendees_available = 0;

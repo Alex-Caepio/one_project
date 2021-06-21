@@ -16,6 +16,7 @@ use App\Http\Requests\Schedule\WorkshopScheduleRequest;
 use App\Models\Article;
 use App\Models\Booking;
 use App\Models\Discipline;
+use App\Models\Price;
 use App\Models\Promotion;
 use App\Models\PromotionCode;
 use App\Models\Purchase;
@@ -25,6 +26,7 @@ use App\Models\Service;
 use App\Models\User;
 use App\Observers\ArticleObserver;
 use App\Observers\BookingObserver;
+use App\Observers\PriceObserver;
 use App\Observers\PromotionCodeObserver;
 use App\Observers\PromotionObserver;
 use App\Observers\PurchaseObserver;
@@ -36,15 +38,13 @@ use Stripe\StripeClient;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Relations\Relation;
 
-class AppServiceProvider extends ServiceProvider
-{
+class AppServiceProvider extends ServiceProvider {
     /**
      * Register any application services.
      *
      * @return void
      */
-    public function register()
-    {
+    public function register() {
         //
     }
 
@@ -53,17 +53,15 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
-    {
-       $this->app->instance(StripeClient::class,
-                            new StripeClient(config('services.stripe.secret')));
+    public function boot() {
+        $this->app->instance(StripeClient::class, new StripeClient(config('services.stripe.secret')));
 
         Relation::morphMap([
-            'service'    => Service::class,
-            'discipline' => Discipline::class,
-            'article'    => Article::class,
-            'user'       => User::class,
-        ]);
+                               'service'    => Service::class,
+                               'discipline' => Discipline::class,
+                               'article'    => Article::class,
+                               'user'       => User::class,
+                           ]);
 
         /* Events Observer */
         Article::observe(ArticleObserver::class);
@@ -75,8 +73,9 @@ class AppServiceProvider extends ServiceProvider
         Purchase::observe(PurchaseObserver::class);
         Schedule::observe(ScheduleObserver::class);
         RescheduleRequest::observe(RescheduleRequestObserver::class);
+        Price::observe(PriceObserver::class);
 
-        $this->app->bind(CreateScheduleInterface::class, function () {
+        $this->app->bind(CreateScheduleInterface::class, function() {
             switch (request()->service->service_type->id) {
                 case 'workshop':
                     return new WorkshopScheduleRequest();
@@ -109,7 +108,8 @@ class AppServiceProvider extends ServiceProvider
                     return new AppointmentScheduleRequest();
 
                 case 500:
-                    abort(500, 'You\'re trying to purchase unrecognized service type. Please contact site administrator for assistance');
+                    abort(500,
+                          'You\'re trying to purchase unrecognized service type. Please contact site administrator for assistance');
             }
         });
     }

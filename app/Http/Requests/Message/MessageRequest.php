@@ -24,7 +24,7 @@ class MessageRequest extends Request
     public function rules()
     {
         return [
-            'text' => 'max:1000'
+            'text' => 'required|max:1000'
         ];
     }
 

@@ -29,7 +29,7 @@ class ClassScheduleRequest extends GenericSchedule {
             }),
             'prices.*.cost'           => 'required_if:prices.*.is_free,false',
             'prices.*.is_free'        => 'required',
-            'prices.*.available_till' => 'before:end_date',
+            'prices.*.available_till' => 'nullable|before:end_date',
             'repeat_every'            => 'required_if:repeat,monthly',
             'repeat_period'           => 'required_if:repeat,monthly',
             'deposit_amount'          => 'required_if:deposit_accepted,true',

@@ -23,7 +23,7 @@ class TrainingProgramScheduleRequest extends GenericSchedule {
             }),
             'prices.*.cost'           => 'required_if:prices.*.is_free,false',
             'prices.*.is_free'        => 'required',
-            'prices.*.available_till' => 'before:end_date',
+            'prices.*.available_till' => 'nullable|before:end_date',
             'deposit_amount'          => 'required_if:deposit_accepted,true',
             'deposit_final_date'      => 'required_if:deposit_accepted,true',
             'comments'                => 'nullable|string|max:1000',
