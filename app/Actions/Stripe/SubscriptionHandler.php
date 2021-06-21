@@ -71,7 +71,7 @@ class SubscriptionHandler {
      */
     private function retrieveCustomer(): void {
         $this->customer = User::where('stripe_customer_id', $this->_requestCustomerId)
-                              ->where('account_type', User::ACCOUNT_PRACTITIONER)->has('plan')->with('plan')->first();
+                              ->where('account_type', User::ACCOUNT_PRACTITIONER)->with('plan')->first();
     }
 
 
