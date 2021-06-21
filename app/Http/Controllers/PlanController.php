@@ -28,11 +28,32 @@ class PlanController extends Controller {
         $user = Auth::user();
         $previousPlan = $user->plan;
         $isNewPlan = empty($user->plan_id);
-        try {
 
-            if (!empty($user->stripe_plan_id)) {
+
+        if (!empty($user->stripe_plan_id)) {
+            $logData = [
+                'user_id'                => $user->id,
+                'plan_id'                => $plan->id,
+                'customer'               => $user->stripe_customer_id,
+                'stripe_subscription_id' => $user->stripe_plan_id,
+                'price_stripe_id'        => $plan->stripe_id
+            ];
+            try {
                 $stripe->subscriptions->cancel($user->stripe_plan_id, []);
+                Log::channel('stripe_plans_success')->info('Plan successfully cancelled', $logData);
+            } catch (\Exception $e) {
+                $logData['error'] = $e->getMessage();
+                Log::channel('stripe_plans_success')->info('Plan cancellation error purchased', $logData);
+            } finally {
+                $user->stripe_plan_id = null;
+                $user->plan_id = null;
+                $user->plan_until = null;
+                $user->plan_from = null;
+                $user->save();
             }
+        }
+
+        try {
 
             $subscription = $stripe->subscriptions->create([
                                                                'default_payment_method' => $request->payment_method_id,
@@ -73,8 +94,11 @@ class PlanController extends Controller {
             ]);
 
 
-            return response()->json(['payment_method_id' => 'The payment could not be processed. Please check with your bank or choose another payment option.'],
-                                    422);
+            return response()->json([
+                                        'errors' => [
+                                            'payment_method_id' => 'The payment could not be processed. Please check with your bank or choose another payment option.'
+                                        ]
+                                    ], 422);
         }
 
         Log::channel('stripe_plans_success')->info('Plan successfully purchased', [
@@ -85,5 +109,7 @@ class PlanController extends Controller {
             'payment_method_id' => $request->payment_method_id,
             'price_stripe_id'   => $plan->stripe_id
         ]);
+        return response('', 204);
+
     }
 }
