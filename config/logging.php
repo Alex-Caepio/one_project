@@ -220,6 +220,11 @@ return [
             'driver' => 'daily',
         ],
 
+        'promotion_status_update' => [
+            'path' => storage_path('logs/promotion_status_update.log'),
+            'driver' => 'daily',
+        ],
+
     ],
 
 ];
