@@ -20,6 +20,8 @@ return [
     'platform_subject_practitioner' => env('PLATFORM_SUBJECT_PREFIX_PRACTITIONER', 'Message from: '),
     'platform_subject_client'       => env('PLATFORM_SUBJECT_PREFIX_CLIENT', 'Message from: '),
 
+    'dateless_service_types' => ['appointment', 'bespoke'],
+
 
     /*
     |--------------------------------------------------------------------------

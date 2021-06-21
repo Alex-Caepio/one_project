@@ -35,12 +35,12 @@ class ServiceScheduleLive {
             return 'Service Schedule Live - Retreat';
         }
 
-        if ($schedule->service->service_type_id === 'bespoke') {
-            return 'Service Schedule Live - Date-less';
-        }
-
         if ($schedule->service->service_type_id === 'appointment') {
             return 'Service Schedule Live - Appointments';
+        }
+
+        if ($schedule->service->service_type_id === 'bespoke') {
+            return 'Service Schedule Live - Date-less';
         }
 
         if ($schedule->appointment === 'physical') {

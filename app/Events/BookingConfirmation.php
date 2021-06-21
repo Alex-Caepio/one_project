@@ -31,19 +31,11 @@ class BookingConfirmation {
      */
     private function getTemplate(): ?string {
         if ($this->schedule->appointment === 'physical') {
-            if ($this->service->service_type_id === 'courses') {
-                return 'Booking Confirmation - Dateless Physical';
-            }
-
-            return 'Booking Confirmation - Date/Apt Physical';
+            return $this->service->isDateLess() ? 'Booking Confirmation - Dateless Physical' : 'Booking Confirmation - Date/Apt Physical';
         }
 
         if ($this->schedule->appointment === 'virtual') {
-            if ($this->service->service_type_id === 'courses') {
-                return 'Booking Confirmation - DateLess Virtual';
-            }
-
-            return 'Booking Confirmation - Event Virtual';
+            return $this->service->isDateLess() ? 'Booking Confirmation - DateLess Virtual' : 'Booking Confirmation - Event Virtual';
         }
 
         return null;

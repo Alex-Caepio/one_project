@@ -133,4 +133,9 @@ class Service extends Model {
         return $this->hasMany(Purchase::class);
     }
 
+    public function isDateLess() {
+        return in_array($this->service_type_id, config('app.dateless_service_types'));
+    }
+
+
 }
