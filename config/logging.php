@@ -225,6 +225,16 @@ return [
             'driver' => 'daily',
         ],
 
+        'practitioner_commissions_success' => [
+            'path' => storage_path('logs/practitioner_commissions_success.log'),
+            'driver' => 'daily',
+        ],
+
+        'practitioner_commissions_error' => [
+            'path' => storage_path('logs/practitioner_commissions_error.log'),
+            'driver' => 'daily',
+        ],
+
     ],
 
 ];
