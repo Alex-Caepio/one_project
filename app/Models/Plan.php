@@ -28,7 +28,7 @@ class Plan extends Model
         'prioritised_business_profile_search', 'prioritised_service_search', 'busines_profile_page',
         'unique_web_address', 'onboarding_support', 'client_analytics', 'service_analytics', 'financial_analytics',
         'schedules_per_service_unlimited', 'pricing_options_per_service_unlimited',
-        'amount_bookings', 'discount_codes', 'order'
+        'amount_bookings', 'discount_codes', 'order', 'free_start_from', 'free_start_to'
     ];
 
     protected $casts = [
