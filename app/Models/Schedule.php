@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Scopes\PublishedScope;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -23,7 +24,7 @@ use Illuminate\Support\Facades\Log;
  * @property Service service
  */
 class Schedule extends Model {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, PublishedScope;
 
     protected $fillable = [
         'title',
