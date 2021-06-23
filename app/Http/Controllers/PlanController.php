@@ -91,6 +91,7 @@ class PlanController extends Controller {
                 'payment_method_id' => $request->payment_method_id ?? null,
                 'price_stripe_id'   => $plan->stripe_id ?? null,
                 'message'           => $e->getMessage(),
+                'trace'             => $e->getTraceAsString(),
             ]);
 
 
