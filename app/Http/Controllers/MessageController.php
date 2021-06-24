@@ -27,7 +27,7 @@ class MessageController extends Controller {
 
     public function storeMultiple(MessageMultipleRequest $request) {
         $users =
-            User::where('account_type', User::ACCOUNT_CLIENT)->whereIn('id', $request->getArrayFromRequest('users'))
+            User::where('account_type', User::ACCOUNT_CLIENT)->whereIn('id', $request->get('users'))
                 ->get();
         foreach ($users as $user) {
             $this->sendMessage($user, $request->get('text'));

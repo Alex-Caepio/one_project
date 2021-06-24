@@ -47,7 +47,8 @@ class PlanTransformer extends Transformer {
             'discount_codes'                        => (bool)$plan->discount_codes,
             'order'                                 => $plan->order,
             'free_start_from'                       => $plan->free_start_from,
-            'free_start_to'                         => $plan->free_start_to
+            'free_start_to'                         => $plan->free_start_to,
+            'active_trial'                          => $plan->isActiveTrial()
         ];
     }
 

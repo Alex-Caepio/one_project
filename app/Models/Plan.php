@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -44,6 +45,15 @@ class Plan extends Model
         return $this->belongsToMany(ServiceType::class);
     }
 
+    public function isActiveTrial() {
+        if (!$this->free_start_from || !$this->free_start_to) {
+            return false;
+        }
+        $nowDate = Carbon::now();
+
+        return $nowDate >= Carbon::parse($this->free_start_from) && $nowDate <= Carbon::parse($this->free_start_to);
+
+    }
 
 }
 
