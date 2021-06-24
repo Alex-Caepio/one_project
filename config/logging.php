@@ -225,6 +225,11 @@ return [
             'driver' => 'daily',
         ],
 
+        'console_commands_handler' => [
+            'path' => storage_path('logs/promotion_status_update.log'),
+            'driver' => 'daily',
+        ],
+
         'practitioner_commissions_success' => [
             'path' => storage_path('logs/practitioner_commissions_success.log'),
             'driver' => 'daily',
