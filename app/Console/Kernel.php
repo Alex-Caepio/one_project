@@ -12,6 +12,7 @@ use App\Console\Commands\RescheduleNoReplyCommand;
 use App\Console\Commands\RescheduleNoReplyFinishCommand;
 use App\Console\Commands\ScheduleFreezesByCron;
 use App\Console\Commands\ScheduleFreezesTruncate;
+use App\Console\Commands\SubscriptionFreePeriod;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -30,7 +31,8 @@ class Kernel extends ConsoleKernel {
         BookingNotifierWeek::class,
         BookingStatusesUpdate::class,
         RescheduleNoReplyCommand::class,
-        RescheduleNoReplyFinishCommand::class
+        RescheduleNoReplyFinishCommand::class,
+        SubscriptionFreePeriod::class,
     ];
 
     /**
@@ -48,6 +50,7 @@ class Kernel extends ConsoleKernel {
         $schedule->command('bookings:status-update')->daily();
         $schedule->command('reschedule:noreply')->daily();
         $schedule->command('reschedule:noreply-finish')->daily();
+        $schedule->command('plan-freeperiod')->daily();
     }
 
     /**

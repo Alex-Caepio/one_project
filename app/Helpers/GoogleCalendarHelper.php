@@ -53,7 +53,6 @@ class GoogleCalendarHelper {
 
         if ($this->_client->isAccessTokenExpired()) {
             $refreshToken = $this->_client->getRefreshToken();
-            Log::info('Google Authorization Token Expired. Use refresh token: ' . $refreshToken);
             if ($refreshToken === null) {
                 Log::channel('google_authorisation_failed')->info('Unable to refresh token:', [
                     'user_id'       => $this->_calendar->user_id,
@@ -64,8 +63,6 @@ class GoogleCalendarHelper {
             } else {
                 $newCredentials = $this->_client->refreshToken($refreshToken);
                 if (!isset($newCredentials['error'])) {
-                    Log::info('NEW CREDENTIALS: ');
-                    Log::info($newCredentials);
                     $this->updateUserToken($newCredentials);
                     return;
                 } else {
@@ -76,15 +73,11 @@ class GoogleCalendarHelper {
                 }
             }
             throw new \Exception('Google Calendar Integration in not valid');
-        } else {
-            Log::info('Access token is not expired... Continue...');
         }
     }
 
     public function updateUserToken(array $accessToken): bool {
         $logData = array_merge(['user_id' => $this->_calendar->user_id], $accessToken);
-        Log::info('Access Token from args: ');
-        Log::info($accessToken);
         if (isset($accessToken['access_token'])) {
             $this->_calendar->token_info = json_encode($accessToken);
             $this->_calendar->access_token = $accessToken['access_token'];
@@ -106,8 +99,6 @@ class GoogleCalendarHelper {
             abort(500, 'Calendar was not defined');
         }
         $logData = array_merge(['user_id' => $this->_calendar->user_id], $accessToken);
-        Log::info('Store user tokens: ');
-        Log::info($accessToken);
         if (isset($accessToken['access_token'])) {
             $this->_calendar->cleanupState();
             $this->_calendar->token_info = json_encode($accessToken);

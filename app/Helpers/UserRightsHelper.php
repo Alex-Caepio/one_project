@@ -161,7 +161,7 @@ class UserRightsHelper {
     }
 
 
-    public static function downgradePractitioner(User $user, Plan $plan, Plan $previousPlan): void {
+    public static function downgradePractitioner(User $user, Plan $plan, ?Plan $previousPlan = null): void {
         // new plan has limited types of services
         $allowedServiceTypes = $plan->service_types()->pluck('service_types.id')->all();
         if (count($allowedServiceTypes)) {

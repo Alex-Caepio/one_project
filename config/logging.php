@@ -226,7 +226,7 @@ return [
         ],
 
         'console_commands_handler' => [
-            'path' => storage_path('logs/promotion_status_update.log'),
+            'path' => storage_path('logs/console_commands_handler.log'),
             'driver' => 'daily',
         ],
 

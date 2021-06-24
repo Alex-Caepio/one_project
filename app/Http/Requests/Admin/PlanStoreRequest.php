@@ -31,8 +31,8 @@ class PlanStoreRequest extends Request
             'commission_on_sale' => 'min:0|max:100',
             'schedules_per_service' => 'min:1|max:20',
             'pricing_options_per_service' => 'min:1|max:20',
-            'free_start_from' => 'nullable|date',
-            'free_start_to' => 'nullable|date'
+            'free_start_from' => 'nullable|required_with:free_start_to|date_format:"d-m-Y"',
+            'free_start_to' => 'nullable|required_with:free_start_from|date_format:"d-m-Y"'
         ];
     }
 
