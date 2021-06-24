@@ -60,7 +60,7 @@ class ScheduleController extends Controller {
 
     public function rescheduleScheduleList(Schedule $schedule, Request $request) {
         $scheduleQuery = Schedule::where('service_id', $schedule->service_id)->where('id', '<>', $schedule->id)
-                                                                              ->where('is_published', true);
+                                 ->where('is_published', true);
 
         $requestIncludes = $request->getIncludes();
 
@@ -71,21 +71,20 @@ class ScheduleController extends Controller {
         // price option for client
         if (Auth::user()->account_type === User::ACCOUNT_CLIENT && $request->filled('booking_id')) {
 
-            $booking = Booking::with('price')
-                              ->where('id', (int)$request->get('booking_id'))
-                              ->where('schedule_id', $schedule->id)
-                              ->first();
+            $booking = Booking::with('price')->where('id', (int)$request->get('booking_id'))
+                              ->where('schedule_id', $schedule->id)->first();
             if (!$booking) {
                 return response('Booking not found', 500);
             }
 
-            $scheduleQuery->whereHas('prices', static function($query) use($booking) {
-                $query->where('prices.cost', '<=', $booking->price->cost);
+            $scheduleQuery->whereHas('prices', static function($query) use ($booking) {
+                $query->where('prices.cost', '<=', $booking->price->cost)->orWhere('is_free', true);
             });
 
             // attendees filtator
             $scheduleCollection = $scheduleQuery->get()->filter(static function($item) {
-                return $item->attendees === null || (int)$item->attendees > Booking::where('schedule_id', $item->id)->active()->count();
+                return $item->attendees === null ||
+                       (int)$item->attendees > Booking::where('schedule_id', $item->id)->active()->count();
             });
 
         } else {
