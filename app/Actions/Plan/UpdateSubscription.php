@@ -15,7 +15,7 @@ use Stripe\StripeClient;
 class UpdateSubscription {
 
     public function execute(User $user, StripeClient $stripeClient, Plan $plan, bool $isNewPlan,
-                            Request $request): bool {
+                            $request): bool {
         try {
             if (!$plan->isActiveTrial()) {
                 $subscription = $stripeClient->subscriptions->create([
