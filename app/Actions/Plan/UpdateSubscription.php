@@ -28,9 +28,9 @@ class UpdateSubscription {
                 $user->stripe_plan_id = $subscription->id;
                 $user->plan_until = Carbon::createFromTimestamp($subscription->current_period_end);
             } else {
-                $user->plan_id = $plan->id;
                 $user->plan_until = $plan->free_start_to;
             }
+            $user->plan_id = $plan->id;
             $user->plan_from = Carbon::now();
             $user->account_type = User::ACCOUNT_PRACTITIONER;
 
