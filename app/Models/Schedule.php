@@ -289,5 +289,14 @@ class Schedule extends Model {
         return $changes;
     }
 
+    public function getCalculatedStatus(): string {
+        if ($this->end_date && Carbon::parse($this->end_date) < now()) {
+            return 'completed';
+        }
+        if ($this->start_date && Carbon::parse($this->start_date) > now()) {
+            return 'upcoming';
+        }
+        return '';
+    }
 
 }
