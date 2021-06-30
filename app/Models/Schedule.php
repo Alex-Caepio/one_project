@@ -297,7 +297,7 @@ class Schedule extends Model {
         if (Carbon::parse($this->start_date) > now()) {
             return 'upcoming';
         }
-        
+
         return '';
     }
 

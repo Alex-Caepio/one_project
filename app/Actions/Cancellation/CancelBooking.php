@@ -151,6 +151,7 @@ class CancelBooking {
         $notification->datetime_to = $booking->datetime_to;
         $notification->price_id = $booking->price_id;
         $notification->price_refunded = $refundData['refundTotal'];
+        $notification->price_payed = $booking->cost;
 
         $notification->save();
 
