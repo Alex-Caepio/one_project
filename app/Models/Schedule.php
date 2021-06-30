@@ -229,9 +229,8 @@ class Schedule extends Model {
             $q->whereNotBetween('datetime_from', [$unavailability->start_date, $unavailability->end_date]);
         }
 
-        return $this->bookings()->whereNotIn('id', $q->pluck('id'))
-                                ->whereNotIn('status', ['completed', 'canceled'])
-                                ->get();
+        return $this->bookings()->whereNotIn('id', $q->pluck('id'))->whereNotIn('status', ['completed', 'canceled'])
+                    ->get();
     }
 
     public function bookings(): HasMany {
@@ -251,9 +250,7 @@ class Schedule extends Model {
                 $result = true;
             } else {
                 // Unset, because another event will be fired for Reschedule Request
-                unset($changes['end_date'], $changes['start_date'], $changes['location_id'],
-                    $changes['venue'], $changes['city'], $changes['country'], $changes['post_code'],
-                    $changes['location_displayed'], $changes['is_virtual'],);
+                unset($changes['end_date'], $changes['start_date'], $changes['location_id'], $changes['venue'], $changes['city'], $changes['country'], $changes['post_code'], $changes['location_displayed'], $changes['is_virtual'],);
                 $result = count($changes) > 0;
             }
         }
@@ -290,12 +287,17 @@ class Schedule extends Model {
     }
 
     public function getCalculatedStatus(): string {
-        if ($this->end_date && Carbon::parse($this->end_date) < now()) {
+        if (!$this->end_date || !$this->start_date) {
+            return 'ongoing';
+        }
+
+        if (Carbon::parse($this->end_date) < now()) {
             return 'completed';
         }
-        if ($this->start_date && Carbon::parse($this->start_date) > now()) {
+        if (Carbon::parse($this->start_date) > now()) {
             return 'upcoming';
         }
+        
         return '';
     }
 
