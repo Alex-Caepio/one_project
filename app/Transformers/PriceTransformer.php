@@ -23,7 +23,7 @@ class PriceTransformer extends Transformer {
             'available_till'     => $price->available_till,
             'duration'           => $this->formatDuration($price->duration),
             'min_purchase'       => $price->min_purchase,
-            'number_available'   => $price->number_available,
+            'number_available'   => (int)$price->number_available,
             'number_unpurchased' => $number_unpurchased,
             'tickets_available'  => $ticketsBooked,
             'stripe_id'          => $price->stripe_id,
