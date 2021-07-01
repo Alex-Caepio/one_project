@@ -7,6 +7,7 @@ use App\Http\Requests\Bookings\BookingCompleteRequest;
 use App\Http\Requests\Reschedule\RescheduleRequestRequest;
 use App\Http\Requests\Request;
 use App\Models\Booking;
+use App\Models\Notification;
 use App\Models\RescheduleRequest;
 use App\Transformers\BookingTransformer;
 use Carbon\Carbon;
@@ -15,7 +16,12 @@ use Illuminate\Support\Facades\Auth;
 class BookingController extends Controller {
     public function index(Request $request, BookingFilters $filters) {
         $query = Booking::filter($filters)->where('user_id', $request->user()->id)
-                        ->with($request->getIncludesWithTrashed(['schedule', 'schedule.service', 'practitioner']));
+                        ->with($request->getIncludesWithTrashed([
+                            'schedule',
+                            'schedule.service',
+                            'practitioner',
+                            'schedule.service.practitioner'
+                                                                ]));
 
         if ($request->hasOrderBy()) {
             $order = $request->getOrderBy();
@@ -37,7 +43,8 @@ class BookingController extends Controller {
     public function complete(Booking $booking, BookingCompleteRequest $request) {
         $booking->status = 'completed';
         $booking->save();
-
+        Notification::where('booking_id', $booking->id)->delete();
+        RescheduleRequest::where('booking_id', $booking->id)->delete();
         return response(null, 200);
     }
 }
