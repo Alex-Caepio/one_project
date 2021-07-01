@@ -165,7 +165,7 @@ class ScheduleController extends Controller {
 
     public function copy(Schedule $schedule) {
 
-        if (UserRightsHelper::userAllowPublishSchedule(Auth::user(), $schedule->service)) {
+        if (UserRightsHelper::userAllowAddSchedule(Auth::user(), $schedule->service)) {
 
             $scheduleCopy = $schedule->replicate();
             $scheduleCopy->title = "{$schedule->title} (copy)";

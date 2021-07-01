@@ -124,7 +124,8 @@ class BookingMyClientController extends Controller {
                                      $join->on('bookings.purchase_id', '=', 'purchases.id')
                                           ->whereNotIn('bookings.status', ['canceled', 'completed']);
                                  });
-                             })->where('services.user_id', $request->user()->id)
+                             })
+                             ->where('services.user_id', $request->user()->id)
                              ->where('services.service_type_id', '=', 'bespoke')->paginate($request->getLimit());
 
         $purchases = $paginator->getCollection();
