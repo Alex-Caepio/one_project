@@ -14,7 +14,8 @@ use Illuminate\Support\Facades\Auth;
 
 class BookingController extends Controller {
     public function index(Request $request, BookingFilters $filters) {
-        $query = Booking::filter($filters)->where('user_id', $request->user()->id)->with($request->getIncludes());
+        $query = Booking::filter($filters)->where('user_id', $request->user()->id)
+                        ->with($request->getIncludesWithTrashed(['schedule', 'schedule.service', 'practitioner']));
 
         if ($request->hasOrderBy()) {
             $order = $request->getOrderBy();
