@@ -61,7 +61,7 @@ class RouteServiceProvider extends ServiceProvider {
         Route::bind('booking', function($value) {
             return Booking::where(function($query) use ($value) {
                 $query->where('id', $value)->orWhere('reference', 'LIKE', $value);
-            })->whereNull('cancelled_at')->firstOrFail();
+            })->firstOrFail();
         });
 
         Route::bind('reschedule_request', function($value) {
