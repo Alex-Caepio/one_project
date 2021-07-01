@@ -145,6 +145,7 @@ class CancelBooking {
 
         $notification->client_id = $booking->user_id;
         $notification->practitioner_id = $booking->practitioner_id;
+        $notification->booking_id = $booking->id;
         $notification->title = $booking->schedule->service->title . ' ' . $booking->schedule->title;
         $notification->old_address = $booking->schedule->location_displayed;
         $notification->datetime_from = $booking->datetime_from;

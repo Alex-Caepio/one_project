@@ -12,6 +12,7 @@ class Notification extends Model {
         'title',
         'client_id',
         'practitioner_id',
+        'booking_id',
         'receiver_id',
         'old_address',
         'new_address',
