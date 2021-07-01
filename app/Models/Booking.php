@@ -93,6 +93,5 @@ class Booking extends Model {
         return $this->hasOne(RescheduleRequest::class)->where('requested_by', 'practitioner');
     }
 
-
 }
 

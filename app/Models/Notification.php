@@ -5,8 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Notification extends Model
-{
+class Notification extends Model {
     use HasFactory;
 
     protected $fillable = [
@@ -16,8 +15,9 @@ class Notification extends Model
         'receiver_id',
         'old_address',
         'new_address',
-        'price_id' ,
-        'price_payed' ,
+        'price_id',
+        'booking_id',
+        'price_payed',
         'price_refunded',
         'read_at',
         'type',
@@ -52,4 +52,9 @@ class Notification extends Model
     public function price() {
         return $this->belongsTo(Price::class, 'price_id');
     }
+
+    public function booking() {
+        return $this->belongsTo(Booking::class, 'booking_id');
+    }
+
 }
