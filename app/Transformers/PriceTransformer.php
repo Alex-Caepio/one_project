@@ -10,12 +10,9 @@ use Carbon\Carbon;
 class PriceTransformer extends Transformer {
 
     public function transform(Price $price) {
-        $ticketsBooked = $price->bookings()->sum('amount');
-        $number_unpurchased = (int)$price->number_available - $ticketsBooked;
+        $ticketsBooked = (int)$price->bookings()->sum('amount');
+        $number_unpurchased = !$price->number_available ? 0 : (int)$price->number_available - $ticketsBooked;
 
-        if (!$price->number_available || $number_unpurchased < 0) {
-            $number_unpurchased = 0;
-        }
 
         return [
             'id'                 => $price->id,
