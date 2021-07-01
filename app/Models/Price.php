@@ -36,4 +36,10 @@ class Price extends Model {
     public function purchases(): HasMany {
         return $this->hasMany(Purchase::class);
     }
+
+    public function bookings(): HasMany {
+        return $this->hasMany(Booking::class, 'price_id', 'id');
+    }
+
+
 }

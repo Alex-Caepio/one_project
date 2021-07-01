@@ -250,7 +250,9 @@ class Schedule extends Model {
                 $result = true;
             } else {
                 // Unset, because another event will be fired for Reschedule Request
-                unset($changes['end_date'], $changes['start_date'], $changes['location_id'], $changes['venue'], $changes['city'], $changes['country'], $changes['post_code'], $changes['location_displayed'], $changes['is_virtual'],);
+                unset($changes['end_date'], $changes['start_date'], $changes['location_id'],
+                    $changes['venue'], $changes['city'], $changes['country'],
+                    $changes['location_displayed']);
                 $result = count($changes) > 0;
             }
         }
