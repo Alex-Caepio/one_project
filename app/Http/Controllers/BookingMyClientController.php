@@ -64,7 +64,8 @@ class BookingMyClientController extends Controller {
                                           ->whereNotIn('bookings.status', ['canceled', 'completed']);
                                  });
                              })->where('services.user_id', $request->user()->id)
-                               ->groupBy('schedules.id')->paginate($request->getLimit());
+                             ->whereNotIn('services.service_type_id', ['bespoke', 'appointments'])
+                             ->groupBy('schedules.id')->paginate($request->getLimit());
 
         $schedules = $paginator->getCollection();
 
@@ -74,18 +75,18 @@ class BookingMyClientController extends Controller {
 
     public function closed(Request $request) {
         $paginator = Booking::query()->selectRaw(implode(', ', [
-                'schedules.id as id',
-                'services.title as service_name',
-                'services.id as service_id',
-                'service_types.name as service_type',
-                'schedules.title as schedule_name',
-                'purchases.created_at as purchase_date',
-                'concat(users.first_name, " ", users.last_name) as client',
-                'bookings.reference as reference',
-                'purchases.price as paid',
-                'bookings.datetime_to as closure_date',
-                'IF (bookings.status = "completed", "Complete", "Cancel") as status',
-            ]))->join('schedules', 'schedules.id', '=', 'bookings.schedule_id')
+            'schedules.id as id',
+            'services.title as service_name',
+            'services.id as service_id',
+            'service_types.name as service_type',
+            'schedules.title as schedule_name',
+            'purchases.created_at as purchase_date',
+            'concat(users.first_name, " ", users.last_name) as client',
+            'bookings.reference as reference',
+            'purchases.price as paid',
+            'bookings.datetime_to as closure_date',
+            'IF (bookings.status = "completed", "Complete", "Cancel") as status',
+        ]))->join('schedules', 'schedules.id', '=', 'bookings.schedule_id')
                             ->join('services', 'services.id', '=', 'schedules.service_id')
                             ->join('service_types', 'service_types.id', '=', 'services.service_type_id')
                             ->join('purchases', 'purchases.id', '=', 'bookings.purchase_id')
@@ -101,25 +102,30 @@ class BookingMyClientController extends Controller {
 
     public function purchases(Request $request) {
         $paginator = Purchase::query()->selectRaw(implode(', ', [
-                'purchases.id as id',
-                'bookings.id as booking_id',
-                'bookings.reference as booking_reference',
-                'services.id as service_id',
-                'services.title as service_name',
-                'service_types.name as service_type',
-                'schedules.title as schedule_name',
-                'purchases.created_at as purchase_date',
-                'concat(users.first_name, " ", users.last_name) as client',
-                'purchases.price as paid',
-                'schedules.location_displayed as location',
-                'schedules.refund_terms as refund_terms',
-                'bookings.reference as reference',
-            ]))->join('services', 'services.id', '=', 'purchases.service_id')
+            'purchases.id as id',
+            'bookings.id as booking_id',
+            'bookings.reference as booking_reference',
+            'services.id as service_id',
+            'services.title as service_name',
+            'service_types.name as service_type',
+            'schedules.title as schedule_name',
+            'purchases.created_at as purchase_date',
+            'concat(users.first_name, " ", users.last_name) as client',
+            'purchases.price as paid',
+            'schedules.location_displayed as location',
+            'schedules.refund_terms as refund_terms',
+            'bookings.reference as reference',
+        ]))->join('services', 'services.id', '=', 'purchases.service_id')
                              ->join('service_types', 'service_types.id', '=', 'services.service_type_id')
                              ->join('schedules', 'schedules.id', '=', 'purchases.schedule_id')
                              ->join('users', 'users.id', '=', 'purchases.user_id')
-                             ->join('bookings', 'bookings.purchase_id', '=', 'purchases.id')
-                             ->where('services.user_id', $request->user()->id)->paginate($request->getLimit());
+                             ->join('bookings', static function($join) {
+                                 $join->on(function($join) {
+                                     $join->on('bookings.purchase_id', '=', 'purchases.id')
+                                          ->whereNotIn('bookings.status', ['canceled', 'completed']);
+                                 });
+                             })->where('services.user_id', $request->user()->id)
+                             ->where('services.service_type_id', '=', 'bespoke')->paginate($request->getLimit());
 
         $purchases = $paginator->getCollection();
 
