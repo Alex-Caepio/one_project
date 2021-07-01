@@ -21,6 +21,7 @@ class NotificationTransformer extends Transformer {
             'title'           => $notification->title,
             'client_id'       => $notification->client_id,
             'practitioner_id' => $notification->practitioner_id,
+            'service_id'      => $notification->service_id,
             'receiver_id'     => $notification->receiver_id,
             'old_address'     => $notification->old_address,
             'new_address'     => $notification->new_address,

@@ -148,6 +148,7 @@ class CancelBooking {
         $notification->booking_id = $booking->id;
         $notification->title = $booking->schedule->service->title . ' ' . $booking->schedule->title;
         $notification->old_address = $booking->schedule->location_displayed;
+        $notification->service_id = $booking->schedule->service_id;
         $notification->datetime_from = $booking->datetime_from;
         $notification->datetime_to = $booking->datetime_to;
         $notification->price_id = $booking->price_id;
