@@ -4,12 +4,14 @@ namespace App\Actions\Stripe;
 
 use App\Models\Plan;
 use App\Models\PractitionerCommission;
+use App\Models\Promotion;
 use App\Models\Transfer;
 use Illuminate\Support\Facades\Log;
 use Stripe\StripeClient;
 
 
 class TransferFundsWithCommissions {
+
     public function execute($cost, $practitioner, $schedule = null, $client, $purchase) {
         if ($practitioner->plan instanceof Plan) {
             $stripe = app()->make(StripeClient::class);
@@ -20,6 +22,11 @@ class TransferFundsWithCommissions {
                 PractitionerCommission::where('practitioner_id', $practitioner->id)->where(function($q) {
                     $q->where('is_dateless', true)->orWhereRaw('date_from <= NOW() AND date_to >= NOW()');
                 })->get();
+
+            // transfer value depends of DiscountType
+            if ($purchase->discount > 0 && $purchase->discount_applied === Promotion::APPLIED_HOST) {
+                $cost += $purchase->discount;
+            }
 
             $reductions[] = $cost * $practitionerPlan / 100;
 
@@ -55,7 +62,7 @@ class TransferFundsWithCommissions {
             $transfer->stripe_account_id = $practitioner->stripe_account_id;
             $transfer->status = 'success';
             $transfer->amount = $amount;
-            $transfer->amount_original = $cost;
+            $transfer->amount_original = $purchase->price;
             $transfer->currency = config('app.platform_currency');
             $transfer->schedule_id = $schedule->id ?? null;
             $transfer->description = 'transfer for a schedule purchase';
