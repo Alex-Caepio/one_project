@@ -29,7 +29,8 @@ class GenericSchedule extends Request implements CreateScheduleInterface {
 
     public function withValidator($validator): void {
         $validator->after(function($validator) {
-            $this->userScheduleValidator($validator, $this->service);
+            $service = $this->schedule->service ?? $this->service;
+            $this->userScheduleValidator($validator, $service);
         });
     }
 

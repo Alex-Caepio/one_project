@@ -76,7 +76,14 @@ class AppServiceProvider extends ServiceProvider {
         Price::observe(PriceObserver::class);
 
         $this->app->bind(CreateScheduleInterface::class, function() {
-            switch (request()->service->service_type->id) {
+            $serviceType = null;
+            if (request()->service) {
+                $serviceType = request()->service->service_type_id;
+            } elseif (request()->schedule) {
+                $serviceType = request()->schedule->service->service_type_id;
+            }
+
+            switch ($serviceType) {
                 case 'workshop':
                     return new WorkshopScheduleRequest();
 
@@ -107,7 +114,7 @@ class AppServiceProvider extends ServiceProvider {
                 case 'appointment':
                     return new AppointmentScheduleRequest();
 
-                case 500:
+                default:
                     abort(500,
                           'You\'re trying to purchase unrecognized service type. Please contact site administrator for assistance');
             }
