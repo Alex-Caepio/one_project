@@ -65,7 +65,8 @@ class BookingMyClientController extends Controller {
                                  });
                              })->where('services.user_id', $request->user()->id)
                              ->whereNotIn('services.service_type_id', ['bespoke', 'appointments'])
-                             ->groupBy('schedules.id')->paginate($request->getLimit());
+                             ->groupBy('schedules.id')
+                             ->paginate($request->getLimit());
 
         $schedules = $paginator->getCollection();
 
@@ -126,7 +127,8 @@ class BookingMyClientController extends Controller {
                                  });
                              })
                              ->where('services.user_id', $request->user()->id)
-                             ->where('services.service_type_id', '=', 'bespoke')->paginate($request->getLimit());
+                             ->where('services.service_type_id', '=', 'bespoke')
+                             ->orderBy('id', 'desc')->paginate($request->getLimit());
 
         $purchases = $paginator->getCollection();
 

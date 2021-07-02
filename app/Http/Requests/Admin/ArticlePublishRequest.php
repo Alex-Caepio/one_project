@@ -35,9 +35,14 @@ class ArticlePublishRequest extends Request {
 
         if (!$validator->fails()) {
             $validator->after(function($validator) {
+                if (!$this->article->user->is_admin && !$this->article->user->is_published) {
+                    $validator->errors()
+                              ->add('is_published', "Please publish your profile before you can publish an article.");
+                }
+
                 if (!UserRightsHelper::userAllowToPublishArticle($this->article->user)) {
                     $validator->errors()
-                              ->add('is_published', "Please upgrade subscription to be able to publish articles or publish profile");
+                              ->add('is_published', "Please upgrade subscription to be able to publish articles");
                 }
             });
         }

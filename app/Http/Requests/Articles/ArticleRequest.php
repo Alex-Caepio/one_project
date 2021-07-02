@@ -36,8 +36,16 @@ class ArticleRequest extends Request {
     public function withValidator(Validator $validator) {
         $validator->after(function($validator) {
             $isPublished = $this->getBoolFromRequest('is_published');
-            if ($isPublished && !UserRightsHelper::userAllowToPublishArticle(Auth::user())) {
-                $validator->errors()->add('is_published', "Please upgrade subscription to be able to publish articles");
+            if ($isPublished) {
+                if (!Auth::user()->is_admin && !Auth::user()->is_published) {
+                    $validator->errors()
+                              ->add('is_published', "Please publish your profile before you can publish an article.");
+                }
+
+                if (!UserRightsHelper::userAllowToPublishArticle(Auth::user())) {
+                    $validator->errors()
+                              ->add('is_published', "Please upgrade subscription to be able to publish articles");
+                }
             }
         });
     }
