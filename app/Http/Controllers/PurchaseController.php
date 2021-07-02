@@ -52,10 +52,16 @@ class PurchaseController extends Controller {
         DB::beginTransaction();
 
         $promo = null;
+        $discount = $discountPerAppointment = 0;
+
         if ($request->has('promo_code')) {
             $promo = PromotionCode::where('name', $request->get('promo_code'))->with('promotion')->first();
             if ($promo instanceof PromotionCode) {
-                $cost = run_action(CalculatePromoPrice::class, $promo, $request->amount, $price->cost);
+                $newCost = run_action(CalculatePromoPrice::class, $promo, $request->amount, $price->cost);
+                if ($newCost != $cost) {
+                    $discount = $cost - $newCost;
+                }
+                $cost = $newCost;
             }
         }
         $schedule->load('service');
@@ -69,10 +75,17 @@ class PurchaseController extends Controller {
         $purchase->price = $cost;
         $purchase->is_deposit = false;
         $purchase->amount = $request->amount;
+        $purchase->discount = $discount;
+        $purchase->discount_applied = $promo->promotion->applied_to;
         $purchase->save();
 
         if ($schedule->service->service_type_id === 'appointment') {
             $availabilities = $request->get('availabilities');
+
+            if ($discount > 0) {
+                $discountPerAppointment = round($discount/count($availabilities));
+            }
+
             foreach ($availabilities as $availability) {
                 $booking = new Booking();
                 $booking->user_id = $request->user()->id;
@@ -85,6 +98,7 @@ class PurchaseController extends Controller {
                 $booking->cost = $cost;
                 $booking->purchase_id = $purchase->id;
                 $booking->amount = $request->amount;
+                $booking->discount = $discountPerAppointment;
                 $booking->save();
                 event(new AppointmentBooked($booking));
             }
@@ -101,6 +115,7 @@ class PurchaseController extends Controller {
             $booking->cost = $cost;
             $booking->purchase_id = $purchase->id;
             $booking->amount = $request->amount;
+            $booking->discount = $discount;
             $booking->save();
         }
 

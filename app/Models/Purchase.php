@@ -29,7 +29,9 @@ class Purchase extends Model {
         'is_deposit',
         'deposit_amount',
         'stripe_id',
-        'amount'
+        'amount',
+        'discount',
+        'discount_applied'
     ];
 
     /**

@@ -33,6 +33,7 @@ class Booking extends Model {
         'purchase_id',
         'status',
         'amount',
+        'discount',
         'is_installment'
     ];
 
