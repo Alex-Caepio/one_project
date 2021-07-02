@@ -66,6 +66,7 @@ class BookingMyClientController extends Controller {
                              })->where('services.user_id', $request->user()->id)
                              ->whereNotIn('services.service_type_id', ['bespoke', 'appointments'])
                              ->groupBy('schedules.id')
+                             ->orderByRaw('(schedules.start_date - NOW()) ASC')
                              ->paginate($request->getLimit());
 
         $schedules = $paginator->getCollection();
