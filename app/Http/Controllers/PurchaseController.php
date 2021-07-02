@@ -77,7 +77,7 @@ class PurchaseController extends Controller {
         $purchase->is_deposit = false;
         $purchase->amount = $request->amount;
         $purchase->discount = $discount;
-        $purchase->discount_applied = $promo->promotion->applied_to;
+        $purchase->discount_applied = $promo instanceof PromotionCode ? $promo->promotion->applied_to : null;
         $purchase->save();
 
         if ($schedule->service->service_type_id === 'appointment') {
