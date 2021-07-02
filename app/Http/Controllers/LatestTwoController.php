@@ -16,9 +16,12 @@ class LatestTwoController extends Controller {
         $articles = Article::where('is_published', true)
             ->limit(2)->orderBy('published_at', 'desc')
             ->get();
+
         $services = Service::where('is_published', true)
+            ->with(['active_schedules'])
             ->limit(2)->orderBy('published_at', 'desc')
             ->get();
+
         $practitioners = User::where('account_type', 'practitioner')
             ->where('is_published', true)
             ->limit(2)->orderBy('published_at', 'desc')
@@ -27,7 +30,7 @@ class LatestTwoController extends Controller {
         return [
             'articles' => fractal($articles, new ArticleTransformer())->toArray(),
             'practitioners' => fractal($practitioners, new UserTransformer())->toArray(),
-            'services' => fractal($services, new ServiceTransformer())->toArray(),
+            'services' => fractal($services, new ServiceTransformer())->parseIncludes(['active_schedules'])->toArray(),
         ];
     }
 }
