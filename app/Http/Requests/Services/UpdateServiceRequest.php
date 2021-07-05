@@ -5,6 +5,7 @@ namespace App\Http\Requests\Services;
 use App\Helpers\UserRightsHelper;
 use App\Http\Requests\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class UpdateServiceRequest extends Request {
     /**
@@ -24,7 +25,7 @@ class UpdateServiceRequest extends Request {
     public function rules() {
         return [
             'title'        => 'string|min:5|max:100',
-            'description'  => 'nullable|string|min:5|max:1000',
+            'description'  => 'nullable|string|min:5|max:5000',
             'is_published' => 'bool',
             'introduction' => 'string|min:5|max:500',
             'image_url'    => 'nullable|url',
@@ -35,6 +36,7 @@ class UpdateServiceRequest extends Request {
     public function withValidator($validator) {
         $validator->after(function($validator) {
             $isPublished = $this->getBoolFromRequest('is_published');
+
             if ($isPublished && $this->service->user->isFullyRestricted()) {
                 $validator->errors()->add('is_published', "Please upgrade subscription or publish profile to be able to publish service");
             }
