@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Log;
 
 class ScheduleUpdate extends ScheduleSave {
 
-    public function execute(GenericUpdateSchedule $request, Schedule $schedule): Schedule {
+    public function execute($request, Schedule $schedule): Schedule {
         $data = $request->all();
         $schedule->update($data);
         $this->updatePrices($request, $schedule);
@@ -22,7 +22,7 @@ class ScheduleUpdate extends ScheduleSave {
         return $schedule;
     }
 
-    private function updatePrices(GenericUpdateSchedule $request, Schedule $schedule): void {
+    private function updatePrices($request, Schedule $schedule): void {
         if ($request->has('prices')) {
             run_action(HandlePricesUpdate::class, $request->prices, $schedule);
         }
