@@ -190,7 +190,7 @@ class ScheduleController extends Controller {
                 $scheduleUnavailabilitieCopy->save();
             }
         } else {
-            return response(['message' => 'The maximum allowed number of shedules per service has been exceeded.'],
+            return response(['message' => 'The maximum allowed number of sсhedules per service has been exceeded.'],
                             422);
         }
 
