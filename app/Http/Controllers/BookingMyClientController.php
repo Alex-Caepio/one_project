@@ -53,8 +53,8 @@ class BookingMyClientController extends Controller {
             'service_types.name as service_type',
             'schedules.title as schedule_name',
             'schedules.start_date as start_datetime',
-            'concat(count(bookings.id), " of ", schedules.attendees) as bookings',
-            'concat(count(bookings.id), " of ", count(bookings.id)) as full_paid',
+            'concat(sum(bookings.amount), " of ", schedules.attendees) as bookings',
+            'concat(sum(bookings.amount), " of ", count(bookings.id)) as full_paid',
             'schedules.refund_terms as refund_terms',
         ]))->join('services', 'services.id', '=', 'schedules.service_id')
                              ->join('service_types', 'service_types.id', '=', 'services.service_type_id')

@@ -104,7 +104,7 @@ class Schedule extends Model {
 
     public function isSoldOut(): bool {
         $time = Carbon::now()->subMinutes(15);
-        $purchased = Booking::where('schedule_id', $this->id)->where('status', '!=', 'canceled')->count();
+        $purchased = Booking::where('schedule_id', $this->id)->sum('amount');
         $personalFreezed = ScheduleFreeze::where('schedule_id', $this->id)->where('user_id', Auth::id())
                                          ->where('freeze_at', '>', $time->toDateTimeString())->count();
         $freezed = ScheduleFreeze::where('schedule_id', $this->id)->where('freeze_at', '>', $time->toDateTimeString())

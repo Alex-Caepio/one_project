@@ -69,7 +69,7 @@ class RescheduleRequestRequest extends Request {
             }
 
             if ($this->booking->schedule->attendees !== null
-                && $this->booking->schedule->attendees <= Booking::where('schedule_id', $newSchedule->id)->active()->count()) {
+                && $this->booking->schedule->attendees <= Booking::where('schedule_id', $newSchedule->id)->sum('amount')) {
                 $validator->errors()->add('new_schedule_id', 'There are no free tickets in schedule');
             }
         });
