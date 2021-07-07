@@ -608,7 +608,7 @@ class EmailVariables {
      */
     public function getPractitioner_reschedule_message(): ?string {
         return $this->event instanceof BookingConfirmation
-            ? $this->event->schedule->comments
+            ? $this->event->schedule->booking_message
             : $this->event->reschedule_schedule->comment;
     }
 
@@ -616,7 +616,7 @@ class EmailVariables {
      * @return string
      */
     public function getPractitioner_message(): ?string {
-        return $this->event instanceof BookingConfirmation ? $this->event->schedule->comments : '';
+        return $this->event instanceof BookingConfirmation ? $this->event->schedule->booking_message : '';
     }
 
     /**
