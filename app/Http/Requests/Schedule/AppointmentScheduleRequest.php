@@ -35,6 +35,7 @@ class AppointmentScheduleRequest extends GenericSchedule {
             'deposit_final_date'                     => 'required_if:deposit_accepted,true',
             'comments'                               => 'nullable|string|max:1000',
             'booking_message'                        => 'nullable|string|max:1000',
+            'url'                                    => 'nullable|required_if:appointment,virtual|string',
         ];
 
     }
