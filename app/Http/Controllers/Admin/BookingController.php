@@ -10,10 +10,8 @@ use App\Transformers\BookingTransformer;
 use App\Http\Controllers\Controller;
 use Illuminate\Database\Query\Builder;
 
-class BookingController extends Controller
-{
-    public function index(Request $request, BookingFilters $filters)
-    {
+class BookingController extends Controller {
+    public function index(Request $request, BookingFilters $filters) {
         $query = Booking::filter($filters);
 
         if ($request->hasOrderBy()) {
@@ -24,27 +22,28 @@ class BookingController extends Controller
         if ($request->hasSearch()) {
             $search = $request->search();
 
-            $query->where(
-                function ($query) use ($search) {
-                    $query->where('reference', 'like', "%{$search}%")
-                        ->orWhereHas('practitioner', function($q) use ($search){
-                            $q->where('business_name', 'like', "%{$search}%")
-                                ->orWhere('first_name', 'like', "%{$search}%")
-                                ->orWhere('last_name', 'like', "%{$search}%");
-                        })
-                        ->orWhereHas('user', function($q) use ($search){
-                            $q->where('first_name', 'like', "%{$search}%")
-                                ->orWhere('last_name', 'like', "%{$search}%");
-                        });
-                });
+            $query->where(function($query) use ($search) {
+                $query->where('reference', 'like', "%{$search}%")
+                      ->orWhereHas('practitioner', function($q) use ($search) {
+                          $q->where('business_name', 'like', "%{$search}%")
+                            ->orWhere('first_name', 'like', "%{$search}%")->orWhere('last_name', 'like', "%{$search}%");
+                      })->orWhereHas('user', function($q) use ($search) {
+                        $q->where('first_name', 'like', "%{$search}%")->orWhere('last_name', 'like', "%{$search}%");
+                    });
+            });
         }
 
-        $paginator = $query->paginate($request->getLimit());
-        $booking   = $paginator->getCollection();
+        $query->with($request->getIncludesWithTrashed([
+                                                          'schedule',
+                                                          'schedule.service',
+                                                          'schedule.service.practitioner'
+                                                      ]));
 
-        return response(fractal($booking, new BookingTransformer())
-            ->parseIncludes($request->getIncludes())->toArray())
-            ->withPaginationHeaders($paginator);
+        $paginator = $query->paginate($request->getLimit());
+        $booking = $paginator->getCollection();
+
+        return response(fractal($booking, new BookingTransformer())->parseIncludes($request->getIncludes())
+                                                                   ->toArray())->withPaginationHeaders($paginator);
 
     }
 }
