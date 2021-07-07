@@ -24,6 +24,11 @@ class ServiceFiltrator {
             });
         }
 
+        if ($request->filled('excluded')) {
+            $excludedId = (int)$request->get('excluded');
+            $queryBuilder->where('id', '<>', $excludedId);
+        }
+
         if ($request->filled('date_after')) {
             $queryBuilder->whereHas('schedules', function($query) use ($request) {
                 $date = Carbon::parse(urldecode($request->date_after))->toDateTimeString();
