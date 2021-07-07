@@ -36,7 +36,7 @@ class ArticleUpdateRequest extends Request {
         $validator->after(function($validator) {
             $isPublished = $this->getBoolFromRequest('is_published');
             if ($isPublished) {
-                if (!$this->article->user->is_admin && $this->article->user->is_published) {
+                if (!$this->article->user->is_admin && !$this->article->user->is_published) {
                     $validator->errors()
                               ->add('is_published', "Please publish your profile before you can publish an article.");
                 }
