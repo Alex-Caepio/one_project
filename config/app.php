@@ -1,5 +1,7 @@
 <?php
 
+use App\Providers\FilesystemNoLockFixServiceProvider;
+
 return [
     /*
     |--------------------------------------------------------------------------
@@ -181,7 +183,7 @@ return [
         Illuminate\Cookie\CookieServiceProvider::class,
         Illuminate\Database\DatabaseServiceProvider::class,
         Illuminate\Encryption\EncryptionServiceProvider::class,
-        Illuminate\Filesystem\FilesystemServiceProvider::class,
+        //Illuminate\Filesystem\FilesystemServiceProvider::class,
         Illuminate\Foundation\Providers\FoundationServiceProvider::class,
         Illuminate\Hashing\HashServiceProvider::class,
         Illuminate\Mail\MailServiceProvider::class,
@@ -209,6 +211,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\ResponseServiceProvider::class,
+        FilesystemNoLockFixServiceProvider::class
 
     ],
 
