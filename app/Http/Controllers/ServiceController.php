@@ -44,18 +44,7 @@ class ServiceController extends Controller {
      */
     private function getServiceList(Builder $queryBuilder, Request $request): LengthAwarePaginator {
         $serviceFilter = new ServiceFiltrator();
-        $queryBuilder->selectRaw(implode(', ', [
-            'services.*',
-        ]));
         $serviceFilter->apply($queryBuilder, $request);
-
-        // default sorting
-        if (!$request->filled('sortby')) {
-            $queryBuilder->join('users', 'users.id', '=', 'services.user_id')
-               ->leftJoin('plans', 'plans.id', '=', 'users.plan_id')
-               ->orderBy('plans.price', 'DESC')
-               ->orderBy('plans.is_free', 'DESC');
-        }
 
         return $queryBuilder->with($request->getIncludes())->paginate($request->getLimit());
     }
