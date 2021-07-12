@@ -74,6 +74,7 @@ abstract class AdminArticleAction {
         }
 
         $keywords = $this->collectKeywordModelsFromRequest($request);
+        $article->keywords()->detach();
         if (count($keywords)) {
             $article->keywords()->sync($keywords);
         }

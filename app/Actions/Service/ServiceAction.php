@@ -78,6 +78,7 @@ abstract class ServiceAction {
         }
 
         $keywords = $this->collectKeywordModelsFromRequest($request);
+        $service->keywords()->detach();
         if ($request->filled('keywords')) {
             $service->keywords()->sync($keywords);
         }
