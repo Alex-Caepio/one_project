@@ -29,6 +29,7 @@ class MessageRequest extends Request
     }
 
     public function withValidator($validator) {
+        
         $validator->after(function($validator) {
             // practitioner as sender
             if ($this->user()->isPractitioner()) {
