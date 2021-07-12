@@ -32,8 +32,8 @@ class PlanUpdateRequest extends Request
             'schedules_per_service' => 'min:1|max:20',
             'pricing_options_per_service' => 'min:1|max:20',
             'article_publishing' => 'min:1|max:20',
-            'free_start_from' => 'nullable|required_with:free_start_to|date_format:"d-m-Y"',
-            'free_start_to' => 'nullable|required_with:free_start_from|date_format:"d-m-Y"'
+            'free_start_from' => 'nullable|required_with:free_start_to|date',
+            'free_start_to' => 'nullable|required_with:free_start_from|date'
         ];
     }
 
