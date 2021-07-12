@@ -33,6 +33,7 @@ class UpdateMediaPractitioner {
         }
 
         $keywords = $this->collectKeywordModelsFromRequest($request);
+        $user->keywords()->detach();
         $user->keywords()->sync($keywords);
 
         if ($request->filled('media_images')) {
