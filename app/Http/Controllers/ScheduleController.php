@@ -40,6 +40,10 @@ class ScheduleController extends Controller {
             $q->where('schedules.start_date', '>=', now())->orWhereNull('schedules.start_date');
         });
 
+        $scheduleQuery->with($request->getIncludes())
+                      ->selectRaw('*, DATEDIFF(start_date, NOW()) as date_diff')
+                      ->orderByRaw('ABS(date_diff)');
+
         $schedule = $scheduleQuery->get();
 
         return fractal($schedule, new ScheduleTransformer())->parseIncludes($request->getIncludes())->toArray();
@@ -190,7 +194,7 @@ class ScheduleController extends Controller {
                 $scheduleUnavailabilitieCopy->save();
             }
         } else {
-            return response(['message' => 'The maximum allowed number of sсhedules per service has been exceeded.'],
+            return response(['message' => 'Sorry, you have reached the maximum allowed schedules for your subscription plan'],
                             422);
         }
 

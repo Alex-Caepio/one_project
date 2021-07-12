@@ -29,7 +29,7 @@ trait ScheduleValidator {
         $plan = $scheduleUser->plan;
 
         if (!UserRightsHelper::userAllowAddSchedule($scheduleUser, $service)) {
-            $validator->errors()->add('service_id', 'The schedules limit on the service has been exceeded.');
+            $validator->errors()->add('service_id', 'Sorry, you have reached the maximum allowed schedules for your subscription plan');
         }
 
         if (!UserRightsHelper::userAllowAttendees($scheduleUser, $this->attendees)) {

@@ -31,7 +31,7 @@ class UpdateMediaRequest extends Request {
             'background_url'        => 'nullable|url',
             'business_city'         => 'required_if:is_published,true|string|max:150',
             'business_name'         => 'required_if:is_published,true|max:255|min:2',
-            'business_introduction' => 'required_if:is_published,true|string|max:150',
+            'business_introduction' => 'required_if:is_published,true|string|max:300',
             'business_country_id'   => 'required|exists:countries,id|integer',
             'slug'                  => [
                 Rule::unique('users', 'slug')->ignore($practitioner->id),
