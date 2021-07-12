@@ -9,10 +9,11 @@ use App\Http\Requests\Request;
 use App\Models\Keyword;
 use App\Models\User;
 use App\Traits\hasMediaItems;
+use App\Traits\KeywordCollection;
 
 
 class UpdateMediaPractitioner {
-    use hasMediaItems;
+    use hasMediaItems, KeywordCollection;
 
     public function execute(User $user, Request $request): void {
 
@@ -31,16 +32,9 @@ class UpdateMediaPractitioner {
             $user->service_types()->sync($request->service_types);
         }
 
-        if ($request->filled('keywords')) {
-            $user->keywords()->whereNotIn('title', $request->keywords)->delete();
-            foreach ($request->keywords as $keyword) {
-                $ids = Keyword::firstOrCreate(['title' => $keyword])->pluck('id');
-                $keywordIds = collect($ids);
-            }
-
-            if (isset($keywordIds) && !empty($keywordIds)) {
-                $user->keywords()->sync($keywordIds);
-            }
+        $keywords = $this->collectKeywordModelsFromRequest($request);
+        if (count($keywords)) {
+            $user->keywords()->sync($keywords);
         }
 
         if ($request->filled('media_images')) {

@@ -8,16 +8,17 @@ use App\Http\Requests\Request;
 use App\Models\Article;
 use App\Models\Keyword;
 use App\Traits\hasMediaItems;
+use App\Traits\KeywordCollection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 abstract class AdminArticleAction {
 
-    use hasMediaItems;
+    use hasMediaItems, KeywordCollection;
 
     /**
      * @param \App\Models\Article $article
-     * @param \App\Http\Requests\Articles\ArticleRequest $request
+     * @param \App\Http\Requests\Admin\ArticleUpdateRequest $request
      */
     protected function updateArticle(Article $article, ArticleUpdateRequest $request) {
         DB::transaction(function() use ($article, $request) {
@@ -29,7 +30,7 @@ abstract class AdminArticleAction {
 
     /**
      * @param \App\Models\Article $article
-     * @param \App\Http\Requests\Articles\ArticleRequest $request
+     * @param \App\Http\Requests\Admin\ArticleUpdateRequest $request
      * @return \App\Models\Article
      */
     protected function fillArticle(Article $article, ArticleUpdateRequest $request): Article {
@@ -80,22 +81,6 @@ abstract class AdminArticleAction {
         if ($request->filled('services')) {
             $article->services()->sync($request->get('services'));
         }
-    }
-
-    /**
-     * @param \App\Http\Requests\Request $request
-     * @return array
-     */
-    private function collectKeywordModelsFromRequest(Request $request): array {
-        $ids = [];
-        if ($request->filled('keywords') && is_array($request->get('keywords'))) {
-            $keywords = array_unique($request->get('keywords'));
-            foreach ($keywords as $keyword) {
-                $keyword = Keyword::firstOrCreate(['title' => strtoupper($keyword)]);
-                $ids[] = $keyword->id;
-            }
-        }
-        return $ids;
     }
 
 }

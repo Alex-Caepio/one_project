@@ -8,13 +8,14 @@ use App\Http\Requests\Request;
 use App\Models\Article;
 use App\Models\Keyword;
 use App\Traits\hasMediaItems;
+use App\Traits\KeywordCollection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 abstract class ArticleAction {
 
-    use hasMediaItems;
+    use hasMediaItems, KeywordCollection;
 
     /**
      * @param \App\Models\Article $article
@@ -82,20 +83,6 @@ abstract class ArticleAction {
         }
     }
 
-    /**
-     * @param \App\Http\Requests\Request $request
-     * @return array
-     */
-    private function collectKeywordModelsFromRequest(Request $request): array {
-        $ids = [];
-        if ($request->filled('keywords') && is_array($request->get('keywords'))) {
-            $keywords = array_unique($request->get('keywords'));
-            foreach ($keywords as $keyword) {
-                $keyword = Keyword::firstOrCreate(['title' => strtoupper($keyword)]);
-                $ids[] = $keyword->id;
-            }
-        }
-        return $ids;
-    }
+
 
 }

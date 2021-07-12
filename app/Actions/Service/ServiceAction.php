@@ -6,13 +6,14 @@ use App\Models\Keyword;
 use App\Models\Service;
 use App\Http\Requests\Request;
 use App\Traits\hasMediaItems;
+use App\Traits\KeywordCollection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 abstract class ServiceAction {
 
-    use hasMediaItems;
+    use hasMediaItems, KeywordCollection;
 
     /**
      * @param \App\Models\Service $service
@@ -81,22 +82,6 @@ abstract class ServiceAction {
             $service->keywords()->sync($keywords);
         }
 
-    }
-
-    /**
-     * @param \App\Http\Requests\Request $request
-     * @return array
-     */
-    private function collectKeywordModelsFromRequest(Request $request): array {
-        $ids = [];
-        if ($request->filled('keywords') && is_array($request->get('keywords'))) {
-            $keywords = array_unique($request->get('keywords'));
-            foreach ($keywords as $keyword) {
-                $keyword = Keyword::firstOrCreate(['title' => strtoupper($keyword)]);
-                $ids[] = $keyword->id;
-            }
-        }
-        return $ids;
     }
 
     protected function getSlug($request): string {
