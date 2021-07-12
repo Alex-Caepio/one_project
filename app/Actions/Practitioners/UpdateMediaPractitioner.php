@@ -33,9 +33,7 @@ class UpdateMediaPractitioner {
         }
 
         $keywords = $this->collectKeywordModelsFromRequest($request);
-        if (count($keywords)) {
-            $user->keywords()->sync($keywords);
-        }
+        $user->keywords()->sync($keywords);
 
         if ($request->filled('media_images')) {
             $this->syncImages($request->media_images, $user);
