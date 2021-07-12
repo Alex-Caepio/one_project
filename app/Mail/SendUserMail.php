@@ -39,14 +39,20 @@ class SendUserMail extends Mailable {
      * @return $this
      */
     public function build() {
+        $senderName = $this->getSenderName();
         $subject =
             $this->sender->isPractitioner() ? config('app.platform_subject_practitioner') : config('app.platform_subject_client');
-        $subject .= $this->sender->isPractitioner() ? $this->sender->business_name : $this->sender->first_name . ' ' .
-                                                                                     $this->sender->last_name;
+        $subject .= $senderName;
         return $this->subject($subject)->view('mails.send_user', [
-                                                                   'text'     => $this->text,
-                                                                   'sender'   => $this->sender,
-                                                                   'receiver' => $this->receiver,
-                                                               ]);
+            'text'     => $this->text,
+            'sender'   => $this->sender,
+            'receiver' => $this->receiver,
+        ])->replyTo($this->sender->email, $senderName);
     }
+
+    private function getSenderName(): string {
+        return $this->sender->isPractitioner() ? $this->sender->business_name : $this->sender->first_name . ' ' .
+                                                                                $this->sender->last_name;
+    }
+
 }
