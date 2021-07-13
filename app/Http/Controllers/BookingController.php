@@ -28,6 +28,8 @@ class BookingController extends Controller {
             $query->orderBy($order['column'], $order['direction']);
         }
 
+        $query->selectRaw('*, DATEDIFF(bookings.datetime_from, NOW()) as date_diff')->orderByRaw('ABS(date_diff)');
+
         $paginator = $query->paginate($request->getLimit());
         $booking = $paginator->getCollection();
 

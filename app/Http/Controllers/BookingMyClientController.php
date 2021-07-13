@@ -56,6 +56,7 @@ class BookingMyClientController extends Controller {
             'concat(sum(bookings.amount), " of ", schedules.attendees) as bookings',
             'concat(sum(bookings.amount), " of ", count(bookings.id)) as full_paid',
             'schedules.refund_terms as refund_terms',
+            'DATEDIFF(schedules.start_date, NOW()) as date_diff'
         ]))->join('services', 'services.id', '=', 'schedules.service_id')
                              ->join('service_types', 'service_types.id', '=', 'services.service_type_id')
                              ->join('bookings', static function($join) {
@@ -66,7 +67,7 @@ class BookingMyClientController extends Controller {
                              })->where('services.user_id', $request->user()->id)
                              ->whereNotIn('services.service_type_id', ['bespoke', 'appointments'])
                              ->groupBy('schedules.id')
-                             ->orderByRaw('(schedules.start_date - NOW()) ASC')
+                             ->orderByRaw('ABS(date_diff)')
                              ->paginate($request->getLimit());
 
         $schedules = $paginator->getCollection();
