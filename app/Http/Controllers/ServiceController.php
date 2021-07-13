@@ -31,7 +31,7 @@ class ServiceController extends Controller {
     }
 
     public function practitionerServiceList(Request $request) {
-        $paginator = $this->getServiceList(Service::where('user_id', Auth::user()->id), $request);
+        $paginator = $this->getServiceList(Service::where('user_id', Auth::user()->id), $request, true);
         $services = $paginator->getCollection();
         $fractal = fractal($services, new ServiceTransformer())->parseIncludes($request->getIncludes())->toArray();
         return response($fractal)->withPaginationHeaders($paginator);
@@ -40,11 +40,12 @@ class ServiceController extends Controller {
     /**
      * @param Builder $queryBuilder
      * @param \App\Http\Requests\Request $request
+     * @param bool $ignoreSearchTerms
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    private function getServiceList(Builder $queryBuilder, Request $request): LengthAwarePaginator {
+    private function getServiceList(Builder $queryBuilder, Request $request, bool $ignoreSearchTerms = false): LengthAwarePaginator {
         $serviceFilter = new ServiceFiltrator();
-        $serviceFilter->apply($queryBuilder, $request);
+        $serviceFilter->apply($queryBuilder, $request, $ignoreSearchTerms);
 
         return $queryBuilder->with($request->getIncludes())->paginate($request->getLimit());
     }
