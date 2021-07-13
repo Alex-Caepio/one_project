@@ -154,7 +154,7 @@ class ServiceFiltrator {
             $queryBuilder->orderBy('rel_introduction', 'desc');
             $queryBuilder->orderBy('rel_description', 'desc');
         }
-
+        $queryBuilder->groupBy('services.id');
         $queryBuilder->selectRaw(implode(', ', $selectFields));
 
 
