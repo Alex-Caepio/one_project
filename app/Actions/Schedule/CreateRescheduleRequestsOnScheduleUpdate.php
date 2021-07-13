@@ -28,7 +28,7 @@ class CreateRescheduleRequestsOnScheduleUpdate {
         $bookings = $this->getBookings();
         if ($bookings->count()) {
             //In order to avoid duplicated reschedule request we have to delete all previous first
-            $this->schedule->rescheduleRequests()->whereIn('booking_id', $bookings->pluck('id'))->delete();
+            $this->schedule->rescheduleRequests()->whereIn('booking_id', $bookings->pluck('id')->toArray())->delete();
 
             $rescheduleRequests = [];
             foreach ($bookings as $booking) {
