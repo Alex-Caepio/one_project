@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Auth;
 class RescheduleRequestController extends Controller {
     public function index(Request $request) {
         $includes = $request->getIncludes();
-        $paginator = RescheduleRequest::where('user_id', Auth::id())->with($includes)->paginate($request->getLimit());
+        $paginator = RescheduleRequest::where('user_id', Auth::id())->with($includes)->orderBy('id', 'desc')->paginate($request->getLimit());
 
         return fractal($paginator->getCollection(), new RescheduleRequestTransformer())
             ->parseIncludes($request->getIncludes())->toArray();
