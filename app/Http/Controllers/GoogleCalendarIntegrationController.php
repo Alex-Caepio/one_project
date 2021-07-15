@@ -37,8 +37,16 @@ class GoogleCalendarIntegrationController extends Controller {
             UserUnavailabilities::where('practitioner_id', $user->id)->delete();
         }
         if ($calendar->calendar_id) {
-            $gcHelper = new GoogleCalendarHelper($calendar);
-            $gcHelper->updateTimezone();
+            try {
+                $gcHelper = new GoogleCalendarHelper($calendar);
+                $gcHelper->updateTimezone();
+            } catch (\Exception $e) {
+                Log::channel('google_authorisation_failed')->info('Unable to update timezone in calendar:', [
+                    'calendar_id' => $calendar->calendar_id,
+                    'user_id'     => $user->id,
+                    'message'     => $e->getMessage()
+                ]);
+            }
         }
         $calendar->load('unavailabilities');
         return response(fractal($calendar, new GoogleCalendarTransformer())->parseIncludes(['unavailabilities'])->toArray());
@@ -60,8 +68,8 @@ class GoogleCalendarIntegrationController extends Controller {
 
         $gcHelper->setUserCalendar($calendar);
 
-        Log::info('AUTH TOKEN DATA: ');
-        Log::info($tokenData);
+        //Log::info('AUTH TOKEN DATA: ');
+        //Log::info($tokenData);
         if ($gcHelper->storeNewUserTokens($tokenData)) {
             return response('', 204);
         }
@@ -69,8 +77,6 @@ class GoogleCalendarIntegrationController extends Controller {
     }
 
     public function getEventList(EventListRequest $request) {
-        Log::info('Get Events: ');
-        Log::info(Auth::user()->calendar);
         $gcHelper = new GoogleCalendarHelper(Auth::user()->calendar);
         return response(fractal($gcHelper->getEventList(), new GoogleCalendarEventTransformer())
                             ->parseIncludes($request->getIncludes())->toArray());
