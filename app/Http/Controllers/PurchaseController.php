@@ -86,6 +86,7 @@ class PurchaseController extends Controller {
             if ($discount > 0) {
                 $discountPerAppointment = round($discount/count($availabilities));
             }
+            $costPerAppointment = round($cost/count($availabilities));
 
             foreach ($availabilities as $availability) {
                 $booking = new Booking();
@@ -96,7 +97,7 @@ class PurchaseController extends Controller {
                 $booking->datetime_from = $availability['datetime_from'];
                 $datetimeTo = (new Carbon($booking->datetime_from))->addMinutes($price->duration);
                 $booking->datetime_to = $datetimeTo->format('Y-m-d H:i:s');
-                $booking->cost = $cost;
+                $booking->cost = $costPerAppointment;
                 $booking->purchase_id = $purchase->id;
                 $booking->amount = $request->amount;
                 $booking->discount = $discountPerAppointment;

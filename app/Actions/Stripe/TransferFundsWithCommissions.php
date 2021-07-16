@@ -65,6 +65,7 @@ class TransferFundsWithCommissions {
             $transfer->amount_original = $purchase->price;
             $transfer->currency = config('app.platform_currency');
             $transfer->schedule_id = $schedule->id ?? null;
+            $transfer->purchase_id = $purchase->id ?? null;
             $transfer->description = 'transfer for a schedule purchase';
             $transfer->save();
 
