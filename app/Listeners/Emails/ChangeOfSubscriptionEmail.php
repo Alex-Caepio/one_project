@@ -23,6 +23,7 @@ class ChangeOfSubscriptionEmail extends SendEmailHandler {
 
 
     private function checkDowngradePractitioner(ChangeOfSubscription $event): void {
+        Log::info('Check downgrade for practitioner: '.$event->user->id.'. Plan: '.$event->plan->id);
         UserRightsHelper::downgradePractitioner($event->user, $event->plan, $event->previousPlan);
     }
 
