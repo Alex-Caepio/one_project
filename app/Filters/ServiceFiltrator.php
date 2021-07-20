@@ -47,8 +47,8 @@ class ServiceFiltrator {
             $queryBuilder->where('services.is_published', $isPublished);
         }
 
-        $practitioners = $request->getArrayFromRequest('practitioners');
-        if (!empty($practitioners)) {
+        $practitioners = $request->get('practitioners');
+        if (!empty($practitioners) && is_array($practitioners)) {
             $queryBuilder->whereIn('services.user_id', $practitioners);
         }
 
