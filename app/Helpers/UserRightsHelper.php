@@ -140,7 +140,7 @@ class UserRightsHelper {
             return false;
         }
 
-        $serviceTypes = $user->plan->service_types()->pluck('service_types.id')->all();
+        $serviceTypes = $user->plan->service_types()->pluck('service_types.id')->toArray();
         return !count($serviceTypes) || in_array($service->service_type_id, $serviceTypes, true);
     }
 
@@ -163,7 +163,7 @@ class UserRightsHelper {
 
     public static function downgradePractitioner(User $user, Plan $plan, ?Plan $previousPlan = null): void {
         // new plan has limited types of services
-        $allowedServiceTypes = $plan->service_types()->pluck('service_types.id')->all();
+        $allowedServiceTypes = $plan->service_types()->pluck('service_types.id')->toArray();
         if (count($allowedServiceTypes)) {
             self::unpublishService($user, $allowedServiceTypes);
         }
@@ -171,12 +171,9 @@ class UserRightsHelper {
         // limited articles
         if (!$plan->article_publishing_unlimited) {
             $existingArticles = $user->articles()->published()->count();
-            Log::info('Article must be unpublished: '.$existingArticles.' - '.(int)$plan->article_publishing);
             if ($existingArticles > (int)$plan->article_publishing) {
                 $limit = $existingArticles - (int)$plan->article_publishing;
-                Log::info('Count Articles to Unpublish: '.$limit);
-                $articlesId = Article::where('user_id', $user->id)->published()->orderBy('created_at', 'asc')->limit($limit)->pluck('id')->toArray();
-                Log::info('ArticlesId: '.implode(', ', $articlesId));
+                $articlesId = $user->articles()->published()->orderBy('created_at', 'asc')->limit($limit)->pluck('id')->toArray();
                 self::unpublishArticles($user, $articlesId);
             }
         }
@@ -190,7 +187,7 @@ class UserRightsHelper {
                     $limit = $publishedSchedules - $plan->schedules_per_service;
                     $schedulesToUnpublish =
                         $service->schedules()->published()->orderBy('start_date', 'desc')->limit($limit)
-                                ->pluck('schedules.id')->all();
+                                ->pluck('schedules.id')->toArray();
                     Schedule::whereIn('id', $schedulesToUnpublish)->update(['is_published' => false]);
                 }
             }
@@ -225,7 +222,7 @@ class UserRightsHelper {
         if (count($allowedServiceTypes)) {
             $serviceQuery->whereNotIn('services.service_type_id', $allowedServiceTypes);
         }
-        $ids = $serviceQuery->pluck('services.id');
+        $ids = $serviceQuery->pluck('services.id')->toArray();
         Schedule::whereIn('service_id', $ids)->update(['is_published' => false]);
         $serviceQuery->update(['is_published' => false]);
     }

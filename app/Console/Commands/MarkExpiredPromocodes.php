@@ -35,7 +35,7 @@ class MarkExpiredPromocodes extends Command {
             $cntPromocodes = $promo->promotion_codes->count();
             $cntLimit = $cntPromocodes > 0 ? $promo->promotion_codes->first()->uses_per_code * $cntPromocodes : 0;
             $cntPurchases =
-                Purchase::whereIn('promocode_id', $promo->promotion_codes->pluck('promotion_codes.id'))->count();
+                Purchase::whereIn('promocode_id', $promo->promotion_codes()->pluck('promotion_codes.id')->toArray())->count();
 
             if ($promo->expiry_date && Carbon::parse($promo->expiry_date) < Carbon::now()) {
                 $promo->status = $cntPurchases === $cntLimit &&

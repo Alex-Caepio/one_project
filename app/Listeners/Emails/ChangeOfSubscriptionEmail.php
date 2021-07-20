@@ -4,6 +4,7 @@ namespace App\Listeners\Emails;
 
 use App\Events\ChangeOfSubscription;
 use App\Helpers\UserRightsHelper;
+use Illuminate\Support\Facades\Log;
 
 class ChangeOfSubscriptionEmail extends SendEmailHandler {
 
