@@ -102,12 +102,17 @@ return [
 
         'stripe_plans_errors' => [
             'driver' => 'daily',
-            'path'   => storage_path('logs/stripe_plan_erros.log'),
+            'path'   => storage_path('logs/stripe_plan_errors.log'),
         ],
 
         'stripe_plans_success' => [
             'driver' => 'daily',
             'path'   => storage_path('logs/stripe_plan_success.log'),
+        ],
+
+        'stripe_plans_info' => [
+            'driver' => 'daily',
+            'path'   => storage_path('logs/stripe_plan_info.log'),
         ],
 
         'stripe_client_error' => [

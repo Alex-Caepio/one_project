@@ -162,9 +162,16 @@ class UserRightsHelper {
 
 
     public static function downgradePractitioner(User $user, Plan $plan, ?Plan $previousPlan = null): void {
+        Log::channel('stripe_plans_info')->info("Check plan possibilities for practitioner", [
+            'user_id' => $user->id,
+            'new_plan_id'  => $plan->id,
+            'plan_name'  => $plan->name,
+        ]);
+
         // new plan has limited types of services
         $allowedServiceTypes = $plan->service_types()->pluck('service_types.id')->toArray();
-        Log::info('Unpublish disallowed service types: '.implode(',', $allowedServiceTypes));
+        Log::channel('stripe_plans_info')->info("Allowed service types", $allowedServiceTypes);
+
         if (count($allowedServiceTypes)) {
             self::unpublishService($user, $allowedServiceTypes);
         }
@@ -172,11 +179,25 @@ class UserRightsHelper {
         // limited articles
         if (!$plan->article_publishing_unlimited) {
             $existingArticles = $user->articles()->published()->count();
-            Log::info('Unpublish articles '.$existingArticles.': Allowed - '.(int)$plan->article_publishing);
+            Log::channel('stripe_plans_info')->info("Articles restrictions", [
+                'user_id' => $user->id,
+                'new_plan_id'  => $plan->id,
+                'plan_name'  => $plan->name,
+                'practitioner_articles_cnt'  => $existingArticles,
+                'plan_articles_cnt'  => (int)$plan->article_publishing,
+            ]);
+
             if ($existingArticles > (int)$plan->article_publishing) {
                 $limit = $existingArticles - (int)$plan->article_publishing;
                 $articlesId = $user->articles()->published()->orderBy('created_at', 'asc')->limit($limit)->pluck('id')->toArray();
-                Log::info('Unpublish('.$limit.'): '.implode(',', $articlesId));
+                Log::channel('stripe_plans_info')->info("Articles unpublish", [
+                    'user_id' => $user->id,
+                    'new_plan_id'  => $plan->id,
+                    'plan_name'  => $plan->name,
+                    'practitioner_articles_cnt'  => $existingArticles,
+                    'plan_articles_cnt'  => (int)$plan->article_publishing,
+                    'limit'  => $limit,
+                ]);
                 self::unpublishArticles($user, $articlesId);
             }
         }
