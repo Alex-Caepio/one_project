@@ -47,8 +47,9 @@ class ServiceFiltrator {
             $queryBuilder->where('services.is_published', $isPublished);
         }
 
-        $practitioners = $request->get('practitioners');
+        $practitioners = $request->getArrayFromRequest('practitioners');
         if (!empty($practitioners) && is_array($practitioners)) {
+            $ignoreSearchTerms = true;
             $queryBuilder->whereIn('services.user_id', $practitioners);
         }
 
@@ -92,7 +93,7 @@ class ServiceFiltrator {
                              ->leftJoin('plans', 'plans.id', '=', 'users.plan_id')->orderBy('plans.price', 'DESC')
                              ->orderBy('plans.is_free', 'DESC');
 
-                $queryBuilder->join('schedules', 'services.id', '=', 'schedules.service_id')
+                $queryBuilder->leftJoin('schedules', 'services.id', '=', 'schedules.service_id')
                              ->orderByRaw('ABS(schedule_date_dif)');
 
                 $selectFields[] = 'plans.price as price';
