@@ -164,6 +164,7 @@ class UserRightsHelper {
     public static function downgradePractitioner(User $user, Plan $plan, ?Plan $previousPlan = null): void {
         // new plan has limited types of services
         $allowedServiceTypes = $plan->service_types()->pluck('service_types.id')->toArray();
+        Log::info('Unpublish disallowed service types: '.implode(',', $allowedServiceTypes));
         if (count($allowedServiceTypes)) {
             self::unpublishService($user, $allowedServiceTypes);
         }
@@ -171,9 +172,11 @@ class UserRightsHelper {
         // limited articles
         if (!$plan->article_publishing_unlimited) {
             $existingArticles = $user->articles()->published()->count();
+            Log::info('Unpublish articles '.$existingArticles.': Allowed - '.(int)$plan->article_publishing);
             if ($existingArticles > (int)$plan->article_publishing) {
                 $limit = $existingArticles - (int)$plan->article_publishing;
                 $articlesId = $user->articles()->published()->orderBy('created_at', 'asc')->limit($limit)->pluck('id')->toArray();
+                Log::info('Unpublish('.$limit.'): '.implode(',', $articlesId));
                 self::unpublishArticles($user, $articlesId);
             }
         }
