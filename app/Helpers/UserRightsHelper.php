@@ -171,11 +171,12 @@ class UserRightsHelper {
         // limited articles
         if (!$plan->article_publishing_unlimited) {
             $existingArticles = $user->articles()->published()->count();
+            Log::info('Article must be unpublished: '.$existingArticles.' - '.(int)$plan->article_publishing);
             if ($existingArticles > (int)$plan->article_publishing) {
                 $limit = $existingArticles - (int)$plan->article_publishing;
-                $articlesId =
-                    $user->articles()->published()->orderBy('created_at', 'asc')->limit($limit)->pluck('articles.id')
-                         ->all();
+                Log::info('Count Articles to Unpublish: '.$limit);
+                $articlesId = Article::where('user_id', $user->id)->published()->orderBy('created_at', 'asc')->limit($limit)->pluck('id')->toArray();
+                Log::info('ArticlesId: '.implode(', ', $articlesId));
                 self::unpublishArticles($user, $articlesId);
             }
         }
