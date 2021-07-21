@@ -20,10 +20,10 @@ class PlanController extends Controller {
 
     public function purchase(Plan $plan, StripeClient $stripe, PlanRequest $request) {
         $user = Auth::user();
-
+        $isNewPlan = empty($user->plan_id);
         run_action(CancelSubscription::class, $user, $stripe);
 
-        $result = run_action(UpdateSubscription::class, $user, $stripe, $plan, empty($user->plan_id), $request);
+        $result = run_action(UpdateSubscription::class, $user, $stripe, $plan, $isNewPlan, $request);
 
         if (!$result) {
             return response()->json([
@@ -39,10 +39,10 @@ class PlanController extends Controller {
 
     public function purchaseFree(Plan $plan, StripeClient $stripe, PlanTrialRequest $request) {
         $user = Auth::user();
-
+        $isNewPlan = empty($user->plan_id);
         run_action(CancelSubscription::class, $user, $stripe);
 
-        $result = run_action(UpdateSubscription::class, $user, $stripe, $plan, empty($user->plan_id), $request);
+        $result = run_action(UpdateSubscription::class, $user, $stripe, $plan, $isNewPlan, $request);
 
         if (!$result) {
             return response()->json([

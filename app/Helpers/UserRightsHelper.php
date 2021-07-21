@@ -197,6 +197,7 @@ class UserRightsHelper {
                     'practitioner_articles_cnt'  => $existingArticles,
                     'plan_articles_cnt'  => (int)$plan->article_publishing,
                     'limit'  => $limit,
+                    'articles_to_unpublish' => $articlesId
                 ]);
                 self::unpublishArticles($user, $articlesId);
             }
