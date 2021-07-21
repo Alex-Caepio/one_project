@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Traits\Fits;
 
 /**
  * @property int    id
@@ -15,7 +16,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class ScheduleUnavailability extends Model
 {
-    use HasFactory;
+    use HasFactory, Fits;
 
     protected $fillable = [
         'schedule_id',
@@ -28,13 +29,5 @@ class ScheduleUnavailability extends Model
         return $this->belongsTo(Schedule::class);
     }
 
-    public function fits(string $datetime)
-    {
-        $time      = new Carbon($datetime);
-        $timeStart = new Carbon($this->start_date);
-        $timeEnd   = new Carbon($this->end_date);
-
-        return $time->between($timeStart, $timeEnd);
-    }
 }
 
