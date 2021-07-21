@@ -1,5 +1,6 @@
 <?php
 
+use App\Events\ChangeOfSubscription;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\QuoteController;
 use App\Http\Controllers\Auth\ResetPasswordController;
@@ -62,6 +63,12 @@ Route::post('auth/resend-verification', [AuthController::class, 'resendVerificat
 
 Route::middleware(['stripe'])->group(function() {
     Route::match(['post', 'get'], '/stripe-webhook', [StripeWebhookController::class, 'handler']);
+});
+
+Route::get('/test', static function() {
+    $user = \App\Models\User::findOrFail(1);
+    $plan = $user->plan;
+    event(new ChangeOfSubscription($user, $plan, null));
 });
 
 
