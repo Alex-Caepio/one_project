@@ -5,6 +5,7 @@ namespace App\Actions\Schedule;
 
 use App\Models\Price;
 use App\Models\Schedule;
+use App\Models\UserUnavailabilities;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 
@@ -102,6 +103,14 @@ class GetAvailableAppointmentTimeOnDate
         }
 
         foreach ($unavailabilities as $unavailability) {
+            $excludedTimes[] = [
+                'from' => Carbon::parse($unavailability->start_date)->subMinutes($duration)->addSecond(),
+                'to'   => Carbon::parse($unavailability->end_date)->subSecond()
+            ];
+        }
+
+        $globalUnavailabilities = UserUnavailabilities::where('practitioner_id', $schedule->service->user_id)->get();
+        foreach ($globalUnavailabilities as $unavailability) {
             $excludedTimes[] = [
                 'from' => Carbon::parse($unavailability->start_date)->subMinutes($duration)->addSecond(),
                 'to'   => Carbon::parse($unavailability->end_date)->subSecond()
