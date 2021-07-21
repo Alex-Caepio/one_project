@@ -7,6 +7,8 @@ use App\Http\Requests\Request;
 use App\Models\Booking;
 use App\Models\ScheduleAvailability;
 use App\Models\ScheduleUnavailability;
+use App\Models\UserUnavailabilities;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Validation\Rule;
 
 class PurchaseScheduleRequest extends Request implements CreateScheduleInterface {
@@ -83,6 +85,7 @@ class PurchaseScheduleRequest extends Request implements CreateScheduleInterface
         $availabilitiesRequest = $this->get('availabilities');
         $availabilitiesDatabase = $this->schedule->schedule_availabilities;
         $unavailabilities = $this->schedule->schedule_unavailabilities;
+        $globalUnavailabilities = UserUnavailabilities::where('practitioner_id', $this->schedule->service->user_id)->get();
 
         if (!$availabilitiesDatabase) {
             return;
@@ -90,7 +93,12 @@ class PurchaseScheduleRequest extends Request implements CreateScheduleInterface
 
         foreach ($availabilitiesRequest as $key => $availabilityRequest) {
 
-            if ($this->withinUnavailabilities($availabilityRequest['datetime_from'], $unavailabilities)) {
+            if ($globalUnavailabilities && $this->withinUnavailabilities($availabilityRequest['datetime_from'], $globalUnavailabilities)) {
+                $validator->errors()
+                          ->add("availabilities.$key.datetime_from", 'That date marked as unavailable by practitioner');
+            }
+
+            if ($unavailabilities && $this->withinUnavailabilities($availabilityRequest['datetime_from'], $unavailabilities)) {
                 $validator->errors()
                           ->add("availabilities.$key.datetime_from", 'That date marked as unavailable by practitioner');
             }
@@ -102,14 +110,12 @@ class PurchaseScheduleRequest extends Request implements CreateScheduleInterface
         }
     }
 
-    protected function withinUnavailabilities($datetime, $unavailabilities): bool {
-        if (!$unavailabilities) {
-            return false;
-        }
+    protected function withinUnavailabilities($datetime, Collection $unavailabilities): bool {
 
         foreach ($unavailabilities as $unavailability) {
 
             /** @var ScheduleUnavailability $unavailability */
+            /** @var UserUnavailabilities $unavailability */
             if ($unavailability->fits($datetime)) {
                 return true;
             }
