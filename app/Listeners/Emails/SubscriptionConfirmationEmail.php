@@ -3,6 +3,7 @@
 namespace App\Listeners\Emails;
 
 use App\Events\SubscriptionConfirmation;
+use App\Helpers\UserRightsHelper;
 
 class SubscriptionConfirmationEmail extends SendEmailHandler {
 
@@ -11,5 +12,6 @@ class SubscriptionConfirmationEmail extends SendEmailHandler {
         $this->templateName = $event->template;
         $this->event = $event;
         $this->sendCustomEmail();
+        UserRightsHelper::downgradePractitioner($event->user, $event->plan, null);
     }
 }
