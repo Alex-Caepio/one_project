@@ -92,6 +92,19 @@ class PurchaseScheduleRequest extends Request implements CreateScheduleInterface
         }
 
         foreach ($availabilitiesRequest as $key => $availabilityRequest) {
+            
+            if ($this->schedule->service->service_type_id === 'appointment') {
+                $alreadyBookedAppointment = Booking::where('practitioner_id', $this->schedule->service->user_id)
+                                                   ->where('datetime_from', $availabilityRequest['datetime_from'])
+                                                   ->whereHas('schedule.service', static function($serviceQuery) {
+                                                       $serviceQuery->where('services.service_type_id', 'appointment');
+                                                   })->exists();
+                if ($alreadyBookedAppointment) {
+                    $validator->errors()
+                              ->add("availabilities.$key.datetime_from", 'This time slot is already booked');
+                }
+            }
+
 
             if ($globalUnavailabilities && $this->withinUnavailabilities($availabilityRequest['datetime_from'], $globalUnavailabilities)) {
                 $validator->errors()
