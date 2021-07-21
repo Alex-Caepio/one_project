@@ -170,7 +170,6 @@ class UserRightsHelper {
 
         // new plan has limited types of services
         $allowedServiceTypes = $plan->service_types()->pluck('service_types.id')->toArray();
-        Log::channel('stripe_plans_info')->info("Allowed service types", $allowedServiceTypes);
 
         if (count($allowedServiceTypes)) {
             self::unpublishService($user, $allowedServiceTypes);
@@ -190,15 +189,6 @@ class UserRightsHelper {
             if ($existingArticles > (int)$plan->article_publishing) {
                 $limit = $existingArticles - (int)$plan->article_publishing;
                 $articlesId = $user->articles()->published()->orderBy('created_at', 'asc')->limit($limit)->pluck('id')->toArray();
-                Log::channel('stripe_plans_info')->info("Articles unpublish", [
-                    'user_id' => $user->id,
-                    'new_plan_id'  => $plan->id,
-                    'plan_name'  => $plan->name,
-                    'practitioner_articles_cnt'  => $existingArticles,
-                    'plan_articles_cnt'  => (int)$plan->article_publishing,
-                    'limit'  => $limit,
-                    'articles_to_unpublish' => $articlesId
-                ]);
                 self::unpublishArticles($user, $articlesId);
             }
         }

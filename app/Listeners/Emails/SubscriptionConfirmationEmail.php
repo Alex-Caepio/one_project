@@ -12,6 +12,5 @@ class SubscriptionConfirmationEmail extends SendEmailHandler {
         $this->templateName = $event->template;
         $this->event = $event;
         $this->sendCustomEmail();
-        UserRightsHelper::downgradePractitioner($event->user, $event->plan, null);
     }
 }

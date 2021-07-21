@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Log;
 class ChangeOfSubscriptionEmail extends SendEmailHandler {
 
     public function handle(ChangeOfSubscription $event): void {
-        Log::info('Change subscription event handler');
         $this->checkDowngradePractitioner($event);
         $this->sendNotification($event);
     }
@@ -24,11 +23,7 @@ class ChangeOfSubscriptionEmail extends SendEmailHandler {
 
 
     private function checkDowngradePractitioner(ChangeOfSubscription $event): void {
-        Log::channel('stripe_plans_info')->info("Downgrade practitioner", [
-            'user_id' => $event->user->id,
-            'new_plan_id'  => $event->plan->id,
-        ]);
-        UserRightsHelper::downgradePractitioner($event->user, $event->plan, $event->previousPlan);
+       UserRightsHelper::downgradePractitioner($event->user, $event->plan, $event->previousPlan);
     }
 
 }
