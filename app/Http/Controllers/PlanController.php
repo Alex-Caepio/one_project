@@ -4,21 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Actions\Plan\CancelSubscription;
 use App\Actions\Plan\UpdateSubscription;
-use App\Events\AccountUpgradedToPractitioner;
-use App\Events\ChangeOfSubscription;
-use App\Helpers\UserRightsHelper;
 use App\Http\Requests\Plans\PlanRequest;
-use App\Events\SubscriptionConfirmation;
 use App\Http\Requests\Plans\PlanTrialRequest;
-use App\Models\Article;
 use App\Models\Plan;
 use App\Http\Requests\Request;
-use App\Models\User;
 use App\Transformers\PlanTransformer;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
-use Stripe\Exception\ApiErrorException;
 use Stripe\StripeClient;
 
 class PlanController extends Controller {

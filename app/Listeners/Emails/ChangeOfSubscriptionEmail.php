@@ -9,8 +9,9 @@ use Illuminate\Support\Facades\Log;
 class ChangeOfSubscriptionEmail extends SendEmailHandler {
 
     public function handle(ChangeOfSubscription $event): void {
-        $this->sendNotification($event);
+        Log::info('Change subscription event handler');
         $this->checkDowngradePractitioner($event);
+        $this->sendNotification($event);
     }
 
 
