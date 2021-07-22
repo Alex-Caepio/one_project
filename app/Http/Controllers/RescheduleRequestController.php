@@ -18,32 +18,30 @@ use Illuminate\Support\Facades\Auth;
 
 class RescheduleRequestController extends Controller {
     public function index(Request $request) {
-        $includes = $request->getIncludes();
-        $paginator = RescheduleRequest::where('user_id', Auth::id())->with($includes)->orderBy('id', 'desc')->paginate($request->getLimit());
-
-        return fractal($paginator->getCollection(), new RescheduleRequestTransformer())
+        return fractal($this->getRescheduleRequests($request), new RescheduleRequestTransformer())
             ->parseIncludes($request->getIncludes())->toArray();
     }
 
     public function inbound(Request $request) {
-        $includes = $request->getIncludes();
-
-        $paginator =
-            RescheduleRequest::where('user_id', Auth::id())->where('requested_by', 'practitioner')->with($includes)
-                             ->paginate($request->getLimit());
-
-        return fractal($paginator->getCollection(), new RescheduleRequestTransformer())->parseIncludes($includes)
-                                                                                       ->toArray();
+        return fractal($this->getRescheduleRequests($request, true), new RescheduleRequestTransformer())
+            ->parseIncludes($request->getIncludes())->toArray();
     }
 
     public function outbound(Request $request) {
-        $includes = $request->getIncludes();
-        $paginator = RescheduleRequest::where('user_id', Auth::id())->where('requested_by', 'client')->with($includes)
-                                      ->paginate($request->getLimit());
-
-        return fractal($paginator->getCollection(), new RescheduleRequestTransformer())->parseIncludes($includes)
-                                                                                       ->toArray();
+        return fractal($this->getRescheduleRequests($request, false), new RescheduleRequestTransformer())
+            ->parseIncludes($request->getIncludes())->toArray();
     }
+
+    private function getRescheduleRequests(Request $request, ?bool $forClient = null) {
+        $includes = $request->getIncludes();
+        $queryBuilder = RescheduleRequest::where('user_id', Auth::id())->orderBy('id', 'desc');
+        if ($forClient !== null) {
+            $queryBuilder->where('requested_by', $forClient === true ? 'practitioner' : 'client');
+        }
+
+        return $queryBuilder->with($includes)->paginate($request->getLimit())->getCollection();
+    }
+
 
     public function reschedule(RescheduleRequestRequest $request, Booking $booking) {
         RescheduleRequest::where('booking_id', $booking->id)->delete();

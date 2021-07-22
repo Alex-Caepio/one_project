@@ -92,7 +92,7 @@ class PurchaseScheduleRequest extends Request implements CreateScheduleInterface
         }
 
         foreach ($availabilitiesRequest as $key => $availabilityRequest) {
-            
+
             if ($this->schedule->service->service_type_id === 'appointment') {
                 $alreadyBookedAppointment = Booking::where('practitioner_id', $this->schedule->service->user_id)
                                                    ->where('datetime_from', $availabilityRequest['datetime_from'])
