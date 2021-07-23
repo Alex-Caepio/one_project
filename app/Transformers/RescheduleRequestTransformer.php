@@ -32,6 +32,7 @@ class RescheduleRequestTransformer extends Transformer
             'old_price_id'           => $rescheduleRequest->old_price_id,
             'requested_by'           => $rescheduleRequest->requested_by,
             'noreply_sent'           => $rescheduleRequest->noreply_sent,
+            'is_amendment'           => $rescheduleRequest->isAmendment(),
         ];
     }
 

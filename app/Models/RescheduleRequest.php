@@ -51,4 +51,8 @@ class RescheduleRequest extends Model
     public function old_price() {
         return $this->belongsTo(Price::class, 'old_price_id');
     }
+
+    public function isAmendment(): bool {
+        return $this->schedule_id === $this->new_schedule_id;
+    }
 }

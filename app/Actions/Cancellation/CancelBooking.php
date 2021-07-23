@@ -30,8 +30,6 @@ class CancelBooking {
     public function execute(Booking $booking, bool $declineRescheduleRequest = false,
                             ?CancelBookingRequest $request = null) {
 
-        RescheduleRequest::where('booking_id', $booking)->delete();
-
         $this->stripe = app()->make(StripeClient::class);
         $booking->load(['user', 'practitioner', 'purchase', 'schedule', 'schedule.service']);
         if (!$booking->purchase || !$booking->practitioner) {
@@ -61,6 +59,9 @@ class CancelBooking {
             'is_decline'               => $declineRescheduleRequest,
         ]);
 
+        $rescheduleRequest = RescheduleRequest::where('booking_id', $booking)->first();
+        $isAmendment = $rescheduleRequest->isAmendment();
+        RescheduleRequest::where('booking_id', $booking)->delete();
 
         if ($refundData['refundTotal'] > 0) {
             try {
@@ -136,7 +137,7 @@ class CancelBooking {
         $notification = new Notification();
 
         if ($actionRole === User::ACCOUNT_CLIENT) {
-            $notification->type = 'booking_canceled_by_client';
+            $notification->type = $isAmendment ? 'amendment_canceled_by_client' : 'booking_canceled_by_client';
             $notification->receiver_id = $booking->practitioner_id;
         } else {
             $notification->type = 'booking_canceled_by_practitioner';
