@@ -61,7 +61,7 @@ class CancelBooking {
 
         $rescheduleRequest = RescheduleRequest::where('booking_id', $booking->id)->first();
         $isAmendment = $rescheduleRequest->isAmendment();
-        RescheduleRequest::where('booking_id', $booking)->delete();
+        RescheduleRequest::where('booking_id', $booking->id)->delete();
 
         if ($refundData['refundTotal'] > 0) {
             try {
