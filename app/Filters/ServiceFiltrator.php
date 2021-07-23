@@ -27,7 +27,7 @@ class ServiceFiltrator {
 
         if ($request->filled('excluded')) {
             $excludedId = (int)$request->get('excluded');
-            $queryBuilder->where('id', '<>', $excludedId);
+            $queryBuilder->where('services.id', '<>', $excludedId);
         }
 
         if ($request->filled('date_after')) {
