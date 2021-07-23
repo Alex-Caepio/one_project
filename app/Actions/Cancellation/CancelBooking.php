@@ -59,7 +59,7 @@ class CancelBooking {
             'is_decline'               => $declineRescheduleRequest,
         ]);
 
-        $rescheduleRequest = RescheduleRequest::where('booking_id', $booking)->first();
+        $rescheduleRequest = RescheduleRequest::where('booking_id', $booking->id)->first();
         $isAmendment = $rescheduleRequest->isAmendment();
         RescheduleRequest::where('booking_id', $booking)->delete();
 
