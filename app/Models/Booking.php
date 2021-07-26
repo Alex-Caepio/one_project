@@ -46,6 +46,15 @@ class Booking extends Model {
         return $query->whereNotIn('status', ['canceled', 'completed']);
     }
 
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeUncanceled(Builder $query): Builder {
+        return $query->where('status', '!=', 'canceled');
+    }
+
+
     public function isActive(): bool {
         return !in_array($this->status, ['canceled', 'completed']);
     }

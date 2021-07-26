@@ -10,7 +10,7 @@ use Carbon\Carbon;
 class PriceTransformer extends Transformer {
 
     public function transform(Price $price) {
-        $ticketsBooked = (int)$price->bookings()->sum('amount');
+        $ticketsBooked = (int)$price->bookings()->uncanceled()->sum('amount');
         $number_unpurchased = !$price->number_available ? 0 : (int)$price->number_available - $ticketsBooked;
 
 

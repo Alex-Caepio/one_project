@@ -23,7 +23,7 @@ class ScheduleTransformer extends Transformer {
     ];
 
     public function transform(Schedule $schedule) {
-        $attendees_available = $schedule->attendees - $schedule->bookings()->sum('amount');
+        $attendees_available = $schedule->attendees - $schedule->bookings()->uncanceled()->sum('amount');
 
         if (!$schedule->attendees || $attendees_available < 0) {
             $attendees_available = 0;

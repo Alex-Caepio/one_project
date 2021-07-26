@@ -85,10 +85,10 @@ class ScheduleController extends Controller {
                 $query->where('prices.cost', '<=', $booking->price->cost)->orWhere('is_free', true);
             });
 
-            // attendees filtator
+            // attendees filtrator
             $scheduleCollection = $scheduleQuery->get()->filter(static function($item) {
                 return $item->attendees === null ||
-                       (int)$item->attendees > Booking::where('schedule_id', $item->id)->sum('amount');
+                       (int)$item->attendees > Booking::where('schedule_id', $item->id)->uncanceled()->sum('amount');
             });
 
         } else {
@@ -118,7 +118,7 @@ class ScheduleController extends Controller {
     public function availabilities(Schedule $schedule) {
         $time = Carbon::now()->subMinutes(15);
         $amountTotal = (int)$schedule->attendees;
-        $amountBought = Booking::where('schedule_id', $schedule->id)->sum('amount');
+        $amountBought = Booking::where('schedule_id', $schedule->id)->uncanceled()->sum('amount');
         $amountFreezed =
             ScheduleFreeze::where('schedule_id', $schedule->id)->where('freeze_at', '>', $time->toDateTimeString())
                           ->count();
