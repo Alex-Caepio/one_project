@@ -6,6 +6,7 @@ use App\Events\BookingReminder;
 use App\Models\Booking;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class BookingNotifierTwoWeek extends Command {
     /**
@@ -36,5 +37,8 @@ class BookingNotifierTwoWeek extends Command {
         foreach ($bookings as $booking) {
             event(new BookingReminder($booking, 'Booking Reminder - Retreat'));
         }
+
+        Log::channel('console_commands_handler')
+           ->info('Booking Reminder - Retreat two weeks. Done...', ['bookings_count' => count($bookings)]);
     }
 }

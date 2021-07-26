@@ -6,6 +6,7 @@ use App\Events\BookingReminder;
 use App\Models\Booking;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class BookingNotifierWeek extends Command {
     /**
@@ -37,5 +38,7 @@ class BookingNotifierWeek extends Command {
             event(new BookingReminder($booking, 'Booking Reminder - WS/Event'));
         }
 
+        Log::channel('console_commands_handler')
+           ->info('Booking Reminder - Week Workshop/Event. Done...', ['bookings_count' => count($bookings)]);
     }
 }

@@ -32,6 +32,10 @@ class ScheduleRescheduleRequestRequest extends Request {
 
     public function withValidator($validator): void {
         $validator->after(function($validator) {
+            if (in_array($this->schedule->service->service_type_id, config('app.dateless_service_types'), true)) {
+                $validator->errors()->add('error', 'This type of schedule cannot be rescheduled');
+            }
+
             if ((int)$this->schedule->id === (int)$this->get('new_schedule_id')) {
                 $validator->errors()->add('error', 'Please, select new schedule for reschedule');
             }

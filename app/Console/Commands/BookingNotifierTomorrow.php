@@ -6,6 +6,7 @@ use App\Events\BookingReminder;
 use App\Models\Booking;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class BookingNotifierTomorrow extends Command {
     /**
@@ -31,10 +32,12 @@ class BookingNotifierTomorrow extends Command {
         $bookings = Booking::whereNull('cancelled_at')->whereRaw("DATE_FORMAT(`datetime_from`, '%Y-%m-%d') = ?",
                                                                  Carbon::now()->addDay()->format('Y-m-d'))
                            ->whereHas('schedule.service', static function($query) {
-                               $query->whereIn('service_type_id', ['workshop', 'event', 'retreat', 'appointment']);
+                               $query->whereNotIn('service_type_id',config('app.dateless_service_types'));
                            })->with(['user', 'schedule', 'schedule.service', 'practitioner'])->get();
         foreach ($bookings as $booking) {
             event(new BookingReminder($booking, 'Booking Reminder - WS/Event/Retreat/Appointment'));
         }
+        Log::channel('console_commands_handler')
+           ->info('Booking Reminder - Tomorrow event. Done...', ['bookings_count' => count($bookings)]);
     }
 }
