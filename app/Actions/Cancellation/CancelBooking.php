@@ -60,7 +60,11 @@ class CancelBooking {
         ]);
 
         $rescheduleRequest = RescheduleRequest::where('booking_id', $booking->id)->first();
-        $isAmendment = $rescheduleRequest->isAmendment();
+        if ($rescheduleRequest) {
+            $isAmendment = $rescheduleRequest->isAmendment();
+        } else {
+            $isAmendment = false;
+        }
         RescheduleRequest::where('booking_id', $booking->id)->delete();
 
         if ($refundData['refundTotal'] > 0) {
