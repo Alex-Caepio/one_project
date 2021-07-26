@@ -44,10 +44,12 @@ class Kernel extends ConsoleKernel {
     protected function schedule(Schedule $schedule) {
         $schedule->command('schedule-freezes:cleanup')->everyFifteenMinutes();
         $schedule->command('mark-expired-promo')->everyFifteenMinutes();
+        $schedule->command('bookings:status-update')->daily();
+
         $schedule->command('bookings:notifier-week')->daily();
         $schedule->command('bookings:notifier-twoweek')->daily();
         $schedule->command('bookings:notifier-tomorrow')->daily();
-        $schedule->command('bookings:status-update')->daily();
+
         $schedule->command('reschedule:noreply')->daily();
         $schedule->command('reschedule:noreply-finish')->daily();
         $schedule->command('plan-freeperiod')->daily();

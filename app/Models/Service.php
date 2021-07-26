@@ -134,7 +134,7 @@ class Service extends Model {
     }
 
     public function isDateLess() {
-        return in_array($this->service_type_id, config('app.dateless_service_types'));
+        return in_array($this->service_type_id, config('app.dateless_service_types'), true);
     }
 
 

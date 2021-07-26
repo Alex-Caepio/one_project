@@ -6,6 +6,7 @@ use App\Models\Booking;
 use Carbon\Carbon;
 use Carbon\Exceptions\Exception;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class BookingStatusesUpdate extends Command {
     /**
@@ -28,8 +29,11 @@ class BookingStatusesUpdate extends Command {
      * @return void
      */
     public function handle(): void {
-        Booking::where('datetime_from', '<', Carbon::now())
-               ->active()
-               ->update(['status' => 'completed']);
+        $cntBookings = Booking::where('datetime_from', '<', Carbon::now())->whereNotNull('datetime_from')
+                              ->whereHas('schedule.service', static function($query) {
+                                  $query->whereIn('services.service_type_id', config('app.dateless_service_types'));
+                              })->active()->update(['status' => 'completed']);
+        Log::channel('console_commands_handler')
+           ->info('Mark bookings as completed. Done...', ['bookings_count' => $cntBookings]);
     }
 }
