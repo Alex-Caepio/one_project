@@ -132,6 +132,15 @@ class PurchaseController extends Controller {
 
         ScheduleFreeze::where('schedule_id', $schedule->id)->where('user_id', $request->user()->id)->delete();
 
+        //PromotionCode status
+        if ($promo instanceof PromotionCode) {
+            $cntPurchases = Purchase::where('promocode_id', $promo->id)->count();
+            if (!$promo->uses_per_code || (int)$promo->uses_per_code === $cntPurchases) {
+                $promo->status = PromotionCode::STATUS_COMPLETE;
+                $promo->save();
+            }
+        }
+
         return fractal($purchase, new PurchaseTransformer())->parseIncludes($request->getIncludes())->toArray();
 
     }
