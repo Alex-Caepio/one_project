@@ -13,7 +13,8 @@ class MarkAsReadRequest extends FormRequest {
      * @return bool
      */
     public function authorize() {
-        return $this->notification->receiver_id === Auth::user()->id;
+        return $this->notification->receiver_id === Auth::user()->id
+               && !$this->notification->read_at;
     }
 
     /**
