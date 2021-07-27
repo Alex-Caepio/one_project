@@ -35,7 +35,7 @@ class CancelBooking {
         if (!$booking->purchase || !$booking->practitioner) {
             throw new \Exception('Incorrect model relation in booking #' . $booking->id);
         }
-
+        $transferModel = Transfer::where('purchase_id', $booking->purchase_id)->first();
         $stripeRefund = null;
 
         if ($request !== null && $request->filled('role')) {
@@ -141,18 +141,26 @@ class CancelBooking {
         $notification = new Notification();
 
         if ($actionRole === User::ACCOUNT_CLIENT) {
-            $notification->type = $isAmendment ? 'amendment_canceled_by_client' : 'booking_canceled_by_client';
+            $notificationType = $isAmendment ? 'amendment_canceled_by_client' : 'booking_canceled_by_client';
             $notification->receiver_id = $booking->practitioner_id;
         } else {
-            $notification->type = 'booking_canceled_by_practitioner';
+            $notificationType = 'booking_canceled_by_practitioner';
             $notification->receiver_id = $booking->user_id;
         }
 
+        $notification->type = $notificationType;
         $notification->client_id = $booking->user_id;
         $notification->practitioner_id = $booking->practitioner_id;
         $notification->booking_id = $booking->id;
         $notification->title = $booking->schedule->service->title . ' ' . $booking->schedule->title;
-        $notification->old_address = $booking->schedule->location_displayed;
+
+        if ($rescheduleRequest) {
+            $notification->old_address = $rescheduleRequest->old_location_displayed;
+            $notification->new_address = $rescheduleRequest->new_location_displayed;
+            $notification->old_datetime = $rescheduleRequest->old_start_date;
+            $notification->new_datetime = $rescheduleRequest->new_start_date;
+        }
+
         $notification->service_id = $booking->schedule->service_id;
         $notification->datetime_from = $booking->datetime_from;
         $notification->datetime_to = $booking->datetime_to;

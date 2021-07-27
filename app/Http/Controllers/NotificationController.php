@@ -9,37 +9,29 @@ use App\Transformers\NotificationTransformer;
 use Illuminate\Support\Facades\Auth;
 
 
-class NotificationController extends Controller
-{
-    public function index(Request $request)
-    {
-        $query = Notification::where('practitioner_id', Auth::id())
-            ->where('receiver_id', Auth::id())
-            ->where('read_at', null)
-            ->with($request->getIncludes());
+class NotificationController extends Controller {
+    public function index(Request $request) {
+        $query =
+            Notification::where('practitioner_id', Auth::id())->where('receiver_id', Auth::id())->where('read_at', null)
+                        ->orderBy('id', 'DESC')->with($request->getIncludes());
 
         $paginator = $query->paginate($request->getLimit());
-        $notification  = $paginator->getCollection();
+        $notification = $paginator->getCollection();
 
-        return response(fractal($notification, new NotificationTransformer())
-            ->parseIncludes($request->getIncludes()))
-            ->withPaginationHeaders($paginator);
+        return response(fractal($notification,
+                                new NotificationTransformer())->parseIncludes($request->getIncludes()))->withPaginationHeaders($paginator);
     }
 
 
-    public function clientNotifications(Request $request)
-    {
-        $query = Notification::where('client_id', Auth::id())
-                             ->where('receiver_id', Auth::id())
-                             ->where('read_at', null)
-                             ->with($request->getIncludes());
+    public function clientNotifications(Request $request) {
+        $query = Notification::where('client_id', Auth::id())->where('receiver_id', Auth::id())->where('read_at', null)
+                             ->orderBy('id', 'DESC')->with($request->getIncludes());
 
         $paginator = $query->paginate($request->getLimit());
-        $notification  = $paginator->getCollection();
+        $notification = $paginator->getCollection();
 
-        return response(fractal($notification, new NotificationTransformer())
-                            ->parseIncludes($request->getIncludes()))
-            ->withPaginationHeaders($paginator);
+        return response(fractal($notification,
+                                new NotificationTransformer())->parseIncludes($request->getIncludes()))->withPaginationHeaders($paginator);
     }
 
 
