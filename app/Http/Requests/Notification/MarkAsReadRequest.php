@@ -15,7 +15,7 @@ class MarkAsReadRequest extends FormRequest
      */
     public function authorize()
     {
-        return $this->notification->receiver_id === Auth::id;
+        return $this->notification->receiver_id === Auth::id();
     }
 
     /**
