@@ -1,11 +1,12 @@
 FROM php:7.4-apache
 COPY ./config/vhost.conf /etc/apache2/sites-enabled/000-default.conf
-RUN curl -sS https://getcomposer.org/installer | ls -al
-RUN php -version
-RUN php -- --install-dir=/usr/local/bin --filename=composer
-RUN ls -al /usr/local/bin/
+
 RUN apt-get update && apt-get install -y git libzip-dev unzip libpng-dev mysql-common default-mysql-client\
 && docker-php-ext-install zip pdo_mysql gd && a2enmod rewrite headers
+
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+RUN ls -al /usr/local/bin/
 
 WORKDIR /var/www/html
 COPY . /var/www/html
