@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Notification\MarkAsReadRequest;
 use App\Http\Requests\Request;
 use App\Models\Notification;
 use App\Transformers\NotificationTransformer;
@@ -42,11 +43,11 @@ class NotificationController extends Controller
     }
 
 
-    public function markAsRead(Notification $notification) {
+    public function markAsRead(MarkAsReadRequest $request, Notification $notification) {
         $notification->read_at = now();
         $notification->save();
 
-        return response(null, 200);
+        return response(null, 204);
     }
 }
 
