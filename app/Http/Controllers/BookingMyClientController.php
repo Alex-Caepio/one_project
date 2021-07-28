@@ -85,6 +85,7 @@ class BookingMyClientController extends Controller {
             'schedules.title as schedule_name',
             'purchases.created_at as purchase_date',
             'concat(users.first_name, " ", users.last_name) as client',
+            'users.id as client_id',
             'bookings.reference as reference',
             'purchases.price as paid',
             'bookings.datetime_to as closure_date',
