@@ -43,7 +43,7 @@ class ScheduleObserver {
         if ($schedule->hasNonContractualChanges()) {
             event(new ServiceUpdatedByPractitionerNonContractual($schedule));
         }
-        if (in_array($schedule->service->service_type_id, ['workshop', 'events', 'retreat', 'appointment'])) {
+        if (in_array($schedule->service->service_type_id, ['workshop', 'events', 'retreat'])) {
             run_action(CreateRescheduleRequestsOnScheduleUpdate::class, $schedule);
         }
     }
