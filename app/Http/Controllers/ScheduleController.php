@@ -150,8 +150,13 @@ class ScheduleController extends Controller {
     }
 
     public function allBookings(Schedule $schedule, Request $request) {
-        $query = $schedule->bookings()->with($request->getIncludes());
-        $paginator = $query->paginate($request->getLimit());
+        $bookingQuery = $schedule->bookings();
+        $isActive = $request->getBoolFromRequest('is_active');
+        if ($isActive === true) {
+            $bookingQuery->active();
+        }
+        $bookingQuery->with($request->getIncludes());
+        $paginator = $bookingQuery->paginate($request->getLimit());
         $fractal =
             fractal($paginator->getCollection(), new BookingTransformer())->parseIncludes($request->getIncludes())
                                                                           ->toArray();

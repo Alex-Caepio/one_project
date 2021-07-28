@@ -9,6 +9,7 @@ use App\Models\Article;
 use App\Models\Booking;
 use App\Models\Plan;
 use App\Models\Schedule;
+use App\Models\ScheduleFreeze;
 use App\Models\Service;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
@@ -239,6 +240,7 @@ class UserRightsHelper {
         }
         $ids = $serviceQuery->pluck('services.id')->toArray();
         Schedule::whereIn('service_id', $ids)->update(['is_published' => false]);
+        ScheduleFreeze::whereIn('schedule_id', $ids)->delete();
         $serviceQuery->update(['is_published' => false]);
     }
 
