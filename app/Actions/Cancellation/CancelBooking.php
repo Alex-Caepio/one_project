@@ -216,17 +216,18 @@ class CancelBooking {
 
         } else {
             $result['isFullRefund'] = false;
-            if ($booking->datetime_from) {
-                $bookingDate = Carbon::parse($booking->datetime_from);
-                $now = Carbon::now();
-                $diffValue = $booking->schedule->service ===
-                             'appointment' ? $now->diffInHours($bookingDate) : $now->diffInDays($bookingDate);
+            $isDateless = $booking->schedule->service->isDateless();
+            $bookingDate = $isDateless ? Carbon::parse($booking->created_at) : Carbon::parse($booking->datetime_from);
+            $now = Carbon::now();
+            $diffValue = $booking->schedule->service->service_type_id ===
+                         'appointment' ? $now->diffInHours($bookingDate) : $now->diffInDays($bookingDate);
+            $isRefundAllowed = ($isDateless && $now >= $bookingDate && $diffValue < $booking->schedule->refund_terms) ||
+                               (!$isDateless && $bookingDate < $now && $diffValue > $booking->schedule->refund_terms);
 
-                if ($bookingDate < $now && $diffValue > $booking->schedule->refund_terms) {
-                    $result['refundTotal'] = (float)$booking->cost / 100 * (100 - $hostFee);
-                } else {
-                    $result['refundTotal'] = 0;
-                }
+            if ($isRefundAllowed) {
+                $result['refundTotal'] = (float)$booking->cost / 100 * (100 - $hostFee);
+            } else {
+                $result['refundTotal'] = 0;
             }
         }
 
