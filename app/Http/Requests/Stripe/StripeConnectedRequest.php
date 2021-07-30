@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 class StripeConnectedRequest extends Request {
 
     public function authorize() {
-        return Auth::user()->isPractitioner() && Auth::user()->stripe_account_id && !Auth::user()->connected_at;
+        return Auth::user()->isPractitioner() && Auth::user()->stripe_account_id;
     }
 
     public function rules() {
