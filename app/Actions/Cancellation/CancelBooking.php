@@ -5,7 +5,6 @@ namespace App\Actions\Cancellation;
 
 use App\Events\BookingCancelledByPractitioner;
 use App\Events\BookingCancelledByClient;
-use App\Http\Requests\Cancellation\CancelBookingRequest;
 use App\Models\Booking;
 use App\Models\Cancellation;
 use App\Models\Notification;
@@ -29,7 +28,7 @@ class CancelBooking {
     private StripeClient $stripe;
 
     public function execute(Booking $booking, bool $declineRescheduleRequest = false,
-                            ?CancelBookingRequest $request = null) {
+                            ?string $roleFromRequest = null) {
 
         $this->stripe = app()->make(StripeClient::class);
         $booking->load(['user', 'practitioner', 'purchase', 'schedule', 'schedule.service']);
@@ -39,8 +38,8 @@ class CancelBooking {
         $transferModel = Transfer::where('purchase_id', $booking->purchase_id)->first();
         $stripeRefund = null;
 
-        if ($request !== null && $request->filled('role')) {
-            $actionRole = $request->get('role');
+        if ($roleFromRequest !== null) {
+            $actionRole = $roleFromRequest;
         } else {
             $actionRole = Auth::id() === $booking->user_id ? User::ACCOUNT_CLIENT : User::ACCOUNT_PRACTITIONER;
         }

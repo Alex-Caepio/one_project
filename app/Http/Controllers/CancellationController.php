@@ -11,6 +11,7 @@ use App\Http\Requests\Request;
 use App\Models\Booking;
 use App\Models\Cancellation;
 use App\Models\Schedule;
+use App\Models\User;
 use App\Transformers\CancellationTransformer;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -36,7 +37,7 @@ class CancellationController extends Controller {
     }
 
     public function cancelBooking(Booking $booking, CancelBookingRequest $request) {
-        return run_action(CancelBooking::class, $booking, false, $request);
+        return run_action(CancelBooking::class, $booking, false, $request->get('role'));
     }
 
     public function cancelManyBookings(CancelManyBookingsRequest $request) {

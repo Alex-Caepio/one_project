@@ -2,12 +2,14 @@
 
 namespace App\Observers;
 
+use App\Actions\Cancellation\CancelBooking;
 use App\Events\AccountDeleted;
 use App\Events\AccountTerminatedByAdmin;
 use App\Events\BusinessProfileLive;
 use App\Events\BusinessProfileUnpublished;
-use App\Helpers\UserRightsHelper;
 use App\Models\Article;
+use App\Models\RescheduleRequest;
+use App\Models\ScheduleFreeze;
 use App\Models\Service;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -61,6 +63,12 @@ class UserObserver {
                                                              'deleted_at'   => date('Y-m-d H:i:s'),
                                                              'is_published' => false
                                                          ]);
+        }
+        RescheduleRequest::where('user_id', $user->id)->delete();
+        ScheduleFreeze::where('user_id', $user->id)->delete();
+
+        foreach($user->bookings()->active()->get as $booking) {
+            run_action(CancelBooking::class, $booking, false, User::ACCOUNT_CLIENT);
         }
 
         if (!Auth::user()->is_admin) {

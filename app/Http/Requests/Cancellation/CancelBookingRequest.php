@@ -17,8 +17,8 @@ class CancelBookingRequest extends FormRequest {
      * @return bool
      */
     public function authorize() {
-        $userBooking = Auth::id() == $this->booking->user_id;
-        $practitionerBooking = Auth::id() == $this->booking->practitioner_id;
+        $userBooking = Auth::id() === $this->booking->user_id;
+        $practitionerBooking = Auth::id() === $this->booking->practitioner_id;
         return $userBooking || $practitionerBooking || Auth::user()->is_admin;
 
     }
