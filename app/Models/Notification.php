@@ -40,11 +40,11 @@ class Notification extends Model {
     ];
 
     public function client() {
-        return $this->belongsTo(User::class, 'client_id');
+        return $this->belongsTo(User::class, 'client_id')->withTrashed();
     }
 
     public function practitioner() {
-        return $this->belongsTo(User::class, 'practitioner_id');
+        return $this->belongsTo(User::class, 'practitioner_id')->withTrashed();
     }
 
     public function receiver() {
@@ -52,7 +52,7 @@ class Notification extends Model {
     }
 
     public function price() {
-        return $this->belongsTo(Price::class, 'price_id');
+        return $this->belongsTo(Price::class, 'price_id')->withTrashed();
     }
 
     public function booking() {
