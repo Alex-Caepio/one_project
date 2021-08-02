@@ -60,11 +60,11 @@ class Booking extends Model {
     }
 
     public function user() {
-        return $this->belongsTo(User::class, 'user_id', 'id');
+        return $this->belongsTo(User::class, 'user_id', 'id')->withTrashed();
     }
 
     public function practitioner() {
-        return $this->belongsTo(User::class, 'practitioner_id', 'id');
+        return $this->belongsTo(User::class, 'practitioner_id', 'id')->withTrashed();
     }
 
     public function schedule() {
