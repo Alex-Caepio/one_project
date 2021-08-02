@@ -67,7 +67,7 @@ class UserObserver {
         RescheduleRequest::where('user_id', $user->id)->delete();
         ScheduleFreeze::where('user_id', $user->id)->delete();
 
-        foreach($user->bookings()->active()->get as $booking) {
+        foreach($user->bookings()->active()->get() as $booking) {
             run_action(CancelBooking::class, $booking, false, User::ACCOUNT_CLIENT);
         }
 
