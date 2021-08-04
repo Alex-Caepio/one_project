@@ -20,7 +20,7 @@ class AppointmentScheduleRequest extends GenericSchedule {
             'prices.*.duration'                      => 'required',
             'prices.*.cost'                          => 'required_if:prices.*.is_free,false',
             'prices.*.is_free'                       => 'required',
-            'prices.*.available_till'                => 'before:end_date',
+            'prices.*.available_till'                => 'nullable|before:end_date',
             'notice_min_time'                        => 'required',
             'notice_min_period'                      => 'required',
             'buffer_time'                            => 'required',
