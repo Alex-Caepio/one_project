@@ -50,8 +50,7 @@ class PurchaseController extends Controller {
         $price = $schedule->prices()->find($request->get('price_id'));
         $cost = $price->cost * $request->amount;
         $practitioner = $schedule->service->user;
-        DB::beginTransaction();
-
+        
         $promo = null;
         $discount = $discountPerAppointment = 0;
 
