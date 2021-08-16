@@ -9,20 +9,28 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-class ServiceFiltrator {
+class ServiceFiltrator
+{
 
-    public function apply(Builder $queryBuilder, Request $request, $ignoreSearchTerms = false) {
+    public function apply(Builder $queryBuilder, Request $request, $ignoreSearchTerms = false)
+    {
         if ($request->filled('start_date')) {
-            $queryBuilder->whereHas('schedules', function($query) use ($request) {
-                $date = Carbon::parse(urldecode($request->start_date))->toDateTimeString();
-                $query->where('start_date', '>=', $date);
-            });
+            $queryBuilder->whereHas(
+                'schedules',
+                function ($query) use ($request) {
+                    $date = Carbon::parse(urldecode($request->start_date))->toDateTimeString();
+                    $query->where('start_date', '>=', $date);
+                }
+            );
         }
         if ($request->filled('end_date')) {
-            $queryBuilder->whereHas('schedules', function($query) use ($request) {
-                $date = Carbon::parse(urldecode($request->end_date))->toDateTimeString();
-                $query->where('end_date', '<=', $date);
-            });
+            $queryBuilder->whereHas(
+                'schedules',
+                function ($query) use ($request) {
+                    $date = Carbon::parse(urldecode($request->end_date))->toDateTimeString();
+                    $query->where('end_date', '<=', $date);
+                }
+            );
         }
 
         if ($request->filled('excluded')) {
@@ -31,10 +39,13 @@ class ServiceFiltrator {
         }
 
         if ($request->filled('date_after')) {
-            $queryBuilder->whereHas('schedules', function($query) use ($request) {
-                $date = Carbon::parse(urldecode($request->date_after))->toDateTimeString();
-                $query->where('start_date', '>=', $date);
-            });
+            $queryBuilder->whereHas(
+                'schedules',
+                function ($query) use ($request) {
+                    $date = Carbon::parse(urldecode($request->date_after))->toDateTimeString();
+                    $query->where('start_date', '>=', $date);
+                }
+            );
         }
 
         $serviceTypes = $request->getArrayFromRequest('service_type');
@@ -54,31 +65,45 @@ class ServiceFiltrator {
         }
 
         if ($request->getBoolFromRequest('for_free') !== null) {
-            $queryBuilder->whereHas('schedules', function($query) use ($request) {
-                $query->whereHas('prices', function($q) use ($request) {
-                    $q->where('is_free', $request->getBoolFromRequest('for_free'));
-                });
-            });
+            $queryBuilder->whereHas(
+                'schedules',
+                function ($query) use ($request) {
+                    $query->whereHas(
+                        'prices',
+                        function ($q) use ($request) {
+                            $q->where('is_free', $request->getBoolFromRequest('for_free'));
+                        }
+                    );
+                }
+            );
         }
 
         if ($request->has('starting_soon')) {
-            $queryBuilder->whereHas('schedules', function($query) {
-                $nextWeek = Carbon::now()->addDays(7)->toDateString();
-                $query->where('start_date', '>=', NOW())
-                ->orWhere('start_date', '<=', $nextWeek);
-            });
+            $queryBuilder->whereHas(
+                'schedules',
+                function ($query) {
+                    $nextWeek = Carbon::now()->addDays(7)->toDateString();
+                    $query->where('start_date', '>=', NOW())->orWhere('start_date', '<=', $nextWeek);
+                }
+            );
         }
 
         if ($request->filled('discipline_id')) {
-            $queryBuilder->whereHas('disciplines', function($q) use ($request){
-                $q->where('discipline_id', $request->discipline_id);
-            });
+            $queryBuilder->whereHas(
+                'disciplines',
+                function ($q) use ($request) {
+                    $q->where('discipline_id', $request->discipline_id);
+                }
+            );
         }
 
         if ($request->getBoolFromRequest('online')) {
-            $queryBuilder->whereHas('schedules', function($query) {
-                $query->where('appointment', 'virtual');
-            });
+            $queryBuilder->whereHas(
+                'schedules',
+                function ($query) {
+                    $query->where('appointment', 'virtual');
+                }
+            );
         }
 
         $selectFields = [
@@ -88,13 +113,20 @@ class ServiceFiltrator {
         if (!$ignoreSearchTerms) {
             // default sorting
             if (!$request->filled('search')) {
+                $queryBuilder->join('users', 'users.id', '=', 'services.user_id')->leftJoin(
+                        'plans',
+                        'plans.id',
+                        '=',
+                        'users.plan_id'
+                    )->orderBy('plans.price', 'DESC')->orderBy('plans.is_free', 'DESC');
 
-                $queryBuilder->join('users', 'users.id', '=', 'services.user_id')
-                             ->leftJoin('plans', 'plans.id', '=', 'users.plan_id')->orderBy('plans.price', 'DESC')
-                             ->orderBy('plans.is_free', 'DESC');
-
-                $queryBuilder->leftJoin('schedules', 'services.id', '=', 'schedules.service_id')
-                             ->orderByRaw('ABS(schedule_date_dif)');
+                $queryBuilder->leftJoin(
+                    'schedules',
+                    static function ($leftJoin) {
+                        $leftJoin->on('services.id', '=', 'schedules.service_id');
+                        $leftJoin->on('schedules.is_published', '=', true);
+                    }
+                )->orderByRaw('ABS(schedule_date_dif)');
 
                 $selectFields[] = 'plans.price as price';
                 $selectFields[] = 'plans.is_free as free_price';
@@ -104,36 +136,64 @@ class ServiceFiltrator {
                 $plainSearch = $request->get('search');
                 $searchString = '%' . $plainSearch . '%';
 
-                $queryBuilder->where(function($query) use ($searchString) {
-                    $query->whereHas('focus_areas', static function($fQuery) use ($searchString) {
-                        $fQuery->where('focus_areas.name', 'LIKE', $searchString);
-                    })->orWhereHas('disciplines', static function($dQuery) use ($searchString) {
-                        $dQuery->where('disciplines.name', 'LIKE', $searchString);
-                    })->orWhereHas('keywords', static function($dQuery) use ($searchString) {
-                        $dQuery->where('keywords.title', 'LIKE', $searchString);
-                    })->orWhere('services.title', 'LIKE', $searchString)
-                          ->orWhere('services.service_type_id', 'LIKE', $searchString)
-                          ->orWhere('services.introduction', 'LIKE', $searchString)
-                          ->orWhere('services.description', 'LIKE', $searchString);
-                });
+                $queryBuilder->where(
+                    function ($query) use ($searchString) {
+                        $query->whereHas(
+                            'focus_areas',
+                            static function ($fQuery) use ($searchString) {
+                                $fQuery->where('focus_areas.name', 'LIKE', $searchString);
+                            }
+                        )->orWhereHas(
+                            'disciplines',
+                            static function ($dQuery) use ($searchString) {
+                                $dQuery->where('disciplines.name', 'LIKE', $searchString);
+                            }
+                        )->orWhereHas(
+                            'keywords',
+                            static function ($dQuery) use ($searchString) {
+                                $dQuery->where('keywords.title', 'LIKE', $searchString);
+                            }
+                        )->orWhere('services.title', 'LIKE', $searchString)->orWhere(
+                                'services.service_type_id',
+                                'LIKE',
+                                $searchString
+                            )->orWhere('services.introduction', 'LIKE', $searchString)->orWhere(
+                                'services.description',
+                                'LIKE',
+                                $searchString
+                            );
+                    }
+                );
 
                 $selectFields[] = "MATCH (focus_areas.name)
                         AGAINST ('{$plainSearch}' IN BOOLEAN MODE) AS rel_focus";
                 $queryBuilder->orderBy('rel_focus', 'desc');
-                $queryBuilder->leftJoin('focus_area_service as f_service', function($q) {
-                    $q->on('f_service.service_id', '=', 'services.id');
-                })->leftJoin('focus_areas', function($q) {
-                    $q->on('f_service.focus_area_id', '=', 'focus_areas.id');
-                });
+                $queryBuilder->leftJoin(
+                    'focus_area_service as f_service',
+                    function ($q) {
+                        $q->on('f_service.service_id', '=', 'services.id');
+                    }
+                )->leftJoin(
+                    'focus_areas',
+                    function ($q) {
+                        $q->on('f_service.focus_area_id', '=', 'focus_areas.id');
+                    }
+                );
 
                 $selectFields[] = "MATCH (disciplines.name)
                         AGAINST ('{$plainSearch}' IN BOOLEAN MODE) AS rel_dis";
                 $queryBuilder->orderBy('rel_dis', 'desc');
-                $queryBuilder->leftJoin('discipline_service as d_service', function($q) {
-                    $q->on('d_service.service_id', '=', 'services.id');
-                })->leftJoin('disciplines', function($q) {
-                    $q->on('d_service.discipline_id', '=', 'disciplines.id');
-                });
+                $queryBuilder->leftJoin(
+                    'discipline_service as d_service',
+                    function ($q) {
+                        $q->on('d_service.service_id', '=', 'services.id');
+                    }
+                )->leftJoin(
+                    'disciplines',
+                    function ($q) {
+                        $q->on('d_service.discipline_id', '=', 'disciplines.id');
+                    }
+                );
 
                 $selectFields[] = "MATCH (services.title)
                         AGAINST ('{$plainSearch}' IN BOOLEAN MODE) AS rel_title";
@@ -142,11 +202,17 @@ class ServiceFiltrator {
                 $selectFields[] = "MATCH (keywords.title)
                         AGAINST ('{$plainSearch}' IN BOOLEAN MODE) AS rel_key";
                 $queryBuilder->orderBy('rel_key', 'desc');
-                $queryBuilder->leftJoin('keyword_service as k_service', function($q) {
-                    $q->on('k_service.service_id', '=', 'services.id');
-                })->leftJoin('keywords', function($q) {
-                    $q->on('k_service.keyword_id', '=', 'keywords.id');
-                });
+                $queryBuilder->leftJoin(
+                    'keyword_service as k_service',
+                    function ($q) {
+                        $q->on('k_service.service_id', '=', 'services.id');
+                    }
+                )->leftJoin(
+                    'keywords',
+                    function ($q) {
+                        $q->on('k_service.keyword_id', '=', 'keywords.id');
+                    }
+                );
 
                 $selectFields[] = "MATCH (services.introduction)
                         AGAINST ('{$plainSearch}' IN BOOLEAN MODE) AS rel_introduction";

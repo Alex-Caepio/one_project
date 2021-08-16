@@ -14,21 +14,22 @@ use App\Transformers\UserTransformer;
 class SearchController extends Controller {
 
     public function index(Request $request) {
-        $articles = Article::query();
-        $services = Service::query();
-        $practitioners = User::query()->where('account_type', 'practitioner');
+        $articles = Article::query()-published();
+        $services = Service::query()-published();
+        $practitioners = User::query()->where('account_type', 'practitioner')-published();
         $search = $request['q'];
 
         $articles->where(
                 function ($query) use ($search) {
                     $query->where('title', 'like', "%{$search}%");
                 }
-            );
+            )->orderBy('articles.id', 'desc');
+
         $services->where(
             function ($query) use ($search) {
                 $query->where('title', 'like', "%{$search}%");
             }
-        );
+        )->orderBy('services.id', 'desc');
 
         $practitioners->where(
             function ($query) use ($search) {
@@ -37,7 +38,7 @@ class SearchController extends Controller {
                     ->orWhere('business_city', 'like', "%{$search}%")
                     ->orWhere('business_name', 'like', "%{$search}%");
             }
-        );
+        )->orderBy('id', 'desc');
 
         return [
             'articles' => fractal($articles->limit(10)->get(), new ArticleTransformer())->toArray(),
