@@ -111,8 +111,16 @@ class ServiceFiltrator
         ];
 
         if (!$ignoreSearchTerms) {
+
+            $searchTerms = null;
+            if ($request->filled('search')) {
+                $searchTerms = $request->get('search');
+            } else if ($request->filled('q')) {
+                $searchTerms = $request->get('q');
+            }
+
             // default sorting
-            if (!$request->filled('search')) {
+            if ($searchTerms === null) {
                 $queryBuilder->join('users', 'users.id', '=', 'services.user_id')->leftJoin(
                         'plans',
                         'plans.id',
@@ -133,8 +141,7 @@ class ServiceFiltrator
                 $selectFields[] = 'DATEDIFF(schedules.start_date, now()) as schedule_date_dif';
             } else {
                 // search terms
-                $plainSearch = $request->get('search');
-                $searchString = '%' . $plainSearch . '%';
+                $searchString = '%' . $searchTerms . '%';
 
                 $queryBuilder->where(
                     function ($query) use ($searchString) {
@@ -166,7 +173,7 @@ class ServiceFiltrator
                 );
 
                 $selectFields[] = "MATCH (focus_areas.name)
-                        AGAINST ('{$plainSearch}' IN BOOLEAN MODE) AS rel_focus";
+                        AGAINST ('{$searchTerms}' IN BOOLEAN MODE) AS rel_focus";
                 $queryBuilder->orderBy('rel_focus', 'desc');
                 $queryBuilder->leftJoin(
                     'focus_area_service as f_service',
@@ -181,7 +188,7 @@ class ServiceFiltrator
                 );
 
                 $selectFields[] = "MATCH (disciplines.name)
-                        AGAINST ('{$plainSearch}' IN BOOLEAN MODE) AS rel_dis";
+                        AGAINST ('{$searchTerms}' IN BOOLEAN MODE) AS rel_dis";
                 $queryBuilder->orderBy('rel_dis', 'desc');
                 $queryBuilder->leftJoin(
                     'discipline_service as d_service',
@@ -196,11 +203,11 @@ class ServiceFiltrator
                 );
 
                 $selectFields[] = "MATCH (services.title)
-                        AGAINST ('{$plainSearch}' IN BOOLEAN MODE) AS rel_title";
+                        AGAINST ('{$searchTerms}' IN BOOLEAN MODE) AS rel_title";
                 $queryBuilder->orderBy('rel_title', 'desc');
 
                 $selectFields[] = "MATCH (keywords.title)
-                        AGAINST ('{$plainSearch}' IN BOOLEAN MODE) AS rel_key";
+                        AGAINST ('{$searchTerms}' IN BOOLEAN MODE) AS rel_key";
                 $queryBuilder->orderBy('rel_key', 'desc');
                 $queryBuilder->leftJoin(
                     'keyword_service as k_service',
@@ -215,9 +222,9 @@ class ServiceFiltrator
                 );
 
                 $selectFields[] = "MATCH (services.introduction)
-                        AGAINST ('{$plainSearch}' IN BOOLEAN MODE) AS rel_introduction";
+                        AGAINST ('{$searchTerms}' IN BOOLEAN MODE) AS rel_introduction";
                 $selectFields[] = "MATCH (services.description)
-                        AGAINST ('{$plainSearch}' IN BOOLEAN MODE) AS rel_description";
+                        AGAINST ('{$searchTerms}' IN BOOLEAN MODE) AS rel_description";
                 $queryBuilder->orderBy('rel_introduction', 'desc');
                 $queryBuilder->orderBy('rel_description', 'desc');
             }

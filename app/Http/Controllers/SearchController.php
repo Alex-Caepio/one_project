@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Filters\ArticleFiltrator;
+use App\Filters\ServiceFiltrator;
 use App\Http\Requests\Request;
 use App\Models\Article;
 use App\Models\Service;
@@ -14,22 +16,17 @@ use App\Transformers\UserTransformer;
 class SearchController extends Controller {
 
     public function index(Request $request) {
-        $articles = Article::query()-published();
-        $services = Service::query()-published();
-        $practitioners = User::query()->where('account_type', 'practitioner')-published();
-        $search = $request['q'];
+        $articles = Article::query()-published()->orderBy('articles.id', 'desc');
+        $services = Service::query()-published()->orderBy('services.id', 'desc');
+        $practitioners = User::query()->where('account_type', 'practitioner')-published()->orderBy('id', 'desc');
+        $search = $request->get('q');
 
-        $articles->where(
-                function ($query) use ($search) {
-                    $query->where('title', 'like', "%{$search}%");
-                }
-            )->orderBy('articles.id', 'desc');
+        $articleFiltrator = new ArticleFiltrator();
+        $articleFiltrator->apply($articles, $request, true);
 
-        $services->where(
-            function ($query) use ($search) {
-                $query->where('title', 'like', "%{$search}%");
-            }
-        )->orderBy('services.id', 'desc');
+        $serviceFiltrator = new ServiceFiltrator();
+        $serviceFiltrator->apply($services, $request);
+
 
         $practitioners->where(
             function ($query) use ($search) {
@@ -38,7 +35,7 @@ class SearchController extends Controller {
                     ->orWhere('business_city', 'like', "%{$search}%")
                     ->orWhere('business_name', 'like', "%{$search}%");
             }
-        )->orderBy('id', 'desc');
+        );
 
         return [
             'articles' => fractal($articles->limit(10)->get(), new ArticleTransformer())->toArray(),

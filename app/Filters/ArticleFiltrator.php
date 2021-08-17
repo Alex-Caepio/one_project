@@ -19,8 +19,15 @@ class ArticleFiltrator {
      */
     public function apply(Builder $queryBuilder, Request $request, $frontView = false): Builder {
 
+        $searchTerms = null;
         if ($request->filled('search')) {
-            $search = '%' . $request->get('search') . '%';
+            $searchTerms = $request->get('search');
+        } else if ($request->filled('q')) {
+            $searchTerms = $request->get('q');
+        }
+
+        if ($searchTerms !== null) {
+            $search = '%' . $searchTerms . '%';
             $queryBuilder->where(function($query) use ($search) {
                 $query->whereHas('focus_areas', function($focusQuery) use ($search) {
                     $focusQuery->where('name', 'LIKE', $search);
