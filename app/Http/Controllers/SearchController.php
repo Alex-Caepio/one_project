@@ -20,7 +20,6 @@ class SearchController extends Controller {
         $articles = Article::query()-published()->orderBy('articles.id', 'desc');
         $services = Service::query()-published()->orderBy('services.id', 'desc');
         $practitioners = User::query()->where('account_type', 'practitioner')-published()->orderBy('id', 'desc');
-        $search = $request->get('q');
 
         $articleFiltrator = new ArticleFiltrator();
         $articleFiltrator->apply($articles, $request, true);

@@ -111,22 +111,21 @@ class ServiceFiltrator
         ];
 
         if (!$ignoreSearchTerms) {
-
             $searchTerms = null;
             if ($request->filled('search')) {
                 $searchTerms = $request->get('search');
-            } else if ($request->filled('q')) {
-                $searchTerms = $request->get('q');
+            } elseif ($request->filled('q')) {
+                    $searchTerms = $request->get('q');
             }
 
             // default sorting
             if ($searchTerms === null) {
                 $queryBuilder->join('users', 'users.id', '=', 'services.user_id')->leftJoin(
-                        'plans',
-                        'plans.id',
-                        '=',
-                        'users.plan_id'
-                    )->orderBy('plans.price', 'DESC')->orderBy('plans.is_free', 'DESC');
+                    'plans',
+                    'plans.id',
+                    '=',
+                    'users.plan_id'
+                )->orderBy('plans.price', 'DESC')->orderBy('plans.is_free', 'DESC');
 
                 $queryBuilder->leftJoin(
                     'schedules',
@@ -160,15 +159,23 @@ class ServiceFiltrator
                             static function ($dQuery) use ($searchString) {
                                 $dQuery->where('keywords.title', 'LIKE', $searchString);
                             }
+                        )->orWhereHas(
+                            'schedules',
+                            static function ($dQuery) use ($searchString) {
+                                $dQuery->where('schedules.location_displayed', 'LIKE', $searchString)->where(
+                                    'is_published',
+                                    true
+                                );
+                            }
                         )->orWhere('services.title', 'LIKE', $searchString)->orWhere(
-                                'services.service_type_id',
-                                'LIKE',
-                                $searchString
-                            )->orWhere('services.introduction', 'LIKE', $searchString)->orWhere(
-                                'services.description',
-                                'LIKE',
-                                $searchString
-                            );
+                            'services.service_type_id',
+                            'LIKE',
+                            $searchString
+                        )->orWhere('services.introduction', 'LIKE', $searchString)->orWhere(
+                            'services.description',
+                            'LIKE',
+                            $searchString
+                        );
                     }
                 );
 
