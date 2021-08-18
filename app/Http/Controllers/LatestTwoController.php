@@ -11,25 +11,32 @@ use App\Transformers\ServiceTransformer;
 use App\Transformers\UserTransformer;
 
 
-class LatestTwoController extends Controller {
+class LatestTwoController extends Controller
+{
 
-    public function index(Request $request) {
+    public function index(Request $request)
+    {
         $includes = $request->getIncludes();
 
-        $articles = Article::published()->with($includes)
-            ->limit(2)->orderBy('published_at', 'desc')
-            ->get();
+        $articles = Article::published()->whereHas(
+            'user',
+            static function ($userQuery) {
+                $userQuery->where('is_published', true);
+            }
+        )->with($includes)->limit(2)->orderBy('last_published', 'desc')->get();
 
-        $servicesIncludes = array_merge(['active_schedules'],$includes);
-        $services = Service::published()
-            ->with($servicesIncludes)
-            ->limit(2)->orderBy('published_at', 'desc')
-            ->get();
+        $servicesIncludes = array_merge(['active_schedules'], $includes);
+        $services = Service::published()->whereHas(
+            'user',
+            static function ($userQuery) {
+                $userQuery->where('is_published', true);
+            }
+        )->with($servicesIncludes)->limit(2)->orderBy('last_published', 'desc')->get();
 
-        $practitioners = User::where('account_type', 'practitioner')
-            ->where('is_published', true)
-            ->limit(2)->orderBy('published_at', 'desc')
-            ->get();
+        $practitioners = User::where('account_type', 'practitioner')->where('is_published', true)->limit(2)->orderBy(
+            'business_published_at',
+            'desc'
+        )->get();
 
         return [
             'articles' => fractal($articles, new ArticleTransformer())->parseIncludes($includes)->toArray(),
