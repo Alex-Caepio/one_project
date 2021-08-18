@@ -8,13 +8,23 @@ use App\Http\Requests\Plans\PlanRequest;
 use App\Http\Requests\Plans\PlanTrialRequest;
 use App\Models\Plan;
 use App\Http\Requests\Request;
+use App\Models\ServiceType;
 use App\Transformers\PlanTransformer;
 use Illuminate\Support\Facades\Auth;
 use Stripe\StripeClient;
 
 class PlanController extends Controller {
     public function index(Request $request) {
-        $plans = Plan::with('service_types')->get();
+        $plans = Plan::get();
+        $plans->map(static function(Plan $plan) {
+            $serviceTypes =
+                ServiceType::join('plan_service_type', 'plan_service_type.service_type_id', '=', 'service_types.id')
+                                       ->where('plan_service_type.plan_id', '=', $plan->id)
+                ->orderBy('plan_service_type.id', 'ASC')->select('service_types.*')->get();
+            $plan->setRelation('service_types', $serviceTypes);
+            return $plan;
+        });
+
         return fractal($plans, new PlanTransformer())->parseIncludes($request->getIncludes())->toArray();
     }
 

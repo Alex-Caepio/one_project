@@ -18,6 +18,7 @@ class ServiceType extends Model {
     public function services() {
         return $this->belongsToMany(Service::class);
     }
+
     public function users(): BelongsToMany {
         return $this->belongsToMany(User::class, 'service_type_user','service_type_id','user_id');
     }
