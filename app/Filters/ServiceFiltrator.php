@@ -130,8 +130,7 @@ class ServiceFiltrator
                 $queryBuilder->leftJoin(
                     'schedules',
                     static function ($leftJoin) {
-                        $leftJoin->on('services.id', '=', 'schedules.service_id');
-                        $leftJoin->on('schedules.is_published', '=', true);
+                        $leftJoin->on('services.id', '=', 'schedules.service_id')->where('schedules.is_published', '=', 1);
                     }
                 )->orderByRaw('ABS(schedule_date_dif)');
 
