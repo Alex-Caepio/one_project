@@ -4,6 +4,7 @@
 namespace App\EmailVariables;
 
 use App\Events\BookingConfirmation;
+use App\Models\Price;
 use App\Models\Schedule;
 use App\Models\User;
 use App\Traits\GenerateCalendarLink;
@@ -618,6 +619,14 @@ class EmailVariables {
     public function getPractitioner_message(): ?string {
         return $this->event instanceof BookingConfirmation ? $this->event->schedule->booking_message : '';
     }
+
+    /**
+     * @return string
+     */
+    public function getPrice_name(): ?string {
+        return isset($this->event->price) && $this->event->price instanceof Price ? $this->event->price->name : '';
+    }
+
 
     /**
      * RESCHEDULES END
