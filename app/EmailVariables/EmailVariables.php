@@ -307,11 +307,12 @@ class EmailVariables {
         return $this->event->schedule->url;
     }
 
+
     /**
      * @return string
      */
     public function getPractitioner_schedule_message(): ?string {
-        return $this->event->schedule->comments;
+        return $this->event->schedule->booking_message;
     }
 
     /**
