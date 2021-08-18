@@ -50,7 +50,7 @@ class PurchaseController extends Controller {
         $price = $schedule->prices()->find($request->get('price_id'));
         $cost = $price->cost * $request->amount;
         $practitioner = $schedule->service->user;
-        
+
         $promo = null;
         $discount = $discountPerAppointment = 0;
 
@@ -233,7 +233,6 @@ class PurchaseController extends Controller {
                 $stripe->paymentIntents->confirm($paymentIntent->id, ['payment_method' => $payment_method_id]);
             $purchase->stripe_id = $paymentIntent->id;
             $purchase->save();
-            DB::commit();
         } catch (\Stripe\Exception\ApiErrorException $e) {
 
             Log::channel('stripe_purchase_schedule_error')->info("Client could not purchase schedule", [
@@ -250,7 +249,6 @@ class PurchaseController extends Controller {
                 'discount_applied' => $purchase->discount_applied,
                 'message'          => $e->getMessage(),
             ]);
-            DB::rollBack();
 
             return abort(500);
         }
