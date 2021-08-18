@@ -77,7 +77,7 @@ class Service extends Model {
     }
 
     public function practitioner() {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class)->withTrashed();
     }
 
     public function keywords() {

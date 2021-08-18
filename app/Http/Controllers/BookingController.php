@@ -39,6 +39,11 @@ class BookingController extends Controller {
     }
 
     public function show(Booking $booking, Request $request) {
+        $booking->load(['schedule' => static function($scheduleQuery) {
+            $scheduleQuery->withTrashed();
+        }, 'schedule.service' => static function($serviceQuery) {
+            $serviceQuery->withTrashed();
+        }]);
         return fractal($booking, new BookingTransformer())->parseIncludes($request->getIncludes())->toArray();
     }
 

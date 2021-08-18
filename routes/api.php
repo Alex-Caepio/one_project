@@ -65,13 +65,6 @@ Route::middleware(['stripe'])->group(function() {
     Route::match(['post', 'get'], '/stripe-webhook', [StripeWebhookController::class, 'handler']);
 });
 
-Route::get('/test', static function() {
-    $user = \App\Models\User::findOrFail(1);
-    $plan = $user->plan;
-    event(new ChangeOfSubscription($user, $plan, null));
-});
-
-
 /* Public Routes For Services And Articles */
 Route::get('articles', [ArticleController::class, 'index']);
 Route::get('articles/{publicArticle}', [ArticleController::class, 'show']);

@@ -72,7 +72,7 @@ class Booking extends Model {
     }
 
     public function price() {
-        return $this->belongsTo(Price::class);
+        return $this->belongsTo(Price::class)->withTrashed();
     }
 
     public function schedule_availability() {
