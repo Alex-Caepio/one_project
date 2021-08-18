@@ -7,7 +7,9 @@ use App\Events\AccountDeleted;
 use App\Events\AccountTerminatedByAdmin;
 use App\Events\BusinessProfileLive;
 use App\Events\BusinessProfileUnpublished;
+use App\Helpers\UserRightsHelper;
 use App\Models\Article;
+use App\Models\Booking;
 use App\Models\RescheduleRequest;
 use App\Models\ScheduleFreeze;
 use App\Models\Service;
@@ -37,6 +39,7 @@ class UserObserver {
             if ($user->isDirty('is_published')) {
                 if (!$user->is_published && !$user->wasRecentlyCreated) {
                     event(new BusinessProfileUnpublished($user));
+                    UserRightsHelper::unpublishPractitioner($user);
                 } elseif ($user->is_published) {
                     $user->published_at = now();
                     event(new BusinessProfileLive($user));

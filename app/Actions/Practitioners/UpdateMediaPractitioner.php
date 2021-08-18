@@ -3,10 +3,7 @@
 
 namespace App\Actions\Practitioners;
 
-use App\Helpers\UserRightsHelper;
-use App\Http\Requests\Auth\UnpublishPractitionerRequest;
 use App\Http\Requests\Request;
-use App\Models\Keyword;
 use App\Models\User;
 use App\Traits\hasMediaItems;
 use App\Traits\KeywordCollection;

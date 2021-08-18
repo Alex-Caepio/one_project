@@ -13,6 +13,5 @@ class UnpublishPractitioner {
     public function execute(User $user, UnpublishPractitionerRequest $request): void {
         $user->is_published = false;
         $user->save();
-        UserRightsHelper::unpublishPractitioner($request, $user);
     }
 }

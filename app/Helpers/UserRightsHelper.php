@@ -4,7 +4,6 @@
 namespace App\Helpers;
 
 use App\Actions\Cancellation\CancelBooking;
-use App\Http\Requests\Auth\UnpublishPractitionerRequest;
 use App\Models\Article;
 use App\Models\Booking;
 use App\Models\Plan;
@@ -145,11 +144,12 @@ class UserRightsHelper {
         return !count($serviceTypes) || in_array($service->service_type_id, $serviceTypes, true);
     }
 
-    public static function unpublishPractitioner(UnpublishPractitionerRequest $request, User $user): void {
+    public static function unpublishPractitioner(User $user): void {
         self::unpublishArticles($user);
         self::unpublishService($user);
-        if ($request->getBoolFromRequest('cancel_bookings') === true) {
-            $bookings = Booking::where('user_id', $user->id)->active()->get();
+        $requestFlag =  request('cancel_bookings', false);
+        if ($requestFlag === true) {
+            $bookings = Booking::where('practitioner_id', $user->id)->active()->get();
             foreach ($bookings as $booking) {
                 try {
                     run_action(CancelBooking::class, $booking);
