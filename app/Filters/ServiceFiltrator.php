@@ -161,7 +161,7 @@ class ServiceFiltrator
                         )->orWhereHas(
                             'schedules',
                             static function ($dQuery) use ($searchString) {
-                                $dQuery->where('schedules.location_displayed', 'LIKE', $searchString)->where(
+                                $dQuery->where('schedules.city', 'LIKE', $searchString)->where(
                                     'is_published',
                                     true
                                 );

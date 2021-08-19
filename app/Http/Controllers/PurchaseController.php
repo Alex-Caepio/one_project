@@ -47,7 +47,7 @@ class PurchaseController extends Controller {
     }
 
     public function purchase(PurchaseScheduleRequest $request, Schedule $schedule, StripeClient $stripe) {
-        $price = $schedule->prices()->find($request->get('price_id'));
+        $price = $schedule->prices()->where('id', $request->get('price_id'))->first();
         $cost = $price->cost * $request->amount;
         $practitioner = $schedule->service->user;
 
@@ -65,79 +65,100 @@ class PurchaseController extends Controller {
             }
         }
         $schedule->load('service');
-        $purchase = new Purchase();
-        $purchase->schedule_id = $schedule->id;
-        $purchase->service_id = $schedule->service->id;
-        $purchase->price_id = $price->id;
-        $purchase->user_id = Auth::id();
-        $purchase->promocode_id = $promo instanceof PromotionCode ? $promo->id : null;
-        $purchase->price_original = $price->cost;
-        $purchase->price = $cost;
-        $purchase->is_deposit = false;
-        $purchase->amount = $request->amount;
-        $purchase->discount = $discount;
-        $purchase->discount_applied = $promo instanceof PromotionCode ? $promo->promotion->applied_to : null;
-        $purchase->save();
 
-        if ($schedule->service->service_type_id === 'appointment') {
-            $availabilities = $request->get('availabilities');
+        try {
+            $purchase = new Purchase();
+            $purchase->schedule_id = $schedule->id;
+            $purchase->service_id = $schedule->service->id;
+            $purchase->price_id = $price->id;
+            $purchase->user_id = Auth::id();
+            $purchase->promocode_id = $promo instanceof PromotionCode ? $promo->id : null;
+            $purchase->price_original = $price->cost;
+            $purchase->price = $cost;
+            $purchase->is_deposit = false;
+            $purchase->amount = $request->amount;
+            $purchase->discount = $discount;
+            $purchase->discount_applied = $promo instanceof PromotionCode ? $promo->promotion->applied_to : null;
+            $purchase->save();
 
-            if ($discount > 0) {
-                $discountPerAppointment = round($discount/count($availabilities));
-            }
-            $costPerAppointment = round($cost/count($availabilities));
+            if ($schedule->service->service_type_id === 'appointment') {
+                $availabilities = $request->get('availabilities');
 
-            foreach ($availabilities as $availability) {
+                if ($discount > 0) {
+                    $discountPerAppointment = round($discount / count($availabilities));
+                }
+                $costPerAppointment = round($cost / count($availabilities));
+
+                foreach ($availabilities as $availability) {
+                    $booking = new Booking();
+                    $booking->user_id = $request->user()->id;
+                    $booking->practitioner_id = $schedule->service->user_id;
+                    $booking->price_id = $request->get('price_id');
+                    $booking->schedule_id = $schedule->id;
+                    $booking->datetime_from = $availability['datetime_from'];
+                    $datetimeTo = (new Carbon($booking->datetime_from))->addMinutes($price->duration);
+                    $booking->datetime_to = $datetimeTo->format('Y-m-d H:i:s');
+                    $booking->cost = $costPerAppointment;
+                    $booking->purchase_id = $purchase->id;
+                    $booking->amount = $request->amount;
+                    $booking->discount = $discountPerAppointment;
+                    $booking->save();
+                    event(new AppointmentBooked($booking));
+                }
+            } else {
                 $booking = new Booking();
                 $booking->user_id = $request->user()->id;
                 $booking->practitioner_id = $schedule->service->user_id;
+
+                $booking->datetime_from = $schedule->start_date ?: Carbon::now();
+                $booking->datetime_to = $schedule->end_date ?: Carbon::now();
+
                 $booking->price_id = $request->get('price_id');
                 $booking->schedule_id = $schedule->id;
-                $booking->datetime_from = $availability['datetime_from'];
-                $datetimeTo = (new Carbon($booking->datetime_from))->addMinutes($price->duration);
-                $booking->datetime_to = $datetimeTo->format('Y-m-d H:i:s');
-                $booking->cost = $costPerAppointment;
+                $booking->cost = $cost;
                 $booking->purchase_id = $purchase->id;
                 $booking->amount = $request->amount;
-                $booking->discount = $discountPerAppointment;
+                $booking->discount = $discount;
                 $booking->save();
-                event(new AppointmentBooked($booking));
             }
-        } else {
-            $booking = new Booking();
-            $booking->user_id = $request->user()->id;
-            $booking->practitioner_id = $schedule->service->user_id;
 
-            $booking->datetime_from = $schedule->start_date ?: Carbon::now();
-            $booking->datetime_to = $schedule->end_date ?: Carbon::now();
-
-            $booking->price_id = $request->get('price_id');
-            $booking->schedule_id = $schedule->id;
-            $booking->cost = $cost;
-            $booking->purchase_id = $purchase->id;
-            $booking->amount = $request->amount;
-            $booking->discount = $discount;
-            $booking->save();
-        }
-
-        if ($cost && !$price->is_free) {
-            if ($request->instalments && $schedule->deposit_accepted) {
-                $this->payInInstallments($request, $schedule, $price, $practitioner, $cost, $purchase);
-            } else {
-                $this->payInstant($request, $schedule, $price, $stripe, $purchase, $practitioner);
+            if ($cost && !$price->is_free) {
+                if ($request->instalments && $schedule->deposit_accepted) {
+                    if (!$this->payInInstallments($request, $schedule, $price, $practitioner, $cost, $purchase)) {
+                        throw new \Exception('Cannot handle installments payment');
+                    }
+                } else {
+                    if (!$this->payInstant($request, $schedule, $price, $stripe, $purchase, $practitioner)) {
+                        throw new \Exception('Cannot handle instant payment');
+                    }
+                }
             }
-        }
 
+            ScheduleFreeze::where('schedule_id', $schedule->id)->where('user_id', $request->user()->id)->delete();
 
-        ScheduleFreeze::where('schedule_id', $schedule->id)->where('user_id', $request->user()->id)->delete();
-
-        //PromotionCode status
-        if ($promo instanceof PromotionCode) {
-            $cntPurchases = Purchase::where('promocode_id', $promo->id)->count();
-            if (!$promo->uses_per_code || (int)$promo->uses_per_code === $cntPurchases) {
-                $promo->status = PromotionCode::STATUS_COMPLETE;
-                $promo->save();
+            //PromotionCode status
+            if ($promo instanceof PromotionCode) {
+                $cntPurchases = Purchase::where('promocode_id', $promo->id)->count();
+                if (!$promo->uses_per_code || (int)$promo->uses_per_code === $cntPurchases) {
+                    $promo->status = PromotionCode::STATUS_COMPLETE;
+                    $promo->save();
+                }
             }
+
+        } catch (\Exception $e) {
+            Log::channel('stripe_purchase_schedule_error')->info(
+                "Common Purchase Error",
+                [
+                    'user_id'         => $request->user()->id,
+                    'price_id'        => $price->id,
+                    'service_id'      => $schedule->service->id,
+                    'practitioner_id' => $schedule->service->user_id,
+                    'schedule_id'     => $schedule->id,
+                    'payment_intent'  => $paymentIntent->id ?? null,
+                    'message'         => $e->getMessage(),
+                ]
+            );
+            abort(500, $e->getMessage());
         }
 
         return fractal($purchase, new PurchaseTransformer())->parseIncludes($request->getIncludes())->toArray();
@@ -154,7 +175,7 @@ class PurchaseController extends Controller {
                        new PromocodeCalculateTransformer());
     }
 
-    protected function payInInstallments($request, $schedule, $price, $practitioner, $cost, $purchase): void {
+    protected function payInInstallments($request, $schedule, $price, $practitioner, $cost, $purchase): bool {
         $payment_method_id = run_action(GetViablePaymentMethod::class, $practitioner, $request->payment_method_id);
         $depositCost = $schedule->deposit_amount * 100 * $request->amount;
 
@@ -162,7 +183,7 @@ class PurchaseController extends Controller {
             $subscription = run_action(PurchaseInstallment::class, $price, $request, $payment_method_id, $request->instalments, $cost);
             $purchase->subscription_id = $subscription->id;
             $purchase->save();
-            DB::commit();
+
         } catch (\Stripe\Exception\ApiErrorException $e) {
             Log::channel('stripe_installment_fail')->info('The client could not purchase installment', [
                     'user_id'        => $request->user()->id,
@@ -173,7 +194,8 @@ class PurchaseController extends Controller {
                     'amount'         => $request->amount,
                     'message'        => $e->getMessage(),
                 ]);
-            abort(500);
+
+            return false;
         }
 
         try {
@@ -201,11 +223,12 @@ class PurchaseController extends Controller {
                 'amount'         => $request->amount,
                 'message'        => $e->getMessage(),
             ]);
-            abort(500);
+           return false;
         }
+        return true;
     }
 
-    protected function payInstant($request, Schedule $schedule, Price $price, $stripe, Purchase $purchase, $practitioner) {
+    protected function payInstant($request, Schedule $schedule, Price $price, $stripe, Purchase $purchase, $practitioner): bool {
         $payment_method_id = run_action(GetViablePaymentMethod::class, $practitioner, $request->payment_method_id);
         $paymentIntent = null;
         try {
@@ -250,7 +273,7 @@ class PurchaseController extends Controller {
                 'message'          => $e->getMessage(),
             ]);
 
-            return abort(500);
+            return false;
         }
 
         Log::channel('stripe_purchase_schedule_success')->info("Client purchased schedule", [
@@ -302,7 +325,7 @@ class PurchaseController extends Controller {
                 'discount_applied' => $purchase->discount_applied,
                 'message'          => $e->getMessage(),
             ]);
-
+            return false;
         }
         return true;
     }
