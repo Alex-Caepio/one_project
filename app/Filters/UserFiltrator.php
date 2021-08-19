@@ -42,13 +42,26 @@ class UserFiltrator {
         if ($searchTerms !== null) {
             $search = '%' . $searchTerms . '%';
             $emailReplace = str_replace(' ', '+', $search);
-            $queryBuilder->where(function($query) use ($search, $emailReplace) {
-                $query->where('first_name', 'LIKE', $search)
-                      ->orWhere('last_name', 'LIKE', $search)
-                      ->orWhere('business_email', 'LIKE', $emailReplace)
-                      ->orWhere('email', 'LIKE', $emailReplace)
-                      ->orWhere('business_name', 'LIKE', $search);
-            });
+            $queryBuilder->where(
+                function ($query) use ($search, $emailReplace) {
+                    $query->where('first_name', 'LIKE', $search)->orWhere('last_name', 'LIKE', $search)->orWhere(
+                            'business_email',
+                            'LIKE',
+                            $emailReplace
+                        )->orWhere('email', 'LIKE', $emailReplace)->orWhere('business_name', 'LIKE', $search)
+                          ->orWhereHas(
+                              'keywords',
+                              static function ($dQuery) use ($search) {
+                                  $dQuery->where('keywords.title', 'LIKE', $search);
+                              }
+                          )->orWhereHas(
+                            'disciplines',
+                            function ($dQuery) use ($search) {
+                                $dQuery->where('name', 'LIKE', $search);
+                            }
+                        );
+                }
+            );
         }
 
         $status = $request->getArrayFromRequest('status');
