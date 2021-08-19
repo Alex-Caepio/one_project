@@ -28,7 +28,7 @@ class SearchController extends Controller {
         $serviceFiltrator->apply($services, $request);
 
         $userFiltrator = new UserFiltrator();
-        $userFiltrator->apply($practitioners, $request);
+        $userFiltrator->apply($practitioners, $request, true);
 
         return [
             'articles' => fractal($articles->limit(10)->get(), new ArticleTransformer())->toArray(),

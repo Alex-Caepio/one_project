@@ -48,9 +48,11 @@ class ArticleFiltrator {
             $queryBuilder->orderByDesc('id');
         }
 
-        if ($request->filled('discipline_id')) {
-            $queryBuilder->whereHas('disciplines', function($q) use ($request) {
-                $q->where('discipline_id', $request->discipline_id);
+        /* Disciplines */
+        if ($request->filled('discipline_id') || $request->filled('d')) {
+            $disciplineId = $request->filled('discipline_id') ? $request->get('discipline_id') : $request->get('d');
+            $queryBuilder->whereHas('disciplines', function($q) use ($disciplineId) {
+                $q->where('disciplines.id', (int)$disciplineId);
             });
         }
 
