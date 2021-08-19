@@ -17,9 +17,9 @@ use App\Transformers\UserTransformer;
 class SearchController extends Controller {
 
     public function index(Request $request) {
-        $articles = Article::query()->where('is_published', true)->orderBy('articles.id', 'desc');
-        $services = Service::query()->where('is_published', true)->orderBy('services.id', 'desc');
-        $practitioners = User::where('account_type', 'practitioner')->where('is_published', true)->orderBy('id', 'desc');
+        $articles = Article::query()->where('articles.is_published', true)->orderBy('articles.id', 'desc');
+        $services = Service::query()->where('services.is_published', true)->orderBy('services.id', 'desc');
+        $practitioners = User::where('account_type', 'practitioner')->where('users.is_published', true)->orderBy('id', 'desc');
 
         $articleFiltrator = new ArticleFiltrator();
         $articleFiltrator->apply($articles, $request, true);
