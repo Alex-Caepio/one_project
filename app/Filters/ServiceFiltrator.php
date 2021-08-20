@@ -162,7 +162,7 @@ class ServiceFiltrator
                             'schedules',
                             static function ($dQuery) use ($searchString) {
                                 $dQuery->where('schedules.city', 'LIKE', $searchString)->where(
-                                    'is_published',
+                                    'schedules.is_published',
                                     true
                                 );
                             }
