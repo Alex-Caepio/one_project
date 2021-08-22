@@ -65,7 +65,7 @@ class BookingMyClientController extends Controller {
                                           ->whereNotIn('bookings.status', ['canceled', 'completed']);
                                  });
                              })->where('services.user_id', $request->user()->id)
-                             ->whereNotIn('services.service_type_id', ['bespoke', 'appointments'])
+                             ->whereNotIn('services.service_type_id', ['bespoke', 'appointment'])
                              ->groupBy('schedules.id')
                              ->orderByRaw('ABS(date_diff)')
                              ->paginate($request->getLimit());
