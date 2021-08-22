@@ -226,13 +226,13 @@ class ScheduleController extends Controller {
         return $date;
     }
 
-    public function publish(Request $request, Schedule $schedule) {
+    public function publish(ScheduleOwnerRequest $request, Schedule $schedule) {
         $schedule->is_published = true;
         $schedule->save();
         return response(null, 204);
     }
 
-    public function unpublish(Request $request, Schedule $schedule) {
+    public function unpublish(ScheduleOwnerRequest $request, Schedule $schedule) {
         $schedule->is_published = false;
         $schedule->save();
         return response(null, 204);
