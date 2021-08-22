@@ -88,11 +88,12 @@ class ServiceFiltrator
             );
         }
 
-        if ($request->filled('discipline_id')) {
+        if ($request->filled('discipline_id') || $request->filled('disciplineId')) {
+            $disciplineId = $request->filled('discipline_id') ? (int)$request->get('discipline_id') : (int)$request->get('disciplineId');
             $queryBuilder->whereHas(
                 'disciplines',
-                function ($q) use ($request) {
-                    $q->where('discipline_id', $request->discipline_id);
+                static function ($q) use ($disciplineId) {
+                    $q->where('id', $disciplineId);
                 }
             );
         }
