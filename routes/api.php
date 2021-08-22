@@ -185,6 +185,8 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::post('/schedules/{schedule}/freeze', [ScheduleController::class, 'freeze']);
     Route::get('/schedules/{schedule}/availabilities', [ScheduleController::class, 'availabilities']);
     Route::post('/schedules/{schedule}/price', [SchedulePriceController::class, 'store']);
+    Route::post('/schedules/{schedule}/publish', [ScheduleController::class, 'publish']);
+    Route::post('/schedules/{schedule}/unpublish', [ScheduleController::class, 'unpublish']);
     Route::delete('/schedules/{schedule}', [ScheduleController::class, 'destroy']);
     Route::get('/prices/{price}/appointments-dates/{date}', [ScheduleController::class, 'appointmentsOnDate']);
     Route::post('/schedules/{schedule}/copy', [ScheduleController::class, 'copy']);
