@@ -4,6 +4,7 @@
 namespace App\Transformers;
 
 
+use App\Models\Booking;
 use App\Models\Price;
 use Carbon\Carbon;
 
@@ -11,6 +12,7 @@ class PriceTransformer extends Transformer {
 
     public function transform(Price $price) {
         $ticketsBooked = (int)$price->bookings()->uncanceled()->sum('amount');
+        $availableBySchedule = $price->schedule->getAvailableTicketsCount();
         $number_unpurchased = !$price->number_available ? 0 : (int)$price->number_available - $ticketsBooked;
 
 
@@ -24,8 +26,10 @@ class PriceTransformer extends Transformer {
             'duration'           => $this->formatDuration($price->duration),
             'min_purchase'       => $price->min_purchase,
             'number_available'   => (int)$price->number_available,
-            'number_unpurchased' => $number_unpurchased,
+            'number_unpurchased' => $number_unpurchased >
+                                    $availableBySchedule ? $availableBySchedule : $number_unpurchased,
             'tickets_available'  => $ticketsBooked,
+            'tickets_booked'     => $ticketsBooked,
             'stripe_id'          => $price->stripe_id,
             'created_at'         => $price->created_at,
             'updated_at'         => $price->updated_at,

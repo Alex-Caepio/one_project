@@ -23,11 +23,6 @@ class ScheduleTransformer extends Transformer {
     ];
 
     public function transform(Schedule $schedule) {
-        $attendees_available = $schedule->attendees - $schedule->bookings()->uncanceled()->sum('amount');
-
-        if (!$schedule->attendees || $attendees_available < 0) {
-            $attendees_available = 0;
-        }
 
         return [
             'id'                           => $schedule->id,
@@ -37,7 +32,7 @@ class ScheduleTransformer extends Transformer {
             'start_date'                   => Carbon::parse($schedule->start_date),
             'end_date'                     => Carbon::parse($schedule->end_date),
             'attendees'                    => $schedule->attendees,
-            'attendees_available'          => $attendees_available,
+            'attendees_available'          => $schedule->getAvailableTicketsCount(),
             'cost'                         => $schedule->cost,
             'comments'                     => $schedule->comments,
             'city'                         => $schedule->city,
@@ -68,7 +63,7 @@ class ScheduleTransformer extends Transformer {
             'notice_min_time'              => $schedule->notice_min_time,
             'notice_min_period'            => $schedule->notice_min_period,
             'buffer_time'                  => $schedule->buffer_time,
-            'buffer_period'                => $schedule->bubuffer_periodfbuffer_periodfer_period,
+            'buffer_period'                => $schedule->buffer_period,
             'address'                      => $schedule->address,
             'appointment'                  => $schedule->appointment,
             'created_at'                   => $schedule->created_at,

@@ -102,22 +102,6 @@ class Schedule extends Model {
         return $this->belongsToMany(User::class);
     }
 
-    public function isSoldOut(): bool {
-        $time = Carbon::now()->subMinutes(15);
-        $purchased = Booking::where('schedule_id', $this->id)->uncanceled()->sum('amount');
-        $personalFreezed = ScheduleFreeze::where('schedule_id', $this->id)->where('user_id', Auth::id())
-                                         ->where('freeze_at', '>', $time->toDateTimeString())->count();
-        $freezed = ScheduleFreeze::where('schedule_id', $this->id)->where('freeze_at', '>', $time->toDateTimeString())
-                                 ->count();
-
-        if (isset($personalFreezed)) {
-            return $this->attendees <= ($purchased + $freezed - $personalFreezed);
-        }
-
-        return $this->attendees <= ($purchased + $freezed);
-
-    }
-
     public function media_files() {
         return $this->morphMany(MediaFile::class, 'morphesTo', 'model_name', 'model_id');
     }
@@ -241,7 +225,6 @@ class Schedule extends Model {
         return $this->hasMany(Purchase::class);
     }
 
-
     public function hasNonContractualChanges(): bool {
         $changes = $this->getRealChangesList();
         $result = false;
@@ -258,7 +241,6 @@ class Schedule extends Model {
         }
         return $result;
     }
-
 
     public function getRealChangesList(): array {
         $changes = $this->getChanges();
@@ -301,6 +283,21 @@ class Schedule extends Model {
         }
 
         return '';
+    }
+
+    public function isSoldOut(): bool {
+        return $this->getAvailableTicketsCount() === 0;
+    }
+
+    public function getAvailableTicketsCount(): int {
+        $time = Carbon::now()->subMinutes(15);
+        $purchased = Booking::where('schedule_id', $this->id)->uncanceled()->sum('amount');
+        $personalFreezed = ScheduleFreeze::where('schedule_id', $this->id)->where('user_id', Auth::id())
+                                         ->where('freeze_at', '>', $time->toDateTimeString())->count();
+        $freezed = ScheduleFreeze::where('schedule_id', $this->id)->where('freeze_at', '>', $time->toDateTimeString())
+                                 ->count();
+        $available = (int)$this->attendees - ($purchased + $freezed - $personalFreezed);
+        return $available < 0 ? 0 : $available;
     }
 
 }

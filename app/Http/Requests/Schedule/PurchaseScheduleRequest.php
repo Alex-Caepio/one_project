@@ -58,10 +58,10 @@ class PurchaseScheduleRequest extends Request implements CreateScheduleInterface
                 $validator->errors()->add('price_id', 'Price does not belong to the schedule');
             }
 
-            $bookingsCount = Booking::where('price_id', $this->price_id)->count();
+            $bookingsCount = Booking::where('price_id', $this->price_id)->uncanceled()->count();
+            $requiredAmount = (int)$this->request->get('amount');
 
-            if ($bookingsCount > 0 && $price->number_available !== null &&
-                $bookingsCount >= (int)$price->number_available) {
+            if (($bookingsCount + $requiredAmount) >= (int)$price->number_available) {
                 $validator->errors()->add('price_id', 'All schedules for that price were sold out');
             }
 
@@ -74,8 +74,11 @@ class PurchaseScheduleRequest extends Request implements CreateScheduleInterface
                                                 $this->get('amount') * $price->cost);
             }
 
-            if ($schedule->attendees && $schedule->isSoldOut()) {
-                $validator->errors()->add('schedule_id', 'All quotes on the schedule are sold out');
+            if ($schedule->attendees) {
+                $availableTicketsPerSchedule = $schedule->getAvailableTicketsCount();
+                if ($availableTicketsPerSchedule < $requiredAmount) {
+                    $validator->errors()->add('schedule_id', 'All quotes on the schedule are sold out');
+                }
             }
 
         });
@@ -98,7 +101,7 @@ class PurchaseScheduleRequest extends Request implements CreateScheduleInterface
                                                    ->where('datetime_from', $availabilityRequest['datetime_from'])
                                                    ->whereHas('schedule.service', static function($serviceQuery) {
                                                        $serviceQuery->where('services.service_type_id', 'appointment');
-                                                   })->exists();
+                                                   })->uncanceled()->exists();
                 if ($alreadyBookedAppointment) {
                     $validator->errors()
                               ->add("availabilities.$key.datetime_from", 'This time slot is already booked');
