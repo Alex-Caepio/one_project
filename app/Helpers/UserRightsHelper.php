@@ -144,18 +144,22 @@ class UserRightsHelper {
         return !count($serviceTypes) || in_array($service->service_type_id, $serviceTypes, true);
     }
 
-    public static function unpublishPractitioner(User $user): void {
+    public static function unpublishPractitioner(User $user, bool $unpublishOnDelete = false): void {
         self::unpublishArticles($user);
         self::unpublishService($user);
         $requestFlag =  request('cancel_bookings', false);
-        if ($requestFlag === true) {
+        if ($requestFlag === true || $unpublishOnDelete === true) {
             $bookings = Booking::where('practitioner_id', $user->id)->active()->get();
             foreach ($bookings as $booking) {
                 try {
                     run_action(CancelBooking::class, $booking);
                 } catch (\Exception $e) {
-                    Log::info('[[Cancellation on unpublish failed]]: ' . $e->getMessage(),
-                              ['practitioner_id' => $user->id, 'booking_id' => $booking->id]);
+                    Log::channel('practitioner_cancel_error')->info('[[Cancellation on unpublish failed]]: ', [
+                        'user_id'         => $booking->user_id ?? null,
+                        'practitioner_id' => $booking->practitioner_id ?? null,
+                        'booking_id'      => $booking->id ?? null,
+                        'message'         => $e->getMessage(),
+                    ]);
                 }
             }
         }

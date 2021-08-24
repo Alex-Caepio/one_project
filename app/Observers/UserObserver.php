@@ -15,6 +15,7 @@ use App\Models\ScheduleFreeze;
 use App\Models\Service;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 
 class UserObserver {
@@ -55,7 +56,7 @@ class UserObserver {
      * @param \App\Models\User $user
      * @return void
      */
-    public function deleted(User $user): void {
+    public function deleting(User $user): void {
         if ($user->isPractitioner()) {
             Article::where('user_id', $user->id)->update([
                                                              'deleted_at'   => date('Y-m-d H:i:s'),
@@ -66,12 +67,23 @@ class UserObserver {
                                                              'deleted_at'   => date('Y-m-d H:i:s'),
                                                              'is_published' => false
                                                          ]);
+
+            UserRightsHelper::unpublishPractitioner($user, true);
         }
         RescheduleRequest::where('user_id', $user->id)->delete();
         ScheduleFreeze::where('user_id', $user->id)->delete();
 
         foreach($user->bookings()->active()->get() as $booking) {
-            run_action(CancelBooking::class, $booking, false, User::ACCOUNT_CLIENT);
+            try {
+                run_action(CancelBooking::class, $booking, false, User::ACCOUNT_CLIENT);
+            } catch (\Exception $e) {
+                Log::channel('practitioner_cancel_error')->info('[[Cancellation on unpublish failed]]: ', [
+                    'user_id'         => $booking->user_id ?? null,
+                    'practitioner_id' => $booking->practitioner_id ?? null,
+                    'booking_id'      => $booking->id ?? null,
+                    'message'         => $e->getMessage(),
+                ]);
+            }
         }
 
         if (!Auth::user()->is_admin) {

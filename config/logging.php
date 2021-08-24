@@ -245,6 +245,11 @@ return [
             'driver' => 'daily',
         ],
 
+        'practitioner_cancel_error' => [
+            'path'   => storage_path('logs/practitioner_cancel_error.log'),
+            'driver' => 'daily',
+        ],
+
     ],
 
 ];
