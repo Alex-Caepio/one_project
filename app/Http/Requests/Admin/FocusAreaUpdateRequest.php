@@ -17,6 +17,17 @@ class FocusAreaUpdateRequest extends Request
         return true;
     }
 
+
+    protected function prepareForValidation()
+    {
+        $this->merge([
+                         'section_2_textarea' => strip_tags($this->section_2_textarea),
+                         'section_5_textarea' => strip_tags($this->section_5_textarea),
+                         'section_7_textarea' => strip_tags($this->section_7_textarea),
+                         'section_10_textarea' => strip_tags($this->section_10_textarea),
+                     ]);
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *

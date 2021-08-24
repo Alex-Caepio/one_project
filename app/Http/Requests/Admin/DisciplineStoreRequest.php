@@ -4,6 +4,7 @@ namespace App\Http\Requests\Admin;
 
 use App\Http\Requests\Request;
 use App\Models\Discipline;
+use Illuminate\Support\Str;
 
 class DisciplineStoreRequest extends Request
 {
@@ -15,6 +16,16 @@ class DisciplineStoreRequest extends Request
     public function authorize()
     {
         return true;
+    }
+
+    protected function prepareForValidation()
+    {
+        $this->merge([
+                         'section_2_textarea' => strip_tags($this->section_2_textarea),
+                         'section_4_textarea' => strip_tags($this->section_4_textarea),
+                         'section_6_textarea' => strip_tags($this->section_6_textarea),
+                         'section_9_textarea' => strip_tags($this->section_9_textarea),
+                     ]);
     }
 
     /**

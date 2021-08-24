@@ -18,6 +18,17 @@ class DisciplineUpdateRequest extends Request
         return true;
     }
 
+    protected function prepareForValidation()
+    {
+        $this->merge([
+                         'section_2_textarea' => strip_tags($this->section_2_textarea),
+                         'section_4_textarea' => strip_tags($this->section_4_textarea),
+                         'section_6_textarea' => strip_tags($this->section_6_textarea),
+                         'section_9_textarea' => strip_tags($this->section_9_textarea),
+                     ]);
+    }
+
+
     /**
      * Get the validation rules that apply to the request.
      *
