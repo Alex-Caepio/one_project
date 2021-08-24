@@ -34,7 +34,7 @@ class BookingConfirmation {
             return $this->service->isDateLess() ? 'Booking Confirmation - Dateless Physical' : 'Booking Confirmation - Date/Apt Physical';
         }
 
-        if ($this->schedule->appointment === 'virtual') {
+        if ($this->schedule->appointment === 'virtual' || !$this->schedule->appointment) {
             return $this->service->isDateLess() ? 'Booking Confirmation - DateLess Virtual' : 'Booking Confirmation - Event Virtual';
         }
 
