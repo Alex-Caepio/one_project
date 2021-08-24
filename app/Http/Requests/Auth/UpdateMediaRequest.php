@@ -43,12 +43,13 @@ class UpdateMediaRequest extends Request {
 
     public function withValidator($validator) {
         $practitioner = $this->getPractitioner();
+
         if ($practitioner instanceof User) {
             $validator->setRules([
-                                     'business_address'            => 'required|max:255',
-                                     'business_email'              => 'required|max:255|email',
-                                     'business_phone_number'       => 'required|digits_between:2,255|numeric',
-                                     'business_phone_country_code' => 'required|exists:countries,id|integer',
+                                     'business_address'            => 'required_if:is_published,true|max:255',
+                                     'business_email'              => 'required_if:is_published,true|max:255|email',
+                                     'business_phone_number'       => 'required_if:is_published,true|digits_between:2,255|numeric',
+                                     'business_phone_country_code' => 'required_if:is_published,true|exists:countries,id|integer',
                                  ])->setData([
                                                  'business_address'            => $practitioner->business_address,
                                                  'business_email'              => $practitioner->business_email,
