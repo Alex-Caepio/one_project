@@ -29,10 +29,10 @@ class UpdateMediaRequest extends Request {
             'about_my_business'     => 'max:15000',
             'avatar_url'            => 'nullable|url',
             'background_url'        => 'nullable|url',
-            'business_city'         => 'required_if:is_published,true|string|max:150',
-            'business_name'         => 'required_if:is_published,true|max:255|min:2',
-            'business_introduction' => 'required_if:is_published,true|string|max:300',
-            'business_country_id'   => 'required|exists:countries,id|integer',
+            'business_city'         => 'nullable|required_if:is_published,true|string|max:150',
+            'business_name'         => 'nullable|required_if:is_published,true|max:255|min:2',
+            'business_introduction' => 'nullable|required_if:is_published,true|string|max:300',
+            'business_country_id'   => 'nullable|required|exists:countries,id|integer',
             'slug'                  => [
                 Rule::unique('users', 'slug')->ignore($practitioner->id),
             ],
@@ -46,10 +46,10 @@ class UpdateMediaRequest extends Request {
 
         if ($practitioner instanceof User) {
             $validator->setRules([
-                                     'business_address'            => 'required_if:is_published,true|max:255',
-                                     'business_email'              => 'required_if:is_published,true|max:255|email',
-                                     'business_phone_number'       => 'required_if:is_published,true|digits_between:2,255|numeric',
-                                     'business_phone_country_code' => 'required_if:is_published,true|exists:countries,id|integer',
+                                     'business_address'            => 'nullable|required_if:is_published,true|max:255',
+                                     'business_email'              => 'nullable|required_if:is_published,true|max:255|email',
+                                     'business_phone_number'       => 'nullable|required_if:is_published,true|digits_between:2,255|numeric',
+                                     'business_phone_country_code' => 'nullable|required_if:is_published,true|exists:countries,id|integer',
                                  ])->setData([
                                                  'business_address'            => $practitioner->business_address,
                                                  'business_email'              => $practitioner->business_email,
