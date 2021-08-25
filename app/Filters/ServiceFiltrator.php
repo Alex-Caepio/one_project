@@ -93,7 +93,7 @@ class ServiceFiltrator
             $queryBuilder->whereHas(
                 'disciplines',
                 static function ($q) use ($disciplineId) {
-                    $q->where('id', $disciplineId);
+                    $q->where('disciplines.id', $disciplineId);
                 }
             );
         }

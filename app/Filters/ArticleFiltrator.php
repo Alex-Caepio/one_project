@@ -49,8 +49,8 @@ class ArticleFiltrator {
         }
 
         /* Disciplines */
-        if ($request->filled('discipline_id') || $request->filled('d')) {
-            $disciplineId = $request->filled('discipline_id') ? $request->get('discipline_id') : $request->get('d');
+        if ($request->filled('discipline_id') || $request->filled('disciplineId')) {
+            $disciplineId = $request->filled('discipline_id') ? $request->get('discipline_id') : $request->get('disciplineId');
             $queryBuilder->whereHas('disciplines', function($q) use ($disciplineId) {
                 $q->where('disciplines.id', (int)$disciplineId);
             });
