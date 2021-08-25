@@ -33,7 +33,7 @@ class UserFiltrator
 
         $isPublished = $request->getBoolFromRequest('is_published');
         if ($isPublished !== null) {
-            $queryBuilder->where('is_published', $isPublished);
+            $queryBuilder->where('users.is_published', $isPublished);
         }
 
         /* Disciplines */
@@ -62,7 +62,9 @@ class UserFiltrator
                         'business_email',
                         'LIKE',
                         $emailReplace
-                    )->orWhere('email', 'LIKE', $emailReplace)->orWhere('business_name', 'LIKE', $search)->orWhereHas(
+                    )->orWhere('email', 'LIKE', $emailReplace)
+                     ->orWhere('business_name', 'LIKE', $search)
+                     ->orWhereHas(
                             'keywords',
                             static function ($dQuery) use ($search) {
                                 $dQuery->where('keywords.title', 'LIKE', $search);
