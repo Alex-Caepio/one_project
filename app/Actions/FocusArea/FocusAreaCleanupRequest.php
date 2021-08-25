@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Actions\Discipline;
+namespace App\Actions\FocusArea;
 
 
 use App\Http\Requests\Request;

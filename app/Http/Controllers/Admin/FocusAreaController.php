@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Actions\Discipline\FocusAreaCleanupRequest;
+use App\Actions\FocusArea\FocusAreaCleanupRequest;
 use App\Actions\FocusArea\FocusAreaSaveRelationsRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\FocusAreaPublishRequest;
