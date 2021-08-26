@@ -38,8 +38,12 @@ class SubscriptionFreePeriod extends Command {
         $practitioners = User::where('account_type', User::ACCOUNT_PRACTITIONER)
                              ->whereHas('plan', static function($query) use ($nowDate) {
                                  $query->whereNotNull('plans.free_start_to')
-                                       ->where('plans.free_start_to', '<=', $nowDate->format('Y-m-d H:i:s'));
-                             })->whereNull('stripe_plan_id')->with('plan')->get();
+                                       ->whereNotNull('plans.free_start_from')
+                                       ->where('plans.free_start_from', '<=', $nowDate->format('Y-m-d H:i:s'));
+                             })->whereNull('stripe_plan_id')
+                               ->with('plan')
+                               ->where('plan_until', '<=', $nowDate->format('Y-m-d H:i:s'))
+                               ->get();
 
         Log::channel('console_commands_handler')
            ->info('All practitioners with expired plans will be switched to new plan: ', [
