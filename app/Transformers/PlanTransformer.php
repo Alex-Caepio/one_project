@@ -6,10 +6,12 @@ namespace App\Transformers;
 
 use App\Models\Plan;
 
-class PlanTransformer extends Transformer {
+class PlanTransformer extends Transformer
+{
     protected $availableIncludes = ['service_types'];
 
-    public function transform(Plan $plan) {
+    public function transform(Plan $plan)
+    {
         return [
             'id'                                    => $plan->id,
             'name'                                  => $plan->name,
@@ -48,11 +50,13 @@ class PlanTransformer extends Transformer {
             'order'                                 => $plan->order,
             'free_start_from'                       => $plan->free_start_from,
             'free_start_to'                         => $plan->free_start_to,
+            'free_period_length'                    => $plan->free_period_length,
             'active_trial'                          => $plan->isActiveTrial()
         ];
     }
 
-    public function includeServiceTypes(Plan $plan) {
+    public function includeServiceTypes(Plan $plan)
+    {
         return $this->collectionOrNull($plan->service_types, new ServiceTypeTransformer());
     }
 }
