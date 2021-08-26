@@ -21,7 +21,7 @@ class BookingMyClientController extends Controller {
             count(distinct attended_bookings.id) attended_bookings,
             count(distinct bookings.id) bookings,
             max(bookings.created_at) last_purchase,
-            max(attended_bookings.created_at) last_service
+            max(attended_bookings.datetime_from) last_service
             ')->join('bookings', 'bookings.user_id', '=', 'users.id')
                      ->leftJoin('bookings as live_bookings', function($q) {
                          $q->on('live_bookings.id', '=', 'bookings.id')
