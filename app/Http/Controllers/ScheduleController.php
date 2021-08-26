@@ -206,7 +206,7 @@ class ScheduleController extends Controller {
         return response(null, 204);
     }
 
-    public function availableInstalments(Schedule $schedule) {
+    public function availableInstalments(Schedule $schedule): array {
         $dateNow = Carbon::now();
         $dateFinal = Carbon::parse($schedule->deposit_final_date);
 
