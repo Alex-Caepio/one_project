@@ -29,7 +29,7 @@ class PlanController extends Controller
 
         $includes = $request->getIncludes();
         $includes[] = 'service_types';
-        $paginator = $query->with($includes)->paginate($request->getLimit());
+        $paginator = $query->with($includes)->orderBy('plans.id', 'desc')->paginate($request->getLimit());
         $plans     = $paginator->getCollection();
 
         return response(fractal($plans, new PlanTransformer())->parseIncludes($request->getIncludes()))
