@@ -51,7 +51,9 @@ class Plan extends Model
         }
         $nowDate = Carbon::now();
 
-        return $nowDate >= Carbon::parse($this->free_start_from) && $nowDate <= Carbon::parse($this->free_start_to);
+        return $nowDate >= Carbon::parse($this->free_start_from)
+               && $nowDate <= Carbon::parse($this->free_start_to)
+               && $this->free_period_length > 0;
 
     }
 

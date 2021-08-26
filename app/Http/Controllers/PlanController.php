@@ -15,7 +15,7 @@ use Stripe\StripeClient;
 
 class PlanController extends Controller {
     public function index(Request $request) {
-        $plans = Plan::get();
+        $plans = Plan::orderBy('plans.order', 'asc')->get();
         $plans->map(static function(Plan $plan) {
             $serviceTypes =
                 ServiceType::join('plan_service_type', 'plan_service_type.service_type_id', '=', 'service_types.id')
