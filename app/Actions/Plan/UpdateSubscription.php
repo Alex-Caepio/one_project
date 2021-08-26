@@ -17,6 +17,10 @@ class UpdateSubscription {
     public function execute(User $user, StripeClient $stripeClient, Plan $plan, bool $isNewPlan,
                             $request): bool {
         try {
+            $user->plan_id = $plan->id;
+            $user->plan_from = Carbon::now();
+            $user->account_type = User::ACCOUNT_PRACTITIONER;
+
             if (!$plan->isActiveTrial()) {
                 $subscription = $stripeClient->subscriptions->create([
                                                                          'default_payment_method' => $request->payment_method_id,
@@ -28,11 +32,10 @@ class UpdateSubscription {
                 $user->stripe_plan_id = $subscription->id;
                 $user->plan_until = Carbon::createFromTimestamp($subscription->current_period_end);
             } else {
-                $user->plan_until = $plan->free_start_to;
+                $endDate = Carbon::parse($user->plan_from)->addMonths($plan->free_period_length)->endOfDay();
+                $user->plan_until = $endDate;
             }
-            $user->plan_id = $plan->id;
-            $user->plan_from = Carbon::now();
-            $user->account_type = User::ACCOUNT_PRACTITIONER;
+
 
             $isUpgradedToPractitioner = $user->isDirty('account_type');
             if ($isUpgradedToPractitioner) {
