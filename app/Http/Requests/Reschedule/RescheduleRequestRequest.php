@@ -77,12 +77,12 @@ class RescheduleRequestRequest extends Request {
                             ->first();
                 if (!$newSchedule) {
                     $validator->errors()->add('new_schedule_id', 'New schedule is not available');
-                }
-
-                if ($this->booking->schedule->attendees !== null && $this->booking->schedule->attendees <=
-                                                                    Booking::where('schedule_id', $newSchedule->id)
-                                                                           ->uncanceled()->sum('amount')) {
-                    $validator->errors()->add('new_schedule_id', 'There are no free tickets in schedule');
+                } else {
+                    if ($this->booking->schedule->attendees !== null && $this->booking->schedule->attendees <=
+                                                                        Booking::where('schedule_id', $newSchedule->id)
+                                                                               ->uncanceled()->sum('amount')) {
+                        $validator->errors()->add('new_schedule_id', 'There are no free tickets in schedule');
+                    }
                 }
             }
         });

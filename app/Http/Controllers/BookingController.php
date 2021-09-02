@@ -44,6 +44,12 @@ class BookingController extends Controller {
         }, 'schedule.service' => static function($serviceQuery) {
             $serviceQuery->withTrashed();
         }]);
+
+        //load only practitioner reschedule
+        $bookingForClient = Auth::user()->id === $booking->user_id;
+           $booking->load(['reschedule_requests'  => static function($rrQuery) use($bookingForClient) {
+               $rrQuery->where('requested_by', $bookingForClient ? 'practitioner' : 'client');
+           }]);
         return fractal($booking, new BookingTransformer())->parseIncludes($request->getIncludes())->toArray();
     }
 
