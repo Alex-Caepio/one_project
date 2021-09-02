@@ -8,7 +8,7 @@ use App\Models\RescheduleRequest;
 use App\Models\Schedule;
 
 class RescheduleRequestStore {
-    public function execute(Booking $booking, $request) {
+    public function execute(Booking $booking, $request): RescheduleRequest {
         $rescheduleRequest = new RescheduleRequest();
         $newSchedule = Schedule::find($request->get('new_schedule_id'));
         $oldSchedule = Schedule::find($booking->schedule_id);
@@ -42,5 +42,6 @@ class RescheduleRequestStore {
 
         $rescheduleRequest->forceFill($data);
         $rescheduleRequest->save();
+        return $rescheduleRequest;
     }
 }

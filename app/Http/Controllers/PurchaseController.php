@@ -256,6 +256,7 @@ class PurchaseController extends Controller {
                 $stripe->paymentIntents->confirm($paymentIntent->id, ['payment_method' => $payment_method_id]);
             $purchase->stripe_id = $paymentIntent->id;
             $purchase->save();
+
         } catch (\Stripe\Exception\ApiErrorException $e) {
 
             Log::channel('stripe_purchase_schedule_error')->info("Client could not purchase schedule", [
