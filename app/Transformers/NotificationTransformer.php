@@ -5,7 +5,8 @@ namespace App\Transformers;
 
 use App\Models\Notification;
 
-class NotificationTransformer extends Transformer {
+class NotificationTransformer extends Transformer
+{
 
     protected $availableIncludes = [
         'client',
@@ -15,7 +16,8 @@ class NotificationTransformer extends Transformer {
         'booking'
     ];
 
-    public function transform(Notification $notification) {
+    public function transform(Notification $notification)
+    {
         return [
             'id'              => $notification->id,
             'title'           => $notification->title,
@@ -26,6 +28,7 @@ class NotificationTransformer extends Transformer {
             'old_address'     => $notification->old_address,
             'new_address'     => $notification->new_address,
             'old_datetime'    => $notification->old_datetime,
+            'old_enddate'     => $notification->old_enddate,
             'new_datetime'    => $notification->new_datetime,
             'price_id'        => $notification->price_id,
             'booking_id'      => $notification->booking_id,
@@ -40,23 +43,28 @@ class NotificationTransformer extends Transformer {
         ];
     }
 
-    public function includeClient(Notification $notification) {
+    public function includeClient(Notification $notification)
+    {
         return $this->itemOrNull($notification->client, new UserTransformer());
     }
 
-    public function includePractitioner(Notification $notification) {
+    public function includePractitioner(Notification $notification)
+    {
         return $this->itemOrNull($notification->practitioner, new UserTransformer());
     }
 
-    public function includeReceiver(Notification $notification) {
+    public function includeReceiver(Notification $notification)
+    {
         return $this->itemOrNull($notification->receiver, new UserTransformer());
     }
 
-    public function includePrice(Notification $notification) {
+    public function includePrice(Notification $notification)
+    {
         return $this->itemOrNull($notification->price, new UserTransformer());
     }
 
-    public function includeBooking(Notification $notification) {
+    public function includeBooking(Notification $notification)
+    {
         return $this->itemOrNull($notification->booking, new BookingTransformer());
     }
 
