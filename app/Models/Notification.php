@@ -39,8 +39,8 @@ class Notification extends Model {
         'updated_at'    => 'datetime',
         'datetime_from' => 'datetime',
         'datetime_to'   => 'datetime',
-        'old_enddate'   => 'old_enddate',
-        'new_enddate'   => 'new_enddate',
+        'old_enddate'   => 'datetime',
+        'new_enddate'   => 'datetime',
     ];
 
     public function client() {
