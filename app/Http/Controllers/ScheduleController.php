@@ -133,13 +133,16 @@ class ScheduleController extends Controller {
         $time = Carbon::now();
         if ($personalFreezed === null) {
             $freeze = new ScheduleFreeze();
-            $freeze->forceFill([
-                                   'freeze_at'   => $time,
-                                   'user_id'     => Auth::id(),
-                                   'schedule_id' => $schedule->id,
-                                   'quantity'    => $request->get('amount') ?? 1,
-                                   'price_id'    => $request->price_id
-                               ]);
+            $freeze->forceFill(
+                [
+                    'freeze_at'       => $time,
+                    'user_id'         => Auth::id(),
+                    'practitioner_id' => $schedule->service->user_id,
+                    'schedule_id'     => $schedule->id,
+                    'quantity'        => $request->get('amount') ?? 1,
+                    'price_id'        => $request->price_id
+                ]
+            );
             $freeze->save();
         }
     }
@@ -211,7 +214,7 @@ class ScheduleController extends Controller {
         $dateFinal = Carbon::parse($schedule->deposit_final_date);
 
         //can't put installments on expired schedules
-        if ($dateNow->isAfter($dateFinal)) {
+        if (!$schedule->is_published || $dateNow->isAfter($dateFinal)) {
             return [];
         }
 

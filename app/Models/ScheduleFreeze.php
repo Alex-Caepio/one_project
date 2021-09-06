@@ -10,7 +10,7 @@ class ScheduleFreeze extends Model {
 
     use HasFactory;
 
-    protected $fillable = ['freeze_at', 'user_id', 'schedule_id', 'quantity', 'price_id'];
+    protected $fillable = ['freeze_at', 'user_id', 'schedule_id', 'quantity', 'price_id', 'practitioner_id'];
 
     /**
      * The attributes that should be cast to native types.
@@ -39,6 +39,12 @@ class ScheduleFreeze extends Model {
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function practitioner() {
+        return $this->belongsTo(User::class, 'practitioner_id', 'id');
+    }
 
     /**
      * @return bool

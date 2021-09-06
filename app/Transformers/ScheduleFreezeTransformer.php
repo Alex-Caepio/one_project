@@ -9,26 +9,33 @@ class ScheduleFreezeTransformer extends Transformer
 {
     protected $availableIncludes = [
         'schedule',
-        'user'
+        'user',
+        'practitioner'
     ];
 
     public function transform(ScheduleFreeze $freeze)
     {
         return [
-            'id'          => $freeze->id,
-            'schedule_id' => $freeze->schedule_id,
-            'user_id'     => $freeze->user_id,
-            'quantity'    => $freeze->quantity,
-            'freeze_at'   => $freeze->freeze_at,
-            'created_at'  => $freeze->created_at,
-            'updated_at'  => $freeze->updated_at,
-            'price_id'    => $freeze->price_id,
+            'id'              => $freeze->id,
+            'schedule_id'     => $freeze->schedule_id,
+            'user_id'         => $freeze->user_id,
+            'practitioner_id' => $freeze->practitioner_id,
+            'quantity'        => $freeze->quantity,
+            'freeze_at'       => $freeze->freeze_at,
+            'created_at'      => $freeze->created_at,
+            'updated_at'      => $freeze->updated_at,
+            'price_id'        => $freeze->price_id,
         ];
     }
 
     public function includeUser(ScheduleFreeze $freeze)
     {
         return $this->itemOrNull($freeze->user, new UserTransformer());
+    }
+
+    public function includePractitioner(ScheduleFreeze $freeze)
+    {
+        return $this->itemOrNull($freeze->practitioner, new UserTransformer());
     }
 
     public function includeSchedule(ScheduleFreeze $freeze)
