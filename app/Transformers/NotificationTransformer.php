@@ -30,6 +30,7 @@ class NotificationTransformer extends Transformer
             'old_datetime'    => $notification->old_datetime,
             'old_enddate'     => $notification->old_enddate,
             'new_datetime'    => $notification->new_datetime,
+            'new_enddate'     => $notification->new_enddate,
             'price_id'        => $notification->price_id,
             'booking_id'      => $notification->booking_id,
             'price_payed'     => $notification->price_payed,

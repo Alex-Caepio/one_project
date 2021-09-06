@@ -28,6 +28,7 @@ class Notification extends Model {
         'datetime_from',
         'datetime_to',
         'old_enddate',
+        'new_enddate',
     ];
 
     protected $casts = [
@@ -39,6 +40,7 @@ class Notification extends Model {
         'datetime_from' => 'datetime',
         'datetime_to'   => 'datetime',
         'old_enddate'   => 'old_enddate',
+        'new_enddate'   => 'new_enddate',
     ];
 
     public function client() {

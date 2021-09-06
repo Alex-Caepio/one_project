@@ -37,7 +37,9 @@ class RescheduleRequestDecline {
                 $notification->old_address = $rescheduleRequest->old_location_displayed;
                 $notification->new_address = $rescheduleRequest->new_location_displayed;
                 $notification->old_datetime = $rescheduleRequest->old_start_date;
+                $notification->old_enddate = $rescheduleRequest->old_end_date;
                 $notification->new_datetime = $rescheduleRequest->new_start_date;
+                $notification->new_enddate = $rescheduleRequest->new_end_date;
                 $notification->service_id = $booking->schedule->service_id;
                 $notification->datetime_from = $booking->datetime_from;
                 $notification->datetime_to = $booking->datetime_to;
