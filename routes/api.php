@@ -8,6 +8,7 @@ use App\Http\Controllers\BookingController;
 use App\Http\Controllers\BookingMyClientController;
 use App\Http\Controllers\CancellationController;
 use App\Http\Controllers\GoogleCalendarIntegrationController;
+use App\Http\Controllers\InstallmentController;
 use App\Http\Controllers\LatestTwoController;
 use App\Http\Controllers\MainPageController;
 use App\Http\Controllers\NotificationController;
@@ -191,6 +192,7 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::get('/prices/{price}/appointments-dates/{date}', [ScheduleController::class, 'appointmentsOnDate']);
     Route::post('/schedules/{schedule}/copy', [ScheduleController::class, 'copy']);
     Route::get('/schedules/{schedule}/available-instalments', [ScheduleController::class, 'availableInstalments']);
+    Route::post('/schedules/{schedule}/calendar-instalments', [ScheduleController::class, 'availableInstalmentsDates']);
     Route::get('/schedules/{schedule}/reschedule-available', [ScheduleController::class, 'rescheduleScheduleList']);
 
     Route::put('/price/{price}', [PriceController::class, 'update']);
@@ -260,4 +262,8 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::get('/notifications/practitioner', [NotificationController::class, 'index']);
     Route::get('/notifications/client', [NotificationController::class, 'clientNotifications']);
     Route::post('/notifications/{notification}/mark-as-read', [NotificationController::class, 'markAsRead']);
+
+    Route::get('/installments/{purchase}', [InstallmentController::class, 'getInstallments']);
+
+
 });
