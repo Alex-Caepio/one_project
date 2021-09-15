@@ -17,6 +17,7 @@ use App\Models\PromotionCode;
 use App\Models\Purchase;
 use App\Models\Schedule;
 use App\Models\ScheduleFreeze;
+use App\Models\User;
 use App\Transformers\PromocodeCalculateTransformer;
 use App\Transformers\PurchaseTransformer;
 use Carbon\Carbon;
@@ -75,7 +76,7 @@ class PurchaseController extends Controller {
             $purchase->promocode_id = $promo instanceof PromotionCode ? $promo->id : null;
             $purchase->price_original = $price->cost;
             $purchase->price = $cost;
-            $purchase->is_deposit = false;
+            $purchase->is_deposit = $request->instalments && $schedule->deposit_accepted;
             $purchase->amount = $request->amount;
             $purchase->discount = $discount;
             $purchase->discount_applied = $promo instanceof PromotionCode ? $promo->promotion->applied_to : null;
@@ -175,15 +176,12 @@ class PurchaseController extends Controller {
                        new PromocodeCalculateTransformer());
     }
 
-    protected function payInInstallments($request, $schedule, $price, $practitioner, $cost, $purchase): bool {
+    protected function payInInstallments(PurchaseScheduleRequest $request, Schedule $schedule, Price $price, User $practitioner, $cost, Purchase $purchase): bool {
         $payment_method_id = run_action(GetViablePaymentMethod::class, $practitioner, $request->payment_method_id);
         $depositCost = $schedule->deposit_amount * 100 * $request->amount;
 
         try {
-            $subscription = run_action(PurchaseInstallment::class, $price, $request, $payment_method_id, $request->instalments, $cost);
-            $purchase->subscription_id = $subscription->id;
-            $purchase->save();
-
+            run_action(PurchaseInstallment::class, $schedule, $request, $payment_method_id, $cost, $purchase);
         } catch (\Stripe\Exception\ApiErrorException $e) {
             Log::channel('stripe_installment_fail')->info('The client could not purchase installment', [
                     'user_id'        => $request->user()->id,

@@ -250,6 +250,16 @@ return [
             'driver' => 'daily',
         ],
 
+        'stripe_installment_fail' => [
+            'path'   => storage_path('logs/stripe_installment_fail.log'),
+            'driver' => 'daily',
+        ],
+
+        'stripe_installment_success' => [
+            'path'   => storage_path('logs/stripe_installment_success.log'),
+            'driver' => 'daily',
+        ],
+
     ],
 
 ];

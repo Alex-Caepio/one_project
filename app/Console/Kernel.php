@@ -6,13 +6,13 @@ use App\Console\Commands\BookingNotifierTomorrow;
 use App\Console\Commands\BookingNotifierTwoWeek;
 use App\Console\Commands\BookingNotifierWeek;
 use App\Console\Commands\BookingStatusesUpdate;
-use App\Console\Commands\InstalmentsNotifier;
 use App\Console\Commands\MarkExpiredPromocodes;
 use App\Console\Commands\RescheduleNoReplyCommand;
 use App\Console\Commands\RescheduleNoReplyFinishCommand;
 use App\Console\Commands\ScheduleFreezesByCron;
 use App\Console\Commands\ScheduleFreezesTruncate;
 use App\Console\Commands\SubscriptionFreePeriod;
+use App\Console\Commands\TestCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -33,6 +33,7 @@ class Kernel extends ConsoleKernel {
         RescheduleNoReplyCommand::class,
         RescheduleNoReplyFinishCommand::class,
         SubscriptionFreePeriod::class,
+        TestCommand::class
     ];
 
     /**
@@ -53,6 +54,7 @@ class Kernel extends ConsoleKernel {
         $schedule->command('reschedule:noreply')->daily();
         $schedule->command('reschedule:noreply-finish')->daily();
         $schedule->command('plan-freeperiod')->daily();
+        $schedule->command('cron-check:cmd')->hourly();
     }
 
     /**

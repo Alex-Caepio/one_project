@@ -159,8 +159,8 @@ class Schedule extends Model
                     $q->where(
                         function ($q) use ($availability) {
                             $q->where("TIME(datetime_from) >= '{$availability->start_time}'")->where(
-                                    "TIME(datetime_from) <= '{$availability->end_time}'"
-                                );
+                                "TIME(datetime_from) <= '{$availability->end_time}'"
+                            );
                         }
                     );
                     break;
@@ -168,8 +168,8 @@ class Schedule extends Model
                     $q->where(
                         function ($q) use ($availability) {
                             $q->whereIn(DB::raw('WEEKDAY(datetime_from)'), [5, 6])->whereRaw(
-                                    "TIME(datetime_from) >= '{$availability->start_time}'"
-                                )->whereRaw("TIME(datetime_from) <= '{$availability->end_time}'");
+                                "TIME(datetime_from) >= '{$availability->start_time}'"
+                            )->whereRaw("TIME(datetime_from) <= '{$availability->end_time}'");
                         }
                     );
                     break;
@@ -177,8 +177,8 @@ class Schedule extends Model
                     $q->where(
                         function ($q) use ($availability) {
                             $q->whereIn(DB::raw('WEEKDAY(datetime_from)'), [0, 1, 2, 3, 4])->whereRaw(
-                                    "TIME(datetime_from) >= '{$availability->start_time}'"
-                                )->whereRaw("TIME(datetime_from) <= '{$availability->end_time}'");
+                                "TIME(datetime_from) >= '{$availability->start_time}'"
+                            )->whereRaw("TIME(datetime_from) <= '{$availability->end_time}'");
                         }
                     );
                     break;
@@ -186,8 +186,8 @@ class Schedule extends Model
                     $q->where(
                         function ($q) use ($availability) {
                             $q->where(DB::raw('WEEKDAY(datetime_from)'), '=', 0)->whereRaw(
-                                    "TIME(datetime_from) >= '{$availability->start_time}'"
-                                )->whereRaw("TIME(datetime_from) <= '{$availability->end_time}'");
+                                "TIME(datetime_from) >= '{$availability->start_time}'"
+                            )->whereRaw("TIME(datetime_from) <= '{$availability->end_time}'");
                         }
                     );
                     break;
@@ -195,8 +195,8 @@ class Schedule extends Model
                     $q->where(
                         function ($q) use ($availability) {
                             $q->where(DB::raw('WEEKDAY(datetime_from)'), '=', 1)->whereRaw(
-                                    "TIME(datetime_from) >= '{$availability->start_time}'"
-                                )->whereRaw("TIME(datetime_from) <= '{$availability->end_time}'");
+                                "TIME(datetime_from) >= '{$availability->start_time}'"
+                            )->whereRaw("TIME(datetime_from) <= '{$availability->end_time}'");
                         }
                     );
                     break;
@@ -204,8 +204,8 @@ class Schedule extends Model
                     $q->where(
                         function ($q) use ($availability) {
                             $q->where(DB::raw('WEEKDAY(datetime_from)'), '=', 2)->whereRaw(
-                                    "TIME(datetime_from) >= '{$availability->start_time}'"
-                                )->whereRaw("TIME(datetime_from) <= '{$availability->end_time}'");
+                                "TIME(datetime_from) >= '{$availability->start_time}'"
+                            )->whereRaw("TIME(datetime_from) <= '{$availability->end_time}'");
                         }
                     );
                     break;
@@ -213,8 +213,8 @@ class Schedule extends Model
                     $q->where(
                         function ($q) use ($availability) {
                             $q->where(DB::raw('WEEKDAY(datetime_from)'), '=', 3)->whereRaw(
-                                    "TIME(datetime_from) >= '{$availability->start_time}'"
-                                )->whereRaw("TIME(datetime_from) <= '{$availability->end_time}'");
+                                "TIME(datetime_from) >= '{$availability->start_time}'"
+                            )->whereRaw("TIME(datetime_from) <= '{$availability->end_time}'");
                         }
                     );
                     break;
@@ -222,8 +222,8 @@ class Schedule extends Model
                     $q->where(
                         function ($q) use ($availability) {
                             $q->where(DB::raw('WEEKDAY(datetime_from)'), '=', 4)->whereRaw(
-                                    "TIME(datetime_from) >= '{$availability->start_time}'"
-                                )->whereRaw("TIME(datetime_from) <= '{$availability->end_time}'");
+                                "TIME(datetime_from) >= '{$availability->start_time}'"
+                            )->whereRaw("TIME(datetime_from) <= '{$availability->end_time}'");
                         }
                     );
                     break;
@@ -231,8 +231,8 @@ class Schedule extends Model
                     $q->where(
                         function ($q) use ($availability) {
                             $q->where(DB::raw('WEEKDAY(datetime_from)'), '=', 5)->whereRaw(
-                                    "TIME(datetime_from) >= '{$availability->start_time}'"
-                                )->whereRaw("TIME(datetime_from) <= '{$availability->end_time}'");
+                                "TIME(datetime_from) >= '{$availability->start_time}'"
+                            )->whereRaw("TIME(datetime_from) <= '{$availability->end_time}'");
                         }
                     );
                     break;
@@ -240,8 +240,8 @@ class Schedule extends Model
                     $q->where(
                         function ($q) use ($availability) {
                             $q->where(DB::raw('WEEKDAY(datetime_from)'), '=', 6)->whereRaw(
-                                    "TIME(datetime_from) >= '{$availability->start_time}'"
-                                )->whereRaw("TIME(datetime_from) <= '{$availability->end_time}'");
+                                "TIME(datetime_from) >= '{$availability->start_time}'"
+                            )->whereRaw("TIME(datetime_from) <= '{$availability->end_time}'");
                         }
                     );
                     break;
@@ -339,13 +339,13 @@ class Schedule extends Model
         $time = Carbon::now()->subMinutes(15);
         $purchased = Booking::where('schedule_id', $this->id)->uncanceled()->sum('amount');
         $personalFreezed = ScheduleFreeze::where('schedule_id', $this->id)->where('user_id', Auth::id())->where(
-                'freeze_at',
-                '>',
-                $time->toDateTimeString()
-            )->count();
+            'freeze_at',
+            '>',
+            $time->toDateTimeString()
+        )->count();
         $freezed =
             ScheduleFreeze::where('schedule_id', $this->id)->where('freeze_at', '>', $time->toDateTimeString())->count(
-                );
+            );
         $available = (int)$this->attendees - ($purchased + $freezed - $personalFreezed);
         return $available < 0 ? 0 : $available;
     }
@@ -379,6 +379,25 @@ class Schedule extends Model
     public function calculateInstallmentsCalendar($amount, int $periods = 1): array
     {
         $data = [];
+        $installmentInfo = $this->getInstallmentInfo($amount, $periods);
+        if ($installmentInfo !== null) {
+            $daysPerPeriod = $installmentInfo['daysPerPeriod'];
+            $amountPerPeriod = $installmentInfo['amountPerPeriod'];
+            $depositFinalDate = $installmentInfo['finalPaymentDate'];
+            $currentDate = Carbon::now();
+            $currentDate->addDays($daysPerPeriod);
+            while ($currentDate <= $depositFinalDate) {
+                $date = $currentDate->format('d.m.Y');
+                $data[$date] = round($amountPerPeriod, 2);
+                $currentDate->addDays($daysPerPeriod);
+            }
+        }
+        return $data;
+    }
+
+    public function getInstallmentInfo($amount, int $periods = 1): ?array
+    {
+        $result = null;
         if ($this->isInstallmentAvailable()) {
             $depositInitialValue = $this->deposit_amount;
             $furtherPayments = $amount - $depositInitialValue;
@@ -388,15 +407,10 @@ class Schedule extends Model
                 $daysDiff = $depositFinalDate->diffInDays($currentDate);
                 $daysPerPeriod = intdiv($daysDiff, $periods);
                 $amountPerPeriod = (float)($furtherPayments / $periods);
-                $currentDate->addDays($daysPerPeriod);
-                while ($currentDate <= $depositFinalDate) {
-                    $date = $currentDate->format('d.m.Y');
-                    $data[$date] = round($amountPerPeriod, 2);
-                    $currentDate->addDays($daysPerPeriod);
-                }
+                $result = ['daysPerPeriod' => $daysPerPeriod, 'amountPerPeriod' => $amountPerPeriod, 'finalPaymentDate' => $depositFinalDate];
             }
         }
-        return $data;
+        return $result;
     }
 
 }
