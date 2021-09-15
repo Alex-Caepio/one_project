@@ -7,7 +7,8 @@ namespace App\Transformers;
 use App\Models\Schedule;
 use Carbon\Carbon;
 
-class ScheduleTransformer extends Transformer {
+class ScheduleTransformer extends Transformer
+{
     protected $availableIncludes = [
         'location',
         'prices',
@@ -19,11 +20,12 @@ class ScheduleTransformer extends Transformer {
         'schedule_files',
         'schedule_hidden_files',
         'bookings',
-        'reschedule_requests'
+        'reschedule_requests',
+        'country'
     ];
 
-    public function transform(Schedule $schedule) {
-
+    public function transform(Schedule $schedule)
+    {
         return [
             'id'                           => $schedule->id,
             'title'                        => $schedule->title,
@@ -36,8 +38,8 @@ class ScheduleTransformer extends Transformer {
             'cost'                         => $schedule->cost,
             'comments'                     => $schedule->comments,
             'city'                         => $schedule->city,
-            'country'                      => $schedule->country,
             'post_code'                    => $schedule->post_code,
+            'country_id'                   => $schedule->country_id,
             'location_displayed'           => $schedule->location_displayed,
             'meals_breakfast'              => (bool)$schedule->meals_breakfast,
             'meals_lunch'                  => (bool)$schedule->meals_lunch,
@@ -77,47 +79,63 @@ class ScheduleTransformer extends Transformer {
         ];
     }
 
-    public function includeLocation(Schedule $schedule) {
+    public function includeLocation(Schedule $schedule)
+    {
         return $this->itemOrNull($schedule->location, new LocationTransformer());
     }
 
-    public function includePrices(Schedule $schedule) {
+    public function includePrices(Schedule $schedule)
+    {
         return $this->collectionOrNull($schedule->prices, new PriceTransformer());
     }
 
-    public function includeService(Schedule $schedule) {
+    public function includeService(Schedule $schedule)
+    {
         return $this->itemOrNull($schedule->service, new ServiceTransformer());
     }
 
-    public function includeUsers(Schedule $schedule) {
+    public function includeCountry(Schedule $schedule)
+    {
+        return $this->itemOrNull($schedule->country, new CountryTransformer());
+    }
+
+    public function includeUsers(Schedule $schedule)
+    {
         return $this->collectionOrNull($schedule->users, new UserTransformer());
     }
 
-    public function includeMediaFiles(Schedule $schedule) {
+    public function includeMediaFiles(Schedule $schedule)
+    {
         return $this->collectionOrNull($schedule->media_files, new MediaFileTransformer());
     }
 
-    public function includeScheduleAvailabilities(Schedule $schedule) {
+    public function includeScheduleAvailabilities(Schedule $schedule)
+    {
         return $this->collectionOrNull($schedule->schedule_availabilities, new ScheduleAvailabilityTransformer());
     }
 
-    public function includeScheduleUnavailabilities(Schedule $schedule) {
+    public function includeScheduleUnavailabilities(Schedule $schedule)
+    {
         return $this->collectionOrNull($schedule->schedule_unavailabilities, new ScheduleUnavailabilityTransformer());
     }
 
-    public function includeScheduleFiles(Schedule $schedule) {
+    public function includeScheduleFiles(Schedule $schedule)
+    {
         return $this->collectionOrNull($schedule->schedule_files, new ScheduleFileTransformer());
     }
 
-    public function includeScheduleHiddenFiles(Schedule $schedule) {
+    public function includeScheduleHiddenFiles(Schedule $schedule)
+    {
         return $this->collectionOrNull($schedule->schedule_hidden_files, new ScheduleHiddenFileTransformer());
     }
 
-    public function includeBookings(Schedule $schedule) {
+    public function includeBookings(Schedule $schedule)
+    {
         return $this->collectionOrNull($schedule->bookings, new BookingTransformer());
     }
 
-    public function includeRescheduleRequests(Schedule $schedule) {
+    public function includeRescheduleRequests(Schedule $schedule)
+    {
         return $this->collectionOrNull($schedule->reschedule_requests, new RescheduleRequestTransformer());
     }
 }

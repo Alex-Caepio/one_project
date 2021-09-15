@@ -37,7 +37,7 @@ class Schedule extends Model
         'cost',
         'comments',
         'city',
-        'country',
+        'country_id',
         'post_code',
         'location_displayed',
         'meals_breakfast',
@@ -90,6 +90,11 @@ class Schedule extends Model
     public function location()
     {
         return $this->belongsTo(Location::class);
+    }
+
+    public function country()
+    {
+        return $this->belongsTo(Country::class);
     }
 
     public function prices()
@@ -271,7 +276,7 @@ class Schedule extends Model
             } else {
                 // Unset, because another event will be fired for Reschedule Request
                 unset(
-                    $changes['end_date'], $changes['start_date'], $changes['location_id'], $changes['venue'], $changes['city'], $changes['country'], $changes['location_displayed']
+                    $changes['end_date'], $changes['start_date'], $changes['location_id'], $changes['venue'], $changes['city'], $changes['country_id'], $changes['location_displayed']
                 );
                 $result = count($changes) > 0;
             }
