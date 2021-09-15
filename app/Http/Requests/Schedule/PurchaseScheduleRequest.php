@@ -62,7 +62,7 @@ class PurchaseScheduleRequest extends Request implements CreateScheduleInterface
             $requiredAmount = (int)$this->request->get('amount');
 
             if ($schedule->service->service_type_id !== 'appointment' && (int)$price->number_available > 0) {
-                if (($bookingsCount + $requiredAmount) >= (int)$price->number_available) {
+                if (($bookingsCount + $requiredAmount) > (int)$price->number_available) {
                     $validator->errors()->add('price_id', 'All schedules for that price were sold out');
                 }
             }
