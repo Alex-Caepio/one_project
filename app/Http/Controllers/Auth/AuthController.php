@@ -114,7 +114,7 @@ class AuthController extends Controller {
         }
 
         //first filled business country
-        if (!$user->business_country_id && !$user->stripe_account_id) {
+        if (!$user->stripe_account_id) {
             try {
                 $country = Country::findOrFail((int)$request->get('business_country_id'));
                 $stripeAccount = $stripe->accounts->create([
