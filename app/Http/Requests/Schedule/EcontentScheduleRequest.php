@@ -4,14 +4,16 @@ namespace App\Http\Requests\Schedule;
 
 use Illuminate\Validation\Rule;
 
-class EcontentScheduleRequest extends GenericSchedule {
+class EcontentScheduleRequest extends GenericSchedule
+{
 
     /**
      * Get the validation rules that apply to the request.
      *
      * @return array
      */
-    public function rules() {
+    public function rules()
+    {
         return [
             'title'                   => 'required|string|min:5',
             'promo_code'              => 'string|min:5',
@@ -25,13 +27,15 @@ class EcontentScheduleRequest extends GenericSchedule {
             'booking_message'         => 'nullable|string|max:1000',
             'venue_address'           => 'required_if:appointment,physical|max:255',
             'city'                    => 'nullable|string',
-            'country'                 => 'nullable|string',
+            'country_id'              => 'nullable|exists:countries,id',
             'location_displayed'      => 'required|string',
             'refund_terms'            => 'required',
             'prices'                  => 'required|array',
-            'prices.*.name'           => Rule::requiredIf(function() {
-                return count($this->prices) > 1;
-            }),
+            'prices.*.name'           => Rule::requiredIf(
+                function () {
+                    return count($this->prices) > 1;
+                }
+            ),
             'prices.*.cost'           => 'required_if:prices.*.is_free,false',
             'prices.*.is_free'        => 'required',
             'prices.*.available_till' => 'nullable|before:end_date',
@@ -40,7 +44,8 @@ class EcontentScheduleRequest extends GenericSchedule {
         ];
     }
 
-    public function messages() {
+    public function messages()
+    {
         return [
             'prices.*.name.required'         => 'The name field is required when setting prices.',
             'prices.*.cost.required_if'      => 'The cost field is required when setting prices.',

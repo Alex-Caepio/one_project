@@ -4,29 +4,33 @@ namespace App\Http\Requests\Schedule;
 
 use Illuminate\Validation\Rule;
 
-class ClassScheduleRequest extends GenericSchedule {
+class ClassScheduleRequest extends GenericSchedule
+{
 
     /**
      * Get the validation rules that apply to the request.
      *
      * @return array
      */
-    public function rules() {
+    public function rules()
+    {
         return [
             'title'                   => 'required|string|min:5',
             'start_date'              => 'required|date|after:today',
             'end_date'                => 'required|date|after:today',
             'venue_address'           => 'required_if:appointment,physical|max:255',
             'city'                    => 'required_if:appointment,physical|required|string',
-            'country'                 => 'required_if:appointment,physical|string',
+            'country_id'              => 'required_if:appointment,physical|exists:countries,id',
             'location_displayed'      => 'required|string',
             'attendees'               => 'required|integer',
             'url'                     => 'nullable|required_if:appointment,virtual|string',
             'refund_terms'            => 'required',
             'prices'                  => 'required|array',
-            'prices.*.name'           => Rule::requiredIf(function() {
-                return count($this->prices) > 1;
-            }),
+            'prices.*.name'           => Rule::requiredIf(
+                function () {
+                    return count($this->prices) > 1;
+                }
+            ),
             'prices.*.cost'           => 'required_if:prices.*.is_free,false',
             'prices.*.is_free'        => 'required',
             'prices.*.available_till' => 'nullable|before:end_date',
@@ -39,7 +43,8 @@ class ClassScheduleRequest extends GenericSchedule {
         ];
     }
 
-    public function messages() {
+    public function messages()
+    {
         return [
             'prices.*.name.required'         => 'The name field is required when setting prices.',
             'prices.*.cost.required_if'      => 'The cost field is required when setting prices.',

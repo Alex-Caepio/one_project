@@ -290,7 +290,7 @@ class EmailVariables {
      */
 
     public function getSchedule_country(): ?string {
-        return $this->event->schedule->country;
+        return $this->event->schedule->country->nicename;
     }
 
     /**

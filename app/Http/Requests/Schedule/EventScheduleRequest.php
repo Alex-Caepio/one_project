@@ -4,30 +4,34 @@ namespace App\Http\Requests\Schedule;
 
 use Illuminate\Validation\Rule;
 
-class EventScheduleRequest extends GenericSchedule {
+class EventScheduleRequest extends GenericSchedule
+{
 
     /**
      * Get the validation rules that apply to the request.
      *
      * @return array
      */
-    public function rules() {
+    public function rules()
+    {
         return [
             'title'                     => 'required|string|min:5',
             'start_date'                => 'required|date|after:today',
             'end_date'                  => 'required|date|after:today',
             'venue_address'             => 'nullable|required_if:appointment,physical|max:255',
             'city'                      => 'nullable|required_if:appointment,physical|string',
-            'country'                   => 'nullable|required_if:appointment,physical|string',
+            'country_id'                => 'nullable|required_if:appointment,physical|exists:countries,id',
             'post_code'                 => 'nullable|required_if:appointment,physical',
             'location_displayed'        => 'required|string',
             'attendees'                 => 'required_if:appointment,physical|integer',
             'url'                       => 'nullable|required_if:appointment,virtual|string',
             'refund_terms'              => 'required',
             'prices'                    => 'required|array',
-            'prices.*.name'             => Rule::requiredIf(function() {
-                return count($this->prices) > 1;
-            }),
+            'prices.*.name'             => Rule::requiredIf(
+                function () {
+                    return count($this->prices) > 1;
+                }
+            ),
             'prices.*.cost'             => 'required_if:prices.*.is_free,false',
             'prices.*.is_free'          => 'required',
             'prices.*.available_till'   => 'nullable|before:end_date',
@@ -37,7 +41,8 @@ class EventScheduleRequest extends GenericSchedule {
         ];
     }
 
-    public function messages() {
+    public function messages()
+    {
         return [
             'prices.*.name.required'                  => 'The name field is required when setting prices.',
             'prices.*.cost.required_if'               => 'The cost field is required when setting prices.',
