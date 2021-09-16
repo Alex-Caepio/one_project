@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Log;
 class ScheduleUpdate extends ScheduleSave {
 
     public function execute($request, Schedule $schedule): Schedule {
-        $data = $request->all();
+        $data = $this->collectRequest($request, $schedule->service);
         $schedule->update($data);
         $this->updatePrices($request, $schedule);
         $this->saveRelations($request, $schedule);

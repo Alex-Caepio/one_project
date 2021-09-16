@@ -3,7 +3,6 @@
 
 namespace App\Actions\Schedule;
 
-
 use App\Http\Requests\Schedule\CreateScheduleInterface;
 use App\Models\Schedule;
 use App\Models\Service;
@@ -12,8 +11,7 @@ use Stripe\StripeClient;
 class ScheduleStore extends ScheduleSave {
 
     public function execute(CreateScheduleInterface $request, Service $service): Schedule {
-        $data = $request->all();
-        $data['service_id'] = $service->id;
+        $data = $this->collectRequest($request, $service);
         $schedule = Schedule::create($data);
         $this->savePrices($schedule, $service, $request);
         $this->saveRelations($request, $schedule);

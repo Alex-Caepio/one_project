@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Log;
  * @property int id
  * @property int buffer_time
  * @property int deposit_instalments
+ * @property int deposit_instalment_frequency
  * @property bool deposit_accepted
  * @property float deposit_amount
  * @property string deposit_final_date
@@ -356,22 +357,29 @@ class Schedule extends Model
             return false;
         }
 
+        if ($this->service->service_type_id === 'bespoke') {
+            return true;
+        }
+
         $dateNow = Carbon::now();
         $dateFinal = Carbon::parse($this->deposit_final_date);
-
         //can't put installments on expired schedules
-        return $this->is_published && !$dateNow->isAfter($dateFinal);
+        return !$dateNow->isAfter($dateFinal);
     }
 
     public function getInstallmentPeriods(): array
     {
-        $dateNow = Carbon::now();
-        $dateFinal = Carbon::parse($this->deposit_final_date);
-        $daysDiff = $dateNow->diffInDays($dateFinal);
-        $periods = (int)($daysDiff / 14);
         $data = [];
-        for ($i = 1; $i <= $periods; $i++) {
-            $data[] += $i;
+        if ($this->service->service_type_id === 'bespoke') {
+            $data[] = $this->deposit_instalments;
+        } else {
+            $dateNow = Carbon::now();
+            $dateFinal = Carbon::parse($this->deposit_final_date);
+            $daysDiff = $dateNow->diffInDays($dateFinal);
+            $periods = (int)($daysDiff / 14);
+            for ($i = 1; $i <= $periods; $i++) {
+                $data[] += $i;
+            }
         }
         return $data;
     }
@@ -402,10 +410,15 @@ class Schedule extends Model
             $depositInitialValue = $this->deposit_amount;
             $furtherPayments = $amount - $depositInitialValue;
             if ($furtherPayments > 0) {
-                $depositFinalDate = Carbon::parse($this->deposit_final_date);
                 $currentDate = Carbon::now();
-                $daysDiff = $depositFinalDate->diffInDays($currentDate);
-                $daysPerPeriod = intdiv($daysDiff, $periods);
+                if ($this->service->service_type_id === 'bespoke') {
+                    $daysPerPeriod = $this->deposit_instalment_frequency;
+                    $depositFinalDate = $currentDate->addDays($daysPerPeriod * $periods);
+                } else {
+                    $depositFinalDate = Carbon::parse($this->deposit_final_date);
+                    $daysDiff = $depositFinalDate->diffInDays($currentDate);
+                    $daysPerPeriod = intdiv($daysDiff, $periods);
+                }
                 $amountPerPeriod = (float)($furtherPayments / $periods);
                 $result = ['daysPerPeriod' => $daysPerPeriod, 'amountPerPeriod' => $amountPerPeriod, 'finalPaymentDate' => $depositFinalDate];
             }
