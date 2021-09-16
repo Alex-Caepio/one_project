@@ -66,6 +66,7 @@ class PurchaseController extends Controller {
             }
         }
         $schedule->load('service');
+        $isInstallment = $request->instalments && $schedule->deposit_accepted;
 
         try {
             $purchase = new Purchase();
@@ -76,7 +77,7 @@ class PurchaseController extends Controller {
             $purchase->promocode_id = $promo instanceof PromotionCode ? $promo->id : null;
             $purchase->price_original = $price->cost;
             $purchase->price = $cost;
-            $purchase->is_deposit = $request->instalments && $schedule->deposit_accepted;
+            $purchase->is_deposit = $isInstallment;
             $purchase->amount = $request->amount;
             $purchase->discount = $discount;
             $purchase->discount_applied = $promo instanceof PromotionCode ? $promo->promotion->applied_to : null;
@@ -103,6 +104,7 @@ class PurchaseController extends Controller {
                     $booking->purchase_id = $purchase->id;
                     $booking->amount = $request->amount;
                     $booking->discount = $discountPerAppointment;
+                    $booking->is_installment = $isInstallment;
                     $booking->save();
                     event(new AppointmentBooked($booking));
                 }
@@ -119,6 +121,7 @@ class PurchaseController extends Controller {
                 $booking->cost = $cost;
                 $booking->purchase_id = $purchase->id;
                 $booking->amount = $request->amount;
+                $booking->is_installment = $isInstallment;
                 $booking->discount = $discount;
                 $booking->save();
             }

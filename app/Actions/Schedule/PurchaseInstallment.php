@@ -83,6 +83,15 @@ class PurchaseInstallment
                 'payment_method' => $paymentMethodId
             ]
         );
+
+        $installment = new Instalment();
+        $installment->user_id = $this->customer->id;
+        $installment->purchase_id = $this->purchase->id;
+        $installment->payment_date = date('Y-m-d H:i:s');
+        $installment->payment_amount = $depositAmount;
+        $installment->is_paid = true;
+        $installment->save();
+
         Log::channel('stripe_installment_success')->info('Charge deposit: ', [
             'user_id'        => Auth::user()->id,
             'service_id'     => $this->service->id,

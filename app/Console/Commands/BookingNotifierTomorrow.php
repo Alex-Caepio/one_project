@@ -26,11 +26,11 @@ class BookingNotifierTomorrow extends Command {
     /**
      * Execute the console command.
      *
-     * @return int
+     * @return void
      */
     public function handle(): void {
-        $bookings = Booking::whereNull('cancelled_at')->whereRaw("DATE_FORMAT(`datetime_from`, '%Y-%m-%d') = ?",
-                                                                 Carbon::now()->addDay()->format('Y-m-d'))
+        $bookingDate = Carbon::now()->addDay()->format('Y-m-d');
+        $bookings = Booking::whereNull('cancelled_at')->whereRaw("DATE_FORMAT(`datetime_from`, '%Y-%m-%d') = ?", $bookingDate)
                            ->whereHas('schedule.service', static function($query) {
                                $query->whereNotIn('service_type_id',config('app.dateless_service_types'));
                            })->with(['user', 'schedule', 'schedule.service', 'practitioner'])->get();
@@ -38,6 +38,6 @@ class BookingNotifierTomorrow extends Command {
             event(new BookingReminder($booking, 'Booking Reminder - WS/Event/Retreat/Appointment'));
         }
         Log::channel('console_commands_handler')
-           ->info('Booking Reminder - Tomorrow event. Done...', ['bookings_count' => count($bookings)]);
+           ->info('Booking Reminder - Tomorrow event. Done...', ['bookings_count' => count($bookings), 'booking_date' => $bookingDate]);
     }
 }

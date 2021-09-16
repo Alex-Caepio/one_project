@@ -32,8 +32,7 @@ class Kernel extends ConsoleKernel {
         BookingStatusesUpdate::class,
         RescheduleNoReplyCommand::class,
         RescheduleNoReplyFinishCommand::class,
-        SubscriptionFreePeriod::class,
-        TestCommand::class
+        SubscriptionFreePeriod::class
     ];
 
     /**
@@ -54,7 +53,6 @@ class Kernel extends ConsoleKernel {
         $schedule->command('reschedule:noreply')->daily();
         $schedule->command('reschedule:noreply-finish')->daily();
         $schedule->command('plan-freeperiod')->daily();
-        $schedule->command('cron-check:cmd')->hourly();
     }
 
     /**
