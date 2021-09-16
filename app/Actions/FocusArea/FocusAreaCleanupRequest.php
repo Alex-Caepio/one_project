@@ -15,19 +15,19 @@ class FocusAreaCleanupRequest
         $data['slug'] = $data['slug'] ?? to_url($data['name']);
         $data['section_2_textarea'] =
             isset($data['section_2_textarea']) && !empty($data['section_2_textarea']) ? strip_tags(
-                $data['section_2_textarea']
+                $data['section_2_textarea'], '<br>'
             ) : null;
         $data['section_5_textarea'] =
             isset($data['section_5_textarea']) && !empty($data['section_5_textarea']) ? strip_tags(
-                $data['section_5_textarea']
+                $data['section_5_textarea'], '<br>'
             ) : null;
         $data['section_7_textarea'] =
             isset($data['section_7_textarea']) && !empty($data['section_7_textarea']) ? strip_tags(
-                $data['section_7_textarea']
+                $data['section_7_textarea'], '<br>'
             ) : null;
         $data['section_10_textarea'] =
             isset($data['section_10_textarea']) && !empty($data['section_10_textarea']) ? strip_tags(
-                $data['section_10_textarea']
+                $data['section_10_textarea'], '<br>'
             ) : null;
         return $data;
     }

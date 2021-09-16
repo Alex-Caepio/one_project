@@ -2,12 +2,15 @@
 
 namespace App\Http\Requests\Admin;
 
+use App\Http\Requests\Admin\RequestTraits\DisciplineValidationFilter;
 use App\Http\Requests\Request;
 use App\Models\Discipline;
+use App\Rules\PlainTextSize;
 use Illuminate\Validation\Rule;
 
 class DisciplineUpdateRequest extends Request
 {
+    use DisciplineValidationFilter;
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -17,17 +20,6 @@ class DisciplineUpdateRequest extends Request
     {
         return true;
     }
-
-    protected function prepareForValidation()
-    {
-        $this->merge([
-                         'section_2_textarea' => strip_tags($this->section_2_textarea),
-                         'section_4_textarea' => strip_tags($this->section_4_textarea),
-                         'section_6_textarea' => strip_tags($this->section_6_textarea),
-                         'section_9_textarea' => strip_tags($this->section_9_textarea),
-                     ]);
-    }
-
 
     /**
      * Get the validation rules that apply to the request.
@@ -47,7 +39,7 @@ class DisciplineUpdateRequest extends Request
             'section_2_h2'              => 'nullable|max:300',
             'section_2_h3'              => 'nullable|max:300',
             'section_2_background'      => 'nullable|min:6|max:7',
-            'section_2_textarea'        => 'nullable|max:5000',
+            'section_2_textarea'        => ['nullable', new PlainTextSize(5000)],
 
             'section_3_h2'              => 'nullable|max:300',
             'section_3_h4'              => 'nullable|max:300',
@@ -55,14 +47,14 @@ class DisciplineUpdateRequest extends Request
             'section_4_h2'              => 'nullable|max:300',
             'section_4_h3'              => 'nullable|max:300',
             'section_4_background'      => 'nullable|min:6|max:7',
-            'section_4_textarea'        => 'nullable|max:5000',
+            'section_4_textarea'        => ['nullable', new PlainTextSize(5000)],
 
             'section_5_header_h2'       => 'nullable|max:300',
 
             'section_6_h2'              => 'nullable|max:300',
             'section_6_h3'              => 'nullable|max:300',
             'section_6_background'      => 'nullable|min:6|max:7',
-            'section_6_textarea'        => 'nullable|max:5000',
+            'section_6_textarea'        => ['nullable', new PlainTextSize(5000)],
 
             'section_7_tag_line',
             'section_7_alt_text'        => 'nullable|max:150',
@@ -76,7 +68,7 @@ class DisciplineUpdateRequest extends Request
             'section_9_h2'              => 'nullable|max:300',
             'section_9_h3'              => 'nullable|max:300',
             'section_9_background'      => 'nullable|min:6|max:7',
-            'section_9_textarea'        => 'nullable|max:5000',
+            'section_9_textarea'        => ['nullable', new PlainTextSize(5000)],
 
             'section_10_h2'             => 'nullable|max:300',
 
