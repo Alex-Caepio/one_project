@@ -9,7 +9,7 @@ use App\Rules\PlainTextSize;
 
 class DisciplineStoreRequest extends Request
 {
-    use DisciplineValidationFilter;
+    //use DisciplineValidationFilter;
     /**
      * Determine if the user is authorized to make this request.
      *

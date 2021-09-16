@@ -10,7 +10,7 @@ use Illuminate\Validation\Rule;
 
 class DisciplineUpdateRequest extends Request
 {
-    use DisciplineValidationFilter;
+    //use DisciplineValidationFilter;
     /**
      * Determine if the user is authorized to make this request.
      *

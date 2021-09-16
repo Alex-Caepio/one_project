@@ -8,7 +8,7 @@ use App\Rules\PlainTextSize;
 
 class FocusAreaStoreRequest extends Request
 {
-    use FocusAreasValidationFilter;
+    //use FocusAreasValidationFilter;
     /**
      * Determine if the user is authorized to make this request.
      *
