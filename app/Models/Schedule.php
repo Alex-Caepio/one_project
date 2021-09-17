@@ -413,7 +413,7 @@ class Schedule extends Model
                 $currentDate = Carbon::now();
                 if ($this->service->service_type_id === 'bespoke') {
                     $daysPerPeriod = $this->deposit_instalment_frequency;
-                    $depositFinalDate = $currentDate->addDays($daysPerPeriod * $periods);
+                    $depositFinalDate = $currentDate->addDays($daysPerPeriod * ($periods+1));
                 } else {
                     $depositFinalDate = Carbon::parse($this->deposit_final_date);
                     $daysDiff = $depositFinalDate->diffInDays($currentDate);
