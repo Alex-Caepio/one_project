@@ -66,7 +66,7 @@ class PurchaseController extends Controller {
             }
         }
         $schedule->load('service');
-        $isInstallment = $request->instalments && $schedule->deposit_accepted;
+        $isInstallment = $schedule->deposit_accepted && isset($request->installments) && (int)$request->installments > 0;
 
         try {
             $purchase = new Purchase();
@@ -127,7 +127,7 @@ class PurchaseController extends Controller {
             }
 
             if ($cost && !$price->is_free) {
-                if ($request->instalments && $schedule->deposit_accepted) {
+                if ($isInstallment) {
                     if (!$this->payInInstallments($request, $schedule, $price, $practitioner, $cost, $purchase)) {
                         throw new \Exception('Cannot handle installments payment');
                     }

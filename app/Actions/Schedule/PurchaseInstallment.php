@@ -48,7 +48,7 @@ class PurchaseInstallment
         $this->purchase = $purchase;
 
         $deposit = $this->chargeDeposit($paymentMethodId);
-        $subscription = $this->chargeInstallment($paymentMethodId, $cost, $request->instalments);
+        $subscription = $this->chargeInstallment($paymentMethodId, $cost, $request->installments);
 
         $this->purchase->stripe_id = $deposit->id;
         if ($subscription !== null) {
