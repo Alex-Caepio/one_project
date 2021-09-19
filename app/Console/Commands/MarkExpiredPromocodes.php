@@ -28,23 +28,37 @@ class MarkExpiredPromocodes extends Command {
     /**
      * Execute the console command.
      *
-     * @return int
+     * @return void
      */
-    public function handle(): int {
+    public function handle(): void {
         Log::channel('promotion_status_update')->info('Promotion status check...');
         $promotions = Promotion::where('status', Promotion::STATUS_ACTIVE)->with('promotion_codes')->get();
 
         foreach ($promotions as $promo) {
-            $cntPromocodes = $promo->promotion_codes->count();
+            $this->updatePromotionCodes($promo->id);
+
+            $cntPromocodes = $promo->promotion_codes()->count(); //all codes(disabled, complete, active)
+
             $completePromotionCodes =
-                $promo->promotion_codes()->where('status', PromotionCode::STATUS_COMPLETE)->count();
-            $cntPurchases =
-                Purchase::whereIn('promocode_id', $promo->promotion_codes()->pluck('promotion_codes.id')->toArray())
+                $promo->promotion_codes()->where('status', '<>', PromotionCode::STATUS_ACTIVE)->count();
+
+            $cntPurchasesByPromocode =
+                Purchase::whereIn('promocode_id', $promo->promotion_codes()->pluck('promotion_codes.id')->toArray())->groupBy('promocode_id')
                         ->count();
+
             $promoCode = $promo->promotion_codes->first();
             $usesPerCode = $promoCode->uses_per_code ?: 1;
             $cntLimit = $usesPerCode * $cntPromocodes;
 
+            Log::channel('promotion_status_update')->info(
+                'Check promotion: ',
+                [
+                    'promotion_name'         => $promo->name,
+                    'totalCodes'             => $cntPromocodes,
+                    'totalCompletedCodes'    => $completePromotionCodes,
+                    'cntPurchasedPromocodes' => $cntPurchasesByPromocode
+                ]
+            );
 
             if ($cntPromocodes > 0 && $cntPromocodes === $completePromotionCodes) {
                 $promo->status = Promotion::STATUS_COMPLETE;
@@ -55,29 +69,35 @@ class MarkExpiredPromocodes extends Command {
                     'status'       => $promo->status,
                     'reason'       => 'By status complete in promocodes',
                 ]);
-            } elseif ($cntPurchases > 0 && $cntPurchases === $cntLimit) {
-                $promo->status = Promotion::STATUS_COMPLETE;
-                $promo->save();
-                Log::channel('promotion_status_update')->info('Mark promotion complete', [
-                    'promotion_id' => $promo->id,
-                    'cntPurchase'  => $cntPurchases,
-                    'cntLimit'     => $cntLimit,
-                    'status'       => $promo->status,
-                    'reason'       => 'By empty expiry date',
-                ]);
             } elseif ($promo->expiry_date && Carbon::parse($promo->expiry_date) < Carbon::now()) {
                 $promo->status = Promotion::STATUS_EXPIRED;
                 $promo->save();
                 Log::channel('promotion_status_update')->info('Mark promotion expired:', [
                     'promotion_id' => $promo->id,
-                    'cntPurchase'  => $cntPurchases,
-                    'cntLimit'     => $cntLimit,
                     'status'       => $promo->status,
                     'reason'       => 'By Expiry Date',
                 ]);
             }
-
-            return 0;
         }
     }
+
+
+
+    private function updatePromotionCodes(int $promoId): void {
+        $promotionCodes = PromotionCode::where('promotion_id', $promoId)->where('status', PromotionCode::STATUS_ACTIVE)->get();
+        $promotionCodes->map(static function($promocode) {
+            $cntPurchases = Purchase::where('promocode_id', $promocode->id)->count();
+            if ($cntPurchases > 0 && $cntPurchases >= (int)$promocode->uses_per_code) {
+                Log::channel('promotion_status_update')->info('Update promotion status to Complete: ',
+                                                              ['promocode' => $promocode->name, 'purchases_cnt' => $cntPurchases]
+                );
+                $promocode->status = PromotionCode::STATUS_COMPLETE;
+                $promocode->save();
+            }
+            return $promocode;
+        });
+    }
+
+
+
 }
