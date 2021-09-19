@@ -152,7 +152,7 @@ class UserRightsHelper {
             $bookings = Booking::where('practitioner_id', $user->id)->active()->get();
             foreach ($bookings as $booking) {
                 try {
-                    run_action(CancelBooking::class, $booking);
+                    run_action(CancelBooking::class, $booking, false, User::ACCOUNT_PRACTITIONER);
                 } catch (\Exception $e) {
                     Log::channel('practitioner_cancel_error')->info('[[Cancellation on unpublish failed]]: ', [
                         'user_id'         => $booking->user_id ?? null,
