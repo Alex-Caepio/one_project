@@ -21,7 +21,9 @@ class CustomEmail extends Model {
         'delay',
         'from_email',
         'from_title',
-        'footer'
+        'footer',
+        'user_type',
+        'name',
     ];
 
 

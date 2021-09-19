@@ -46,9 +46,9 @@ class MarkExpiredPromocodes extends Command {
                 Purchase::whereIn('promocode_id', $promo->promotion_codes()->pluck('promotion_codes.id')->toArray())->groupBy('promocode_id')
                         ->count();
 
-            $promoCode = $promo->promotion_codes->first();
-            $usesPerCode = $promoCode->uses_per_code ?: 1;
-            $cntLimit = $usesPerCode * $cntPromocodes;
+            //$promoCode = $promo->promotion_codes->first();
+            //$usesPerCode = $promoCode->uses_per_code ?: 1;
+            //$cntLimit = $usesPerCode * $cntPromocodes;
 
             Log::channel('promotion_status_update')->info(
                 'Check promotion: ',
