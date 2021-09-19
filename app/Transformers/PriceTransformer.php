@@ -12,7 +12,7 @@ class PriceTransformer extends Transformer {
 
     public function transform(Price $price) {
         $ticketsBooked = (int)$price->bookings()->uncanceled()->sum('amount');
-        $availableBySchedule = $price->schedule->getAvailableTicketsCount();
+        $availableBySchedule = $price->schedule ? $price->schedule->getAvailableTicketsCount() : 0;
         $number_unpurchased = !$price->number_available ? 0 : (int)$price->number_available - $ticketsBooked;
 
 
