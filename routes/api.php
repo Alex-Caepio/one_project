@@ -211,7 +211,7 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
 
     /* Payments */
     Route::post('/schedules/{schedule}/promocode', [PurchaseController::class, 'validatePromocode']);
-    Route::post('/schedules/{schedule}/purchase', [PurchaseController::class, 'purchase']);
+    Route::post('/schedules/{schedule}/purchase', [PurchaseController::class, 'purchase'])->name('purchase-process');
     /* Payments */
 
     Route::get('/schedules/{schedule}/upcoming-bookings', [ScheduleBookingController::class, 'index']);

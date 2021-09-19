@@ -38,7 +38,9 @@ class PurchaseScheduleRequest extends Request implements CreateScheduleInterface
             Rule::in($idValue),
             'amount'       => 'required',
             'installments' => 'nullable|integer|min:1',
-            'authorize'    => 'required_with:installments'
+            'authorize'    => Rule::requiredIf(function() {
+                return $this->route()->getName() === 'purchase-process' && isset($this->installments) && (int)$this->installments > 1;
+            })
         ];
 
         if ($this->schedule->service->service_type_id === 'appointment') {
