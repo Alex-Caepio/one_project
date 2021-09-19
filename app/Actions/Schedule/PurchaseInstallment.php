@@ -5,7 +5,6 @@ namespace App\Actions\Schedule;
 
 use App\Http\Requests\Schedule\PurchaseScheduleRequest;
 use App\Models\Instalment;
-use App\Models\Price;
 use App\Models\Purchase;
 use App\Models\Schedule;
 use App\Models\Service;
@@ -54,6 +53,7 @@ class PurchaseInstallment
         if ($subscription !== null) {
             $this->purchase->subscription_id = $subscription->id;
         }
+        $purchase->deposit_amount = $this->schedule->deposit_amount;
         $purchase->save();
         Log::channel('stripe_installment_success')->info('Installment successfully created', [
             'user_id'        => $request->user()->id,
