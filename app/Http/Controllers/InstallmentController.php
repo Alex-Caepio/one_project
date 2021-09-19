@@ -11,7 +11,7 @@ class InstallmentController extends Controller
 {
     public function getInstallments(Purchase $purchase, Request $request)
     {
-        $installments = Instalment::where('purchase_id', $purchase)->with($request->getIncludes())->get();
+        $installments = Instalment::where('purchase_id', $purchase->id)->with($request->getIncludes())->get();
         return response(
             fractal(
                 $installments,
