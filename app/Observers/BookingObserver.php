@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Events\BookingConfirmation;
+use App\Events\BookingDeposit;
 use App\Models\Booking;
 use App\Models\RescheduleRequest;
 use Illuminate\Support\Facades\Auth;
@@ -32,7 +33,11 @@ class BookingObserver {
      * @return void
      */
     public function created(Booking $booking): void {
-        event(new BookingConfirmation($booking));
+        if ($booking->is_installment) {
+            event(new BookingDeposit($booking));
+        } else {
+            event(new BookingConfirmation($booking));
+        }
     }
 
 

@@ -579,28 +579,6 @@ class CustomEmailSeeder extends Seeder
                 'text'       => '<tr><td><p class="slate-p">Hi <span data-slate-template="true">{{first_name}}</span></p></td></tr><tr><td><p class="slate-p"></td></tr><tr><td><p class="slate-p">Unfortunately, your Client {{client_name}} has not responded to the request to reschedule for {{service_name}}.Their original booking will remain. If you are not able to deliver the booking, you can still cancel it and the client will be refunded.</p></td></tr><tr><td><p class="slate-p">Booking Reference: {{booking_reference}}</p></td></tr><tr><td><p class="slate-p">Current Booking - MAINTAINED {{service_name}} - {{schedule_name}}</p></td></tr><tr><td><p class="slate-p">From: {{schedule_start_date}}, {{schedule_start_time}}</p></td></tr><tr><td><p class="slate-p">To: {{schedule_end_date}}, {{schedule_end_time}}</p></td></tr><tr><td><p class="slate-p">Location: {{schedule_hosting_url}} {{schedule_venue_name}} {{schedule_venue_address}} {{schedule_city}}, {{schedule_postcode}}, {{schedule_country}}</p></td></tr><tr><td><p class="slate-p">{{view_booking}}</p></td></tr><tr><td><p class="slate-p">Reschedule - NO RESPONSE {{service_name}} - {{schedule_name}}</p></td></tr><tr><td><p class="slate-p">From: {{reschedule_start_date}}, {{reschedule_start_time}}</p></td></tr><tr><td><p class="slate-p">To: {{reschedule_end_date}}, {{reschedule_end_time}}</p></td></tr><tr><td><p class="slate-p">Location:{{reschedule_venue_name}} {{reschedule_venue_address}} {{reschedule_hosting_url}} {{reschedule_city}}, {{reschedule_postcode}}, {{reschedule_country}}</p></td></tr><tr><td><p class="slate-p">Thank you</p></td></tr><tr><td><p class="slate-p">The <span data-slate-template="true">{{platform_name}}</span> Team</p></td></tr>',
                 'delay'      => random_int(5, 20)
             ],
-
-
-
-            //51
-
-            //52
-
-            //53
-
-            //54
-
-            //55
-
-            //56
-
-            //57
-
-            //58
-
-            //59
-
-
             /**
              * //46
              * [

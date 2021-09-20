@@ -722,7 +722,7 @@ class EmailVariables
     {
         $str = '';
         if ($this->event->purchase) {
-            foreach ($this->event->purchase->instalments()->where('payment_date', '>', date('Y-m-d H:i:s')) as $installment) {
+            foreach ($this->event->purchase->instalments()->where('payment_date', '>', date('Y-m-d H:i:s'))->get() as $installment) {
                 $str .= Carbon::parse($installment->payment_date)->format('d-m-Y').' '.$installment->payment_amount.' <br/>';
             }
         }
