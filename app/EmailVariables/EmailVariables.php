@@ -734,7 +734,12 @@ class EmailVariables
      */
     public function getInstalments_next(): string
     {
-        return $this->getInstalments();
+        $str = '';
+        if ($this->event->installmentNext) {
+            $str = Carbon::parse($this->event->installmentNext->payment_date)->format('d-m-Y') . ' ' .
+                   $this->event->installmentNext->payment_amount . ' <br/>';
+        }
+        return $str;
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use App\Models\Booking;
 use App\Models\Instalment;
 use App\Models\Purchase;
 use App\Models\Schedule;
@@ -12,7 +13,8 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Collection;
 
-class InstalmentPaymentReminder {
+class InstalmentPaymentReminder
+{
 
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -21,14 +23,19 @@ class InstalmentPaymentReminder {
     public User $user;
     public User $practitioner;
     public Service $service;
-    public ?Collection $installments;
+    public Booking $booking;
+    public Collection $installments;
+    public Instalment $installmentNext;
 
-    public function __construct(Instalment $instalment, ?Collection $installments) {
-        $this->purchase = $instalment->purchase;
-        $this->schedule = $instalment->purchase->schedule;
-        $this->service = $instalment->purchase->service;
+    public function __construct(Purchase $purchase, Collection $installments)
+    {
+        $this->purchase = $purchase;
+        $this->schedule = $purchase->schedule;
+        $this->service = $purchase->service;
         $this->installments = $installments;
-        $this->user = $instalment->purchase->user;
-        $this->practitioner = $instalment->purchase->service->user;
+        $this->installmentNext = $installments->first();
+        $this->user = $purchase->user;
+        $this->booking = $purchase->bookings()->first();
+        $this->practitioner = $purchase->service->user;
     }
 }
