@@ -7,17 +7,16 @@ use App\Events\InstalmentPaymentReminder;
 use App\Models\CustomEmail;
 use Illuminate\Support\Facades\Mail;
 
-class InstalmentPaymentReminderEmail {
+class InstalmentPaymentReminderEmail extends SendEmailHandler
+{
 
-    public function handle(InstalmentPaymentReminder $event): void {
-        $user = $event->user;
-        $emailVerification = CustomEmail::where('name', 'Instalment Payment Reminder')->first();
-        $body = $emailVerification->text;
-        $emailVariables = new EmailVariables($event);
-        $bodyReplaced = $emailVariables->replace($body);
+    protected ?string $templateName = 'Instalment Payment Reminder';
 
-        Mail::raw($bodyReplaced, function($message) use ($user) {
-            $message->to($user->email);
-        });
+    public function handle(InstalmentPaymentReminder $event): void
+    {
+        $this->event = $event;
+        $this->toEmail = $event->client->email;
+        $this->event->recipient = $event->client;
+        $this->sendCustomEmail();
     }
 }

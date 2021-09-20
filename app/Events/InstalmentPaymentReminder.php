@@ -21,6 +21,7 @@ class InstalmentPaymentReminder
     public Purchase $purchase;
     public Schedule $schedule;
     public User $user;
+    public User $client;
     public User $practitioner;
     public Service $service;
     public Booking $booking;
@@ -34,7 +35,7 @@ class InstalmentPaymentReminder
         $this->service = $purchase->service;
         $this->installments = $installments;
         $this->installmentNext = $installments->first();
-        $this->user = $purchase->user;
+        $this->user = $this->client = $purchase->user;
         $this->booking = $purchase->bookings()->first();
         $this->practitioner = $purchase->service->user;
     }
