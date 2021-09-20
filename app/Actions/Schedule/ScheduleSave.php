@@ -42,7 +42,7 @@ abstract class ScheduleSave {
     public function collectRequest($request, Service $service): array {
         $data = $request->all();
         $data['service_id'] = $service->id;
-        if ($data['deposit_accepted'] === true) {
+        if (isset($data['deposit_accepted']) && $data['deposit_accepted'] === true) {
             if ($service->service_type_id === 'bespoke') {
                 $data['deposit_final_date'] = null;
             } else {
