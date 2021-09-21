@@ -4,6 +4,7 @@
 namespace App\EmailVariables;
 
 use App\Events\BookingConfirmation;
+use App\Models\Instalment;
 use App\Models\Price;
 use App\Models\Schedule;
 use App\Models\User;
@@ -722,9 +723,11 @@ class EmailVariables
     {
         $str = '';
         if ($this->event->purchase) {
-            foreach ($this->event->purchase->instalments()->where('payment_date', '>', date('Y-m-d H:i:s'))->get() as $installment) {
+            foreach (Instalment::where('purchase_id', $this->event->purchase->id)->where('payment_date', '>', date('Y-m-d H:i:s'))->where('is_paid', 0)->get() as $installment) {
                 $str .= Carbon::parse($installment->payment_date)->format('d-m-Y').' '.$installment->payment_amount.' <br/>';
             }
+        } else {
+            $str .= 'No purchase in event';
         }
         return $str;
     }
