@@ -721,9 +721,10 @@ class EmailVariables
      */
     public function getInstalments(): string
     {
-        $str = '';
+        $str = $this->event->purchase->id;
         if ($this->event->purchase) {
-            foreach (Instalment::where('purchase_id', $this->event->purchase->id)->where('payment_date', '>', date('Y-m-d H:i:s'))->where('is_paid', 0)->get() as $installment) {
+            $installments = Instalment::where('purchase_id', $this->event->purchase->id)->where('payment_date', '>', date('Y-m-d H:i:s'))->where('is_paid', 0)->get();
+            foreach ($installments as $installment) {
                 $str .= Carbon::parse($installment->payment_date)->format('d-m-Y').' '.$installment->payment_amount.' <br/>';
             }
         } else {

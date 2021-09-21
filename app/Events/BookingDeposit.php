@@ -23,8 +23,8 @@ class BookingDeposit
     public function __construct(Booking $booking)
     {
         $this->booking = $booking;
-        $this->purchase = $booking->purchase;
         $this->fillEvent();
+        $this->purchase = $this->booking->purchase;
         $this->template = $this->getTemplate();
     }
 
