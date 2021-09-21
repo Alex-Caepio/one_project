@@ -270,6 +270,8 @@ class Schedule extends Model
     public function hasNonContractualChanges(): bool
     {
         $changes = $this->getRealChangesList();
+        Log::channel('daily')->info('Changes in schedules: ', $changes);
+
         $result = false;
         if (count($changes)) {
             if ($this->service->service_type_id === 'bespoke') {
