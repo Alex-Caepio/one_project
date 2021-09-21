@@ -16,6 +16,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Booking extends Model {
     use HasFactory, SoftDeletes;
 
+    protected $observables = ['instalment_complete'];
+
+
     protected $fillable = [
         'user_id',
         'practitioner_id',

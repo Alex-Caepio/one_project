@@ -55,6 +55,7 @@ class PurchaseInstallment
         }
         $purchase->deposit_amount = $this->schedule->deposit_amount;
         $purchase->save();
+        $purchase->bookings()->first()->fireModelEvent('instalment_complete');
         Log::channel('stripe_installment_success')->info('Installment successfully created', [
             'user_id'        => $request->user()->id,
             'service_id'     => $schedule->service->id,
