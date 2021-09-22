@@ -42,6 +42,13 @@ class Booking extends Model {
 
 
     /**
+     * fire event
+     */
+    public function installmentComplete(): void {
+        $this->fireModelEvent('instalment_complete');
+    }
+
+    /**
      * @param \Illuminate\Database\Eloquent\Builder $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
