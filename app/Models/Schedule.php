@@ -270,7 +270,7 @@ class Schedule extends Model
     public function hasNonContractualChanges(): bool
     {
         $changes = $this->getRealChangesList();
-        
+
         $result = false;
         if (count($changes)) {
             if ($this->service->service_type_id === 'bespoke') {

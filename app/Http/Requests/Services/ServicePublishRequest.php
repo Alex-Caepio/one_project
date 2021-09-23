@@ -43,7 +43,7 @@ class ServicePublishRequest extends Request {
                 }
 
                 if (!UserRightsHelper::userAllowPublishService($this->service->user, $this->service)) {
-                    $validator->errors()->add('name', "You are not able to publish this type of service");
+                    $validator->errors()->add('name', "Please upgrade your subscription to publish this service type");
                 }
             });
         }
