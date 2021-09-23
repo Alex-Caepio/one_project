@@ -270,8 +270,7 @@ class Schedule extends Model
     public function hasNonContractualChanges(): bool
     {
         $changes = $this->getRealChangesList();
-        Log::channel('daily')->info('Changes in schedules: ', $changes);
-
+        
         $result = false;
         if (count($changes)) {
             if ($this->service->service_type_id === 'bespoke') {
@@ -291,18 +290,6 @@ class Schedule extends Model
     {
         $changes = $this->getChanges();
         unset($changes['updated_at'], $changes['created_at'], $changes['is_published'], $changes['deleted_at']);
-
-        Log::channel('daily')->info('Changes in schedules: ',
-        [
-            'start' => $changes['start_date'] ?? '',
-            'original_start' => $this->getOriginal('start_date'),
-            'end' => $changes['start_date'] ?? '',
-            'original_end' => $this->getOriginal('end_date'),
-            'deposit' => $changes['deposit_final_date'] ?? '',
-            'original_deposit' => $this->getOriginal('deposit_final_date'),
-        ]
-        );
-
 
         if (isset($changes['start_date']) && !empty($changes['start_date'])) {
             $startDate = Carbon::parse($changes['start_date'])->format('Y-m-d H:i:s');
