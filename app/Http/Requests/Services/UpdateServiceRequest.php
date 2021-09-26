@@ -61,6 +61,7 @@ class UpdateServiceRequest extends Request {
             if (($this->get('service_type_id') !== $this->service->service_type_id) &&
                 $this->service->schedules()->count()) {
                     $validator->errors()->add('service_type_id', 'You are not able change service type for service with existing schedules');
+                    return;
                 }
 
             if (!UserRightsHelper::userAllowPublishService($this->service->user, $this->service)) {
