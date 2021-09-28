@@ -224,7 +224,6 @@ class PurchaseController extends Controller {
                 'amount'         => $request->amount,
                 'message'        => $e->getMessage(),
             ]);
-           return false;
         }
         return true;
     }
