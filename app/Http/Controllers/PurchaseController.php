@@ -327,7 +327,6 @@ class PurchaseController extends Controller {
                 'discount_applied' => $purchase->discount_applied,
                 'message'          => $e->getMessage(),
             ]);
-            return false;
         }
         return true;
     }
