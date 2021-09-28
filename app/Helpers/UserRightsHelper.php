@@ -167,7 +167,7 @@ class UserRightsHelper {
 
 
     public static function downgradePractitioner(User $user, Plan $plan, ?Plan $previousPlan = null): void {
-        Log::channel('stripe_plans_info')->info("Check plan possibilities for practitioner", [
+        Log::channel('stripe_plans_info')->info("Change practitioner plan", [
             'user_id' => $user->id,
             'new_plan_id'  => $plan->id,
             'plan_name'  => $plan->name,
@@ -175,6 +175,11 @@ class UserRightsHelper {
 
         // new plan has limited types of services
         $allowedServiceTypes = $plan->service_types()->pluck('service_types.id')->toArray();
+
+        Log::channel('stripe_plans_info')->info("Allowed service types: ", array_merge([
+            'user_id' => $user->id,
+            'new_plan_id'  => $plan->id,
+        ], $allowedServiceTypes));
 
         if (count($allowedServiceTypes)) {
             self::unpublishService($user, $allowedServiceTypes);
@@ -202,8 +207,18 @@ class UserRightsHelper {
         $services = $user->services()->published()->get();
         foreach ($services as $service) {
             if (!$plan->schedules_per_service_unlimited) {
-                $publishedSchedules = $service->schedules()->published()->get();
-                if (count($publishedSchedules) > $plan->schedules_per_service) {
+                $publishedSchedules = $service->schedules()->published()->count();
+
+                Log::channel('stripe_plans_info')->info("Schedule restrictions", [
+                    'user_id' => $user->id,
+                    'new_plan_id'  => $plan->id,
+                    'plan_name'  => $plan->name,
+                    'published_cnt'  => $publishedSchedules,
+                    'allowed_cnt'  => $plan->schedules_per_service,
+                    'service_id' => $service->id,
+                ]);
+
+                if ($publishedSchedules > $plan->schedules_per_service) {
                     $limit = $publishedSchedules - $plan->schedules_per_service;
                     $schedulesToUnpublish =
                         $service->schedules()->published()->orderBy('start_date', 'desc')->limit($limit)
