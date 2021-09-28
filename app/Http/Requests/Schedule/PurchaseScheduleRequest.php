@@ -34,12 +34,13 @@ class PurchaseScheduleRequest extends Request implements CreateScheduleInterface
         $idValue = $this->schedule->prices->pluck('id');
 
         $rules = [
-            'price_id'     => 'required|exists:prices,id',
+            'price_id' => 'required|exists:prices,id',
             Rule::in($idValue),
-            'amount'       => 'required',
+            'amount' => 'required',
             'installments' => 'nullable|integer|min:1',
-            'authorize'    => Rule::requiredIf(function() {
-                return $this->route()->getName() === 'purchase-process' && isset($this->installments) && (int)$this->installments > 1;
+            'authorize' => Rule::requiredIf(function () {
+                return $this->route()->getName() === 'purchase-process' && isset($this->installments) &&
+                       (int)$this->installments > 1;
             })
         ];
 
@@ -56,46 +57,47 @@ class PurchaseScheduleRequest extends Request implements CreateScheduleInterface
 
     public function withValidator($validator): void
     {
-        $validator->after(
-            function ($validator) {
-                $schedule = $this->schedule;
-                $price = $schedule->prices()->where('id', $this->price_id)->first();
+        $validator->after(function ($validator) {
+            $schedule = $this->schedule;
+            $price = $schedule->prices()->where('id', $this->price_id)->first();
 
-                if (!$price) {
-                    $validator->errors()->add('price_id', 'Price does not belong to the schedule');
-                }
+            if (!$price) {
+                $validator->errors()->add('price_id', 'Price does not belong to the schedule');
+                return;
+            }
 
-                $bookingsCount = Booking::where('price_id', $this->price_id)->uncanceled()->count();
-                $requiredAmount = (int)$this->request->get('amount');
+            $bookingsCount = Booking::where('price_id', $this->price_id)->uncanceled()->count();
+            $requiredAmount = (int)$this->request->get('amount');
 
-                if ($schedule->service->service_type_id !== 'appointment' && (int)$price->number_available > 0) {
-                    if (($bookingsCount + $requiredAmount) > (int)$price->number_available) {
-                        $validator->errors()->add('price_id', 'All schedules for that price were sold out');
-                    }
-                }
-
-                if ($schedule->service->service_type_id === 'appointment' && $this->has('availabilities')) {
-                    $this->validateAvailabilities($validator);
-                }
-
-                if (!empty($this->get('promo_code'))) {
-                    ValidatePromotionCode::validate(
-                        $validator,
-                        $this->get('promo_code'),
-                        $schedule->service,
-                        $schedule,
-                        $this->get('amount') * $price->cost
-                    );
-                }
-
-                if ($schedule->attendees) {
-                    $availableTicketsPerSchedule = $schedule->getAvailableTicketsCount();
-                    if ($availableTicketsPerSchedule < $requiredAmount) {
-                        $validator->errors()->add('schedule_id', 'All quotes on the schedule are sold out');
-                    }
+            if ($schedule->service->service_type_id !== 'appointment' && (int)$price->number_available > 0) {
+                if (($bookingsCount + $requiredAmount) > (int)$price->number_available) {
+                    $validator->errors()->add('price_id', 'All schedules for that price were sold out');
+                    return;
                 }
             }
-        );
+
+            if ($schedule->service->service_type_id === 'appointment' && $this->has('availabilities')) {
+                $this->validateAvailabilities($validator);
+            }
+
+            if (!empty($this->get('promo_code'))) {
+                ValidatePromotionCode::validate(
+                    $validator,
+                    $this->get('promo_code'),
+                    $schedule->service,
+                    $schedule,
+                    $this->get('amount') * $price->cost
+                );
+            }
+
+            if ($schedule->attendees) {
+                $availableTicketsPerSchedule = $schedule->getAvailableTicketsCount();
+                if ($availableTicketsPerSchedule < $requiredAmount) {
+                    $validator->errors()->add('schedule_id', 'All quotes on the schedule are sold out');
+                    return;
+                }
+            }
+        });
     }
 
     protected function validateAvailabilities($validator): void
@@ -115,14 +117,12 @@ class PurchaseScheduleRequest extends Request implements CreateScheduleInterface
                 $alreadyBookedAppointment = Booking::where('practitioner_id', $this->schedule->service->user_id)->where(
                     'datetime_from',
                     $availabilityRequest['datetime_from']
-                )->whereHas(
-                    'schedule.service',
-                    static function ($serviceQuery) {
-                        $serviceQuery->where('services.service_type_id', 'appointment');
-                    }
-                )->uncanceled()->exists();
+                )->whereHas('schedule.service', static function ($serviceQuery) {
+                    $serviceQuery->where('services.service_type_id', 'appointment');
+                })->uncanceled()->exists();
                 if ($alreadyBookedAppointment) {
                     $validator->errors()->add("availabilities.$key.datetime_from", 'This time slot is already booked');
+                    return;
                 }
             }
 
@@ -133,6 +133,7 @@ class PurchaseScheduleRequest extends Request implements CreateScheduleInterface
                     "availabilities.$key.datetime_from",
                     'That date marked as unavailable by practitioner'
                 );
+                return;
             }
 
             if ($unavailabilities &&
@@ -141,6 +142,7 @@ class PurchaseScheduleRequest extends Request implements CreateScheduleInterface
                     "availabilities.$key.datetime_from",
                     'That date marked as unavailable by practitioner'
                 );
+                return;
             }
 
             if (!$this->fits($availabilityRequest['datetime_from'], $availabilitiesDatabase)) {
@@ -148,6 +150,7 @@ class PurchaseScheduleRequest extends Request implements CreateScheduleInterface
                     "availabilities.$key.datetime_from",
                     'No available time slot for selected appointment'
                 );
+                return;
             }
         }
     }
