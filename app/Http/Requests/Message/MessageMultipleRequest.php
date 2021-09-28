@@ -12,7 +12,7 @@ class MessageMultipleRequest extends Request {
      * @return bool
      */
     public function authorize() {
-        return $this->user()->is_admin || $this->user->isPractitioner();
+        return $this->user()->is_admin || $this->user()->isPractitioner();
     }
 
     /**
