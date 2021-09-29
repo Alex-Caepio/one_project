@@ -24,7 +24,6 @@ class ScheduleObserver {
                 if ((bool)$requestCancelFlag === true) {
                     run_action(ScheduleAftermath::class, $schedule);
                 }
-                event(new ServiceScheduleCancelled($schedule));
             } elseif ($schedule->is_published) {
                 event(new ServiceScheduleLive($schedule));
             }
