@@ -36,6 +36,10 @@ trait ScheduleValidator {
             $validator->errors()->add('attendees', "You're limited to {$plan->amount_bookings} attendees");
         }
 
+        if ($this->getBoolFromRequest('deposit_accepted') === true && !UserRightsHelper::userAllowDeposit($scheduleUser)) {
+            $validator->errors()->add('deposit_accepted', "Please upgrade subscription to publish schedule with deposit");
+        }
+
         if ($this->has('prices')) {
 
             //if user not allowed to add prices

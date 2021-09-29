@@ -107,6 +107,10 @@ class UserRightsHelper {
         return $service->schedules()->count() < (int)$user->plan->schedules_per_service;
     }
 
+    public static function userAllowDeposit(User $user): bool {
+        return $user->is_admin || $user->plan->take_deposits_and_instalments;
+    }
+
     /**
      * @param \App\Models\User $user
      * @param int|null $cntAttendies
@@ -206,6 +210,11 @@ class UserRightsHelper {
         // limited schedules and prices
         $services = $user->services()->published()->get();
         foreach ($services as $service) {
+            if (!$plan->take_deposits_and_instalments) {
+                $depositSchedules = $service->schedules()->published()->where('deposit_accepted', 1)->pluck('schedules.id')->toArray();
+                Schedule::whereIn('id', $depositSchedules)->update(['is_published' => false]);
+            }
+
             if (!$plan->schedules_per_service_unlimited) {
                 $publishedSchedules = $service->schedules()->published()->count();
 
@@ -226,6 +235,7 @@ class UserRightsHelper {
                     Schedule::whereIn('id', $schedulesToUnpublish)->update(['is_published' => false]);
                 }
             }
+
             // check last published schedule for the price options
             foreach ($service->schedules()->published()->get() as $schedule) {
                 if (!$plan->list_free_services) {
