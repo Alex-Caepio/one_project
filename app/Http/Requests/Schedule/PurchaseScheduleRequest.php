@@ -8,6 +8,7 @@ use App\Models\Booking;
 use App\Models\ScheduleAvailability;
 use App\Models\ScheduleUnavailability;
 use App\Models\UserUnavailabilities;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Validation\Rule;
 
@@ -113,6 +114,12 @@ class PurchaseScheduleRequest extends Request implements CreateScheduleInterface
         }
 
         foreach ($availabilitiesRequest as $key => $availabilityRequest) {
+
+            if (Carbon::parse($availabilityRequest['datetime_from']) <= Carbon::now()) {
+                $validator->errors()->add("availabilities.$key.datetime_from", 'This timeslot is unavailable');
+                return;
+            }
+
             if ($this->schedule->service->service_type_id === 'appointment') {
                 $alreadyBookedAppointment = Booking::where('practitioner_id', $this->schedule->service->user_id)->where(
                     'datetime_from',
