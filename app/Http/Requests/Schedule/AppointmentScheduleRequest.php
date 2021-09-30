@@ -4,20 +4,22 @@ namespace App\Http\Requests\Schedule;
 
 use Illuminate\Validation\Rule;
 
-class AppointmentScheduleRequest extends GenericSchedule {
+class AppointmentScheduleRequest extends GenericSchedule
+{
 
     /**
      * Get the validation rules that apply to the request.
      *
      * @return array
      */
-    public function rules() {
+    public function rules()
+    {
         return [
             'prices'                                 => 'required|array',
-            'prices.*.name'                          => Rule::requiredIf(function() {
+            'prices.*.name'                          => Rule::requiredIf(function () {
                 return count($this->prices) > 1;
             }),
-            'prices.*.duration'                      => 'required',
+            'prices.*.duration'                      => 'required', Rule::notIn(['', '00:00']),
             'prices.*.cost'                          => 'required_if:prices.*.is_free,false',
             'prices.*.is_free'                       => 'required',
             'prices.*.available_till'                => 'nullable|before:end_date',
@@ -37,10 +39,10 @@ class AppointmentScheduleRequest extends GenericSchedule {
             'booking_message'                        => 'nullable|string|max:1000',
             'url'                                    => 'nullable|required_if:appointment,virtual|string',
         ];
-
     }
 
-    public function messages() {
+    public function messages()
+    {
         return [
             'schedule_unavailabilities.*.start_date.required_with' => 'The start date field is required when setting unavailabilities.',
             'schedule_unavailabilities.*.end_date.required_with'   => 'The end date field is required when setting unavailabilities.',

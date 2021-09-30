@@ -75,6 +75,7 @@ trait ScheduleValidator {
 
     public function prepareForValidation(): void {
         if ($this->prices) {
+            $another = [];
             foreach ($this->prices as $key => $value) {
                 $another[$key] = $value;
 
