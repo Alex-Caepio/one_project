@@ -211,8 +211,8 @@ class GoogleCalendarHelper {
     public function setEvent(AppointmentBooked $event) {
         $booking = $event->booking;
 
-        $startTime = Carbon::parse($booking->datetime_from);
-        $endTime = Carbon::parse($booking->datetime_to);
+        $startTime = Carbon::parse($booking->datetime_from)->subMinutes((int)$event->schedule->buffer_time);
+        $endTime = Carbon::parse($booking->datetime_to)->addMinutes((int)$event->schedule->buffer_time);
 
         $googleStartTime = new Google_Service_Calendar_EventDateTime();
         $googleStartTime->setTimeZone($this->_calendar->timezone->getGMTCalendarValue());
