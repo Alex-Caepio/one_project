@@ -11,6 +11,7 @@ use App\Models\Schedule;
 use App\Models\ScheduleFreeze;
 use App\Models\Service;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class UserRightsHelper {
@@ -211,8 +212,13 @@ class UserRightsHelper {
         $services = $user->services()->published()->get();
         foreach ($services as $service) {
             if (!$plan->take_deposits_and_instalments) {
-                $depositSchedules = $service->schedules()->published()->where('deposit_accepted', 1)->pluck('schedules.id')->toArray();
-                Schedule::whereIn('id', $depositSchedules)->update(['is_published' => false]);
+                Schedule::where('service_id', $service->id)->update([
+                                                                        'deposit_accepted'             => 0,
+                                                                        'deposit_amount'               => null,
+                                                                        'deposit_instalments'          => null,
+                                                                        'deposit_instalment_frequency' => null,
+                                                                        'deposit_final_date'           => null
+                                                                    ]);
             }
 
             if (!$plan->schedules_per_service_unlimited) {
