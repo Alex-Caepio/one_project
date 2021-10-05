@@ -22,7 +22,7 @@ class MyClientUpcomingTransformer extends Transformer
             'start_datetime'     => new Carbon($myClientPurchase->start_datetime),
             'bookings'           => $myClientPurchase->bookings,
             'has_installments'   => (int)$myClientPurchase->bookings_with_installment > 0,
-            'installments_count' => $myClientPurchase->bookings_with_installment,
+            'installments_count' => (int)$myClientPurchase->bookings_with_installment,
             'full_paid'          => $myClientPurchase->full_paid,
             'refund_terms'       => $myClientPurchase->refund_terms,
         ];

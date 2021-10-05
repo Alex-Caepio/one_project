@@ -19,12 +19,12 @@ class BookingRescheduleAcceptedByClientEmail extends SendEmailHandler {
         $this->event->recipient = $event->client;
         $this->sendCustomEmail();
 
-
-        //practitioner
-        $this->toEmail = $event->practitioner->email;
-        $this->type = 'practitioner';
-        $this->event->recipient = $event->practitioner;
-        $this->sendCustomEmail();
-
+        if ($event->informPractitioner) {
+            //practitioner
+            $this->toEmail = $event->practitioner->email;
+            $this->type = 'practitioner';
+            $this->event->recipient = $event->practitioner;
+            $this->sendCustomEmail();
+        }
     }
 }

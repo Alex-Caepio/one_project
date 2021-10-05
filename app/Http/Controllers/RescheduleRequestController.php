@@ -49,7 +49,7 @@ class RescheduleRequestController extends Controller {
         RescheduleRequest::where('booking_id', $booking->id)->delete();
         $rescheduleRequest = run_action(RescheduleRequestStore::class, $booking, $request);
         if (Auth::id() === $booking->user_id) {
-            run_action(RescheduleRequestAccept::class, $rescheduleRequest);
+            run_action(RescheduleRequestAccept::class, $rescheduleRequest, false);
         }
         return response(null, 204);
     }
