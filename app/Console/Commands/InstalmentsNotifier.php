@@ -50,20 +50,19 @@ class InstalmentsNotifier extends Command
             ]
         );
         foreach ($purchases as $purchase) {
-            $userPaymentSchedules = Instalment::where('purchase_id', $purchase->id)->where(
-                'payment_date',
-                '>',
-                $paymentDate->startOfDay()->format('Y-m-d H:i:s')
-            )->where('is_paid', 0)->orderBy('payment_date', 'asc')->get();
-            Log::channel('console_commands_handler')->info(
-                'Next installments for purchase: ',
-                [
-                    'purchase_id' => $purchase->id,
-                    'count_installments' => count($userPaymentSchedules),
-                ]
-            );
-            if (count($userPaymentSchedules)) {
-                event(new InstalmentPaymentReminder($purchase, $userPaymentSchedules));
+            $userPaymentSchedule = Instalment::where('purchase_id', $purchase->id)->whereRaw(
+                    "DATE_FORMAT(`payment_date`, '%Y-%m-%d') = ?",
+                    $paymentDate->startOfDay()->format('Y-m-d')
+                )->where('is_paid', 0)->orderBy('payment_date', 'asc')->first();
+            if ($userPaymentSchedule) {
+                Log::channel('console_commands_handler')->info(
+                    'Next installment for purchase: ',
+                    [
+                        'purchase_id' => $purchase->id,
+                        'installmentID' => $userPaymentSchedule->id,
+                    ]
+                );
+                event(new InstalmentPaymentReminder($purchase, $userPaymentSchedule));
             }
         }
     }

@@ -28,13 +28,13 @@ class InstalmentPaymentReminder
     public Collection $installments;
     public Instalment $installmentNext;
 
-    public function __construct(Purchase $purchase, Collection $installments)
+    public function __construct(Purchase $purchase, Instalment $installment)
     {
         $this->purchase = $purchase;
         $this->schedule = $purchase->schedule;
         $this->service = $purchase->service;
-        $this->installments = $installments;
-        $this->installmentNext = $installments->first();
+        $this->installments = collect($installment);
+        $this->installmentNext = $installment;
         $this->user = $this->client = $purchase->user;
         $this->booking = $purchase->bookings()->first();
         $this->practitioner = $purchase->service->user;
