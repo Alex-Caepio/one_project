@@ -56,6 +56,7 @@ class BookingMyClientController extends Controller {
             'concat(sum(bookings.amount), " of ", schedules.attendees) as bookings',
             'concat(sum(bookings.amount), " of ", count(bookings.id)) as full_paid',
             'schedules.refund_terms as refund_terms',
+            'SUM(bookings.is_installment) as bookings_with_installment',
             'DATEDIFF(schedules.start_date, NOW()) as date_diff'
         ]))->join('services', 'services.id', '=', 'schedules.service_id')
                              ->join('service_types', 'service_types.id', '=', 'services.service_type_id')
