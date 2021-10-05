@@ -13,10 +13,13 @@ class GetAvailableAppointmentTimeOnDate
 {
     public const STEP = '15 minutes';
 
-    public function execute(Price $price, $date)
+    public function execute(Price $price, string $date)
     {
         $schedule = $price->schedule;
+
+        /* @ScheduleAvailabilities */
         $availabilities = $this->getAvailabilitiesMatchingDate($date, $schedule);
+
         $periods        = $this->availabilitiesToCarbonPeriod($date, $availabilities);
         $excludedTimes  = $this->getExcludedTimes($schedule, $date, $schedule->buffer_time, $price->duration ?? 0);
 

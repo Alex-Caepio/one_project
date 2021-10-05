@@ -4,7 +4,8 @@ namespace App\Transformers;
 
 use App\Models\Booking;
 
-class BookingTransformer extends Transformer {
+class BookingTransformer extends Transformer
+{
     protected $availableIncludes = [
         'schedule',
         'user',
@@ -23,7 +24,8 @@ class BookingTransformer extends Transformer {
      *
      * @return array
      */
-    public function transform(Booking $booking) {
+    public function transform(Booking $booking)
+    {
         return [
             'id'              => $booking->id,
             'reference'       => $booking->reference,
@@ -44,47 +46,58 @@ class BookingTransformer extends Transformer {
             'amount'          => $booking->amount,
             'discount'        => $booking->discount,
             'is_installment'  => $booking->is_installment,
+            'is_fully_paid'   => $booking->is_fully_paid,
             'is_active'       => $booking->isActive()
         ];
     }
 
-    public function includeSchedule(Booking $booking) {
+    public function includeSchedule(Booking $booking)
+    {
         return $this->itemOrNull($booking->schedule, new ScheduleTransformer());
     }
 
-    public function includeUser(Booking $booking) {
+    public function includeUser(Booking $booking)
+    {
         return $this->itemOrNull($booking->user, new UserTransformer());
     }
 
-    public function includePurchase(Booking $booking) {
+    public function includePurchase(Booking $booking)
+    {
         return $this->itemOrNull($booking->purchase, new PurchaseTransformer());
     }
 
-    public function includePractitioner(Booking $booking) {
+    public function includePractitioner(Booking $booking)
+    {
         return $this->itemOrNull($booking->practitioner, new UserTransformer());
     }
 
-    public function includePrice(Booking $booking) {
+    public function includePrice(Booking $booking)
+    {
         return $this->itemOrNull($booking->price, new PriceTransformer());
     }
 
-    public function includeScheduleAvailabilities(Booking $booking) {
+    public function includeScheduleAvailabilities(Booking $booking)
+    {
         return $this->itemOrNull($booking->schedule_availability, new ScheduleAvailabilityTransformer());
     }
 
-    public function includeCancellation(Booking $booking) {
+    public function includeCancellation(Booking $booking)
+    {
         return $this->itemOrNull($booking->cancellation, new CancellationTransformer());
     }
 
-    public function includeRescheduleRequests(Booking $booking) {
+    public function includeRescheduleRequests(Booking $booking)
+    {
         return $this->collectionOrNull($booking->reschedule_requests, new RescheduleRequestTransformer());
     }
 
-    public function includePractitionerRescheduleRequest(Booking $booking) {
+    public function includePractitionerRescheduleRequest(Booking $booking)
+    {
         return $this->itemOrNull($booking->practitioner_reschedule_request, new RescheduleRequestTransformer());
     }
 
-    public function includeClientRescheduleRequest(Booking $booking) {
+    public function includeClientRescheduleRequest(Booking $booking)
+    {
         return $this->itemOrNull($booking->client_reschedule_request, new RescheduleRequestTransformer());
     }
 }

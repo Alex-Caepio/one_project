@@ -54,7 +54,7 @@ class BookingMyClientController extends Controller {
             'schedules.title as schedule_name',
             'schedules.start_date as start_datetime',
             'concat(sum(bookings.amount), " of ", schedules.attendees) as bookings',
-            'concat(sum(bookings.amount), " of ", count(bookings.id)) as full_paid',
+            'concat(SUM(case when bookings.is_fully_paid = 1 then bookings.amount else 0 end), " of ", sum(bookings.amount)) as full_paid',
             'schedules.refund_terms as refund_terms',
             'SUM(bookings.is_installment) as bookings_with_installment',
             'DATEDIFF(schedules.start_date, NOW()) as date_diff'
@@ -63,7 +63,7 @@ class BookingMyClientController extends Controller {
                              ->join('bookings', static function($join) {
                                  $join->on(function($join) {
                                      $join->on('bookings.schedule_id', '=', 'schedules.id')
-                                          ->whereNotIn('bookings.status', ['canceled', 'completed']);
+                                          ->whereNotIn('bookings.status', ['canceled']);
                                  });
                              })->where('services.user_id', $request->user()->id)
                              ->whereNotIn('services.service_type_id', ['bespoke', 'appointment'])

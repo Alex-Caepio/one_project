@@ -37,6 +37,7 @@ class Booking extends Model {
         'status',
         'amount',
         'discount',
+        'is_fully_paid',
         'is_installment'
     ];
 

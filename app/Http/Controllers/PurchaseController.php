@@ -27,13 +27,15 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Stripe\StripeClient;
 
-class PurchaseController extends Controller {
+class PurchaseController extends Controller
+{
 
     /**
      * @param \App\Http\Requests\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request): Response {
+    public function index(Request $request): Response
+    {
         $query = Purchase::query();
 
         $purchaseFilter = new PurchaseFilters();
@@ -42,12 +44,16 @@ class PurchaseController extends Controller {
         $includes = $request->getIncludes();
         $paginator = $query->with($includes)->paginate($request->getLimit());
 
-        return response(fractal($paginator->getCollection(),
-                                new PurchaseTransformer())->parseIncludes($request->getIncludes()))->withPaginationHeaders($paginator);
-
+        return response(
+            fractal(
+                $paginator->getCollection(),
+                new PurchaseTransformer()
+            )->parseIncludes($request->getIncludes())
+        )->withPaginationHeaders($paginator);
     }
 
-    public function purchase(PurchaseScheduleRequest $request, Schedule $schedule, StripeClient $stripe) {
+    public function purchase(PurchaseScheduleRequest $request, Schedule $schedule, StripeClient $stripe)
+    {
         $price = $schedule->prices()->where('id', $request->get('price_id'))->first();
         $cost = $price->cost * $request->amount;
         $practitioner = $schedule->service->user;
@@ -66,7 +72,8 @@ class PurchaseController extends Controller {
             }
         }
         $schedule->load('service');
-        $isInstallment = $schedule->deposit_accepted && isset($request->installments) && (int)$request->installments > 0;
+        $isInstallment =
+            $schedule->deposit_accepted && isset($request->installments) && (int)$request->installments > 0;
 
         try {
             $purchase = new Purchase();
@@ -105,6 +112,7 @@ class PurchaseController extends Controller {
                     $booking->amount = $request->amount;
                     $booking->discount = $discountPerAppointment;
                     $booking->is_installment = $isInstallment;
+                    $booking->is_fully_paid = !$isInstallment;
                     $booking->save();
                     event(new AppointmentBooked($booking));
                 }
@@ -122,6 +130,7 @@ class PurchaseController extends Controller {
                 $booking->purchase_id = $purchase->id;
                 $booking->amount = $request->amount;
                 $booking->is_installment = $isInstallment;
+                $booking->is_fully_paid = !$isInstallment;
                 $booking->discount = $discount;
                 $booking->save();
             }
@@ -148,38 +157,43 @@ class PurchaseController extends Controller {
                     $promo->save();
                 }
             }
-
         } catch (\Exception $e) {
-            Log::channel('stripe_purchase_schedule_error')->info(
-                "Common Purchase Error",
-                [
-                    'user_id'         => $request->user()->id,
-                    'price_id'        => $price->id,
-                    'service_id'      => $schedule->service->id,
-                    'practitioner_id' => $schedule->service->user_id,
-                    'schedule_id'     => $schedule->id,
-                    'payment_intent'  => $paymentIntent->id ?? null,
-                    'message'         => $e->getMessage(),
-                ]
-            );
+            Log::channel('stripe_purchase_schedule_error')->info("Common Purchase Error", [
+                'user_id'         => $request->user()->id,
+                'price_id'        => $price->id,
+                'service_id'      => $schedule->service->id,
+                'practitioner_id' => $schedule->service->user_id,
+                'schedule_id'     => $schedule->id,
+                'payment_intent'  => $paymentIntent->id ?? null,
+                'message'         => $e->getMessage(),
+            ]);
             abort(500, $e->getMessage());
         }
 
         return fractal($purchase, new PurchaseTransformer())->parseIncludes($request->getIncludes())->toArray();
-
     }
 
-    public function validatePromocode(ValidatePromocodeRequest $request, Schedule $schedule) {
+    public function validatePromocode(ValidatePromocodeRequest $request, Schedule $schedule)
+    {
         $promo = PromotionCode::where('name', $request->get('promo_code'))->with('promotion')->first();
         $price = $schedule->prices()->find($request->get('price_id'));
         if (!$price) {
             abort(500, 'Price not found');
         }
-        return fractal((object)['promocode' => $promo, 'amount' => $request->amount, 'price' => $price->cost],
-                       new PromocodeCalculateTransformer());
+        return fractal(
+            (object)['promocode' => $promo, 'amount' => $request->amount, 'price' => $price->cost],
+            new PromocodeCalculateTransformer()
+        );
     }
 
-    protected function payInInstallments(PurchaseScheduleRequest $request, Schedule $schedule, Price $price, User $practitioner, $cost, Purchase $purchase): bool {
+    protected function payInInstallments(
+        PurchaseScheduleRequest $request,
+        Schedule $schedule,
+        Price $price,
+        User $practitioner,
+        $cost,
+        Purchase $purchase
+    ): bool {
         $payment_method_id = run_action(GetViablePaymentMethod::class, $practitioner, $request->payment_method_id);
         $depositCost = $schedule->deposit_amount * 100 * $request->amount;
 
@@ -187,21 +201,27 @@ class PurchaseController extends Controller {
             run_action(PurchaseInstallment::class, $schedule, $request, $payment_method_id, $cost, $purchase);
         } catch (\Stripe\Exception\ApiErrorException $e) {
             Log::channel('stripe_installment_fail')->info('The client could not purchase installment', [
-                    'user_id'        => $request->user()->id,
-                    'price_id'       => $price->id,
-                    'service_id'     => $schedule->service->id,
-                    'schedule_id'    => $schedule->id,
-                    'payment_method' => $payment_method_id,
-                    'amount'         => $request->amount,
-                    'message'        => $e->getMessage(),
-                ]);
+                'user_id'        => $request->user()->id,
+                'price_id'       => $price->id,
+                'service_id'     => $schedule->service->id,
+                'schedule_id'    => $schedule->id,
+                'payment_method' => $payment_method_id,
+                'amount'         => $request->amount,
+                'message'        => $e->getMessage(),
+            ]);
 
             return false;
         }
 
         try {
-            run_action(TransferFundsWithCommissions::class, $depositCost, $practitioner, $schedule, $request->user(),
-                       $purchase);
+            run_action(
+                TransferFundsWithCommissions::class,
+                $depositCost,
+                $practitioner,
+                $schedule,
+                $request->user(),
+                $purchase
+            );
 
             Log::channel('stripe_transfer_success')->info("The practitioner received transfer", [
                 'user_id'        => $request->user()->id,
@@ -212,7 +232,6 @@ class PurchaseController extends Controller {
                 'payment_method' => $payment_method_id,
                 'amount'         => $request->amount,
             ]);
-
         } catch (\Stripe\Exception\ApiErrorException $e) {
             Log::channel('stripe_transfer_fail')->info("The practitioner could not received transfer", [
                 'user_id'        => $request->user()->id,
@@ -228,7 +247,14 @@ class PurchaseController extends Controller {
         return true;
     }
 
-    protected function payInstant($request, Schedule $schedule, Price $price, $stripe, Purchase $purchase, $practitioner): bool {
+    protected function payInstant(
+        $request,
+        Schedule $schedule,
+        Price $price,
+        $stripe,
+        Purchase $purchase,
+        $practitioner
+    ): bool {
         $payment_method_id = run_action(GetViablePaymentMethod::class, $practitioner, $request->payment_method_id);
         $paymentIntent = null;
         try {
@@ -236,9 +262,12 @@ class PurchaseController extends Controller {
             $refference = implode(', ', $purchase->bookings->pluck('reference')->toArray());
             $paymentIntent = $stripe->paymentIntents->create([
                                                                  'amount'               => $purchase->price * 100,
-                                                                 'currency'             => config('app.platform_currency'),
+                                                                 'currency'             => config(
+                                                                     'app.platform_currency'
+                                                                 ),
                                                                  'payment_method_types' => ['card'],
-                                                                 'customer'             => Auth::user()->stripe_customer_id,
+                                                                 'customer'             => Auth::user(
+                                                                 )->stripe_customer_id,
                                                                  'payment_method'       => $payment_method_id,
                                                                  'metadata'             => [
                                                                      'Practitioner business email'       => $practitioner->business_email,
@@ -256,9 +285,7 @@ class PurchaseController extends Controller {
                 $stripe->paymentIntents->confirm($paymentIntent->id, ['payment_method' => $payment_method_id]);
             $purchase->stripe_id = $paymentIntent->id;
             $purchase->save();
-
         } catch (\Stripe\Exception\ApiErrorException $e) {
-
             Log::channel('stripe_purchase_schedule_error')->info("Client could not purchase schedule", [
                 'user_id'          => $request->user()->id,
                 'price_id'         => $price->id,
@@ -292,7 +319,14 @@ class PurchaseController extends Controller {
         ]);
 
         try {
-            run_action(TransferFundsWithCommissions::class, $purchase->price, $practitioner, $schedule, $client, $purchase);
+            run_action(
+                TransferFundsWithCommissions::class,
+                $purchase->price,
+                $practitioner,
+                $schedule,
+                $client,
+                $purchase
+            );
 
             Log::channel('stripe_transfer_success')->info("The practitioner received transfer", [
                 'user_id'          => $request->user()->id,
@@ -308,9 +342,7 @@ class PurchaseController extends Controller {
                 'discount'         => $purchase->discount,
                 'discount_applied' => $purchase->discount_applied,
             ]);
-
         } catch (\Stripe\Exception\ApiErrorException $e) {
-
             Log::channel('stripe_transfer_fail')->info("The practitioner could not received transfer", [
                 'user_id'          => $request->user()->id,
                 'practitioner'     => $practitioner->id,
