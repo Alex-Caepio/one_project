@@ -109,7 +109,7 @@ class UserRightsHelper {
     }
 
     public static function userAllowDeposit(User $user): bool {
-        return $user->is_admin || $user->plan->take_deposits_and_instalments;
+        return $user->is_admin || $user->plan->take_deposits_and_instalment;
     }
 
     /**
@@ -211,7 +211,7 @@ class UserRightsHelper {
         // limited schedules and prices
         $services = $user->services()->published()->get();
         foreach ($services as $service) {
-            if (!$plan->take_deposits_and_instalments) {
+            if (!$plan->take_deposits_and_instalment) {
                 Schedule::where('service_id', $service->id)->update([
                                                                         'deposit_accepted'             => 0,
                                                                         'deposit_amount'               => null,
