@@ -30,11 +30,16 @@ class CancelBooking {
     public function execute(Booking $booking, bool $declineRescheduleRequest = false,
                             ?string $roleFromRequest = null) {
 
+        if (!$booking->isActive()) {
+            return;
+        }
+
         $this->stripe = app()->make(StripeClient::class);
         $booking->load(['user', 'practitioner', 'purchase', 'schedule', 'schedule.service']);
-        if (!$booking->purchase || !$booking->practitioner) {
+        if (!$booking->purchase || !$booking->practitioner || !$booking->user) {
             throw new \Exception('Incorrect model relation in booking #' . $booking->id);
         }
+
         $transferModel = Transfer::where('purchase_id', $booking->purchase_id)->first();
         $stripeRefund = null;
 
