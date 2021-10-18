@@ -8,8 +8,14 @@
     <title>Document</title>
 </head>
 <body>
-<p>Hello, {{$receiver->first_name}} {{$receiver->last_name}} </p>
-<p>{{$sender->first_name}} {{$sender->last_name}} just sent you a message below:</p>
+<p>Hello {{$receiver->first_name}}</p><br/>
+<p>{{$sender->first_name}} has sent you a message through Holistify:</p>
+<br/>
+<p>**Message:**</p>
 <p>{{ $text }}</p>
+<br/>
+<p>To reply to this message, simply reply to this email and {{$sender->first_name}} will receive your message.</p><br/>
+
+<p>Thanks<br/>The Holistify Team</p>
 </body>
 </html>
