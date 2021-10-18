@@ -101,6 +101,9 @@ Route::middleware(['auth:reschedule-token'])->group(function() {
     Route::match(['post', 'get'], '/decline_reschedule/{rescheduleRequest}', [EmailLinkHandlerController::class, 'declineReschedule']);
 });
 
+Route::get('/schedules/{schedule}/available-instalments', [ScheduleController::class, 'availableInstalments']);
+
+
 Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::post('/gcal/auth', [GoogleCalendarIntegrationController::class, 'auth'])->name('gcal-auth');
     Route::get('/gcal/events', [GoogleCalendarIntegrationController::class, 'getEventList']);
@@ -191,7 +194,6 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::delete('/schedules/{schedule}', [ScheduleController::class, 'destroy']);
     Route::get('/prices/{price}/appointments-dates/{date}', [ScheduleController::class, 'appointmentsOnDate']);
     Route::post('/schedules/{schedule}/copy', [ScheduleController::class, 'copy']);
-    Route::get('/schedules/{schedule}/available-instalments', [ScheduleController::class, 'availableInstalments']);
     Route::post('/schedules/{schedule}/calendar-instalments', [ScheduleController::class, 'availableInstalmentsDates']);
     Route::get('/schedules/{schedule}/reschedule-available', [ScheduleController::class, 'rescheduleScheduleList']);
 
