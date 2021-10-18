@@ -4,11 +4,22 @@
 namespace App\Transformers;
 
 
+use App\Models\Booking;
 use App\Models\Schedule;
+use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class ScheduleTransformer extends Transformer
 {
+    private ?User $authUser;
+
+    public function __construct()
+    {
+        $this->authUser = Auth::user() === null ? Auth::guard('sanctum')->user() : null;
+    }
+
+
     protected $availableIncludes = [
         'location',
         'prices',
@@ -24,8 +35,23 @@ class ScheduleTransformer extends Transformer
         'country'
     ];
 
+    private function isUserAllowedViewSecret(Schedule $schedule): bool
+    {
+        if (!$this->authUser) {
+            return false;
+        }
+
+        if ($this->authUser->is_admin) {
+            return true;
+        }
+
+        return $schedule->service->user_id === $this->authUser->id ||
+               Booking::where('schedule_id', $schedule->id)->where('user_id', $this->authUser->id)->exists();
+    }
+
     public function transform(Schedule $schedule)
     {
+        var_dump($this->isUserAllowedViewSecret($schedule));
         return [
             'id'                           => $schedule->id,
             'title'                        => $schedule->title,
@@ -51,14 +77,20 @@ class ScheduleTransformer extends Transformer
             'deposit_amount'               => $schedule->deposit_amount,
             'deposit_instalments'          => $schedule->deposit_instalments,
             'deposit_instalment_frequency' => $schedule->deposit_instalment_frequency,
-            'deposit_final_date'           => $schedule->deposit_final_date ? Carbon::parse($schedule->deposit_final_date) : null,
+            'deposit_final_date'           => $schedule->deposit_final_date ? Carbon::parse(
+                $schedule->deposit_final_date
+            ) : null,
             'booking_message'              => $schedule->booking_message,
             'url'                          => $schedule->url,
             'book_full_series'             => $schedule->book_full_series,
             'accomodation'                 => $schedule->accomodation,
-            'accomodation_details'         => $schedule->accomodation_details,
+            'accomodation_details'         => $this->isUserAllowedViewSecret(
+                $schedule
+            ) ? $schedule->accomodation_details : null,
             'travel'                       => $schedule->travel,
-            'travel_details'               => $schedule->travel_details,
+            'travel_details'               => $this->isUserAllowedViewSecret(
+                $schedule
+            ) ? $schedule->travel_details : null,
             'repeat'                       => $schedule->repeat,
             'repeat_every'                 => $schedule->repeat_every,
             'repeat_period'                => $schedule->repeat_period,

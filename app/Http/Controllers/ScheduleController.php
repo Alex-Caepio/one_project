@@ -38,7 +38,7 @@ class ScheduleController extends Controller
 
     public function index(Service $service, Request $request)
     {
-        $scheduleQuery = Schedule::where('service_id', $service->id);
+        $scheduleQuery = Schedule::where('service_id', $service->id)->with('service');
 
         $scheduleQuery->where('schedules.is_published', true)->where(
             function ($q) {
