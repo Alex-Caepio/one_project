@@ -54,6 +54,8 @@ class ScheduleController extends Controller
         return fractal($schedule, new ScheduleTransformer())->parseIncludes($request->getIncludes())->toArray();
     }
 
+
+
     public function ownerScheduleList(Service $service, Request $request)
     {
         $scheduleQuery = Schedule::where('service_id', $service->id);

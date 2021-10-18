@@ -21,7 +21,7 @@ class WorkshopScheduleRequest extends GenericSchedule
             'service_id'                => 'integer',
             'location_id'               => 'integer',
             'start_date'                => 'required|date|after:today',
-            'end_date'                  => 'required|date|after:today',
+            'end_date'                  => 'required|date|after:start_date',
             'attendees'                 => 'nullable|required_if:appointment,physical|integer',
             'cost'                      => 'integer',
             'comments'                  => 'nullable|string|max:1000',

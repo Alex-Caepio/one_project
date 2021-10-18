@@ -20,7 +20,7 @@ class EcontentScheduleRequest extends GenericSchedule
             'service_id'              => 'integer',
             'location_id'             => 'integer',
             'start_date'              => 'date|after:today',
-            'end_date'                => 'date|after:today',
+            'end_date'                => 'date|after:start_date',
             'attendees'               => 'required|integer',
             'cost'                    => 'integer',
             'comments'                => 'nullable|string|max:1000',

@@ -17,7 +17,7 @@ class EventScheduleRequest extends GenericSchedule
         return [
             'title'                     => 'required|string|min:5',
             'start_date'                => 'required|date|after:today',
-            'end_date'                  => 'required|date|after:today',
+            'end_date'                  => 'required|date|after:start_date',
             'venue_address'             => 'nullable|required_if:appointment,physical|max:255',
             'city'                      => 'nullable|required_if:appointment,physical|string',
             'country_id'                => 'nullable|required_if:appointment,physical|exists:countries,id',

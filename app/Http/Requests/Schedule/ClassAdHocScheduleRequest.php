@@ -17,7 +17,7 @@ class ClassAdHocScheduleRequest extends GenericSchedule
         return [
             'title'                   => 'required|string|min:5',
             'start_date'              => 'required|date|after:today',
-            'end_date'                => 'required|date|after:today',
+            'end_date'                => 'required|date|after:start_date',
             'venue_address'           => 'required_if:appointment,physical|max:255',
             'city'                    => 'required|string',
             'country_id'              => 'required_if:appointment,physical|exists:countries,id',
