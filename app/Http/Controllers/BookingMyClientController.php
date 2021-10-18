@@ -90,6 +90,10 @@ class BookingMyClientController extends Controller {
             'bookings.reference as reference',
             'purchases.price as paid',
             'bookings.datetime_to as closure_date',
+            'bookings.datetime_from as start_date',
+            'bookings.cancelled_at as cancelled_date',
+            'bookings.completed_at as completed_date',
+            'bookings.status as status_full',
             'IF (bookings.status = "completed", "Complete", "Cancel") as status',
         ]))->join('schedules', 'schedules.id', '=', 'bookings.schedule_id')
                             ->join('services', 'services.id', '=', 'schedules.service_id')

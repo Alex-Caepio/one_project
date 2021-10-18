@@ -4,13 +4,15 @@ namespace App\Transformers;
 
 use Carbon\Carbon;
 
-class MyClientClosedTransformer extends Transformer {
+class MyClientClosedTransformer extends Transformer
+{
     /**
      * A Fractal transformer.
      *
      * @return array
      */
-    public function transform($myClientPurchase) {
+    public function transform($myClientPurchase)
+    {
         return [
             'id'            => $myClientPurchase->id,
             'service_name'  => $myClientPurchase->service_name,
@@ -22,8 +24,22 @@ class MyClientClosedTransformer extends Transformer {
             'client'        => $myClientPurchase->client,
             'reference'     => $myClientPurchase->reference,
             'paid'          => $myClientPurchase->paid,
-            'closure_date'  => new Carbon($myClientPurchase->closure_date),
+            'closure_date'  => new Carbon($this->getClosureDate($myClientPurchase)),
             'status'        => $myClientPurchase->status,
         ];
     }
+
+
+    private function getClosureDate($myClientPurchase)
+    {
+        if ($myClientPurchase->status_full !== 'completed') {
+            return $myClientPurchase->cancelled_date;
+        } elseif ($myClientPurchase->service_type === 'bespoke') {
+            return $myClientPurchase->completed_date;
+        } elseif ($myClientPurchase->service_type === 'appointment') {
+            return $myClientPurchase->start_date;
+        }
+        return $myClientPurchase->closure_date;
+    }
+
 }

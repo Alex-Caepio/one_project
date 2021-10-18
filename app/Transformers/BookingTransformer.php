@@ -47,7 +47,8 @@ class BookingTransformer extends Transformer
             'discount'        => $booking->discount,
             'is_installment'  => $booking->is_installment,
             'is_fully_paid'   => $booking->is_fully_paid,
-            'is_active'       => $booking->isActive()
+            'is_active'       => $booking->isActive(),
+            'completed_at'    => $booking->completed_at
         ];
     }
 
