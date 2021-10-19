@@ -51,7 +51,6 @@ class ScheduleTransformer extends Transformer
 
     public function transform(Schedule $schedule)
     {
-        var_dump($this->isUserAllowedViewSecret($schedule));
         return [
             'id'                           => $schedule->id,
             'title'                        => $schedule->title,
