@@ -94,6 +94,7 @@ class BookingMyClientController extends Controller {
             'bookings.cancelled_at as cancelled_date',
             'bookings.completed_at as completed_date',
             'bookings.status as status_full',
+            'bookings.id as booking_id',
             'IF (bookings.status = "completed", "Complete", "Cancel") as status',
         ]))->join('schedules', 'schedules.id', '=', 'bookings.schedule_id')
                             ->join('services', 'services.id', '=', 'schedules.service_id')
