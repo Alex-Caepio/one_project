@@ -87,8 +87,9 @@ class GetAvailableAppointmentTimeOnDate
 
         // exclude today past
         $now = Carbon::now();
+
         if ($now->format('Y-m-d') === $date) {
-            $excludedTimes[] = ['from' => $now->format('Y-m-d').' 00:00:00', 'to' => $now->subMinutes($buffer)->subSecond()];
+            $excludedTimes[] = ['from' => Carbon::now()->startOfDay(), 'to' => $now->addMinutes($buffer)->subSecond()];
         }
 
         $bookings = Booking::whereIn('schedule_id', $scheduleIds)
