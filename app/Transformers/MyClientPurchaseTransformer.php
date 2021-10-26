@@ -25,6 +25,9 @@ class MyClientPurchaseTransformer extends Transformer
             'paid'          => $myClientPurchase->paid,
             'purchased'     => 1,
             'location'      => $myClientPurchase->location,
+            'city'          => $myClientPurchase->city,
+            'country'       => $myClientPurchase->country,
+            'url'           => $myClientPurchase->url,
             'refund_terms'  => $myClientPurchase->refund_terms,
             'reference'     => $myClientPurchase->reference
         ];

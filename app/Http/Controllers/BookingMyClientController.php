@@ -123,11 +123,15 @@ class BookingMyClientController extends Controller {
             'concat(users.first_name, " ", users.last_name) as client',
             'purchases.price as paid',
             'schedules.location_displayed as location',
+            'schedules.city as city',
+            'countries.nicename as country',
+            'schedules.url as url',
             'schedules.refund_terms as refund_terms',
             'bookings.reference as reference',
         ]))->join('services', 'services.id', '=', 'purchases.service_id')
                              ->join('service_types', 'service_types.id', '=', 'services.service_type_id')
                              ->join('schedules', 'schedules.id', '=', 'purchases.schedule_id')
+                             ->leftJoin('countries', 'schedules.country_id', '=', 'countries.id')
                              ->join('users', 'users.id', '=', 'purchases.user_id')
                              ->join('bookings', static function($join) {
                                  $join->on(function($join) {
