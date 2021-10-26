@@ -13,6 +13,7 @@ use Carbon\CarbonPeriod;
 class GetAvailableAppointmentTimeOnDate
 {
     public const STEP = '15 minutes';
+    public const STEP_VALUE = '15';
 
     public function execute(Price $price, string $date)
     {
@@ -57,20 +58,30 @@ class GetAvailableAppointmentTimeOnDate
     {
         $periods = [];
         foreach ($availabilities as $availability) {
-            $from = Carbon::parse("{$date} {$availability->start_time}");
-            $to   = Carbon::parse("{$date} {$availability->end_time}");
+            if ($date === Carbon::now()->format('Y-m-d')) {
+                $startTime = Carbon::now()->format('H:i:s');
+            } else {
+                $startTime = $availability->start_time;
+            }
+
+            $from = $this->roundMinutes(Carbon::parse("{$date} {$startTime}"));
+            $to   = $this->roundMinutes(Carbon::parse("{$date} {$availability->end_time}"));
+
+            if ($from > $to) {
+                continue;
+            }
 
             if ($from->greaterThanOrEqualTo($to)) {
                 $to->addDay();
             }
 
-            $periods[] = new \Carbon\CarbonPeriod($from, self::STEP, $to);
+            $periods[] = new CarbonPeriod($from, self::STEP, $to);
         }
 
         return $periods;
     }
 
-    protected function excludeTimes($periods, $excludedHours)
+    protected function excludeTimes($periods, array $excludedHours)
     {
         foreach ($periods as $period) {
             foreach ($excludedHours as $excludedHour) {
@@ -89,7 +100,8 @@ class GetAvailableAppointmentTimeOnDate
         $now = Carbon::now();
 
         if ($now->format('Y-m-d') === $date) {
-            $excludedTimes[] = ['from' => Carbon::now()->startOfDay(), 'to' => $now->addMinutes($buffer)->subSecond()];
+
+            $excludedTimes[] = ['from' => Carbon::now()->startOfDay()->addSecond(), 'to' => $now->addMinutes($buffer)->subSecond()];
         }
 
         $bookings = Booking::whereIn('schedule_id', $scheduleIds)
@@ -150,5 +162,12 @@ class GetAvailableAppointmentTimeOnDate
         }
 
         return $flatTimes;
+    }
+
+
+    protected function roundMinutes(Carbon $date) {
+        $s = self::STEP_VALUE * 60;
+        $date->setTimestamp($s * ceil($date->getTimestamp() / $s));
+        return $date;
     }
 }
