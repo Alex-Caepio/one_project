@@ -3,6 +3,7 @@
 namespace App\Actions\Schedule;
 
 
+use App\Models\Booking;
 use App\Models\Price;
 use App\Models\Schedule;
 use App\Models\UserUnavailabilities;
@@ -19,7 +20,6 @@ class GetAvailableAppointmentTimeOnDate
 
         /* @ScheduleAvailabilities */
         $availabilities = $this->getAvailabilitiesMatchingDate($date, $schedule);
-
         $periods        = $this->availabilitiesToCarbonPeriod($date, $availabilities);
         $excludedTimes  = $this->getExcludedTimes($schedule, $date, $schedule->buffer_time, $price->duration ?? 0);
 
@@ -83,7 +83,15 @@ class GetAvailableAppointmentTimeOnDate
 
     protected function getExcludedTimes(Schedule $schedule, $date, $buffer, $duration = 0)
     {
-        $bookings = $schedule->bookings()
+        $scheduleIds = Schedule::where('service_id', $schedule->service_id)->pluck('id');
+
+        // exclude today past
+        $now = Carbon::now();
+        if ($now->format('Y-m-d') === $date) {
+            $excludedTimes[] = ['from' => $now->format('Y-m-d').' 00:00:00', 'to' => $now->subMinutes($buffer)->subSecond()];
+        }
+
+        $bookings = Booking::whereIn('schedule_id', $scheduleIds)
             ->where('datetime_from', '>=', "{$date} 00:00:00")
             ->where('datetime_from', '<=', "{$date} 23:59:59")
             ->get();
