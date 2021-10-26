@@ -97,14 +97,10 @@ class EmailVariables
      */
     public function getEmail_verification_url(): string
     {
-        $linkApi = URL::temporarySignedRoute(
-            'verify-email',
-            now()->addHours(48),
-            [
-                'user' => $this->event->user->id,
-                'email' => $this->event->user->email
-            ]
-        );
+        $linkApi = URL::temporarySignedRoute('verify-email', now()->addHours(48), [
+            'user'  => $this->event->user->id,
+            'email' => $this->event->user->email
+        ]);
         return config('app.frontend_email_confirm_page') . '?' . explode('?', $linkApi)[1];
     }
 
@@ -261,14 +257,46 @@ class EmailVariables
         return $this->event->schedule->title;
     }
 
+
+    /**
+     * @return string|null
+     */
+    private function getEventStartDate(): ?string
+    {
+        if (isset($this->event->booking)) {
+            return $this->event->booking->datetime_from;
+        }
+
+        if (isset($this->event->schedule)) {
+            return $this->event->schedule->start_date;
+        }
+        return null;
+    }
+
+    /**
+     * @return string|null
+     */
+    private function getEventEndDate(): ?string
+    {
+        if (isset($this->event->booking)) {
+            return $this->event->booking->datetime_to;
+        }
+
+        if (isset($this->event->schedule)) {
+            return $this->event->schedule->end_date;
+        }
+        return null;
+    }
+
     /**
      * @return string
      */
     public function getSchedule_start_date(): string
     {
-        return $this->event->schedule->start_date ? Carbon::parse($this->event->schedule->start_date)->format(
-                'd-m-Y'
-            ) : '';
+        $startDate = $this->getEventStartDate();
+        return $startDate !== null ? Carbon::parse($startDate)->format(
+            'd-m-Y'
+        ) : '';
     }
 
     /**
@@ -276,8 +304,8 @@ class EmailVariables
      */
     public function getSchedule_start_time(): string
     {
-        return $this->event->schedule->start_date ? Carbon::parse($this->event->schedule->start_date)->toTimeString(
-            ) : '';
+        $startDate = $this->getEventStartDate();
+        return $startDate !== null ? Carbon::parse($startDate)->toTimeString() : '';
     }
 
     /**
@@ -285,7 +313,10 @@ class EmailVariables
      */
     public function getSchedule_end_date(): string
     {
-        return $this->event->schedule->end_date ? Carbon::parse($this->event->schedule->end_date)->format('d-m-Y') : '';
+        $endDate = $this->getEventEndDate();
+        return $endDate !== null ? Carbon::parse($endDate)->format(
+            'd-m-Y'
+        ) : '';
     }
 
     /**
@@ -293,7 +324,8 @@ class EmailVariables
      */
     public function getSchedule_end_time(): string
     {
-        return $this->event->schedule->end_date ? Carbon::parse($this->event->schedule->end_date)->toTimeString() : '';
+        $endDate = $this->getEventEndDate();
+        return $endDate !== null ? Carbon::parse($endDate)->toTimeString() : '';
     }
 
     /**
@@ -512,20 +544,17 @@ class EmailVariables
      */
     public function getSee_on_map(): string
     {
-        $addressCollection = array_filter(
-            [
-                $this->event->schedule->venue_name,
-                $this->event->schedule->venue_address,
-                $this->event->schedule->city,
-                $this->event->schedule->country
-            ],
-            static function (?string $value) {
-                $trimmedValue = trim($value);
-                if (!empty($trimmedValue)) {
-                    return str_replace(' ', '+', trim($value));
-                }
+        $addressCollection = array_filter([
+                                              $this->event->schedule->venue_name,
+                                              $this->event->schedule->venue_address,
+                                              $this->event->schedule->city,
+                                              $this->event->schedule->country
+                                          ], static function (?string $value) {
+            $trimmedValue = trim($value);
+            if (!empty($trimmedValue)) {
+                return str_replace(' ', '+', trim($value));
             }
-        );
+        });
         return 'https://www.google.com/maps/search/?api=1&map_action=map&query=' .
                urlencode(implode(',', $addressCollection));
     }
@@ -723,9 +752,14 @@ class EmailVariables
     {
         $str = '';
         if ($this->event->purchase) {
-            $installments = Instalment::where('purchase_id', $this->event->purchase->id)->where('payment_date', '>', date('Y-m-d H:i:s'))->where('is_paid', 0)->get();
+            $installments = Instalment::where('purchase_id', $this->event->purchase->id)->where(
+                'payment_date',
+                '>',
+                date('Y-m-d H:i:s')
+            )->where('is_paid', 0)->get();
             foreach ($installments as $installment) {
-                $str .= Carbon::parse($installment->payment_date)->format('d-m-Y').' '.$installment->payment_amount.' <br/>';
+                $str .= Carbon::parse($installment->payment_date)->format('d-m-Y') . ' ' .
+                        $installment->payment_amount . ' <br/>';
             }
         }
         return $str;
