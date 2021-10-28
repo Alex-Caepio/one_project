@@ -10,6 +10,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @property mixed id
+ * @property mixed stripe_id
+ * @property mixed subscription_id
+ * @property mixed deposit_amount
+ */
 class Purchase extends Model
 {
     use HasFactory;

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Actions\Promo\CalculatePromoPrice;
+use App\Actions\Schedule\DTO\PaymentIntendDto;
 use App\Actions\Schedule\PurchaseInstallment;
 use App\Actions\Stripe\GetViablePaymentMethod;
 use App\Actions\Stripe\TransferFundsWithCommissions;
@@ -21,10 +22,12 @@ use App\Models\User;
 use App\Transformers\PromocodeCalculateTransformer;
 use App\Transformers\PurchaseTransformer;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Stripe\Exception\ApiErrorException;
 use Stripe\StripeClient;
 
 class PurchaseController extends Controller
@@ -74,6 +77,8 @@ class PurchaseController extends Controller
         $schedule->load('service');
         $isInstallment =
             $schedule->deposit_accepted && isset($request->installments) && (int)$request->installments > 0;
+
+        $paymentIntendData = null;
 
         try {
             $purchase = new Purchase();
@@ -137,9 +142,7 @@ class PurchaseController extends Controller
 
             if ($cost && !$price->is_free) {
                 if ($isInstallment) {
-                    if (!$this->payInInstallments($request, $schedule, $price, $practitioner, $cost, $purchase)) {
-                        throw new \Exception('Cannot handle installments payment');
-                    }
+                    $paymentIntendData = $this->payInInstallments($request, $schedule, $price, $practitioner, $cost, $purchase);
                 } else {
                     if (!$this->payInstant($request, $schedule, $price, $stripe, $purchase, $practitioner)) {
                         throw new \Exception('Cannot handle instant payment');
@@ -167,10 +170,12 @@ class PurchaseController extends Controller
                 'payment_intent'  => $paymentIntent->id ?? null,
                 'message'         => $e->getMessage(),
             ]);
-            abort(500, $e->getMessage());
+            abort(Response::HTTP_INTERNAL_SERVER_ERROR, $e->getMessage());
         }
 
-        return fractal($purchase, new PurchaseTransformer())->parseIncludes($request->getIncludes())->toArray();
+        $purchaseData =  fractal($purchase, new PurchaseTransformer())->parseIncludes($request->getIncludes())->toArray();
+
+        return array_merge($purchaseData, $paymentIntendData ? $paymentIntendData->toArray() : []);
     }
 
     public function validatePromocode(ValidatePromocodeRequest $request, Schedule $schedule)
@@ -193,13 +198,13 @@ class PurchaseController extends Controller
         User $practitioner,
         $cost,
         Purchase $purchase
-    ): bool {
+    ): PaymentIntendDto {
         $payment_method_id = run_action(GetViablePaymentMethod::class, $practitioner, $request->payment_method_id);
         $depositCost = $schedule->deposit_amount * 100 * $request->amount;
 
         try {
-            run_action(PurchaseInstallment::class, $schedule, $request, $payment_method_id, $cost, $purchase);
-        } catch (\Stripe\Exception\ApiErrorException $e) {
+            $responseData = run_action(PurchaseInstallment::class, $schedule, $request, $payment_method_id, $cost, $purchase);
+        } catch (ApiErrorException $e) {
             Log::channel('stripe_installment_fail')->info('The client could not purchase installment', [
                 'user_id'        => $request->user()->id,
                 'price_id'       => $price->id,
@@ -210,7 +215,7 @@ class PurchaseController extends Controller
                 'message'        => $e->getMessage(),
             ]);
 
-            return false;
+            throw new Exception('Cannot handle installments payment');
         }
 
         try {
@@ -244,7 +249,8 @@ class PurchaseController extends Controller
                 'message'        => $e->getMessage(),
             ]);
         }
-        return true;
+
+        return $responseData;
     }
 
     protected function payInstant(
