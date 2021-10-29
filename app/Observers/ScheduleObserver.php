@@ -14,7 +14,7 @@ class ScheduleObserver {
     /**
      * Handle the article "updated" event.
      *
-     * @param \App\Models\Schedule $schedule
+     * @param Schedule $schedule
      * @return void
      */
     public function saved(Schedule $schedule): void {
@@ -39,11 +39,12 @@ class ScheduleObserver {
     }
 
     public function updated(Schedule $schedule) {
-        if ($schedule->hasNonContractualChanges()) {
-            event(new ServiceUpdatedByPractitionerNonContractual($schedule));
-        }
-        if (in_array($schedule->service->service_type_id, ['workshop', 'events', 'retreat'])) {
+        $hasNonContractualChanges = $schedule->hasNonContractualChanges();
+        if (in_array($schedule->service->service_type_id, ['workshop', 'events', 'retreat']) && !$hasNonContractualChanges) {
             run_action(CreateRescheduleRequestsOnScheduleUpdate::class, $schedule);
+        }
+        if ($hasNonContractualChanges) {
+            event(new ServiceUpdatedByPractitionerNonContractual($schedule));
         }
     }
 
