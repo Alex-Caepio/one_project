@@ -9,7 +9,8 @@ use App\Events\ServiceScheduleLive;
 use App\Events\ServiceUpdatedByPractitionerNonContractual;
 use App\Models\Schedule;
 
-class ScheduleObserver {
+class ScheduleObserver
+{
 
     /**
      * Handle the article "updated" event.
@@ -17,7 +18,8 @@ class ScheduleObserver {
      * @param Schedule $schedule
      * @return void
      */
-    public function saved(Schedule $schedule): void {
+    public function saved(Schedule $schedule): void
+    {
         if ($schedule->isDirty('is_published')) {
             if (!$schedule->is_published && !$schedule->wasRecentlyCreated) {
                 $requestCancelFlag = request('cancel_bookings', false);
@@ -30,20 +32,23 @@ class ScheduleObserver {
         }
     }
 
-    public function deleting(Schedule $schedule) {
+    public function deleting(Schedule $schedule)
+    {
         if ($schedule->is_published) {
             event(new ServiceScheduleCancelled($schedule));
         }
 
-       run_action(ScheduleAftermath::class, $schedule);
+        run_action(ScheduleAftermath::class, $schedule);
     }
 
-    public function updated(Schedule $schedule) {
-        $hasNonContractualChanges = $schedule->hasNonContractualChanges();
-        if (in_array($schedule->service->service_type_id, ['workshop', 'events', 'retreat']) && !$hasNonContractualChanges) {
+    public function updated(Schedule $schedule)
+    {
+        $hasContractualChanges = $schedule->hasContractualChanges();
+        if (in_array($schedule->service->service_type_id, ['workshop', 'events', 'retreat'])
+            && $hasContractualChanges) {
             run_action(CreateRescheduleRequestsOnScheduleUpdate::class, $schedule);
         }
-        if ($hasNonContractualChanges) {
+        if ($schedule->hasNonContractualChanges() && !$hasContractualChanges) {
             event(new ServiceUpdatedByPractitionerNonContractual($schedule));
         }
     }
