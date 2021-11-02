@@ -171,8 +171,8 @@ class EmailVariables
      */
     public function getPractitioner_business_name(): ?string
     {
-        return $this->event->user->isPractitioner() 
-            ? $this->event->user->business_name 
+        return $this->event->user->isPractitioner()
+            ? $this->event->user->business_name
             : $this->event->practitioner->business_name;
     }
 
@@ -181,8 +181,8 @@ class EmailVariables
      */
     public function getPractitioner_email_address(): string
     {
-        return $this->event->user->isPractitioner() 
-            ? $this->event->user->email 
+        return $this->event->user->isPractitioner()
+            ? $this->event->user->email
             : $this->event->practitioner->email;
     }
 
