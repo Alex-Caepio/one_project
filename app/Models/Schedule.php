@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 /**
  * Class Schedule
@@ -358,14 +357,16 @@ class Schedule extends Model
     {
         $time = Carbon::now()->subMinutes(15);
         $purchased = Booking::where('schedule_id', $this->id)->uncanceled()->sum('amount');
-        $personalFreezed = ScheduleFreeze::where('schedule_id', $this->id)->where('user_id', Auth::id())->where(
-            'freeze_at',
-            '>',
-            $time->toDateTimeString()
-        )->count();
+        $personalFreezed = ScheduleFreeze::query()
+            ->where('schedule_id', $this->id)
+            ->where('user_id', Auth::id())
+            ->where('freeze_at', '>', $time->toDateTimeString())
+            ->count();
         $freezed =
-            ScheduleFreeze::where('schedule_id', $this->id)->where('freeze_at', '>', $time->toDateTimeString())->count(
-            );
+            ScheduleFreeze::query()
+                ->where('schedule_id', $this->id)
+                ->where('freeze_at', '>', $time->toDateTimeString())
+                ->count();
         $available = (int)$this->attendees - ($purchased + $freezed - $personalFreezed);
         return $available < 0 ? 0 : $available;
     }
