@@ -26,6 +26,7 @@ class EmailVariables
 
     const TIME_FORMAT = 'H:i';
     const DATE_FORMAT = 'd-m-Y';
+    private $event;
 
     public function __construct($event)
     {
@@ -170,8 +171,9 @@ class EmailVariables
      */
     public function getPractitioner_business_name(): ?string
     {
-        return $this->event->user->isPractitioner(
-        ) ? $this->event->user->business_name : $this->event->practitioner->business_name;
+        return $this->event->user->isPractitioner() 
+            ? $this->event->user->business_name 
+            : $this->event->practitioner->business_name;
     }
 
     /**
@@ -179,7 +181,9 @@ class EmailVariables
      */
     public function getPractitioner_email_address(): string
     {
-        return $this->event->user->isPractitioner() ? $this->event->user->email : $this->event->practitioner->email;
+        return $this->event->user->isPractitioner() 
+            ? $this->event->user->email 
+            : $this->event->practitioner->email;
     }
 
     /**
@@ -760,11 +764,15 @@ class EmailVariables
     {
         $str = '';
         if ($this->event->purchase) {
-            $installments = Instalment::where('purchase_id', $this->event->purchase->id)->where(
-                'payment_date',
-                '>',
-                date('Y-m-d H:i:s')
-            )->where('is_paid', 0)->get();
+            $installments = Instalment::query()
+                ->where('purchase_id', $this->event->purchase->id)
+                ->where(
+                    'payment_date',
+                    '>',
+                    Carbon::now()->toDateTimeString()
+                )
+                ->where('is_paid', 0)
+                ->get();
             foreach ($installments as $installment) {
                 $str .= Carbon::parse($installment->payment_date)->format(self::DATE_FORMAT) . ' ' .
                     $installment->payment_amount . ' <br/>';
