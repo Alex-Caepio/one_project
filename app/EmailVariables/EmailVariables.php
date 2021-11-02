@@ -25,6 +25,8 @@ class EmailVariables
 
     use GenerateCalendarLink, RescheduleEmailLinks;
 
+    const TIME_FORMAT = 'H:i';
+
     public function __construct($event)
     {
         $this->event = $event;
@@ -60,7 +62,7 @@ class EmailVariables
 
 
     /**
-     * @return \App\Models\Schedule|null
+     * @return Schedule|null
      */
     public function getSchedule(): ?Schedule
     {
@@ -147,7 +149,7 @@ class EmailVariables
     }
 
     /**
-     * @return \App\Models\User|null
+     * @return User|null
      */
     public function getPractitioner(): ?User
     {
@@ -219,7 +221,7 @@ class EmailVariables
      */
     public function getService_url(): ?string
     {
-        return $this->event->service->url;
+        return config('app.frontend_public_service').$this->event->service->slug;
     }
 
 
@@ -305,7 +307,7 @@ class EmailVariables
     public function getSchedule_start_time(): string
     {
         $startDate = $this->getEventStartDate();
-        return $startDate !== null ? Carbon::parse($startDate)->toTimeString() : '';
+        return $startDate !== null ? Carbon::parse($startDate)->format(self::TIME_FORMAT) : '';
     }
 
     /**
@@ -325,7 +327,7 @@ class EmailVariables
     public function getSchedule_end_time(): string
     {
         $endDate = $this->getEventEndDate();
-        return $endDate !== null ? Carbon::parse($endDate)->toTimeString() : '';
+        return $endDate !== null ? Carbon::parse($endDate)->format(self::TIME_FORMAT) : '';
     }
 
     /**
