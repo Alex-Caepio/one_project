@@ -74,6 +74,8 @@ class PaymentIntendDto
             $data['next_action_type_obj'] = var_export($this->nextActionTypeObj);
             $data['next_action_type_obj_class'] = is_object($this->nextActionTypeObj) ? get_class($this->nextActionTypeObj) : null;
             $data['next_action_type_value'] = $this->nextActionTypeObj;
+            $data['3ds_validation_type'] = $this->nextActionTypeObj['type'] ?? null;
+            $data['3ds_redirect_url'] = $this->nextActionTypeObj[self::STRIPE_REDIRECT_URL_KEY] ?? null;
         }
 
         return $data;
