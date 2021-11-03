@@ -33,7 +33,7 @@ class PaymentIntendDto
     /**
      * @deprecated remove it after debug
      */
-    private ?array $nextActionTypeValue = null;
+    private ?array $nextActionTypeArray = null;
 
     public function __construct(string $status, ?StripeObject $nextAction)
     {
@@ -46,12 +46,11 @@ class PaymentIntendDto
 
         $this->nextActionType = $nextAction->offsetGet('type');
 
-        $nextActionTypeValue = $this->nextActionType ?? (array) $nextAction->offsetGet($this->nextActionType);
-
-        if ( isset($nextActionTypeValue) && $nextActionTypeValue['type'] === self::THREE_D_SECURE_URL_REDIRECT_TYPE ) {
+        $nextActionType = $this->nextActionType ?? $nextAction->offsetGet($this->nextActionType);
+        $this->nextActionTypeArray = json_decode(json_encode($nextActionType, JSON_THROW_ON_ERROR), true);
+        if ( isset($this->nextActionTypeArray['type']) && $this->nextActionTypeArray['type'] === self::THREE_D_SECURE_URL_REDIRECT_TYPE ) {
             $this->is3DsUrlRedirect = true;
-            $this->redirectUrl = $nextActionTypeValue[self::STRIPE_REDIRECT_URL_KEY];
-            $this->nextActionTypeValue  = $nextActionTypeValue;
+            $this->redirectUrl = $this->nextActionTypeArray[self::STRIPE_REDIRECT_URL_KEY];
         }
     }
 
@@ -74,8 +73,8 @@ class PaymentIntendDto
             $data['next_action'] = $this->nextAction->toArray();
         }
 
-        if ($this->nextActionTypeValue) {
-            $data['next_action_type_value'] = $this->nextActionTypeValue;
+        if ($this->nextActionTypeArray) {
+            $data['next_action_type_value'] = $this->nextActionTypeArray;
         }
 
         return $data;
