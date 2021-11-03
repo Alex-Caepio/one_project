@@ -84,8 +84,8 @@ class PaymentIntendDto
             $data['next_action'] = $this->nextAction->toArray();
 
             // debug info
-            $data['next_action_serialized'] = $this->nextAction->serializeParameters(true);
-            $data['next_action_json'] = $this->nextAction->jsonSerialize();
+            $data['next_action_keys'] = $this->nextAction->keys();
+            $data['next_action_values'] = $this->nextAction->values();
         }
 
         return $data;
