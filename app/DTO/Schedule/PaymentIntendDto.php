@@ -33,7 +33,7 @@ class PaymentIntendDto
     /**
      * @deprecated remove it after debug
      */
-    private ?array $nextActionTypeArray = null;
+    private $nextActionTypeObj = null;
 
     public function __construct(string $status, ?StripeObject $nextAction)
     {
@@ -46,12 +46,7 @@ class PaymentIntendDto
 
         $this->nextActionType = $nextAction->offsetGet('type');
 
-        $nextActionType = $this->nextActionType ?? $nextAction->offsetGet($this->nextActionType);
-        $this->nextActionTypeArray = json_decode(json_encode($nextActionType, JSON_THROW_ON_ERROR), true);
-        if ( isset($this->nextActionTypeArray['type']) && $this->nextActionTypeArray['type'] === self::THREE_D_SECURE_URL_REDIRECT_TYPE ) {
-            $this->is3DsUrlRedirect = true;
-            $this->redirectUrl = $this->nextActionTypeArray[self::STRIPE_REDIRECT_URL_KEY];
-        }
+        $this->nextActionTypeObj = $this->nextActionType ?? $nextAction->offsetGet($this->nextActionType);
     }
 
     public function toArray(): array
@@ -73,8 +68,8 @@ class PaymentIntendDto
             $data['next_action'] = $this->nextAction->toArray();
         }
 
-        if ($this->nextActionTypeArray) {
-            $data['next_action_type_value'] = $this->nextActionTypeArray;
+        if ($this->nextActionType) {
+            $data['next_action_type_obj'] = var_export($this->nextActionTypeObj);
         }
 
         return $data;
