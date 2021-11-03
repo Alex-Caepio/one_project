@@ -44,9 +44,10 @@ class PaymentIntendDto
             return;
         }
 
-        $this->nextActionType = $nextAction->offsetGet('type');
-
-        $this->nextActionTypeObj = $this->nextActionType ?? $nextAction->offsetGet($this->nextActionType);
+        $nextActionArray = $nextAction->toArray();
+        $this->nextActionType = $nextActionArray['type'] ?? null;
+        $this->nextActionTypeObj = $this->nextActionType && isset($nextActionArray[$this->nextActionType])
+            ? $nextActionArray[$this->nextActionType] : null;
     }
 
     public function toArray(): array
@@ -68,8 +69,10 @@ class PaymentIntendDto
             $data['next_action'] = $this->nextAction->toArray();
         }
 
-        if ($this->nextActionType) {
+        if ($this->nextActionTypeObj) {
+            $data['next_action_type_obj_type'] = gettype($this->nextActionTypeObj);
             $data['next_action_type_obj'] = var_export($this->nextActionTypeObj);
+            $data['next_action_type_obj_class'] = is_object($this->nextActionTypeObj) ? get_class($this->nextActionTypeObj) : null;
         }
 
         return $data;
