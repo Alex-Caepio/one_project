@@ -8,6 +8,9 @@ use Stripe\StripeObject;
 
 class PaymentIntendDto
 {
+    private const THREE_D_SECURE_URL_REDIRECT_TYPE = 'three_d_secure_redirect';
+    private const STRIPE_REDIRECT_URL_KEY = 'stripe_js';
+
     private string $status;
 
     /**
@@ -16,22 +19,11 @@ class PaymentIntendDto
      *
      * @see https://stripe.com/docs/api/payment_intents/object#payment_intent_object-next_action-type
      */
-    private ?string $type = null;
+    private ?string $nextActionType = null;
 
-    /**
-     * The URL you must redirect your customer to in order to authenticate the payment.
-     *
-     * @see https://stripe.com/docs/api/payment_intents/object#payment_intent_object-next_action-redirect_to_url
-     */
-    private ?string $url = null;
+    private ?string $redirectUrl = null;
 
-    /**
-     * If the customer does not exit their browser while authenticating,
-     * they will be redirected to this specified URL after completion.
-     *
-     * @see https://stripe.com/docs/api/payment_intents/object#payment_intent_object-next_action-redirect_to_url
-     */
-    private ?string $returnUrl = null;
+    private bool $is3DsUrlRedirect = false;
 
     /**
      * @deprecated StripeObject contains data, which should be removed from response
@@ -43,37 +35,36 @@ class PaymentIntendDto
         $this->status = $status;
         $this->nextAction = $nextAction;
 
-        if ($nextAction->offsetExists('type')) {
-            $data['type'] = $nextAction->offsetGet('type');
+        if (!$nextAction) {
+            return;
         }
 
-        if ($nextAction->offsetExists('redirect_to_url')) {
-            $redirectToUrl = $nextAction->offsetGet('redirect_to_url');
+        $this->nextActionType = $nextAction->offsetGet('type');
 
-            if (is_array($redirectToUrl) && isset($redirectToUrl['return_url'])) {
-                $data['return_url'] = $redirectToUrl['return_url'];
-            }
+        $nextActionTypeObject = $this->nextActionType ?? $nextAction->offsetGet($this->nextActionType);
+        if (!$nextActionTypeObject instanceof StripeObject) {
+            return;
+        }
 
-            if (is_array($redirectToUrl) && isset($redirectToUrl['url'])) {
-                $this->url = $redirectToUrl['url'];
-            }
+        if ((string) $nextActionTypeObject->offsetGet('type') === self::THREE_D_SECURE_URL_REDIRECT_TYPE) {
+            $this->is3DsUrlRedirect = true;
+            $this->redirectUrl = (string) $nextActionTypeObject->offsetGet(self::STRIPE_REDIRECT_URL_KEY);
         }
     }
 
     public function toArray(): array
     {
-        $data = ['status' => $this->status];
+        $data = [
+            'status' => $this->status,
+            'is_3ds_url_redirect' => $this->is3DsUrlRedirect,
+        ];
 
-        if ($this->type) {
-            $data['type'] = $this->type;
+        if ($this->nextActionType) {
+            $data['next_action_type'] = $this->nextActionType;
         }
 
-        if ($this->url) {
-            $data['url'] = $this->url;
-        }
-
-        if ($this->returnUrl) {
-            $data['return_url'] = $this->returnUrl;
+        if ($this->redirectUrl) {
+            $data['3ds_redirect_url'] = $this->redirectUrl;
         }
 
         if ($this->nextAction) {
