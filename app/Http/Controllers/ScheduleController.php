@@ -47,13 +47,12 @@ class ScheduleController extends Controller
         );
 
         $scheduleQuery->with($request->getIncludes())->selectRaw('*, DATEDIFF(start_date, NOW()) as date_diff')
-                      ->orderByRaw('ABS(date_diff)');
+            ->orderByRaw('ABS(date_diff)');
 
         $schedule = $scheduleQuery->get();
 
         return fractal($schedule, new ScheduleTransformer())->parseIncludes($request->getIncludes())->toArray();
     }
-
 
 
     public function ownerScheduleList(Service $service, Request $request)
@@ -108,9 +107,9 @@ class ScheduleController extends Controller
             $scheduleCollection = $scheduleQuery->get()->filter(
                 static function ($item) {
                     return $item->attendees === null ||
-                           (int)$item->attendees > Booking::where('schedule_id', $item->id)->uncanceled()->sum(
-                               'amount'
-                           );
+                        (int)$item->attendees > Booking::where('schedule_id', $item->id)->uncanceled()->sum(
+                            'amount'
+                        );
                 }
             );
         } else {
@@ -145,9 +144,10 @@ class ScheduleController extends Controller
         $time = Carbon::now()->subMinutes(15);
         $amountTotal = (int)$schedule->attendees;
         $amountBought = Booking::where('schedule_id', $schedule->id)->uncanceled()->sum('amount');
-        $amountFreezed =
-            ScheduleFreeze::where('schedule_id', $schedule->id)->where('freeze_at', '>', $time->toDateTimeString())
-                          ->count();
+        $amountFreezed = ScheduleFreeze::query()
+                ->where('schedule_id', $schedule->id)
+                ->where('freeze_at', '>', $time->toDateTimeString())
+                ->count();
         $amount_left = $amountTotal - $amountBought - $amountFreezed;
 
         return response([$amountTotal, $amount_left, $amountBought, $amountFreezed]);
@@ -162,12 +162,12 @@ class ScheduleController extends Controller
             $freeze = new ScheduleFreeze();
             $freeze->forceFill(
                 [
-                    'freeze_at'       => $time,
-                    'user_id'         => Auth::id(),
+                    'freeze_at' => $time,
+                    'user_id' => Auth::id(),
                     'practitioner_id' => $schedule->service->user_id,
-                    'schedule_id'     => $schedule->id,
-                    'quantity'        => $request->get('amount') ?? 1,
-                    'price_id'        => $request->price_id
+                    'schedule_id' => $schedule->id,
+                    'quantity' => $request->get('amount') ?? 1,
+                    'price_id' => $request->price_id
                 ]
             );
             $freeze->save();
@@ -190,8 +190,9 @@ class ScheduleController extends Controller
         $bookingQuery->with($request->getIncludes());
         $paginator = $bookingQuery->paginate($request->getLimit());
         $fractal =
-            fractal($paginator->getCollection(), new BookingTransformer())->parseIncludes($request->getIncludes())
-                                                                          ->toArray();
+            fractal($paginator->getCollection(), new BookingTransformer())
+                ->parseIncludes($request->getIncludes())
+                ->toArray();
         return response($fractal)->withPaginationHeaders($paginator);
     }
 
