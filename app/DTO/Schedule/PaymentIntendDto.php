@@ -33,7 +33,7 @@ class PaymentIntendDto
     /**
      * @deprecated remove it after debug
      */
-    private $nextActionTypeObject = null;
+    private ?array $nextActionTypeValue = null;
 
     public function __construct(string $status, ?StripeObject $nextAction)
     {
@@ -46,15 +46,12 @@ class PaymentIntendDto
 
         $this->nextActionType = $nextAction->offsetGet('type');
 
-        $nextActionTypeObject = $this->nextActionType ?? $nextAction->offsetGet($this->nextActionType);
-        $this->nextActionTypeObject = $nextActionTypeObject;
-        if (!$nextActionTypeObject instanceof StripeObject) {
-            return;
-        }
+        $nextActionTypeValue = $this->nextActionType ?? (array) $nextAction->offsetGet($this->nextActionType);
 
-        if ((string) $nextActionTypeObject->offsetGet('type') === self::THREE_D_SECURE_URL_REDIRECT_TYPE) {
+        if ( isset($nextActionTypeValue) && $nextActionTypeValue['type'] === self::THREE_D_SECURE_URL_REDIRECT_TYPE ) {
             $this->is3DsUrlRedirect = true;
-            $this->redirectUrl = (string) $nextActionTypeObject->offsetGet(self::STRIPE_REDIRECT_URL_KEY);
+            $this->redirectUrl = $nextActionTypeValue[self::STRIPE_REDIRECT_URL_KEY];
+            $this->nextActionTypeValue  = $nextActionTypeValue;
         }
     }
 
@@ -77,12 +74,9 @@ class PaymentIntendDto
             $data['next_action'] = $this->nextAction->toArray();
         }
 
-        if (is_object($this->nextActionTypeObject)) {
-            $data['next_action_type_object_class'] = get_class($this->nextActionTypeObject);
+        if ($this->nextActionTypeValue) {
+            $data['next_action_type_value'] = $this->nextActionTypeValue;
         }
-
-        $data['next_action_type_object'] = $this->nextActionTypeObject;
-
 
         return $data;
     }
