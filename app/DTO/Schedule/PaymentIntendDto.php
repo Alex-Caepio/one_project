@@ -26,9 +26,14 @@ class PaymentIntendDto
     private bool $is3DsUrlRedirect = false;
 
     /**
-     * @deprecated StripeObject contains data, which should be removed from response
+     * @deprecated StripeObject contains data, which should be removed from response. remove it after debug
      */
     private ?StripeObject $nextAction;
+
+    /**
+     * @deprecated remove it after debug
+     */
+    private $nextActionTypeObject = null;
 
     public function __construct(string $status, ?StripeObject $nextAction)
     {
@@ -42,6 +47,7 @@ class PaymentIntendDto
         $this->nextActionType = $nextAction->offsetGet('type');
 
         $nextActionTypeObject = $this->nextActionType ?? $nextAction->offsetGet($this->nextActionType);
+        $this->nextActionTypeObject = $nextActionTypeObject;
         if (!$nextActionTypeObject instanceof StripeObject) {
             return;
         }
@@ -70,6 +76,13 @@ class PaymentIntendDto
         if ($this->nextAction) {
             $data['next_action'] = $this->nextAction->toArray();
         }
+
+        if (is_object($this->nextActionTypeObject)) {
+            $data['next_action_type_object_class'] = get_class($this->nextActionTypeObject);
+        }
+
+        $data['next_action_type_object'] = $this->nextActionTypeObject;
+
 
         return $data;
     }
