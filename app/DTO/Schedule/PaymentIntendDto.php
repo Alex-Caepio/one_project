@@ -6,6 +6,9 @@ namespace App\DTO\Schedule;
 
 use Stripe\StripeObject;
 
+/**
+ * ToDo: split into 2 services: DTO builder and DTO itself
+ */
 class PaymentIntendDto
 {
     private const THREE_D_SECURE_URL_REDIRECT_TYPE = 'three_d_secure_redirect';
@@ -21,19 +24,22 @@ class PaymentIntendDto
      */
     private ?string $nextActionType = null;
 
+    /**
+     * Url used for iframe to confirm the payment using 3ds 1 flow
+     */
     private ?string $redirectUrl = null;
 
-    private bool $is3DsUrlRedirect = false;
+    /**
+     * Identifies that this 3ds flow do not suppose to use url redirects
+     * In this case we need to show a popup with instructions to go to bank app in order to confirm the operation
+     * External confirmation is used for 3ds flow v2
+     */
+    private ?bool $is3dsConfirmationExternal = null;
 
     /**
      * @deprecated StripeObject contains data, which should be removed from response. remove it after debug
      */
     private ?StripeObject $nextAction;
-
-    /**
-     * @deprecated remove it after debug
-     */
-    private $nextActionTypeObj = null;
 
     public function __construct(string $status, ?StripeObject $nextAction)
     {
@@ -46,16 +52,30 @@ class PaymentIntendDto
 
         $nextActionArray = $nextAction->toArray();
         $this->nextActionType = $nextActionArray['type'] ?? null;
-        $this->nextActionTypeObj = $this->nextActionType && isset($nextActionArray[$this->nextActionType])
+        $nextActionTypeObject = $this->nextActionType && isset($nextActionArray[$this->nextActionType])
             ? $nextActionArray[$this->nextActionType] : null;
+
+        $this->redirectUrl = $nextActionTypeObject[self::STRIPE_REDIRECT_URL_KEY] ?? null;
+        $threeDsCheckType = $nextActionTypeObject['type'] ?? null;
+
+        if ($this->redirectUrl && $threeDsCheckType === self::THREE_D_SECURE_URL_REDIRECT_TYPE) {
+            $this->is3dsConfirmationExternal = false;
+
+            return;
+        }
+
+        $this->is3dsConfirmationExternal = true;
     }
 
     public function toArray(): array
     {
         $data = [
             'status' => $this->status,
-            'is_3ds_url_redirect' => $this->is3DsUrlRedirect,
         ];
+
+        if ($this->is3dsConfirmationExternal) {
+            $data['is_3ds_confirmation_external'] = $this->is3dsConfirmationExternal;
+        }
 
         if ($this->nextActionType) {
             $data['next_action_type'] = $this->nextActionType;
@@ -67,15 +87,6 @@ class PaymentIntendDto
 
         if ($this->nextAction) {
             $data['next_action'] = $this->nextAction->toArray();
-        }
-
-        if ($this->nextActionTypeObj) {
-            $data['next_action_type_obj_type'] = gettype($this->nextActionTypeObj);
-            $data['next_action_type_obj'] = var_export($this->nextActionTypeObj);
-            $data['next_action_type_obj_class'] = is_object($this->nextActionTypeObj) ? get_class($this->nextActionTypeObj) : null;
-            $data['next_action_type_value'] = $this->nextActionTypeObj;
-            $data['3ds_validation_type'] = $this->nextActionTypeObj['type'] ?? null;
-            $data['3ds_redirect_url'] = $this->nextActionTypeObj[self::STRIPE_REDIRECT_URL_KEY] ?? null;
         }
 
         return $data;
