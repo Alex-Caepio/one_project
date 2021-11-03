@@ -43,19 +43,23 @@ class PaymentIntendDto
         $this->status = $status;
         $this->nextAction = $nextAction;
 
-        if (isset($nextAction->type)) {
-            $data['type'] = $nextAction->type;
+        if (!$nextAction instanceof StripeObject) {
+            return;
         }
 
-        if (isset($nextAction->redirect_to_url)) {
-            $redirectToUrl = $nextAction->redirect_to_url;
+        if ($nextAction->offsetExists('type')) {
+            $data['type'] = $nextAction->offsetGet('type');
+        }
 
-            if (isset($redirectToUrl->return_url)) {
-                $data['return_url'] = $redirectToUrl->return_url;
+        if ($nextAction->offsetExists('redirect_to_url')) {
+            $redirectToUrl = $nextAction->offsetGet('redirect_to_url');
+
+            if (is_array($redirectToUrl) && isset($redirectToUrl['return_url'])) {
+                $data['return_url'] = $redirectToUrl['return_url'];
             }
 
-            if (isset($redirectToUrl->url)) {
-                $this->url = $redirectToUrl->url;
+            if (is_array($redirectToUrl) && isset($redirectToUrl['url'])) {
+                $this->url = $redirectToUrl['url'];
             }
         }
     }
@@ -78,6 +82,10 @@ class PaymentIntendDto
 
         if ($this->nextAction) {
             $data['next_action'] = $this->nextAction->toArray();
+
+            // debug info
+            $data['next_action_serialized'] = $this->nextAction->serializeParameters(true);
+            $data['next_action_json'] = $this->nextAction->jsonSerialize();
         }
 
         return $data;
