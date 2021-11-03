@@ -43,10 +43,6 @@ class PaymentIntendDto
         $this->status = $status;
         $this->nextAction = $nextAction;
 
-        if (!$nextAction instanceof StripeObject) {
-            return;
-        }
-
         if ($nextAction->offsetExists('type')) {
             $data['type'] = $nextAction->offsetGet('type');
         }
@@ -82,10 +78,6 @@ class PaymentIntendDto
 
         if ($this->nextAction) {
             $data['next_action'] = $this->nextAction->toArray();
-
-            // debug info
-            $data['next_action_keys'] = $this->nextAction->keys();
-            $data['next_action_values'] = $this->nextAction->values();
         }
 
         return $data;
