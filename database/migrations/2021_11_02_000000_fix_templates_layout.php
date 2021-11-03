@@ -46,7 +46,7 @@ class FixTemplatesLayout extends Migration
                     <tr> <td> <p class="slate-p">Booking Details: {{service_name}} - {{schedule_name}}</p></td></tr>
                     <tr> <td> <p class="slate-p">Booking Reference: {{booking_reference}} </p></td></tr>
                     <tr> <td> <p class="slate-p">From: {{schedule_start_date}}, {{schedule_start_time}} To: {{schedule_end_date}}, {{schedule_end_time}}</p></td></tr>
-                    <tr> <td> <p class="slate-p">Location:  {{schedule_venue_name}} {{schedule_venue_address}} {{schedule_city}}, {{schedule_postcode}} {{schedule_country}}
+                    <tr> <td> <p class="slate-p">Location:  {{schedule_venue_name}} {{schedule_venue_address}} {{schedule_city}}, {{schedule_postcode}} {{schedule_country}}</p></td></tr>
                     <tr> <td> <p class="slate-p"><a href="{{add_to_calendar}}" target="_blank">Add to calendar</a>{{see_on_map}}</p></td></tr>
                     <tr> <td> <p class="slate-p">Message from {{practitioner_business_name}}</p></td></tr>
                     <tr> <td> <p class="slate-p">{{practitioner_booking_message}} </p></td></tr>
@@ -90,7 +90,7 @@ class FixTemplatesLayout extends Migration
                     <tr> <td> <p class="slate-p">Purchase Details: {{service_name}} - {{schedule_name}}</p></td></tr>
                     <tr> <td> <p class="slate-p">Order Reference: {{booking_reference}} </p></td></tr>
                     <tr> <td> <p class="slate-p">Location: {{schedule_hosting_url}} {{view_booking}} </p></td></tr>
-                    <tr> <td> <p class="slate-p">Message from {{practitioner_business_name}}
+                    <tr> <td> <p class="slate-p">Message from {{practitioner_business_name}}</p></td></tr>
                     <tr> <td> <p class="slate-p">{{practitioner_booking_message}} </p></td></tr>
                     <tr> <td> <p class="slate-p">Your Practitioner may have also added some attachments to this email for you and should also be in touch with you via {{platform_name}} email message to confirm further details.</p></td></tr>
                     <tr> <td> <p class="slate-p">&nbsp;</p></td></tr>
@@ -122,7 +122,7 @@ class FixTemplatesLayout extends Migration
                     <tr> <td> <p class="slate-p"><a href="{{add_to_calendar}}" target="_blank">Add to calendar</a> </p></td></tr>
                     <tr> <td> <p class="slate-p"><a href="{{view_booking}}" target="_blank">View My Bookings</a> </p></td></tr>
                     <tr> <td> <p class="slate-p">Message from {{practitioner_business_name}} {{practitioner_booking_message}} </p></td></tr>
-                    <tr> <td> <p class="slate-p">Your Practitioner may have also added some attachments to this email for you.
+                    <tr> <td> <p class="slate-p">Your Practitioner may have also added some attachments to this email for you.</p></td></tr>
                     <tr> <td> <p class="slate-p">Payment Deposit Paid: {{deposit_paid}} The balance for this service will be charged to your card proved as follows:</p></td></tr>
                     <tr> <td> <p class="slate-p">{{instalments}} </p></td></tr>
                     <tr> <td> <p class="slate-p">Please make sure you have funds available for each instalment or your Booking may be cancelled. </p></td></tr>
