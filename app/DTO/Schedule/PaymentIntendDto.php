@@ -73,6 +73,7 @@ class PaymentIntendDto
             $data['next_action_type_obj_type'] = gettype($this->nextActionTypeObj);
             $data['next_action_type_obj'] = var_export($this->nextActionTypeObj);
             $data['next_action_type_obj_class'] = is_object($this->nextActionTypeObj) ? get_class($this->nextActionTypeObj) : null;
+            $data['next_action_type_value'] = $this->nextActionTypeObj;
         }
 
         return $data;
