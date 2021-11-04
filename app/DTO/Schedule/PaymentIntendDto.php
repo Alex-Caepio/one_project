@@ -24,7 +24,7 @@ class PaymentIntendDto
     /**
      * If value is true - 3ds version 2 is used. Show popup with information to check bank app (no iframe)
      * If value is false - 3ds version 1 is used. Iframe is used to perform 3ds check.
-     *  If value is null - 3ds is not required or optional. This key will not be included in response in this case
+     * If value is null - 3ds is not required or optional. This key will not be included in response in this case
      */
     private ?bool $is3dsConfirmationExternal = null;
 
@@ -47,11 +47,6 @@ class PaymentIntendDto
         $this->is3dsConfirmationExternal = $this->check3dsConfirmationExternal($threeDsCheckType, $this->redirectUrl);
     }
 
-    private function check3dsConfirmationExternal(?string $threeDsCheckType, ?string $redirectUrl): bool
-    {
-        return !($redirectUrl && $threeDsCheckType === self::THREE_D_SECURE_URL_REDIRECT_TYPE);
-    }
-
     public function toArray(): array
     {
         $data = [
@@ -67,5 +62,10 @@ class PaymentIntendDto
         }
 
         return $data;
+    }
+
+    private function check3dsConfirmationExternal(?string $threeDsCheckType, ?string $redirectUrl): bool
+    {
+        return !($redirectUrl && $threeDsCheckType === self::THREE_D_SECURE_URL_REDIRECT_TYPE);
     }
 }
