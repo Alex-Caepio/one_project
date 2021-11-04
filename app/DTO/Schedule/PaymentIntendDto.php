@@ -73,7 +73,7 @@ class PaymentIntendDto
             'status' => $this->status,
         ];
 
-        if ($this->is3dsConfirmationExternal) {
+        if ($this->is3dsConfirmationExternal !== null) {
             $data['is_3ds_confirmation_external'] = $this->is3dsConfirmationExternal;
         }
 
