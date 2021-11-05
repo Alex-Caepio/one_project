@@ -7,18 +7,27 @@ use App\Models\Booking;
 use Carbon\Carbon;
 
 
-class ServiceUpdatedByPractitionerNonContractualEmail extends SendEmailHandler {
+class ServiceUpdatedByPractitionerNonContractualEmail extends SendEmailHandler
+{
 
-    public function handle(ServiceUpdatedByPractitionerNonContractual $event): void {
+    public function handle(ServiceUpdatedByPractitionerNonContractual $event): void
+    {
         $this->templateName = 'Service Updated by Practitioner (Non-Contractual)';
         $this->event = $event;
 
-        $upcomingBookings = Booking::where('schedule_id', $this->event->schedule->id)->active()->with([
-                                                                                                          'user',
-                                                                                                          'practitioner',
-                                                                                                          'schedule',
-                                                                                                          'schedule.service'
-                                                                                                      ])->get();
+        $upcomingBookings = Booking::query()
+            ->where(
+                'schedule_id',
+                $this->event->schedule->id
+            )
+            ->active()
+            ->with([
+                'user',
+                'practitioner',
+                'schedule',
+                'schedule.service'
+            ])
+            ->get();
 
         foreach ($upcomingBookings as $booking) {
             $this->event->booking = $booking;
@@ -26,6 +35,5 @@ class ServiceUpdatedByPractitionerNonContractualEmail extends SendEmailHandler {
             $this->toEmail = $this->event->user->email;
             $this->sendCustomEmail();
         }
-
     }
 }
