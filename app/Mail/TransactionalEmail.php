@@ -11,7 +11,8 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class TransactionalEmail extends Mailable {
+class TransactionalEmail extends Mailable
+{
     use Queueable, SerializesModels;
 
     public CustomEmail $emailData;
@@ -25,11 +26,12 @@ class TransactionalEmail extends Mailable {
     /**
      * Create a new message instance.
      *
-     * @param \App\Models\CustomEmail $emailData
-     * @param \App\EmailVariables\EmailVariables $emailVariables
+     * @param CustomEmail $emailData
+     * @param EmailVariables $emailVariables
      * @param string $recipient
      */
-    public function __construct(CustomEmail $emailData, EmailVariables $emailVariables, string $recipient) {
+    public function __construct(CustomEmail $emailData, EmailVariables $emailVariables, string $recipient)
+    {
         $this->emailData = $emailData;
         $this->emailVariables = $emailVariables;
         $this->recipient = $recipient;
@@ -44,22 +46,28 @@ class TransactionalEmail extends Mailable {
      *
      * @return $this
      */
-    public function build() {
-        return $this->view('mails.custom_emails')->from($this->emailData->from_email, $this->emailData->from_title)
-                    ->subject($this->replacedSubject)->to($this->recipient)->attachCalendar();
+    public function build()
+    {
+        return $this
+            ->view('mails.custom_emails')
+            ->from($this->emailData->from_email, $this->emailData->from_title)
+            ->subject($this->replacedSubject)
+            ->to($this->recipient)
+            ->attachCalendar();
     }
 
 
     /**
      * @return $this
      */
-    public function attachCalendar(): Mailable {
+    public function attachCalendar(): Mailable
+    {
         $schedule = $this->emailVariables->getSchedule();
         $practitioner = $this->emailVariables->getPractitioner();
         if ($this->emailVariables->calendarPresented === true && $schedule instanceof Schedule && $practitioner instanceof User) {
             $attachmentName = $this->emailVariables->generateIcs($schedule, $practitioner);
             $this->attach(storage_path('app') . DIRECTORY_SEPARATOR . $attachmentName, [
-                'as'   => $attachmentName,
+                'as' => $attachmentName,
                 'mime' => 'text/calendar',
             ]);
         }
