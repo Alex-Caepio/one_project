@@ -19,6 +19,8 @@ class Timezone extends Model
         'updated_at' => 'datetime',
     ];
 
+    public $timestamps = false;
+
     public function getGMTCalendarValue(): string {
         return 'GMT '.$this->value;
     }

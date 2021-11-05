@@ -23,6 +23,7 @@ use App\Models\User;
 use App\Traits\hasMediaItems;
 use App\Transformers\UserTransformer;
 use DB;
+use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
@@ -31,38 +32,37 @@ use Stripe\Account;
 use Stripe\StripeClient;
 
 
-class AuthController extends Controller {
+class AuthController extends Controller
+{
     use hasMediaItems;
 
-    public function register(RegisterRequest $request, StripeClient $stripe) {
+    public function register(RegisterRequest $request, StripeClient $stripe)
+    {
         try {
-
             $stripeCustomer = run_action(CreateStripeUserByEmail::class, $request->email);
 
             $user = run_action(CreateUserFromRequest::class, $request, [
                 'stripe_customer_id' => $stripeCustomer->id
             ]);
-
-        } catch (\Exception $e) {
-
+        } catch (Exception $e) {
             Log::channel('stripe_client_error')->info("Client could not registered in stripe", [
-                'first_name'         => $request->first_name,
-                'last_name'          => $request->last_name,
-                'business_email'     => $request->business_email,
-                'email'              => $request->email,
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
+                'business_email' => $request->business_email,
+                'email' => $request->email,
                 'stripe_customer_id' => $stripeCustomer->id ?? null,
-                'message'            => $e->getMessage(),
+                'message' => $e->getMessage(),
             ]);
 
             return abort(500);
         }
 
         Log::channel('stripe_client_success')->info("Client registered in stripe", [
-            'user_id'            => $user->id,
-            'first_name'         => $request->first_name,
-            'last_name'          => $request->last_name,
-            'business_email'     => $request->business_email,
-            'email'              => $request->email,
+            'user_id' => $user->id,
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'business_email' => $request->business_email,
+            'email' => $request->email,
             'stripe_customer_id' => $stripeCustomer->id,
         ]);
 
@@ -71,7 +71,8 @@ class AuthController extends Controller {
         return fractal($user, new UserTransformer())->respond();
     }
 
-    public function login(LoginRequest $request) {
+    public function login(LoginRequest $request)
+    {
         $user = User::where('email', $request->get('email'))->first();
 
         $permissions = run_action(GetUsersPermissions::class, $user);
@@ -80,18 +81,21 @@ class AuthController extends Controller {
         return fractal($user, new UserTransformer())->parseIncludes('access_token')->respond();
     }
 
-    public function profile(Request $request) {
+    public function profile(Request $request)
+    {
         return fractal($request->user(), new UserTransformer())->parseIncludes($request->getIncludes())->respond();
     }
 
     // update simple details
-    public function update(UpdateRequest $request, StripeClient $stripe) {
+    public function update(UpdateRequest $request, StripeClient $stripe)
+    {
+        /** @var User $user */
         $user = $request->user();
 
         if ($user->email !== $request->get('email')) {
             $stripe->customers->update($user->stripe_customer_id, ['email' => $request->get('email')]);
         }
-
+dd($request->all($request->getValidatorKeys()));
         $user->update($request->all($request->getValidatorKeys()));
 
         if ($request->filled('password')) {
@@ -103,7 +107,8 @@ class AuthController extends Controller {
     }
 
     //update practitioner business details
-    public function updateBusiness(UpdateBusinessRequest $request, StripeClient $stripe) {
+    public function updateBusiness(UpdateBusinessRequest $request, StripeClient $stripe)
+    {
         $user = $request->user();
 
         $requestData = $request->all($request->getValidatorKeys());
@@ -117,32 +122,32 @@ class AuthController extends Controller {
         if (!$user->stripe_account_id) {
             try {
                 $country = Country::findOrFail((int)$request->get('business_country_id'));
-                $stripeAccount = $stripe->accounts->create([
-                                                               'country'      => $country->iso,
-                                                               'type'         => Account::TYPE_CUSTOM,
-                                                               'capabilities' => [
-                                                                   Account::CAPABILITY_CARD_PAYMENTS => [
-                                                                       'requested' => true,
-                                                                   ],
-                                                                   Account::CAPABILITY_TRANSFERS     => [
-                                                                       'requested' => true,
-                                                                   ]
-                                                               ],
-                                                               'email'        => $user->email,
-                                                           ]);
+                $stripeAccount = $stripe->accounts
+                    ->create([
+                        'country' => $country->iso,
+                        'type' => Account::TYPE_CUSTOM,
+                        'capabilities' => [
+                            Account::CAPABILITY_CARD_PAYMENTS => [
+                                'requested' => true,
+                            ],
+                            Account::CAPABILITY_TRANSFERS => [
+                                'requested' => true,
+                            ]
+                        ],
+                        'email' => $user->email,
+                    ]);
                 $user->stripe_account_id = $stripeAccount->id;
                 $user->business_published_at = now();
                 Log::channel('stripe_client_success')->info("New account has been registered in stripe", [
-                    'user_id'           => $user->id,
-                    'email'             => $user->email,
+                    'user_id' => $user->id,
+                    'email' => $user->email,
                     'stripe_account_id' => $user->stripe_account_id,
                 ]);
-
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 Log::channel('stripe_client_error')->info("New Account could not registered in stripe", [
-                    'user_id'    => $user->id,
-                    'email'      => $user->email,
-                    'message'    => $e->getMessage(),
+                    'user_id' => $user->id,
+                    'email' => $user->email,
+                    'message' => $e->getMessage(),
                     'country_id' => (int)$request->get('business_country_id')
                 ]);
                 return abort(500, $e->getMessage());
@@ -155,25 +160,29 @@ class AuthController extends Controller {
     }
 
     //update practitioner media and profile info
-    public function updateMedia(UpdateMediaRequest $request) {
+    public function updateMedia(UpdateMediaRequest $request)
+    {
         $user = $request->user();
         run_action(UpdateMediaPractitioner::class, $user, $request);
         return fractal($user, new UserTransformer())->respond();
     }
 
-    public function avatar(Request $request) {
+    public function avatar(Request $request)
+    {
         $path = public_path('\img\profile\\' . Auth::id() . '\\');
         $fileName = $request->file('image')->getClientOriginalName();
         $request->file('avatar')->move($path, $fileName);
     }
 
-    public function background(Request $request) {
+    public function background(Request $request)
+    {
         $path = public_path('\img\profile\\' . Auth::id() . '\\');
         $fileName = $request->file('image')->getClientOriginalName();
         $request->file('background')->move($path, $fileName);
     }
 
-    public function verifyEmail(Request $request) {
+    public function verifyEmail(Request $request)
+    {
         if (!$request->hasValidSignature() || !$request->user || !$request->email) {
             abort(401);
         }
@@ -188,36 +197,42 @@ class AuthController extends Controller {
         return fractal($user, new UserTransformer())->parseIncludes('access_token')->respond();
     }
 
-    public function resendVerification(VerificationRequest $request) {
+    public function resendVerification(VerificationRequest $request)
+    {
         event(new UserRegistered(User::where('email', $request->email)->first()));
         return response(null, 204);
     }
 
-    protected function invalidate() {
+    protected function invalidate()
+    {
         throw ValidationException::withMessages([
-                                                    'email' => ['The provided credentials are incorrect']
-                                                ]);
+            'email' => ['The provided credentials are incorrect']
+        ]);
     }
 
-    public function delete(Request $request) {
+    public function delete(Request $request)
+    {
         $request->user()->delete();
 
         return response(null, 204);
     }
 
-    public function show($slug, Request $request) {
+    public function show($slug, Request $request)
+    {
         $user = User::where('slug', $slug)->with($request->getIncludes())->firstOrFail();
 
         return fractal($user, new UserTransformer())->parseIncludes($request->getIncludes())->respond();
     }
 
-    public function publish(PublishPractitionerRequest $request) {
+    public function publish(PublishPractitionerRequest $request)
+    {
         Auth::user()->is_published = true;
         Auth::user()->save();
         return response(null, 204);
     }
 
-    public function unpublish(UnpublishPractitionerRequest $request) {
+    public function unpublish(UnpublishPractitionerRequest $request)
+    {
         run_action(UnpublishPractitioner::class, Auth::user(), $request);
         return response(null, 204);
     }
