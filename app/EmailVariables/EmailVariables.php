@@ -803,6 +803,13 @@ class EmailVariables
         return $this->event->purchase->deposit_amount ?? 0;
     }
 
+    /**
+     * Changes timezone to user defined (+02:00, -06:45, etc)
+     * All users default has London timezone
+     *
+     * @param $datetime
+     * @return Carbon
+     */
     private function convertToUserTimezone($datetime): Carbon
     {
         return Carbon::parse($datetime)->setTimezone($this->event->user->user_timezone->value);
