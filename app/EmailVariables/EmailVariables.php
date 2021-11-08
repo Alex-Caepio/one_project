@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Traits\GenerateCalendarLink;
 use App\Traits\RescheduleEmailLinks;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
 
 
@@ -301,7 +302,7 @@ class EmailVariables
     {
         $startDate = $this->getEventStartDate();
         return $startDate !== null
-            ? Carbon::parse($startDate)->format(self::DATE_FORMAT)
+            ? $this->convertToUserTimezone($startDate)->format(self::DATE_FORMAT)
             : '';
     }
 
@@ -312,7 +313,7 @@ class EmailVariables
     {
         $startDate = $this->getEventStartDate();
         return $startDate !== null
-            ? Carbon::parse($startDate)->format(self::TIME_FORMAT)
+            ? $this->convertToUserTimezone($startDate)->format(self::TIME_FORMAT)
             : '';
     }
 
@@ -323,7 +324,7 @@ class EmailVariables
     {
         $endDate = $this->getEventEndDate();
         return $endDate !== null
-            ? Carbon::parse($endDate)->format(self::DATE_FORMAT)
+            ? $this->convertToUserTimezone($endDate)->format(self::DATE_FORMAT)
             : '';
     }
 
@@ -334,7 +335,7 @@ class EmailVariables
     {
         $endDate = $this->getEventEndDate();
         return $endDate !== null
-            ? Carbon::parse($endDate)->format(self::TIME_FORMAT)
+            ? $this->convertToUserTimezone($endDate)->format(self::TIME_FORMAT)
             : '';
     }
 
@@ -640,7 +641,7 @@ class EmailVariables
     {
         return isset($this->event->reschedule_schedule)
         && $this->event->reschedule_schedule->start_date
-            ? Carbon::parse($this->event->reschedule_schedule->start_date)->format(self::DATE_FORMAT)
+            ? $this->convertToUserTimezone($this->event->reschedule_schedule->start_date)->format(self::DATE_FORMAT)
             : '';
     }
 
@@ -651,7 +652,7 @@ class EmailVariables
     {
         return isset($this->event->reschedule_schedule)
         && $this->event->reschedule_schedule->start_date
-            ? Carbon::parse($this->event->reschedule_schedule->start_date)->format(self::DATE_FORMAT)
+            ? $this->convertToUserTimezone($this->event->reschedule_schedule->start_date)->format(self::DATE_FORMAT)
             : '';
     }
 
@@ -662,7 +663,7 @@ class EmailVariables
     {
         return isset($this->event->reschedule_schedule)
         && $this->event->reschedule_schedule->end_date
-            ? Carbon::parse($this->event->reschedule_schedule->end_date)->format(self::DATE_FORMAT)
+            ? $this->convertToUserTimezone($this->event->reschedule_schedule->end_date)->format(self::DATE_FORMAT)
             : '';
     }
 
@@ -673,7 +674,7 @@ class EmailVariables
     {
         return isset($this->event->reschedule_schedule)
         && $this->event->reschedule_schedule->end_date
-            ? Carbon::parse($this->event->reschedule_schedule->end_date)->format(self::DATE_FORMAT)
+            ? $this->convertToUserTimezone($this->event->reschedule_schedule->end_date)->format(self::DATE_FORMAT)
             : '';
     }
 
@@ -800,6 +801,18 @@ class EmailVariables
     public function getDeposit_paid(): string
     {
         return $this->event->purchase->deposit_amount ?? 0;
+    }
+
+    /**
+     * Changes timezone to user defined (+02:00, -06:45, etc)
+     * All users default has London timezone
+     *
+     * @param $datetime
+     * @return Carbon
+     */
+    private function convertToUserTimezone($datetime): Carbon
+    {
+        return Carbon::parse($datetime)->setTimezone($this->event->user->user_timezone->value);
     }
 
 
