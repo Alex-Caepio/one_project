@@ -28,9 +28,12 @@ class PaymentIntendDto
      */
     private ?bool $is3dsConfirmationExternal = null;
 
+    private ?StripeObject $nextAction; // remove after testing on front
+
     public function __construct(string $status, ?StripeObject $nextAction)
     {
         $this->status = $status;
+        $this->nextAction = $nextAction; // remove after testing on front
 
         if (!$nextAction) {
             return;
@@ -52,6 +55,11 @@ class PaymentIntendDto
         $data = [
             'status' => $this->status,
         ];
+
+        // remove 'next_action' after testing on front
+        if ($this->nextAction) {
+            $data['next_action'] = $this->nextAction->toArray();
+        }
 
         if ($this->is3dsConfirmationExternal !== null) {
             $data['is_3ds_confirmation_external'] = $this->is3dsConfirmationExternal;
