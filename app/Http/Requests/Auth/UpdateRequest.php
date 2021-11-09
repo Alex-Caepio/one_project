@@ -39,7 +39,6 @@ class UpdateRequest extends Request {
             'country_id'          => 'nullable|integer|exists:countries,id',
             'timezone_id'=>[
                 'required',
-                'integer',
                 'exists:timezones,id'
             ]
         ];
