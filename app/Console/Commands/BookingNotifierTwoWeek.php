@@ -8,7 +8,8 @@ use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
-class BookingNotifierTwoWeek extends Command {
+class BookingNotifierTwoWeek extends Command
+{
     /**
      * The name and signature of the console command.
      *
@@ -28,17 +29,24 @@ class BookingNotifierTwoWeek extends Command {
      *
      * @return void
      */
-    public function handle(): void {
-        $bookings = Booking::whereNull('cancelled_at')->whereRaw("DATE_FORMAT(`datetime_from`, '%Y-%m-%d') = ?",
-                                                                 Carbon::now()->addDays(14)->format('Y-m-d'))
-                           ->whereHas('schedule.service', static function($query) {
-                               $query->where('service_type_id', 'retreat');
-                           })->with(['user', 'schedule', 'schedule.service', 'practitioner'])->get();
+    public function handle(): void
+    {
+        $bookings = Booking::query()
+            ->whereNull('cancelled_at')
+            ->whereRaw(
+                "DATE_FORMAT(`datetime_from`, '%Y-%m-%d') = ?",
+                Carbon::now()->addDays(14)->format('Y-m-d')
+            )
+            ->whereHas('schedule.service', static function ($query) {
+                $query->where('service_type_id', 'retreat');
+            })
+            ->with(['user', 'user.user_timezone', 'schedule', 'schedule.service', 'practitioner'])
+            ->get();
         foreach ($bookings as $booking) {
             event(new BookingReminder($booking, 'Booking Reminder - Retreat'));
         }
 
         Log::channel('console_commands_handler')
-           ->info('Booking Reminder - Retreat two weeks. Done...', ['bookings_count' => count($bookings)]);
+            ->info('Booking Reminder - Retreat two weeks. Done...', ['bookings_count' => count($bookings)]);
     }
 }

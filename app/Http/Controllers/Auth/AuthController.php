@@ -95,7 +95,7 @@ class AuthController extends Controller
         if ($user->email !== $request->get('email')) {
             $stripe->customers->update($user->stripe_customer_id, ['email' => $request->get('email')]);
         }
-dd($request->all($request->getValidatorKeys()));
+
         $user->update($request->all($request->getValidatorKeys()));
 
         if ($request->filled('password')) {
