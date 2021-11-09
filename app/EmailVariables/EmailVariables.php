@@ -559,7 +559,7 @@ class EmailVariables
             $this->event->schedule->venue_name,
             $this->event->schedule->venue_address,
             $this->event->schedule->city,
-            $this->event->schedule->country
+            $this->event->schedule->country ? $this->event->schedule->country->nicename : ''
         ], static function (?string $value) {
             $trimmedValue = trim($value);
             if (!empty($trimmedValue)) {
