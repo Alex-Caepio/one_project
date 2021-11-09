@@ -11,7 +11,6 @@ use App\Models\User;
 use App\Traits\GenerateCalendarLink;
 use App\Traits\RescheduleEmailLinks;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
 
 
@@ -510,11 +509,11 @@ class EmailVariables
     }
 
     /**
-     * @return float
+     * @return string
      */
-    public function getTotal_paid(): float
+    public function getTotal_paid(): string
     {
-        return (float)$this->event->booking->cost;
+        return "&pound; ".$this->event->booking->cost;
     }
 
     /**
@@ -800,7 +799,7 @@ class EmailVariables
      */
     public function getDeposit_paid(): string
     {
-        return $this->event->purchase->deposit_amount ?? 0;
+        return "&pound; ". ($this->event->purchase->deposit_amount ?? 0);
     }
 
     /**
