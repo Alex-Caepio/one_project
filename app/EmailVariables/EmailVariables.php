@@ -774,7 +774,7 @@ class EmailVariables
                 ->where('is_paid', 0)
                 ->get();
             foreach ($installments as $installment) {
-                $str .= Carbon::parse($installment->payment_date)->format(self::DATE_FORMAT) . ' ' .
+                $str .= Carbon::parse($installment->payment_date)->format(self::DATE_FORMAT) . ' &pound;' .
                     $installment->payment_amount . ' <br/>';
             }
         }
