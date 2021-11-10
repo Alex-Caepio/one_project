@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace App\DTO\Schedule;
 
+use Stripe\PaymentIntent;
 use Stripe\StripeObject;
 
-class PaymentIntendDto
+class PaymentIntentDto
 {
     private const THREE_D_SECURE_URL_REDIRECT_TYPE = 'three_d_secure_redirect';
     private const STRIPE_REDIRECT_URL_KEY = 'stripe_js';
@@ -15,6 +16,12 @@ class PaymentIntendDto
      * Status of transaction, returned from stripe API
      */
     private string $status;
+
+    private ?string $clientSecret;
+
+    private ?string $confirmationMethod;
+
+    private PaymentIntent $paymentIntent; // this property will be removed after testing on dev
 
     /**
      * Url used for iframe to confirm the payment using 3ds flow version 1
@@ -30,9 +37,17 @@ class PaymentIntendDto
 
     private ?StripeObject $nextAction; // remove after testing on front
 
-    public function __construct(string $status, ?StripeObject $nextAction)
-    {
+    public function __construct(
+        string        $status,
+        PaymentIntent $paymentIntent, // this argument will be removed after testing on dev
+        ?string       $clientSecret,
+        ?string       $confirmationMethod,
+        ?StripeObject $nextAction
+    ) {
         $this->status = $status;
+        $this->clientSecret = $clientSecret;
+        $this->confirmationMethod = $confirmationMethod;
+        $this->paymentIntent = $paymentIntent; // remove after testing on front
         $this->nextAction = $nextAction; // remove after testing on front
 
         if (!$nextAction) {
@@ -54,7 +69,16 @@ class PaymentIntendDto
     {
         $data = [
             'status' => $this->status,
+            'payment_intent' => $this->paymentIntent->toArray(),
         ];
+
+        if ($this->clientSecret) {
+            $data['client_secret'] = $this->clientSecret;
+        }
+
+        if ($this->confirmationMethod) {
+            $data['confirmation_method'] = $this->confirmationMethod;
+        }
 
         // remove 'next_action' after testing on front
         if ($this->nextAction) {

@@ -6,7 +6,7 @@ use App\Actions\Promo\CalculatePromoPrice;
 use App\Actions\Schedule\PurchaseInstallment;
 use App\Actions\Stripe\GetViablePaymentMethod;
 use App\Actions\Stripe\TransferFundsWithCommissions;
-use App\DTO\Schedule\PaymentIntendDto;
+use App\DTO\Schedule\PaymentIntentDto;
 use App\Events\AppointmentBooked;
 use App\Filters\PurchaseFilters;
 use App\Http\Requests\PromotionCode\ValidatePromocodeRequest;
@@ -190,7 +190,7 @@ class PurchaseController extends Controller
         User $practitioner,
         $cost,
         Purchase $purchase
-    ): PaymentIntendDto {
+    ): PaymentIntentDto {
         $payment_method_id = run_action(GetViablePaymentMethod::class, $practitioner, $request->payment_method_id);
         $depositCost = $schedule->deposit_amount * 100 * $request->amount;
 
@@ -252,7 +252,7 @@ class PurchaseController extends Controller
         $stripe,
         Purchase $purchase,
         $practitioner
-    ): PaymentIntendDto {
+    ): PaymentIntentDto {
         $payment_method_id = run_action(GetViablePaymentMethod::class, $practitioner, $request->payment_method_id);
         $paymentIntent = null;
         try {
@@ -359,6 +359,12 @@ class PurchaseController extends Controller
             ]);
         }
 
-        return new PaymentIntendDto($paymentIntent->status, $paymentIntent->next_action);
+        return new PaymentIntentDto(
+            $paymentIntent->status,
+            $paymentIntent,
+            $paymentIntent->client_secret,
+            $paymentIntent->confirmation_method,
+            $paymentIntent->next_action
+        );
     }
 }
