@@ -6,11 +6,12 @@ use App\Actions\Promo\CalculatePromoPrice;
 use App\Actions\Schedule\PurchaseInstallment;
 use App\Actions\Stripe\GetViablePaymentMethod;
 use App\Actions\Stripe\TransferFundsWithCommissions;
-use App\DTO\Schedule\PaymentIntendDto;
+use App\DTO\Schedule\PaymentIntentDto;
 use App\Events\AppointmentBooked;
 use App\Filters\PurchaseFilters;
 use App\Http\Requests\PromotionCode\ValidatePromocodeRequest;
 use App\Http\Requests\Request;
+use App\Http\Requests\Schedule\PurchaseFinalizeRequest;
 use App\Http\Requests\Schedule\PurchaseScheduleRequest;
 use App\Models\Booking;
 use App\Models\Price;
@@ -73,7 +74,7 @@ class PurchaseController extends Controller
         $isInstallment =
             $schedule->deposit_accepted && isset($request->installments) && (int)$request->installments > 0;
 
-        $paymentIntendData = null;
+        $paymentIntentData = null;
 
         try {
             $purchase = new Purchase();
@@ -136,7 +137,7 @@ class PurchaseController extends Controller
             }
 
             if ($cost && !$price->is_free) {
-                $paymentIntendData = $isInstallment
+                $paymentIntentData = $isInstallment
                     ? $this->payInInstallments($request, $schedule, $price, $practitioner, $cost, $purchase)
                     : $this->payInstant($request, $schedule, $price, $stripe, $purchase, $practitioner)
                 ;
@@ -167,7 +168,7 @@ class PurchaseController extends Controller
 
         $purchaseData =  fractal($purchase, new PurchaseTransformer())->parseIncludes($request->getIncludes())->toArray();
 
-        return array_merge($purchaseData, $paymentIntendData ? $paymentIntendData->toArray() : []);
+        return array_merge($purchaseData, $paymentIntentData ? $paymentIntentData->toArray() : []);
     }
 
     public function validatePromocode(ValidatePromocodeRequest $request, Schedule $schedule)
@@ -190,7 +191,7 @@ class PurchaseController extends Controller
         User $practitioner,
         $cost,
         Purchase $purchase
-    ): PaymentIntendDto {
+    ): PaymentIntentDto {
         $payment_method_id = run_action(GetViablePaymentMethod::class, $practitioner, $request->payment_method_id);
         $depositCost = $schedule->deposit_amount * 100 * $request->amount;
 
@@ -252,7 +253,7 @@ class PurchaseController extends Controller
         $stripe,
         Purchase $purchase,
         $practitioner
-    ): PaymentIntendDto {
+    ): PaymentIntentDto {
         $payment_method_id = run_action(GetViablePaymentMethod::class, $practitioner, $request->payment_method_id);
         $paymentIntent = null;
         try {
@@ -359,6 +360,60 @@ class PurchaseController extends Controller
             ]);
         }
 
-        return new PaymentIntendDto($paymentIntent->status, $paymentIntent->next_action);
+        return new PaymentIntentDto(
+            $paymentIntent->status,
+            $paymentIntent,
+            $paymentIntent->client_secret,
+            $paymentIntent->confirmation_method,
+            $paymentIntent->next_action
+        );
+    }
+
+    public function finalize(PurchaseFinalizeRequest $request, Purchase $purchase, StripeClient $stripe): array
+    {
+        $paymentIntentId = $request->payment_intent_id;
+
+        $logData = [
+            'user_id'          => $request->user()->id,
+            'price_id'         => $purchase->price_id,
+            'service_id'       => $purchase->service_id,
+            'schedule_id'      => $purchase->schedule_id,
+            'payment_intent'   => $paymentIntentId,
+            'amount'           => $purchase->amount,
+            'price'            => $purchase->price_original,
+            'total'            => $purchase->price,
+            'discount'         => $purchase->discount,
+            'discount_applied' => $purchase->discount_applied,
+        ];
+
+        try {
+            $paymentIntent = $stripe->paymentIntents->retrieve($paymentIntentId);
+            $logData['payment_intent_initial_status'] = $paymentIntent->status;
+
+            $paymentIntent = $paymentIntent->confirm();
+            $logData['payment_intent_resulting_status'] = $paymentIntent->status;
+
+            Log::channel('stripe_purchase_finalize_success')->info("Client purchased finalized", $logData);
+
+        } catch (ApiErrorException $e) {
+            Log::channel('stripe_purchase_finalize_failure')->info(
+                "Client purchase finalize failed",
+                array_merge(['message' => $e->getMessage()], $logData)
+            );
+
+            throw new Exception((string) $e, $e->getCode(), $e);
+        }
+
+        $paymentIntentData = new PaymentIntentDto(
+            $paymentIntent->status,
+            $paymentIntent,
+            $paymentIntent->client_secret,
+            $paymentIntent->confirmation_method,
+            $paymentIntent->next_action
+        );
+
+        $purchaseData =  fractal($purchase, new PurchaseTransformer())->parseIncludes($request->getIncludes())->toArray();
+
+        return array_merge($purchaseData, $paymentIntentData->toArray());
     }
 }

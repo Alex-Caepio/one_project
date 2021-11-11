@@ -3,7 +3,7 @@
 
 namespace App\Actions\Schedule;
 
-use App\DTO\Schedule\PaymentIntendDto;
+use App\DTO\Schedule\PaymentIntentDto;
 use App\Http\Requests\Schedule\PurchaseScheduleRequest;
 use App\Models\Instalment;
 use App\Models\Purchase;
@@ -24,7 +24,7 @@ class PurchaseInstallment
         $paymentMethodId,
         $cost,
         Purchase $purchase
-    ): PaymentIntendDto {
+    ): PaymentIntentDto {
         /** @var User $customer */
         $customer = $request->user();
         $stripe = app()->make(StripeClient::class);
@@ -48,7 +48,13 @@ class PurchaseInstallment
             'amount'         => $cost
         ]);
 
-        return new PaymentIntendDto($deposit->status, $deposit->next_action);
+        return new PaymentIntentDto(
+            $deposit->status,
+            $deposit,
+            $deposit->client_secret,
+            $deposit->confirmation_method,
+            $deposit->next_action
+        );
     }
 
     private function chargeDeposit(
