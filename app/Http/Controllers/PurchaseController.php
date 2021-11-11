@@ -401,7 +401,7 @@ class PurchaseController extends Controller
                 array_merge(['message' => $e->getMessage()], $logData)
             );
 
-            throw new Exception('Failed to finalize payment');
+            throw new Exception((string) $e, $e->getCode(), $e);
         }
 
         $paymentIntentData = new PaymentIntentDto(
