@@ -15,7 +15,7 @@ class BookingConfirmation {
     public ?string $template;
 
     /**
-     * @param \App\Models\Booking $booking
+     * @param Booking $booking
      */
     public function __construct(Booking $booking) {
         $this->booking = $booking;
@@ -28,11 +28,15 @@ class BookingConfirmation {
      */
     private function getTemplate(): ?string {
         if ($this->schedule->appointment === 'physical') {
-            return $this->service->isDateLess() ? 'Booking Confirmation - Dateless Physical' : 'Booking Confirmation - Date/Apt Physical';
+            return $this->service->isDateLess()
+                ? 'Booking Confirmation - Dateless Physical'
+                : 'Booking Confirmation - Date/Apt Physical';
         }
 
         if ($this->schedule->appointment === 'virtual' || !$this->schedule->appointment) {
-            return $this->service->isDateLess() ? 'Booking Confirmation - DateLess Virtual' : 'Booking Confirmation - Event Virtual';
+            return $this->service->isDateLess()
+                ? 'Booking Confirmation - DateLess Virtual'
+                : 'Booking Confirmation - Event Virtual';
         }
 
         return null;

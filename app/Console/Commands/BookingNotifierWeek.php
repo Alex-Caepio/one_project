@@ -38,7 +38,7 @@ class BookingNotifierWeek extends Command
                 Carbon::now()->addDays(7)->format('Y-m-d')
             )
             ->whereHas('schedule.service', static function ($query) {
-                $query->whereIn('service_type_id', ['workshop', 'event']);
+                $query->whereIn('service_type_id', ['workshop', 'events']);
             })
             ->with(['user','user.user_timezone', 'schedule', 'schedule.service', 'practitioner'])
             ->get();
