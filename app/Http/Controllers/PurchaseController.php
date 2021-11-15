@@ -36,9 +36,9 @@ class PurchaseController extends Controller
     /**
      * Endpoint for testing 3ds flow with confirmation_method: manual
      */
-    public function testPurchase(PurchaseScheduleRequest $request, Schedule $schedule, StripeClient $stripe): Response
+    public function testPurchase(PurchaseScheduleRequest $request, Schedule $schedule, StripeClient $stripe): array
     {
-        $this->purchase($request, $schedule, $stripe, [
+        return $this->purchase($request, $schedule, $stripe, [
             "confirmation_method" => "manual",
             "confirm" => true,
         ]);
