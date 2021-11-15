@@ -40,7 +40,7 @@ class PurchaseScheduleRequest extends Request implements CreateScheduleInterface
             'amount' => 'required',
             'installments' => 'nullable|integer|min:1',
             'authorize' => Rule::requiredIf(function () {
-                return $this->route()->getName() === 'purchase-process' && isset($this->installments) &&
+                return in_array($this->route()->getName(), ['purchase-process', 'purchase-process-test'], true) && isset($this->installments) &&
                        (int)$this->installments > 1;
             })
         ];
