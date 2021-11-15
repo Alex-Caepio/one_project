@@ -368,7 +368,7 @@ class EmailVariables
 
     public function getSchedule_country(): ?string
     {
-        return $this->event->schedule->country->nicename ?? '';
+        return $this->event->schedule->country ? $this->event->schedule->country->nicename : '';
     }
 
     /**
@@ -706,7 +706,7 @@ class EmailVariables
      */
     public function getReschedule_country(): ?string
     {
-        return isset($this->event->reschedule_schedule) ? $this->event->reschedule_schedule->country : '';
+        return isset($this->event->reschedule_schedule) ? $this->event->reschedule_schedule->country->nicename : '';
     }
 
     /**
