@@ -765,12 +765,7 @@ class EmailVariables
         if ($this->event->purchase) {
             $installments = Instalment::query()
                 ->where('purchase_id', $this->event->purchase->id)
-                ->where(
-                    'payment_date',
-                    '>',
-                    Carbon::now()->toDateTimeString()
-                )
-                ->where('is_paid', 0)
+                ->latest('created_at')
                 ->get();
             foreach ($installments as $installment) {
                 $str .= Carbon::parse($installment->payment_date)->format(self::DATE_FORMAT) . ' ' .
