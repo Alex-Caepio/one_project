@@ -23,12 +23,12 @@ trait GenerateCalendarLink
     private static string $format = 'Ymd\TH:i\Z';
 
 
-    /**
-     * @param Schedule $schedule
-     * @return string
-     */
-    public function generateGoogleLink(Schedule $schedule): string
+    public function generateGoogleLink($event): string
     {
+        /** @var Schedule $schedule */
+        $schedule = $event->schedule;
+        $tz = $event->user->user_timezone->value;
+
         $locationData = array_filter([
             $schedule->url,
             $schedule->venue_name,
@@ -40,8 +40,8 @@ trait GenerateCalendarLink
             return !empty(trim($value));
         });
         $location = urlencode(implode(', ', $locationData));
-        $startDate = Carbon::parse($schedule->start_date);
-        $endDate = Carbon::parse($schedule->end_date);
+        $startDate = Carbon::parse($schedule->start_date)->setTimezone($tz);
+        $endDate = Carbon::parse($schedule->end_date)->setTimezone($tz);
         return 'https://www.google.com/calendar/render?action=TEMPLATE&text=' . $schedule->service->title .
             '&details=' . urlencode($schedule->title) . '&location=' . $location . '&dates=' .
             $startDate->format(self::$format) . '%2F' . $endDate->format(self::$format);
