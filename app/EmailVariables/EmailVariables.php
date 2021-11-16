@@ -512,7 +512,7 @@ class EmailVariables
      */
     public function getTotal_paid(): string
     {
-        return "&pound; ".$this->event->booking->cost;
+        return config('app.platform_currency_sign')." ".$this->event->booking->cost;
     }
 
     /**
@@ -773,7 +773,8 @@ class EmailVariables
                 ->where('is_paid', 0)
                 ->get();
             foreach ($installments as $installment) {
-                $str .= Carbon::parse($installment->payment_date)->format(self::DATE_FORMAT) . ' &pound;' .
+                $str .= Carbon::parse($installment->payment_date)->format(self::DATE_FORMAT) . ' ' .
+                    config('app.platform_currency_sign').
                     $installment->payment_amount . ' <br/>';
             }
         }
@@ -798,7 +799,7 @@ class EmailVariables
      */
     public function getDeposit_paid(): string
     {
-        return "&pound; ". ($this->event->purchase->deposit_amount ?? 0);
+        return config('app.platform_currency_sign')." ". ($this->event->purchase->deposit_amount ?? 0);
     }
 
     /**
