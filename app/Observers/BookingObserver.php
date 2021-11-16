@@ -6,8 +6,6 @@ use App\Events\BookingConfirmation;
 use App\Events\BookingDeposit;
 use App\Models\Booking;
 use App\Models\RescheduleRequest;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
 
 class BookingObserver
 {
@@ -15,7 +13,7 @@ class BookingObserver
     /**
      * Handle booking creation.
      *
-     * @param \App\Models\Booking $booking
+     * @param Booking $booking
      * @return void
      */
     public function creating(Booking $booking): void
@@ -31,7 +29,7 @@ class BookingObserver
     /**
      * Handle booking created.
      *
-     * @param \App\Models\Booking $booking
+     * @param Booking $booking
      * @return void
      */
     public function created(Booking $booking): void
@@ -45,7 +43,7 @@ class BookingObserver
     /**
      * Handle booking update.
      *
-     * @param \App\Models\Booking $booking
+     * @param Booking $booking
      * @return void
      */
     public function saved(Booking $booking): void
@@ -57,7 +55,7 @@ class BookingObserver
 
 
     /**
-     * @param \App\Models\Booking $booking
+     * @param Booking $booking
      */
     public function instalment_complete(Booking $booking): void
     {
