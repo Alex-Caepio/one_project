@@ -21,6 +21,7 @@ return [
     'platform_default_timezone'     => env('PLATFORM_CALENDAR_DEFAULT_TIMEZONE', null),
     'platform_subject_practitioner' => env('PLATFORM_SUBJECT_PREFIX_PRACTITIONER', 'Message from: '),
     'platform_subject_client'       => env('PLATFORM_SUBJECT_PREFIX_CLIENT', 'Message from: '),
+    'platform_currency_sign'       => env('PLATFORM_CURRENCY_SIGN', '&pound;'),
 
     'dateless_service_types' => ['bespoke'],
 

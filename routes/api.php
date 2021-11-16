@@ -214,6 +214,7 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     /* Payments */
     Route::post('/schedules/{schedule}/promocode', [PurchaseController::class, 'validatePromocode']);
     Route::post('/schedules/{schedule}/purchase', [PurchaseController::class, 'purchase'])->name('purchase-process');
+    Route::post('/schedules/{schedule}/purchase/test', [PurchaseController::class, 'testPurchase'])->name('purchase-process-test');
     Route::patch('/purchases/{purchase}/finalize', [PurchaseController::class, 'finalize']);
     /* Payments */
 

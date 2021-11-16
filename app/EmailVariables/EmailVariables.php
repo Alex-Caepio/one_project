@@ -61,7 +61,6 @@ class EmailVariables
         return '';
     }
 
-
     /**
      * @return Schedule|null
      */
@@ -235,7 +234,7 @@ class EmailVariables
     public function getAdd_to_calendar(): ?string
     {
         $this->calendarPresented = true;
-        return $this->generateGoogleLink($this->event->schedule);
+        return $this->generateGoogleLink($this->event);
     }
 
     /**
@@ -368,7 +367,7 @@ class EmailVariables
 
     public function getSchedule_country(): ?string
     {
-        return $this->event->schedule->country->nicename ?? '';
+        return $this->event->schedule->country ? $this->event->schedule->country->nicename : '';
     }
 
     /**
@@ -513,7 +512,7 @@ class EmailVariables
      */
     public function getTotal_paid(): string
     {
-        return "&pound; ".$this->event->booking->cost;
+        return config('app.platform_currency_sign')." ".$this->event->booking->cost;
     }
 
     /**
@@ -706,7 +705,7 @@ class EmailVariables
      */
     public function getReschedule_country(): ?string
     {
-        return isset($this->event->reschedule_schedule) ? $this->event->reschedule_schedule->country : '';
+        return isset($this->event->reschedule_schedule) ? $this->event->reschedule_schedule->country->nicename : '';
     }
 
     /**
@@ -775,6 +774,7 @@ class EmailVariables
                 ->get();
             foreach ($installments as $installment) {
                 $str .= Carbon::parse($installment->payment_date)->format(self::DATE_FORMAT) . ' ' .
+                    config('app.platform_currency_sign').
                     $installment->payment_amount . ' <br/>';
             }
         }
@@ -799,7 +799,7 @@ class EmailVariables
      */
     public function getDeposit_paid(): string
     {
-        return "&pound; ". ($this->event->purchase->deposit_amount ?? 0);
+        return config('app.platform_currency_sign')." ". ($this->event->purchase->deposit_amount ?? 0);
     }
 
     /**
