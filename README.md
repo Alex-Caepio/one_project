@@ -10,6 +10,9 @@
 1. Clone backend & frontend repos in one dir 
 ```
 ├── back
+│   ├── config
+│   │   ├── ... repo files
+│   │   └── vhost.local
 │   ├── ... repo files
 │   └── Dockerfile.local
 ├── front
@@ -97,7 +100,7 @@ services:
 ### Dockerfile.local
 ```Dockerfile
 FROM php:7.4-apache
-COPY ./config/vhost.conf /etc/apache2/sites-enabled/000-default.conf
+COPY ./config/vhost.local /etc/apache2/sites-enabled/000-default.conf
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
 && apt-get update && apt-get install -y git libzip-dev unzip libpng-dev mysql-common default-mysql-client\
 && docker-php-ext-install zip pdo_mysql gd && a2enmod rewrite headers
@@ -122,4 +125,12 @@ GOOGLE_API_KEY=
 G_CALENDAR_PREFIX=https://www.googleapis.com/calendar/v3
 GOOGLE_DISCOVERY_DOCS = https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest
 GOOGLE_SCOPE=https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/calendar.events
+```
+### vhost.local
+```
+<VirtualHost *:80>
+        DocumentRoot "/var/www/html/public"
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
 ```
