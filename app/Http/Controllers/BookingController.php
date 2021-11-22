@@ -13,15 +13,21 @@ use App\Transformers\BookingTransformer;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
-class BookingController extends Controller {
-    public function index(Request $request, BookingFilters $filters) {
-        $query = Booking::filter($filters)->where('user_id', $request->user()->id)
-                        ->with($request->getIncludesWithTrashed([
-                            'schedule',
-                            'schedule.service',
-                            'practitioner',
-                            'schedule.service.practitioner'
-                                                                ]));
+class BookingController extends Controller
+{
+    public function index(Request $request, BookingFilters $filters)
+    {
+        $query = Booking::query()
+            ->filter($filters)
+            ->where('user_id', $request->user()->id)
+            ->with(
+                $request->getIncludesWithTrashed([
+                    'schedule',
+                    'schedule.service',
+                    'practitioner',
+                    'schedule.service.practitioner'
+                ])
+            );
 
         if ($request->hasOrderBy()) {
             $order = $request->getOrderBy();
@@ -33,27 +39,33 @@ class BookingController extends Controller {
         $paginator = $query->paginate($request->getLimit());
         $booking = $paginator->getCollection();
 
-        return response(fractal($booking,
-                                new BookingTransformer())->parseIncludes($request->getIncludes()))->withPaginationHeaders($paginator);
-
+        return response(fractal($booking, new BookingTransformer())->parseIncludes($request->getIncludes()))
+            ->withPaginationHeaders($paginator);
     }
 
-    public function show(Booking $booking, Request $request) {
-        $booking->load(['schedule' => static function($scheduleQuery) {
-            $scheduleQuery->withTrashed();
-        }, 'schedule.service' => static function($serviceQuery) {
-            $serviceQuery->withTrashed();
-        }]);
+    public function show(Booking $booking, Request $request)
+    {
+        $booking->load([
+            'schedule' => static function ($scheduleQuery) {
+                $scheduleQuery->withTrashed();
+            },
+            'schedule.service' => static function ($serviceQuery) {
+                $serviceQuery->withTrashed();
+            }
+        ]);
 
         //load only practitioner reschedule
         $bookingForClient = Auth::user()->id === $booking->user_id;
-           $booking->load(['reschedule_requests'  => static function($rrQuery) use($bookingForClient) {
-               $rrQuery->where('requested_by', $bookingForClient ? 'practitioner' : 'client');
-           }]);
+        $booking->load([
+            'reschedule_requests' => static function ($rrQuery) use ($bookingForClient) {
+                $rrQuery->where('requested_by', $bookingForClient ? 'practitioner' : 'client');
+            }
+        ]);
         return fractal($booking, new BookingTransformer())->parseIncludes($request->getIncludes())->toArray();
     }
 
-    public function complete(Booking $booking, BookingCompleteRequest $request) {
+    public function complete(Booking $booking, BookingCompleteRequest $request)
+    {
         $booking->status = 'completed';
         $booking->save();
         Notification::where('booking_id', $booking->id)->delete();
