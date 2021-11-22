@@ -24,11 +24,10 @@ class ScheduleFreeze extends Model {
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
+
     /**
-     *
      * @return BelongsTo
      */
-
     public function schedule() {
         return $this->belongsTo(Schedule::class);
     }
