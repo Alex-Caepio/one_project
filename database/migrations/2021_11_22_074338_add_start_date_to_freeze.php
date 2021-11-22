@@ -14,7 +14,7 @@ class AddStartDateToFreeze extends Migration
     public function up()
     {
         Schema::table('schedule_freezes', function (Blueprint $table) {
-            $table->dateTime('start_at')->nullable()->after('user_id');
+            $table->dateTimeTz('start_at')->nullable()->after('user_id');
         });
     }
 

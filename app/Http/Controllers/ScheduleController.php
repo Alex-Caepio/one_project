@@ -161,14 +161,16 @@ class ScheduleController extends Controller
         if ($personalFreezed === null) {
             foreach ($request->get('availabilities') as $availability) {
                 $freeze = new ScheduleFreeze();
+                $start = Carbon::parse($availability['datetime_from'])->setTimezone('UTC');
+                $qnt = $schedule->service->service_type_id !== 'appointment' ? $request->get('amount',1) : 1;
                 $freeze->forceFill(
                     [
-                        'start_at' => $availability['datetime_from'],
+                        'start_at' => $start,
                         'freeze_at' => $time,
                         'user_id' => Auth::id(),
                         'practitioner_id' => $schedule->service->user_id,
                         'schedule_id' => $schedule->id,
-                        'quantity' => $request->get('amount') ?? 1,
+                        'quantity' => $qnt,
                         'price_id' => $request->price_id
                     ]
                 );
