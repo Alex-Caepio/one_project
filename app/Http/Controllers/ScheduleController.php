@@ -182,6 +182,7 @@ class ScheduleController extends Controller
             $bookingQuery->active();
         }
         $bookingQuery->with($request->getIncludes());
+        $bookingQuery->with(['purchase','purchase.instalments']);
         $paginator = $bookingQuery->paginate($request->getLimit());
         $fractal =
             fractal($paginator->getCollection(), new BookingTransformer())
