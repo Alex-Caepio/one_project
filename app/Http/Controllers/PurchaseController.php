@@ -33,17 +33,6 @@ use Stripe\StripeClient;
 
 class PurchaseController extends Controller
 {
-    /**
-     * Endpoint for testing 3ds flow with confirmation_method: manual
-     */
-    public function testPurchase(PurchaseScheduleRequest $request, Schedule $schedule, StripeClient $stripe): Response
-    {
-        $this->purchase($request, $schedule, $stripe, [
-            "confirmation_method" => "manual",
-            "confirm" => true,
-        ]);
-    }
-
     public function index(Request $request): Response
     {
         $query = Purchase::query();
@@ -62,7 +51,7 @@ class PurchaseController extends Controller
         )->withPaginationHeaders($paginator);
     }
 
-    public function purchase(PurchaseScheduleRequest $request, Schedule $schedule, StripeClient $stripe, array $stripeCreateOverrides = []): array
+    public function purchase(PurchaseScheduleRequest $request, Schedule $schedule, StripeClient $stripe): array
     {
         $price = $schedule->prices()->where('id', $request->get('price_id'))->first();
         $cost = $price->cost * $request->amount;
@@ -149,8 +138,8 @@ class PurchaseController extends Controller
 
             if ($cost && !$price->is_free) {
                 $paymentIntentData = $isInstallment
-                    ? $this->payInInstallments($request, $schedule, $price, $practitioner, $cost, $purchase, $stripeCreateOverrides)
-                    : $this->payInstant($request, $schedule, $price, $stripe, $purchase, $practitioner, $stripeCreateOverrides)
+                    ? $this->payInInstallments($request, $schedule, $price, $practitioner, $cost, $purchase)
+                    : $this->payInstant($request, $schedule, $price, $stripe, $purchase, $practitioner)
                 ;
             }
 
@@ -201,14 +190,13 @@ class PurchaseController extends Controller
         Price $price,
         User $practitioner,
         $cost,
-        Purchase $purchase,
-        array $stripeCreateOverrides
+        Purchase $purchase
     ): PaymentIntentDto {
         $payment_method_id = run_action(GetViablePaymentMethod::class, $practitioner, $request->payment_method_id);
         $depositCost = $schedule->deposit_amount * 100 * $request->amount;
 
         try {
-            $responseData = run_action(PurchaseInstallment::class, $schedule, $request, $payment_method_id, $cost, $purchase, $stripeCreateOverrides);
+            $responseData = run_action(PurchaseInstallment::class, $schedule, $request, $payment_method_id, $cost, $purchase);
         } catch (ApiErrorException $e) {
             Log::channel('stripe_installment_fail')->info('The client could not purchase installment', [
                 'user_id'        => $request->user()->id,
@@ -264,15 +252,14 @@ class PurchaseController extends Controller
         Price $price,
         $stripe,
         Purchase $purchase,
-        $practitioner,
-        array $stripeCreateOverrides
+        $practitioner
     ): PaymentIntentDto {
         $payment_method_id = run_action(GetViablePaymentMethod::class, $practitioner, $request->payment_method_id);
         $paymentIntent = null;
         try {
             $client = $request->user();
             $refference = implode(', ', $purchase->bookings->pluck('reference')->toArray());
-            $paymentIntent = $stripe->paymentIntents->create(array_merge([
+            $paymentIntent = $stripe->paymentIntents->create([
                'amount'               => $purchase->price * 100,
                'currency'             => config(
                    'app.platform_currency'
@@ -291,7 +278,7 @@ class PurchaseController extends Controller
                    'Client stripe id'                  => $client->stripe_customer_id,
                    'Booking reference'                 => $refference
                ]
-           ], $stripeCreateOverrides));
+           ]);
 
             /** @var PaymentIntent $paymentIntent */
             $paymentIntent =

@@ -23,13 +23,12 @@ class PurchaseInstallment
         PurchaseScheduleRequest $request,
         $paymentMethodId,
         $cost,
-        Purchase $purchase,
-        array $stripeCreateOverrides
+        Purchase $purchase
     ): PaymentIntentDto {
         /** @var User $customer */
         $customer = $request->user();
         $stripe = app()->make(StripeClient::class);
-        $deposit = $this->chargeDeposit($paymentMethodId, $stripe, $schedule, $customer->id, $purchase->id, $stripeCreateOverrides);
+        $deposit = $this->chargeDeposit($paymentMethodId, $stripe, $schedule, $customer->id, $purchase->id);
         $subscription = $this->chargeInstallment($paymentMethodId, $cost, $request->installments, $schedule, $purchase, $customer, $stripe);
 
         $purchase->stripe_id = $deposit->id;
@@ -63,20 +62,19 @@ class PurchaseInstallment
         StripeClient $stripe,
         Schedule $schedule,
         int $customerId,
-        int $purchaseId,
-        array $stripeCreateOverrides
+        int $purchaseId
     ): PaymentIntent {
 
         $depositAmount = $schedule->deposit_amount;
 
         $paymentIntent = $stripe->paymentIntents->create(
-            array_merge([
+            [
                 'amount'               => (int)($depositAmount * 100),
                 'currency'             => config('app.platform_currency'),
                 'payment_method_types' => ['card'],
                 'customer'             => Auth::user()->stripe_customer_id,
                 'payment_method'       => $paymentMethodId
-            ], $stripeCreateOverrides)
+            ]
         );
 
         $paymentIntent = $stripe->paymentIntents->confirm(
