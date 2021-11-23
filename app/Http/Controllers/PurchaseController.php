@@ -3,14 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Actions\Promo\CalculatePromoPrice;
-use App\Actions\Schedule\DTO\PaymentIntendDto;
 use App\Actions\Schedule\PurchaseInstallment;
 use App\Actions\Stripe\GetViablePaymentMethod;
 use App\Actions\Stripe\TransferFundsWithCommissions;
+use App\DTO\Schedule\PaymentIntentDto;
 use App\Events\AppointmentBooked;
 use App\Filters\PurchaseFilters;
 use App\Http\Requests\PromotionCode\ValidatePromocodeRequest;
 use App\Http\Requests\Request;
+use App\Http\Requests\Schedule\PurchaseFinalizeRequest;
 use App\Http\Requests\Schedule\PurchaseScheduleRequest;
 use App\Models\Booking;
 use App\Models\Price;
@@ -25,18 +26,13 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Stripe\Exception\ApiErrorException;
+use Stripe\PaymentIntent;
 use Stripe\StripeClient;
 
 class PurchaseController extends Controller
 {
-
-    /**
-     * @param \App\Http\Requests\Request $request
-     * @return \Illuminate\Http\Response
-     */
     public function index(Request $request): Response
     {
         $query = Purchase::query();
@@ -55,7 +51,7 @@ class PurchaseController extends Controller
         )->withPaginationHeaders($paginator);
     }
 
-    public function purchase(PurchaseScheduleRequest $request, Schedule $schedule, StripeClient $stripe)
+    public function purchase(PurchaseScheduleRequest $request, Schedule $schedule, StripeClient $stripe): array
     {
         $price = $schedule->prices()->where('id', $request->get('price_id'))->first();
         $cost = $price->cost * $request->amount;
@@ -78,7 +74,7 @@ class PurchaseController extends Controller
         $isInstallment =
             $schedule->deposit_accepted && isset($request->installments) && (int)$request->installments > 0;
 
-        $paymentIntendData = null;
+        $paymentIntentData = null;
 
         try {
             $purchase = new Purchase();
@@ -141,13 +137,10 @@ class PurchaseController extends Controller
             }
 
             if ($cost && !$price->is_free) {
-                if ($isInstallment) {
-                    $paymentIntendData = $this->payInInstallments($request, $schedule, $price, $practitioner, $cost, $purchase);
-                } else {
-                    if (!$this->payInstant($request, $schedule, $price, $stripe, $purchase, $practitioner)) {
-                        throw new \Exception('Cannot handle instant payment');
-                    }
-                }
+                $paymentIntentData = $isInstallment
+                    ? $this->payInInstallments($request, $schedule, $price, $practitioner, $cost, $purchase)
+                    : $this->payInstant($request, $schedule, $price, $stripe, $purchase, $practitioner)
+                ;
             }
 
             ScheduleFreeze::where('schedule_id', $schedule->id)->where('user_id', $request->user()->id)->delete();
@@ -175,7 +168,7 @@ class PurchaseController extends Controller
 
         $purchaseData =  fractal($purchase, new PurchaseTransformer())->parseIncludes($request->getIncludes())->toArray();
 
-        return array_merge($purchaseData, $paymentIntendData ? $paymentIntendData->toArray() : []);
+        return array_merge($purchaseData, $paymentIntentData ? $paymentIntentData->toArray() : []);
     }
 
     public function validatePromocode(ValidatePromocodeRequest $request, Schedule $schedule)
@@ -198,7 +191,7 @@ class PurchaseController extends Controller
         User $practitioner,
         $cost,
         Purchase $purchase
-    ): PaymentIntendDto {
+    ): PaymentIntentDto {
         $payment_method_id = run_action(GetViablePaymentMethod::class, $practitioner, $request->payment_method_id);
         $depositCost = $schedule->deposit_amount * 100 * $request->amount;
 
@@ -260,38 +253,39 @@ class PurchaseController extends Controller
         $stripe,
         Purchase $purchase,
         $practitioner
-    ): bool {
+    ): PaymentIntentDto {
         $payment_method_id = run_action(GetViablePaymentMethod::class, $practitioner, $request->payment_method_id);
         $paymentIntent = null;
         try {
             $client = $request->user();
             $refference = implode(', ', $purchase->bookings->pluck('reference')->toArray());
             $paymentIntent = $stripe->paymentIntents->create([
-                                                                 'amount'               => $purchase->price * 100,
-                                                                 'currency'             => config(
-                                                                     'app.platform_currency'
-                                                                 ),
-                                                                 'payment_method_types' => ['card'],
-                                                                 'customer'             => Auth::user(
-                                                                 )->stripe_customer_id,
-                                                                 'payment_method'       => $payment_method_id,
-                                                                 'metadata'             => [
-                                                                     'Practitioner business email'       => $practitioner->business_email,
-                                                                     'Practitioner busines name'         => $practitioner->business_name,
-                                                                     'Practitioner stripe id'            => $practitioner->stripe_customer_id,
-                                                                     'Practitioner connected account id' => $practitioner->stripe_account_id,
-                                                                     'Client first name'                 => $client->first_name,
-                                                                     'Client last name'                  => $client->last_name,
-                                                                     'Client stripe id'                  => $client->stripe_customer_id,
-                                                                     'Booking reference'                 => $refference
-                                                                 ]
-                                                             ]);
+               'amount'               => $purchase->price * 100,
+               'currency'             => config(
+                   'app.platform_currency'
+               ),
+               'payment_method_types' => ['card'],
+               'customer'             => Auth::user(
+               )->stripe_customer_id,
+               'payment_method'       => $payment_method_id,
+               'metadata'             => [
+                   'Practitioner business email'       => $practitioner->business_email,
+                   'Practitioner busines name'         => $practitioner->business_name,
+                   'Practitioner stripe id'            => $practitioner->stripe_customer_id,
+                   'Practitioner connected account id' => $practitioner->stripe_account_id,
+                   'Client first name'                 => $client->first_name,
+                   'Client last name'                  => $client->last_name,
+                   'Client stripe id'                  => $client->stripe_customer_id,
+                   'Booking reference'                 => $refference
+               ]
+           ]);
 
+            /** @var PaymentIntent $paymentIntent */
             $paymentIntent =
                 $stripe->paymentIntents->confirm($paymentIntent->id, ['payment_method' => $payment_method_id]);
             $purchase->stripe_id = $paymentIntent->id;
             $purchase->save();
-        } catch (\Stripe\Exception\ApiErrorException $e) {
+        } catch (ApiErrorException $e) {
             Log::channel('stripe_purchase_schedule_error')->info("Client could not purchase schedule", [
                 'user_id'          => $request->user()->id,
                 'price_id'         => $price->id,
@@ -307,7 +301,7 @@ class PurchaseController extends Controller
                 'message'          => $e->getMessage(),
             ]);
 
-            return false;
+            throw new Exception('Cannot handle instant payment');
         }
 
         Log::channel('stripe_purchase_schedule_success')->info("Client purchased schedule", [
@@ -348,7 +342,7 @@ class PurchaseController extends Controller
                 'discount'         => $purchase->discount,
                 'discount_applied' => $purchase->discount_applied,
             ]);
-        } catch (\Stripe\Exception\ApiErrorException $e) {
+        } catch (ApiErrorException $e) {
             Log::channel('stripe_transfer_fail')->info("The practitioner could not received transfer", [
                 'user_id'          => $request->user()->id,
                 'practitioner'     => $practitioner->id,
@@ -365,7 +359,59 @@ class PurchaseController extends Controller
                 'message'          => $e->getMessage(),
             ]);
         }
-        return true;
+
+        return new PaymentIntentDto(
+            $paymentIntent->status,
+            $paymentIntent->client_secret,
+            $paymentIntent->confirmation_method,
+            $paymentIntent->next_action
+        );
     }
 
+    public function finalize(PurchaseFinalizeRequest $request, Purchase $purchase, StripeClient $stripe): array
+    {
+        $paymentIntentId = $request->payment_intent_id;
+
+        $logData = [
+            'user_id'          => $request->user()->id,
+            'price_id'         => $purchase->price_id,
+            'service_id'       => $purchase->service_id,
+            'schedule_id'      => $purchase->schedule_id,
+            'payment_intent'   => $paymentIntentId,
+            'amount'           => $purchase->amount,
+            'price'            => $purchase->price_original,
+            'total'            => $purchase->price,
+            'discount'         => $purchase->discount,
+            'discount_applied' => $purchase->discount_applied,
+        ];
+
+        try {
+            $paymentIntent = $stripe->paymentIntents->retrieve($paymentIntentId);
+            $logData['payment_intent_initial_status'] = $paymentIntent->status;
+
+            $paymentIntent = $paymentIntent->confirm();
+            $logData['payment_intent_resulting_status'] = $paymentIntent->status;
+
+            Log::channel('stripe_purchase_finalize_success')->info("Client purchased finalized", $logData);
+
+        } catch (ApiErrorException $e) {
+            Log::channel('stripe_purchase_finalize_failure')->info(
+                "Client purchase finalize failed",
+                array_merge(['message' => $e->getMessage()], $logData)
+            );
+
+            throw new Exception('Failed to finalize payment');
+        }
+
+        $paymentIntentData = new PaymentIntentDto(
+            $paymentIntent->status,
+            $paymentIntent->client_secret,
+            $paymentIntent->confirmation_method,
+            $paymentIntent->next_action
+        );
+
+        $purchaseData =  fractal($purchase, new PurchaseTransformer())->parseIncludes($request->getIncludes())->toArray();
+
+        return array_merge($purchaseData, $paymentIntentData->toArray());
+    }
 }
