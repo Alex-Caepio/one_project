@@ -15,7 +15,7 @@ return [
     */
     'platform_name'                 => env('PLATFORM_NAME', 'Oneness'),
     'platform_email'                => env('PLATFORM_EMAIL', 'hello@holistify.me'),
-    'platform_cancellation_fee'     => env('PLATFORM_CANCELLATION_FEE', 0),
+    'platform_cancellation_fee'     => env('PLATFORM_CANCELLATION_FEE', 3),
     'platform_currency'             => env('PLATFORM_CURRENCY', 'gbp'),
     'platform_calendar'             => env('PLATFORM_CALENDAR_NAME', 'Oneness Holistify'),
     'platform_default_timezone'     => env('PLATFORM_CALENDAR_DEFAULT_TIMEZONE', null),
