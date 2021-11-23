@@ -362,7 +362,6 @@ class PurchaseController extends Controller
 
         return new PaymentIntentDto(
             $paymentIntent->status,
-            $paymentIntent,
             $paymentIntent->client_secret,
             $paymentIntent->confirmation_method,
             $paymentIntent->next_action
@@ -406,7 +405,6 @@ class PurchaseController extends Controller
 
         $paymentIntentData = new PaymentIntentDto(
             $paymentIntent->status,
-            $paymentIntent,
             $paymentIntent->client_secret,
             $paymentIntent->confirmation_method,
             $paymentIntent->next_action

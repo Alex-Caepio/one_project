@@ -50,7 +50,6 @@ class PurchaseInstallment
 
         return new PaymentIntentDto(
             $deposit->status,
-            $deposit,
             $deposit->client_secret,
             $deposit->confirmation_method,
             $deposit->next_action
