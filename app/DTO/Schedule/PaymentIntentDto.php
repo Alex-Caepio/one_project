@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\DTO\Schedule;
 
-use Stripe\PaymentIntent;
 use Stripe\StripeObject;
 
 class PaymentIntentDto
@@ -21,8 +20,6 @@ class PaymentIntentDto
 
     private ?string $confirmationMethod;
 
-    private PaymentIntent $paymentIntent; // this property will be removed after testing on dev
-
     /**
      * Url used for iframe to confirm the payment using 3ds flow version 1
      */
@@ -35,11 +32,8 @@ class PaymentIntentDto
      */
     private ?bool $is3dsConfirmationExternal = null;
 
-    private ?StripeObject $nextAction; // remove after testing on front
-
     public function __construct(
         string        $status,
-        PaymentIntent $paymentIntent, // this argument will be removed after testing on dev
         ?string       $clientSecret,
         ?string       $confirmationMethod,
         ?StripeObject $nextAction
@@ -47,8 +41,6 @@ class PaymentIntentDto
         $this->status = $status;
         $this->clientSecret = $clientSecret;
         $this->confirmationMethod = $confirmationMethod;
-        $this->paymentIntent = $paymentIntent; // remove after testing on front
-        $this->nextAction = $nextAction; // remove after testing on front
 
         if (!$nextAction) {
             return;
@@ -69,7 +61,6 @@ class PaymentIntentDto
     {
         $data = [
             'status' => $this->status,
-            'payment_intent' => $this->paymentIntent->toArray(),
         ];
 
         if ($this->clientSecret) {
@@ -78,11 +69,6 @@ class PaymentIntentDto
 
         if ($this->confirmationMethod) {
             $data['confirmation_method'] = $this->confirmationMethod;
-        }
-
-        // remove 'next_action' after testing on front
-        if ($this->nextAction) {
-            $data['next_action'] = $this->nextAction->toArray();
         }
 
         if ($this->is3dsConfirmationExternal !== null) {

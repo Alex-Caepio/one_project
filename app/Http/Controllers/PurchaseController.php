@@ -33,17 +33,6 @@ use Stripe\StripeClient;
 
 class PurchaseController extends Controller
 {
-    /**
-     * Endpoint for testing 3ds flow with confirmation_method: manual
-     */
-    public function testPurchase(PurchaseScheduleRequest $request, Schedule $schedule, StripeClient $stripe): array
-    {
-        return $this->purchase($request, $schedule, $stripe, [
-            "confirmation_method" => "manual",
-            "confirm" => true,
-        ]);
-    }
-
     public function index(Request $request): Response
     {
         $query = Purchase::query();
@@ -65,9 +54,8 @@ class PurchaseController extends Controller
     public function purchase(
         PurchaseScheduleRequest $request,
         Schedule $schedule,
-        StripeClient $stripe,
-        array $stripeCreateOverrides = []
-    ): array {
+        StripeClient $stripe):
+        array  {
         $price = $schedule->prices()->where('id', $request->get('price_id'))->first();
         $cost = $price->cost * $request->amount;
         $practitioner = $schedule->service->user;
@@ -171,6 +159,10 @@ class PurchaseController extends Controller
                         $practitioner,
                         $stripeCreateOverrides
                     );
+                /**
+                 *     ? $this->payInInstallments($request, $schedule, $price, $practitioner, $cost, $purchase)
+                : $this->payInstant($request, $schedule, $price, $stripe, $purchase, $practitioner)
+                 */
             }
 
             ScheduleFreeze::where('schedule_id', $schedule->id)->where('user_id', $request->user()->id)->delete();
@@ -222,8 +214,7 @@ class PurchaseController extends Controller
         Price $price,
         User $practitioner,
         $cost,
-        Purchase $purchase,
-        array $stripeCreateOverrides
+        Purchase $purchase
     ): PaymentIntentDto {
         $payment_method_id = run_action(GetViablePaymentMethod::class, $practitioner, $request->payment_method_id);
         $depositCost = $schedule->deposit_amount * 100 * $request->amount;
@@ -235,8 +226,7 @@ class PurchaseController extends Controller
                 $request,
                 $payment_method_id,
                 $cost,
-                $purchase,
-                $stripeCreateOverrides
+                $purchase
             );
         } catch (ApiErrorException $e) {
             Log::channel('stripe_installment_fail')->info('The client could not purchase installment', [
@@ -293,8 +283,7 @@ class PurchaseController extends Controller
         Price $price,
         $stripe,
         Purchase $purchase,
-        $practitioner,
-        array $stripeCreateOverrides
+        $practitioner
     ): PaymentIntentDto {
         $payment_method_id = run_action(GetViablePaymentMethod::class, $practitioner, $request->payment_method_id);
         $paymentIntent = null;
@@ -302,7 +291,7 @@ class PurchaseController extends Controller
             $client = $request->user();
             $refference = implode(', ', $purchase->bookings->pluck('reference')->toArray());
             $paymentIntent = $stripe->paymentIntents->create(
-                array_merge([
+                [
                     'amount' => $purchase->price * 100,
                     'currency' => config('app.platform_currency'),
                     'payment_method_types' => ['card'],
@@ -318,7 +307,7 @@ class PurchaseController extends Controller
                         'Client stripe id' => $client->stripe_customer_id,
                         'Booking reference' => $refference
                     ]
-                ], $stripeCreateOverrides)
+                ]
             );
 
             /** @var PaymentIntent $paymentIntent */
@@ -404,7 +393,6 @@ class PurchaseController extends Controller
 
         return new PaymentIntentDto(
             $paymentIntent->status,
-            $paymentIntent,
             $paymentIntent->client_secret,
             $paymentIntent->confirmation_method,
             $paymentIntent->next_action
@@ -447,7 +435,6 @@ class PurchaseController extends Controller
 
         $paymentIntentData = new PaymentIntentDto(
             $paymentIntent->status,
-            $paymentIntent,
             $paymentIntent->client_secret,
             $paymentIntent->confirmation_method,
             $paymentIntent->next_action
