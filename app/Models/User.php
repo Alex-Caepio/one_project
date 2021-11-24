@@ -207,7 +207,7 @@ class User extends Authenticatable implements MustVerifyEmail
             ->withTimeStamps();
     }
 
-    public function plan()
+    public function plan(): BelongsTo
     {
         return $this->belongsTo(Plan::class);
     }
