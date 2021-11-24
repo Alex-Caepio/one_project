@@ -54,8 +54,8 @@ class PurchaseController extends Controller
     public function purchase(
         PurchaseScheduleRequest $request,
         Schedule $schedule,
-        StripeClient $stripe):
-        array  {
+        StripeClient $stripe
+    ): array {
         $price = $schedule->prices()->where('id', $request->get('price_id'))->first();
         $cost = $price->cost * $request->amount;
         $practitioner = $schedule->service->user;
@@ -141,28 +141,8 @@ class PurchaseController extends Controller
 
             if ($cost && !$price->is_free) {
                 $paymentIntentData = $isInstallment
-                    ? $this->payInInstallments(
-                        $request,
-                        $schedule,
-                        $price,
-                        $practitioner,
-                        $cost,
-                        $purchase,
-                        $stripeCreateOverrides
-                    )
-                    : $this->payInstant(
-                        $request,
-                        $schedule,
-                        $price,
-                        $stripe,
-                        $purchase,
-                        $practitioner,
-                        $stripeCreateOverrides
-                    );
-                /**
-                 *     ? $this->payInInstallments($request, $schedule, $price, $practitioner, $cost, $purchase)
-                : $this->payInstant($request, $schedule, $price, $stripe, $purchase, $practitioner)
-                 */
+                    ? $this->payInInstallments($request, $schedule, $price, $practitioner, $cost, $purchase)
+                    : $this->payInstant($request, $schedule, $price, $stripe, $purchase, $practitioner);
             }
 
             ScheduleFreeze::where('schedule_id', $schedule->id)->where('user_id', $request->user()->id)->delete();
