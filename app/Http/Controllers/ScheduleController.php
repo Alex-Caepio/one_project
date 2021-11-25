@@ -201,7 +201,11 @@ class ScheduleController extends Controller
 
     public function appointmentsOnDate(Price $price, $date)
     {
-        return run_action(GetAvailableAppointmentTimeOnDate::class, $price, $date);
+        if (!$timeZone = request()->get('tz')){
+            $timeZone = Carbon::now()->getTimezone()->getName();
+        }
+
+        return run_action(GetAvailableAppointmentTimeOnDate::class, $price, $date, $timeZone);
     }
 
     public function copy(Schedule $schedule)
