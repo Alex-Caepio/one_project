@@ -237,7 +237,7 @@ class CancelBooking
                 ? $now->diffInHours($bookingDate)
                 : $now->diffInDays($bookingDate);
             $isRefundAllowed = ($isDateless && $now >= $bookingDate && $diffValue < $booking->schedule->refund_terms)
-                || (!$isDateless && $bookingDate < $now && $diffValue > $booking->schedule->refund_terms);
+                || (!$isDateless && $bookingDate > $now && $diffValue > $booking->schedule->refund_terms);
 
             if ($isRefundAllowed) {
                 $result['refundTotal'] = (float)$booking->cost / 100 * (100 - $hostFee);

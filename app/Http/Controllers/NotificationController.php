@@ -13,13 +13,12 @@ class NotificationController extends Controller
 {
     public function index(Request $request)
     {
-        $query =
-            Notification::query()
-                ->where('practitioner_id', Auth::id())
-                ->where('receiver_id', Auth::id())
-                ->where('read_at', null)
-                ->orderBy('id', 'DESC')
-                ->with($request->getIncludes());
+        $query = Notification::query()
+            ->where('practitioner_id', Auth::id())
+            ->where('receiver_id', Auth::id())
+            ->where('read_at', null)
+            ->orderBy('id', 'DESC')
+            ->with($request->getIncludes());
 
         $paginator = $query->paginate($request->getLimit());
         $notification = $paginator->getCollection();
