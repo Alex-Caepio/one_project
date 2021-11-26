@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\PlanStoreRequest;
 use App\Http\Requests\Admin\PlanUpdateRequest;
 use App\Models\Plan;
+use App\Transformers\PlanAdminTransformer;
 use App\Transformers\PlanTransformer;
 use App\Http\Requests\Request;
 use Illuminate\Support\Facades\Log;
+use Stripe\Exception\ApiErrorException;
 use Stripe\StripeClient;
 
 class PlanController extends Controller
@@ -30,9 +32,9 @@ class PlanController extends Controller
         $includes = $request->getIncludes();
         $includes[] = 'service_types';
         $paginator = $query->with($includes)->orderBy('plans.id', 'desc')->paginate($request->getLimit());
-        $plans     = $paginator->getCollection();
+        $plans = $paginator->getCollection();
 
-        return response(fractal($plans, new PlanTransformer())->parseIncludes($request->getIncludes()))
+        return response(fractal($plans, new PlanAdminTransformer())->parseIncludes($request->getIncludes()))
             ->withPaginationHeaders($paginator);
     }
 
@@ -45,7 +47,7 @@ class PlanController extends Controller
 
     public function store(PlanStoreRequest $request, StripeClient $stripe)
     {
-        $plan       = new Plan();
+        $plan = new Plan();
 
         try {
             $product = $stripe->products->create([
@@ -66,23 +68,23 @@ class PlanController extends Controller
             $plan->fill($data);
             $plan->save();
             $plan->service_types()->sync($request->get('service_types'));
-
-        } catch (\Stripe\Exception\ApiErrorException $e) {
+        } catch (ApiErrorException $e) {
             Log::channel('stripe_price_error')->info("Client could not purchase plan", [
                 'plan_id' => $plan->id,
-                'stripe_id'  => $planStripe->id,
-                'product'   => $product->id,
+                'stripe_id' => $planStripe->id,
+                'product' => $product->id,
                 'message' => $e->getMessage(),
             ]);
 
             return abort(500);
         }
 
-         Log::channel('stripe_price_success')->info("Client purchase plan", [
-             'plan_id' => $plan->id,
-             'stripe_id'  => $planStripe->id,
-             'product'   => $product->id,
-         ]);
+        Log::channel('stripe_price_success')
+            ->info("Client purchase plan", [
+                'plan_id' => $plan->id,
+                'stripe_id' => $planStripe->id,
+                'product' => $product->id,
+            ]);
 
         return fractal($plan, new PlanTransformer())->respond();
     }
@@ -95,7 +97,7 @@ class PlanController extends Controller
 
         $product_id = $price->product;
 
-        $stripe->products->update($product_id,[
+        $stripe->products->update($product_id, [
             [
                 'name' => $request->name
             ]
@@ -104,12 +106,14 @@ class PlanController extends Controller
 
         $plan->service_types()->sync($request->get('service_types'));
         $plan->update($data);
+
         return fractal($plan, new PlanTransformer())->respond();
     }
 
     public function destroy(Plan $plan)
     {
         $plan->delete();
+
         return response(null, 204);
     }
 
@@ -124,5 +128,4 @@ class PlanController extends Controller
 
         return response(200);
     }
-
 }

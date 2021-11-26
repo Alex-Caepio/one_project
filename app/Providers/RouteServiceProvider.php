@@ -13,7 +13,8 @@ use App\Models\User;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
 
-class RouteServiceProvider extends ServiceProvider {
+class RouteServiceProvider extends ServiceProvider
+{
     /**
      * This namespace is applied to your controller routes.
      *
@@ -35,56 +36,56 @@ class RouteServiceProvider extends ServiceProvider {
      *
      * @return void
      */
-    public function boot() {
-        Route::bind('publicArticle', function($value) {
+    public function boot()
+    {
+        Route::bind('publicArticle', function ($value) {
             return Article::published()->where('id', (int)$value)->orWhere('slug', (string)$value)
-                          ->whereHas('user', function($query) {
-                              $query->published();
-                          })->firstOrFail();
+                ->whereHas('user', function ($query) {
+                    $query->published();
+                })->firstOrFail();
         });
 
-        Route::bind('publicService', function($value) {
+        Route::bind('publicService', function ($value) {
             return Service::published()->where('id', (int)$value)->orWhere('slug', (string)$value)
-                          ->whereHas('user', function($query) {
-                              $query->published();
-                          })->firstOrFail();
+                ->whereHas('user', function ($query) {
+                    $query->published();
+                })->firstOrFail();
         });
 
-        Route::bind('service', function($value) {
+        Route::bind('service', function ($value) {
             return Service::where('id', $value)->orWhere('slug', $value)->firstOrFail();
         });
 
-        Route::bind('promotionWithTrashed', function($value) {
+        Route::bind('promotionWithTrashed', function ($value) {
             return Promotion::withTrashed()->where('id', (int)$value)->firstOrFail();
         });
 
-        Route::bind('booking', function($value) {
-            return Booking::where(function($query) use ($value) {
+        Route::bind('booking', function ($value) {
+            return Booking::where(function ($query) use ($value) {
                 $query->where('id', $value)->orWhere('reference', 'LIKE', $value);
             })->firstOrFail();
         });
 
-        Route::bind('reschedule_request', function($value) {
+        Route::bind('reschedule_request', function ($value) {
             return RescheduleRequest::where('id', $value)->where('requested_by', User::ACCOUNT_PRACTITIONER)
-                                    ->firstOrFail();
+                ->firstOrFail();
         });
 
-        Route::bind('focusArea', function($value) {
+        Route::bind('focusArea', function ($value) {
             return FocusArea::where('id', $value)->orWhere('slug', $value)->firstOrFail();
         });
 
-        Route::bind('discipline', function($value) {
+        Route::bind('discipline', function ($value) {
             return Discipline::where('id', $value)->orWhere('slug', $value)->firstOrFail();
         });
 
-        Route::bind('user', function($value) {
+        Route::bind('user', function ($value) {
             return User::where('id', $value)->orWhere('slug', $value)->firstOrFail();
         });
 
-        Route::bind('practitioner', function($value) {
+        Route::bind('practitioner', function ($value) {
             return User::where('id', $value)->orWhere('slug', $value)->firstOrFail();
         });
-
 
 
         parent::boot();
@@ -95,7 +96,8 @@ class RouteServiceProvider extends ServiceProvider {
      *
      * @return void
      */
-    public function map() {
+    public function map()
+    {
         $this->mapApiRoutes();
         $this->mapAdminRoutes();
         $this->mapWebRoutes();
@@ -108,8 +110,11 @@ class RouteServiceProvider extends ServiceProvider {
      *
      * @return void
      */
-    protected function mapWebRoutes() {
-        Route::middleware('web')->namespace($this->namespace)->group(base_path('routes/web.php'));
+    protected function mapWebRoutes()
+    {
+        Route::middleware('web')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/web.php'));
     }
 
     /**
@@ -119,11 +124,19 @@ class RouteServiceProvider extends ServiceProvider {
      *
      * @return void
      */
-    protected function mapApiRoutes() {
-        Route::prefix('api')->middleware('api')->namespace($this->namespace)->group(base_path('routes/api.php'));
+    protected function mapApiRoutes()
+    {
+        Route::prefix('api')
+            ->middleware('api')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/api.php'));
     }
 
-    protected function mapAdminRoutes() {
-        Route::prefix('api/admin')->middleware('api')->namespace($this->namespace)->group(base_path('routes/admin.php'));
+    protected function mapAdminRoutes()
+    {
+        Route::prefix('api/admin')
+            ->middleware('api')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/admin.php'));
     }
 }
