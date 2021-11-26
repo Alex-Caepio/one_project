@@ -40,7 +40,7 @@ class PlanController extends Controller
 
     public function show(Plan $plan, Request $request)
     {
-        return fractal($plan, new PlanTransformer())
+        return fractal($plan, new PlanAdminTransformer())
             ->parseIncludes($request->getIncludes())
             ->toArray();
     }
