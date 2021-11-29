@@ -86,7 +86,7 @@ class PlanController extends Controller
                 'product' => $product->id,
             ]);
 
-        return fractal($plan, new PlanTransformer())->respond();
+        return fractal($plan, new PlanAdminTransformer())->respond();
     }
 
     public function update(PlanUpdateRequest $request, Plan $plan, StripeClient $stripe)
@@ -107,7 +107,7 @@ class PlanController extends Controller
         $plan->service_types()->sync($request->get('service_types'));
         $plan->update($data);
 
-        return fractal($plan, new PlanTransformer())->respond();
+        return fractal($plan, new PlanAdminTransformer())->respond();
     }
 
     public function destroy(Plan $plan)
