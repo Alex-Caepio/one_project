@@ -18,12 +18,6 @@ class PractitionerSubscriptionCommissionController extends Controller
     {
         $practitionerSubscriptionCommission = PractitionerSubscriptionCommission::query();
 
-        $practitionerSubscriptionCommission->selectRaw(
-            'practitioner_subscription_commissions.*, plans.commission_on_sale'
-        )
-            ->join('users', 'users.id', '=', 'practitioner_subscription_commissions.user_id')
-            ->leftJoin('plans', 'plans.id', '=', 'users.plan_id');
-
         $includes = $request->getIncludes();
         $paginator = $practitionerSubscriptionCommission->with($includes)
             ->paginate($request->getLimit());
@@ -32,7 +26,8 @@ class PractitionerSubscriptionCommissionController extends Controller
 
         return response(
             fractal($practitionerSubscriptionCommission, new PractitionerSubscriptionCommissionTransformer())
-                ->parseIncludes($request->getIncludes())->toArray()
+                ->parseIncludes($request->getIncludes())
+                ->toArray()
         )
             ->withPaginationHeaders($paginator);
     }
