@@ -24,7 +24,6 @@ class TransferFundsWithCommissions
 
             return null;
         }
-
         $stripe = app()->make(StripeClient::class);
 
         $practitionerPlan = $practitioner->plan->commission_on_sale;
@@ -35,7 +34,7 @@ class TransferFundsWithCommissions
             ->where(function (Builder $builder) {
                 return $builder
                     ->whereRaw('(is_dateless = 0 AND date_from <= NOW() AND date_to >= NOW())')
-                    ->orWhere(function (Builder $builder) {
+            ->orWhere(function (Builder $builder) {
                         return $builder
                             ->where('is_dateless', '=', 1)
                             ->whereNull('date_from')
@@ -51,23 +50,25 @@ class TransferFundsWithCommissions
 
         $amount = $cost - $cost * ($practitionerCommissions ?? $practitionerPlan) / 100;
 
+
+
         $reference = implode(', ', $purchase->bookings->pluck('reference')->toArray());
 
         $stripe->transfers->create([
-            'amount' => $amount * 100,
-            'currency' => config('app.platform_currency'),
-            'destination' => $practitioner->stripe_account_id,
-            'metadata' => [
-                'Practitioner business email' => $practitioner->business_email,
-                'Practitioner busines name' => $practitioner->business_name,
-                'Practitioner stripe id' => $practitioner->stripe_customer_id,
-                'Practitioner connected account id' => $practitioner->stripe_account_id,
-                'Client first name' => $client->first_name,
-                'Client last name' => $client->last_name,
-                'Client stripe id' => $client->stripe_customer_id,
-                'Booking reference' => $reference
-            ]
-        ]);
+                                       'amount'      => $amount * 100,
+                                       'currency'    => config('app.platform_currency'),
+                                       'destination' => $practitioner->stripe_account_id,
+                                       'metadata'    => [
+                                           'Practitioner business email'       => $practitioner->business_email,
+                                           'Practitioner busines name'         => $practitioner->business_name,
+                                           'Practitioner stripe id'            => $practitioner->stripe_customer_id,
+                                           'Practitioner connected account id' => $practitioner->stripe_account_id,
+                                           'Client first name'                 => $client->first_name,
+                                           'Client last name'                  => $client->last_name,
+                                           'Client stripe id'                  => $client->stripe_customer_id,
+                                           'Booking reference'                 => $reference
+                                       ]
+                                   ]);
 
         $transfer = new Transfer();
         $transfer->user_id = $practitioner->id;
@@ -83,13 +84,13 @@ class TransferFundsWithCommissions
 
         Log::channel('practitioner_commissions_success')
             ->info('Commission transfer success:', [
-                'user_id' => $practitioner->id,
-                'plan_id' => $practitioner->plan_id,
-                'stripe_account_id' => $practitioner->stripe_account_id,
-                'amount' => $amount,
-                'amount_original' => $cost,
-                'schedule_id' => $schedule->id ?? null,
-            ]);
+            'user_id' => $practitioner->id,
+            'plan_id' => $practitioner->plan_id,
+            'stripe_account_id' => $practitioner->stripe_account_id,
+            'amount' => $amount,
+            'amount_original' => $cost,
+            'schedule_id' => $schedule->id ?? null,
+        ]);
 
         return $transfer;
     }
