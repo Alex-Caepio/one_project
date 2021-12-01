@@ -23,6 +23,7 @@ use App\Models\User;
 use App\Transformers\PromocodeCalculateTransformer;
 use App\Transformers\PurchaseTransformer;
 use Carbon\Carbon;
+use Illuminate\Database\Connection;
 use Exception;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -33,6 +34,17 @@ use Stripe\StripeClient;
 
 class PurchaseController extends Controller
 {
+    private Connection $connection;
+
+    public function __construct(Connection $connection)
+    {
+        $this->connection = $connection;
+    }
+
+    /**
+     * @param \App\Http\Requests\Request $request
+     * @return \Illuminate\Http\Response
+     */
     public function index(Request $request): Response
     {
         $query = Purchase::query();
@@ -76,6 +88,8 @@ class PurchaseController extends Controller
         $schedule->load('service');
         $isInstallment =
             $schedule->deposit_accepted && isset($request->installments) && (int)$request->installments > 0;
+
+        $this->connection->beginTransaction();
 
         $paymentIntentData = null;
 
@@ -165,8 +179,11 @@ class PurchaseController extends Controller
                 'payment_intent' => $paymentIntent->id ?? null,
                 'message' => $e->getMessage(),
             ]);
+            $this->connection->rollBack();
             abort(Response::HTTP_INTERNAL_SERVER_ERROR, $e->getMessage());
         }
+
+        $this->connection->commit();
 
         $purchaseData = fractal($purchase, new PurchaseTransformer())->parseIncludes($request->getIncludes())->toArray(
         );
