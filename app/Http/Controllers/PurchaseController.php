@@ -42,8 +42,8 @@ class PurchaseController extends Controller
     }
 
     /**
-     * @param \App\Http\Requests\Request $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return Response
      */
     public function index(Request $request): Response
     {
@@ -56,11 +56,10 @@ class PurchaseController extends Controller
         $paginator = $query->with($includes)->paginate($request->getLimit());
 
         return response(
-            fractal(
-                $paginator->getCollection(),
-                new PurchaseTransformer()
-            )->parseIncludes($request->getIncludes())
-        )->withPaginationHeaders($paginator);
+            fractal($paginator->getCollection(), new PurchaseTransformer())
+                ->parseIncludes($request->getIncludes())
+        )
+            ->withPaginationHeaders($paginator);
     }
 
     public function purchase(
@@ -86,8 +85,9 @@ class PurchaseController extends Controller
             }
         }
         $schedule->load('service');
-        $isInstallment =
-            $schedule->deposit_accepted && isset($request->installments) && (int)$request->installments > 0;
+        $isInstallment = $schedule->deposit_accepted
+            && isset($request->installments)
+            && (int)$request->installments > 0;
 
         $this->connection->beginTransaction();
 
@@ -185,8 +185,9 @@ class PurchaseController extends Controller
 
         $this->connection->commit();
 
-        $purchaseData = fractal($purchase, new PurchaseTransformer())->parseIncludes($request->getIncludes())->toArray(
-        );
+        $purchaseData = fractal($purchase, new PurchaseTransformer())
+            ->parseIncludes($request->getIncludes())
+            ->toArray();
 
         return array_merge($purchaseData, $paymentIntentData ? $paymentIntentData->toArray() : []);
     }
@@ -437,8 +438,9 @@ class PurchaseController extends Controller
             $paymentIntent->next_action
         );
 
-        $purchaseData = fractal($purchase, new PurchaseTransformer())->parseIncludes($request->getIncludes())->toArray(
-        );
+        $purchaseData = fractal($purchase, new PurchaseTransformer())
+            ->parseIncludes($request->getIncludes())
+            ->toArray();
 
         return array_merge($purchaseData, $paymentIntentData->toArray());
     }
