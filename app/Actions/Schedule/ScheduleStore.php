@@ -8,9 +8,11 @@ use App\Models\Schedule;
 use App\Models\Service;
 use Stripe\StripeClient;
 
-class ScheduleStore extends ScheduleSave {
+class ScheduleStore extends ScheduleSave
+{
 
-    public function execute(CreateScheduleInterface $request, Service $service): Schedule {
+    public function execute(CreateScheduleInterface $request, Service $service): Schedule
+    {
         $data = $this->collectRequest($request, $service);
         $schedule = Schedule::create($data);
         $this->savePrices($schedule, $service, $request);
@@ -18,17 +20,19 @@ class ScheduleStore extends ScheduleSave {
         return $schedule;
     }
 
-    private function savePrices(Schedule $schedule, Service $service, CreateScheduleInterface $request): void {
+    private function savePrices(Schedule $schedule, Service $service, CreateScheduleInterface $request): void
+    {
         if ($request->filled('prices')) {
             $stripe = app(StripeClient::class);
             $data = $request->all();
             $prices = $data['prices'];
             foreach ($prices as $key => $price) {
-                $stripePrice = $stripe->prices->create([
-                                                           'unit_amount' => $prices[$key]['cost'],
-                                                           'currency'    => config('app.platform_currency'),
-                                                           'product'     => $service->stripe_id,
-                                                       ]);
+                $stripePrice = $stripe->prices
+                    ->create([
+                        'unit_amount' => $prices[$key]['cost'],
+                        'currency' => config('app.platform_currency'),
+                        'product' => $service->stripe_id,
+                    ]);
 
                 $prices[$key]['stripe_id'] = $stripePrice->id;
                 if ((!isset($prices[$key]['number_available']) || !$prices[$key]['number_available']) &&

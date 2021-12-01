@@ -31,7 +31,7 @@ class BookingStatusesUpdate extends Command {
     public function handle(): void {
         $cntBookings = Booking::where('datetime_from', '<', Carbon::now())->whereNotNull('datetime_from')
                               ->whereHas('schedule.service', static function($query) {
-                                  $query->whereIn('services.service_type_id', config('app.dateless_service_types'));
+                                  $query->whereNotIn('services.service_type_id', config('app.dateless_service_types'));
                               })->active()->update(['status' => 'completed']);
         Log::channel('console_commands_handler')
            ->info('Mark bookings as completed. Done...', ['bookings_count' => $cntBookings]);

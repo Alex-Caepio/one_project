@@ -6,7 +6,7 @@
 /storage/*.key
 storage/debugbar/
 /vendor
-.idea
+.vscode
 .idea
 .env
 .env.backup
@@ -16,3 +16,5 @@ Homestead.json
 Homestead.yaml
 npm-debug.log
 yarn-error.log
+Dockerfile.local
+config/local.conf

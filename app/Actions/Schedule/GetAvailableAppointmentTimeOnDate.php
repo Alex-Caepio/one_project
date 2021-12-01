@@ -15,7 +15,7 @@ class GetAvailableAppointmentTimeOnDate
     public const STEP = '15 minutes';
     public const STEP_VALUE = '15';
 
-    public function execute(Price $price, string $date)
+    public function execute(Price $price, string $date, string $timezone) : array
     {
         $schedule = $price->schedule;
 
@@ -25,8 +25,7 @@ class GetAvailableAppointmentTimeOnDate
         $excludedTimes  = $this->getExcludedTimes($schedule, $date, $schedule->buffer_time, $price->duration ?? 0);
 
         $this->excludeTimes($periods, $excludedTimes);
-
-        $flatTimes = $this->toTimes($periods);
+        $flatTimes = $this->toTimes($periods, $timezone);
         return array_unique($flatTimes);
     }
 
@@ -151,12 +150,13 @@ class GetAvailableAppointmentTimeOnDate
         return $excludedTimes;
     }
 
-    protected function toTimes(array $periods): array
+    protected function toTimes(array $periods, string $timezone): array
     {
         $flatTimes = [];
         foreach ($periods as $period) {
             foreach ($period as $time) {
                 /** @var Carbon $time */
+                $time->setTimezone($timezone);
                 $flatTimes[] = $time->format('H:i');
             }
         }

@@ -12,14 +12,16 @@ class UpdateRequest extends Request {
      *
      * @return bool
      */
-    public function authorize() {
+    public function authorize(): bool
+    {
         return true;
     }
 
     /**
      * @return array
      */
-    public function rules() {
+    public function rules(): array
+    {
         return [
             'date_of_birth'       => 'nullable|date|before:-18 years',
             'mobile_number'       => 'digits_between:2,255|numeric',
@@ -35,10 +37,15 @@ class UpdateRequest extends Request {
             'last_name'           => 'string|min:2|max:30',
             'mobile_country_code' => 'exists:countries,id|integer|required_with:mobile_number',
             'country_id'          => 'nullable|integer|exists:countries,id',
+            'timezone_id'=>[
+                'required',
+                'exists:timezones,id'
+            ]
         ];
     }
 
-    public function messages() {
+    public function messages(): array
+    {
         return [
             'password.regex' => 'The password must include both uppercase and lowercase letters and at least one number'
         ];

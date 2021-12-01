@@ -33,7 +33,8 @@ class PlanStoreRequest extends Request
             'pricing_options_per_service' => 'min:1|max:20',
             'free_start_from'             => 'nullable|required_with:free_start_to|date',
             'free_start_to'               => 'nullable|required_with:free_start_from|date',
-            'free_period_length'          => 'nullable|required_with:free_start_to|integer|min:0|max:12'
+            'free_period_length'          => 'nullable|required_with:free_start_to|integer|min:0|max:12',
+            'is_private'=>'required|boolean'
         ];
     }
 

@@ -1,85 +1,136 @@
-<p align="center"><img src="https://res.cloudinary.com/dtfbvvkyp/image/upload/v1566331377/laravel-logolockup-cmyk-red.svg" width="400"></p>
+# Oneness
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
-</p>
+## Requirements
 
-## About Laravel
+- [Docker]()
+- [Docker-compose]()
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Installation
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+1. Clone backend & frontend repos in one dir 
+```
+├── back
+│   ├── config
+│   │   ├── ... repo files
+│   │   └── vhost.local
+│   ├── ... repo files
+│   └── Dockerfile.local
+├── front
+│   └── ... repo files
+├── front.env
+└── docker-compose.yml
+```
+2. Put `docker-compose.yml` into root directory
+3. Run `docker-compose up -d` to build & up application
+4. Build frontend
+- Run `docker-compose run node bash` to pass into frontend container
+- Inside container run `npm i` to install dependencies
+- Inside container run `npm run build:prod` to compile frontend application
+5. Build backend
+- Run `docker-compose exec back bash` to pass into backend container
+- Inside container run `composer install` to install dependencies
+- Copy config file `cp .env.example .env`
+- Inside container run `php artisan key:generate` 
+- Inside container run `php artisan migrate:fresh --seed` 
+6. Open [localhost](http://localhost) in your browser
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Additional files needed
 
-## Learning Laravel
+### docker-compose.yml
+```yaml
+version: '3.4'
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+networks:
+  oneness-local:
+    driver: bridge
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+services:
+  back:
+    build:
+      context: back
+      dockerfile: Dockerfile.local
+      args:
+        UID: ${UID:-1000}
+        GID: ${GID:-1000}
+    ports:
+      - 8080:80
+    user: www-data
+    restart: on-failure
+    working_dir: /var/www/html
+    volumes:
+      - ./back:/var/www/html
+    networks:
+      - oneness-local
 
-## Laravel Sponsors
+  front:
+    image: nginx:1.19.0-alpine
+    ports:
+      - ${WEB_PORT_HOST:-80}:80
+    restart: on-failure
+    working_dir: /usr/share/nginx/html
+    volumes:
+      - ./front/dist:/usr/share/nginx/html
+      - ./front/nginxdefault.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - oneness-local
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+  node:
+    image: node:12.18.4
+    volumes:
+      - ./front:/usr/share/nginx/html
+      - ./front.env:/usr/share/nginx/html/.env.production
+    working_dir: /usr/share/nginx/html
+    env_file: front.env
 
-### Premium Partners
+  db:
+    image: mysql:8.0
+    restart: on-failure
+    environment:
+      MYSQL_DATABASE: tom
+      MYSQL_USER: tom
+      MYSQL_PASSWORD: fridayiminlove
+      MYSQL_ROOT_PASSWORD: fridayiminlove
+    volumes:
+      - ./volumes/mysql:/var/lib/mysql
+    ports:
+      - ${DB_HOST_PORT:-3306}:3306
+    networks:
+      - oneness-local
+```
+### Dockerfile.local
+```Dockerfile
+FROM php:7.4-apache
+COPY ./config/vhost.local /etc/apache2/sites-enabled/000-default.conf
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
+&& apt-get update && apt-get install -y git libzip-dev unzip libpng-dev mysql-common default-mysql-client\
+&& docker-php-ext-install zip pdo_mysql gd && a2enmod rewrite headers
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
+WORKDIR /var/www/html
+```
+### front.env
+```dotenv
+# DOMAIN
+DOMAIN=http://localhost:8080
+API_PREFIX=/api
 
-### Community Sponsors
+PLATFORM_FEE=3
 
-<a href="https://op.gg"><img src="http://opgg-static.akamaized.net/icon/t.rectangle.png" width="150"></a>
+GUEST_GROW_BUSINESS_LINK=https://page.holistify.me/grow-your-business
+CLIENT_GROW_BUSINESS_LINK=https://page.holistify.me/grow-your-business
 
-- [UserInsights](https://userinsights.com)
-- [Fragrantica](https://www.fragrantica.com)
-- [SOFTonSOFA](https://softonsofa.com/)
-- [User10](https://user10.com)
-- [Soumettre.fr](https://soumettre.fr/)
-- [CodeBrisk](https://codebrisk.com)
-- [1Forge](https://1forge.com)
-- [TECPRESSO](https://tecpresso.co.jp/)
-- [Runtime Converter](http://runtimeconverter.com/)
-- [WebL'Agence](https://weblagence.com/)
-- [Invoice Ninja](https://www.invoiceninja.com)
-- [iMi digital](https://www.imi-digital.de/)
-- [Earthlink](https://www.earthlink.ro/)
-- [Steadfast Collective](https://steadfastcollective.com/)
-- [We Are The Robots Inc.](https://watr.mx/)
-- [Understand.io](https://www.understand.io/)
-- [Abdel Elrafa](https://abdelelrafa.com)
-- [Hyper Host](https://hyper.host)
-- [Appoly](https://www.appoly.co.uk)
-- [云软科技](http://www.yunruan.ltd/)
+STRIPE_KEY=
 
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+GOOGLE_CLIENT_ID=
+GOOGLE_API_KEY=
+G_CALENDAR_PREFIX=https://www.googleapis.com/calendar/v3
+GOOGLE_DISCOVERY_DOCS = https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest
+GOOGLE_SCOPE=https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/calendar.events
+```
+### vhost.local
+```
+<VirtualHost *:80>
+        DocumentRoot "/var/www/html/public"
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+```

@@ -18,7 +18,7 @@ class BookingDeposit
     public Purchase $purchase;
 
     /**
-     * @param \App\Models\Booking $booking
+     * @param Booking $booking
      */
     public function __construct(Booking $booking)
     {
@@ -34,13 +34,15 @@ class BookingDeposit
     private function getTemplate(): ?string
     {
         if ($this->schedule->appointment === 'physical') {
-            return $this->service->isDateLess(
-            ) ? 'Booking Confirmation - DateLess Physical With Deposit' : 'Booking Confirmation - Date Physical With Deposit';
+            return $this->service->isDateLess()
+                ? 'Booking Confirmation - DateLess Physical With Deposit'
+                : 'Booking Confirmation - Date Physical With Deposit';
         }
 
         if ($this->schedule->appointment === 'virtual' || !$this->schedule->appointment) {
-            return $this->service->isDateLess(
-            ) ? 'Booking Confirmation - DateLess Virtual With Deposit' : 'Booking Confirmation - Event Virtual With Deposit';
+            return $this->service->isDateLess()
+                ? 'Booking Confirmation - DateLess Virtual With Deposit'
+                : 'Booking Confirmation - Date Physical With Deposit';
         }
 
         return null;

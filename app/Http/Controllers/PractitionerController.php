@@ -13,7 +13,9 @@ class PractitionerController extends Controller
 {
     public function index(Request $request)
     {
-        $practitioners = User::query()->where('account_type', User::ACCOUNT_PRACTITIONER);
+        $practitioners = User::query()
+            ->where('account_type', User::ACCOUNT_PRACTITIONER)
+            ->orderBy('business_name');
 
         $userFiltrator = new UserFiltrator();
         $userFiltrator->apply($practitioners, $request, true);
@@ -21,9 +23,9 @@ class PractitionerController extends Controller
 
         $loggedInUser = $request->user('sanctum');
         if ($request->getBoolFromRequest('upcoming') && $loggedInUser) {
-            $practitioners->whereHas('practitioner_bookings', static function($subQuery) use($loggedInUser) {
-                $subQuery->where('bookings.user_id', $loggedInUser->id);
-            });
+//            $practitioners->whereHas('practitioner_bookings', static function($subQuery) use($loggedInUser) {
+//                $subQuery->where('bookings.user_id', $loggedInUser->id);
+//            });
         }
 
         $includes = $request->getIncludes();
@@ -38,18 +40,21 @@ class PractitionerController extends Controller
     public function list()
     {
         $user = User::where('account_type', User::ACCOUNT_PRACTITIONER);
+
         return $user->selectRaw('concat(first_name, " ", last_name) username, id')->pluck('username', 'id');
     }
 
     public function storeFavorite(User $user)
     {
         Auth::user()->favourite_practitioners()->attach($user->id);
+
         return response(null, 201);
     }
 
     public function deleteFavorite(User $user)
     {
         Auth::user()->favourite_practitioners()->detach($user->id);
+
         return response(null, 204);
     }
 

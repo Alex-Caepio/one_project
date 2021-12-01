@@ -5,6 +5,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ScheduleFreeze extends Model {
 
@@ -18,29 +19,29 @@ class ScheduleFreeze extends Model {
      * @var array
      */
     protected $casts = [
+        'start_at' => 'datetime',
         'freeze_at' => 'datetime',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
-    /**
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
 
+    /**
+     * @return BelongsTo
+     */
     public function schedule() {
         return $this->belongsTo(Schedule::class);
     }
 
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function user() {
         return $this->belongsTo(User::class);
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function practitioner() {
         return $this->belongsTo(User::class, 'practitioner_id', 'id');

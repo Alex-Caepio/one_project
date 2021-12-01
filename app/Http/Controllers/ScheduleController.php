@@ -47,13 +47,12 @@ class ScheduleController extends Controller
         );
 
         $scheduleQuery->with($request->getIncludes())->selectRaw('*, DATEDIFF(start_date, NOW()) as date_diff')
-                      ->orderByRaw('ABS(date_diff)');
+            ->orderByRaw('ABS(date_diff)');
 
         $schedule = $scheduleQuery->get();
 
         return fractal($schedule, new ScheduleTransformer())->parseIncludes($request->getIncludes())->toArray();
     }
-
 
 
     public function ownerScheduleList(Service $service, Request $request)
@@ -108,9 +107,9 @@ class ScheduleController extends Controller
             $scheduleCollection = $scheduleQuery->get()->filter(
                 static function ($item) {
                     return $item->attendees === null ||
-                           (int)$item->attendees > Booking::where('schedule_id', $item->id)->uncanceled()->sum(
-                               'amount'
-                           );
+                        (int)$item->attendees > Booking::where('schedule_id', $item->id)->uncanceled()->sum(
+                            'amount'
+                        );
                 }
             );
         } else {
@@ -123,6 +122,7 @@ class ScheduleController extends Controller
     public function show(Schedule $schedule, Request $request)
     {
         $schedule->with($request->getIncludes());
+
         return fractal($schedule, new ScheduleTransformer())->parseIncludes($request->getIncludes())->toArray();
     }
 
@@ -145,9 +145,10 @@ class ScheduleController extends Controller
         $time = Carbon::now()->subMinutes(15);
         $amountTotal = (int)$schedule->attendees;
         $amountBought = Booking::where('schedule_id', $schedule->id)->uncanceled()->sum('amount');
-        $amountFreezed =
-            ScheduleFreeze::where('schedule_id', $schedule->id)->where('freeze_at', '>', $time->toDateTimeString())
-                          ->count();
+        $amountFreezed = ScheduleFreeze::query()
+            ->where('schedule_id', $schedule->id)
+            ->where('freeze_at', '>', $time->toDateTimeString())
+            ->count();
         $amount_left = $amountTotal - $amountBought - $amountFreezed;
 
         return response([$amountTotal, $amount_left, $amountBought, $amountFreezed]);
@@ -157,26 +158,19 @@ class ScheduleController extends Controller
     {
         $personalFreezed = ScheduleFreeze::where('schedule_id', $schedule->id)->where('user_id', Auth::id())->first();
 
-        $time = Carbon::now();
         if ($personalFreezed === null) {
-            $freeze = new ScheduleFreeze();
-            $freeze->forceFill(
-                [
-                    'freeze_at'       => $time,
-                    'user_id'         => Auth::id(),
-                    'practitioner_id' => $schedule->service->user_id,
-                    'schedule_id'     => $schedule->id,
-                    'quantity'        => $request->get('amount') ?? 1,
-                    'price_id'        => $request->price_id
-                ]
-            );
-            $freeze->save();
+            if ($schedule->service->service_type_id !== 'appointment') {
+                $this->createNonAppointmentFreeze($request, $schedule);
+            } else {
+                $this->createAppointmentFreeze($request, $schedule);
+            }
         }
     }
 
     public function allUser(Schedule $schedule)
     {
         $reschedule = $schedule->users()->get();
+
         return fractal($reschedule, new UserTransformer())->respond();
     }
 
@@ -188,22 +182,30 @@ class ScheduleController extends Controller
             $bookingQuery->active();
         }
         $bookingQuery->with($request->getIncludes());
+        $bookingQuery->with(['purchase','purchase.instalments']);
         $paginator = $bookingQuery->paginate($request->getLimit());
         $fractal =
-            fractal($paginator->getCollection(), new BookingTransformer())->parseIncludes($request->getIncludes())
-                                                                          ->toArray();
+            fractal($paginator->getCollection(), new BookingTransformer())
+                ->parseIncludes($request->getIncludes())
+                ->toArray();
+
         return response($fractal)->withPaginationHeaders($paginator);
     }
 
     public function destroy(Schedule $schedule)
     {
         $schedule->delete();
+
         return response(null, 204);
     }
 
     public function appointmentsOnDate(Price $price, $date)
     {
-        return run_action(GetAvailableAppointmentTimeOnDate::class, $price, $date);
+        if (!$timeZone = request()->get('tz')){
+            $timeZone = Carbon::now()->getTimezone()->getName();
+        }
+
+        return run_action(GetAvailableAppointmentTimeOnDate::class, $price, $date, $timeZone);
     }
 
     public function copy(Schedule $schedule)
@@ -256,8 +258,10 @@ class ScheduleController extends Controller
                 abort(404, 'Price was not found');
             }
             $total = $price->cost * $request->amount;
+
             return response($schedule->calculateInstallmentsCalendar($total, $targetPeriod));
         }
+
         return response([]);
     }
 
@@ -266,6 +270,7 @@ class ScheduleController extends Controller
     {
         $schedule->is_published = true;
         $schedule->save();
+
         return response(null, 204);
     }
 
@@ -273,7 +278,46 @@ class ScheduleController extends Controller
     {
         $schedule->is_published = false;
         $schedule->save();
+
         return response(null, 204);
+    }
+
+    private function createAppointmentFreeze($request, Schedule $schedule)
+    {
+        $time = Carbon::now();
+        foreach ($request->get('availabilities') as $availability) {
+            $freeze = new ScheduleFreeze();
+            $start = Carbon::parse($availability['datetime_from'])->setTimezone('UTC');
+            $freeze->forceFill(
+                [
+                    'start_at' => $start,
+                    'freeze_at' => $time,
+                    'user_id' => Auth::id(),
+                    'practitioner_id' => $schedule->service->user_id,
+                    'schedule_id' => $schedule->id,
+                    'quantity' => 1,
+                    'price_id' => $request->price_id
+                ]
+            );
+            $freeze->save();
+        }
+    }
+
+    private function createNonAppointmentFreeze(PurchaseScheduleRequest $request, Schedule $schedule)
+    {
+        $freeze = new ScheduleFreeze();
+        $freeze->forceFill(
+            [
+                'start_at' => $schedule->start_date,
+                'freeze_at' => Carbon::now(),
+                'user_id' => Auth::id(),
+                'practitioner_id' => $schedule->service->user_id,
+                'schedule_id' => $schedule->id,
+                'quantity' => $request->get('amount', 1),
+                'price_id' => $request->price_id
+            ]
+        );
+        $freeze->save();
     }
 
 

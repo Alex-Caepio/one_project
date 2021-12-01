@@ -13,7 +13,8 @@ class PractitionerSubscriptionCommissionRequest extends Request {
      *
      * @return bool
      */
-    public function authorize() {
+    public function authorize(): bool
+    {
         return true;
     }
 
@@ -22,11 +23,13 @@ class PractitionerSubscriptionCommissionRequest extends Request {
      *
      * @return array
      */
-    public function rules() {
+    public function rules(): array
+    {
         return [
             'user_id'   => [
                 'required',
-                Rule::exists('users', 'id')->where('account_type', User::ACCOUNT_PRACTITIONER)
+                Rule::exists('users', 'id')
+                    ->where('account_type', User::ACCOUNT_PRACTITIONER)
                     ->where('is_published', true)
             ],
             'rate'      => 'required',

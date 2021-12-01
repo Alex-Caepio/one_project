@@ -102,6 +102,7 @@ Route::middleware(['auth:reschedule-token'])->group(function() {
 });
 
 Route::get('/schedules/{schedule}/available-instalments', [ScheduleController::class, 'availableInstalments']);
+Route::get('/prices/{price}/appointments-dates/{date}', [ScheduleController::class, 'appointmentsOnDate']);
 
 
 Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
@@ -192,7 +193,6 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::post('/schedules/{schedule}/publish', [ScheduleController::class, 'publish']);
     Route::post('/schedules/{schedule}/unpublish', [ScheduleController::class, 'unpublish']);
     Route::delete('/schedules/{schedule}', [ScheduleController::class, 'destroy']);
-    Route::get('/prices/{price}/appointments-dates/{date}', [ScheduleController::class, 'appointmentsOnDate']);
     Route::post('/schedules/{schedule}/copy', [ScheduleController::class, 'copy']);
     Route::post('/schedules/{schedule}/calendar-instalments', [ScheduleController::class, 'availableInstalmentsDates']);
     Route::get('/schedules/{schedule}/reschedule-available', [ScheduleController::class, 'rescheduleScheduleList']);
@@ -214,6 +214,7 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     /* Payments */
     Route::post('/schedules/{schedule}/promocode', [PurchaseController::class, 'validatePromocode']);
     Route::post('/schedules/{schedule}/purchase', [PurchaseController::class, 'purchase'])->name('purchase-process');
+    Route::patch('/purchases/{purchase}/finalize', [PurchaseController::class, 'finalize']);
     /* Payments */
 
     Route::get('/schedules/{schedule}/upcoming-bookings', [ScheduleBookingController::class, 'index']);

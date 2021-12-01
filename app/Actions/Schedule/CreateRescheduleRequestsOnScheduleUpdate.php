@@ -10,12 +10,14 @@ use App\Models\RescheduleRequest;
 use App\Models\Schedule;
 use Carbon\Carbon;
 
-class CreateRescheduleRequestsOnScheduleUpdate {
+class CreateRescheduleRequestsOnScheduleUpdate
+{
 
     private Schedule $schedule;
     private array $changesList;
 
-    public function execute(Schedule $schedule) {
+    public function execute(Schedule $schedule)
+    {
         $this->schedule = $schedule;
         $this->changesList = $this->schedule->getRealChangesList();
         if ($this->requiresReschedule()) {
@@ -23,7 +25,8 @@ class CreateRescheduleRequestsOnScheduleUpdate {
         }
     }
 
-    private function proceedRescheduleRequests(): void {
+    private function proceedRescheduleRequests(): void
+    {
         //should be moved to constant
         $bookings = $this->getBookings();
         if ($bookings->count()) {
@@ -33,18 +36,20 @@ class CreateRescheduleRequestsOnScheduleUpdate {
             $rescheduleRequests = [];
             foreach ($bookings as $booking) {
                 $rescheduleRequests[] = [
-                    'user_id'         => $booking->user_id,
-                    'booking_id'      => $booking->id,
-                    'schedule_id'     => $booking->schedule_id,
+                    'user_id' => $booking->user_id,
+                    'booking_id' => $booking->id,
+                    'schedule_id' => $booking->schedule_id,
                     'new_schedule_id' => $this->schedule->id,
-                    'created_at'      => Carbon::now()->format('Y-m-d H:i:s'),
-                    'requested_by'    => 'practitioner'
+                    'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                    'requested_by' => 'practitioner'
                 ];
             }
 
             if ($this->locationHasChanged() && isset($this->changesList['location_displayed'])) {
                 foreach ($rescheduleRequests as $key => $reschedule) {
-                    $rescheduleRequests[$key]['old_location_displayed'] = $this->schedule->getOriginal('location_displayed');
+                    $rescheduleRequests[$key]['old_location_displayed'] = $this->schedule->getOriginal(
+                        'location_displayed'
+                    );
                     $rescheduleRequests[$key]['new_location_displayed'] = $this->changesList['location_displayed'];
                 }
             }
@@ -64,28 +69,32 @@ class CreateRescheduleRequestsOnScheduleUpdate {
     }
 
 
-    private function getBookings(): ?Collection {
-        return $this->schedule->service->service_type ===
-               'appointment' ? $this->schedule->getOutsiderBookings() : Booking::where('schedule_id',
-                                                                                       $this->schedule->id)
-                                                                               ->whereNotIn('status',
-                                                                                            ['completed', 'canceled'])
-                                                                               ->get();
+    private function getBookings(): ?Collection
+    {
+        return $this->schedule->service->service_type === 'appointment'
+            ? $this->schedule->getOutsiderBookings()
+            : Booking::where('schedule_id', $this->schedule->id)
+                ->whereNotIn('status', ['completed', 'canceled'])
+                ->get();
     }
 
 
-    protected function requiresReschedule(): bool {
+    protected function requiresReschedule(): bool
+    {
         return $this->dateHasChanged() || $this->locationHasChanged();
     }
 
-    protected function dateHasChanged(): bool {
+    protected function dateHasChanged(): bool
+    {
         return isset($this->changesList['start_date']) || isset($this->changesList['end_date']);
     }
 
-    protected function locationHasChanged(): bool {
-        return isset($this->changesList['venue']) ||
-               isset($this->changesList['city']) || isset($this->changesList['country_id'])
-               || isset($this->changesList['location_displayed']);
+    protected function locationHasChanged(): bool
+    {
+        return isset($this->changesList['venue'])
+            || isset($this->changesList['city'])
+            || isset($this->changesList['country_id'])
+            || isset($this->changesList['location_displayed']);
     }
 
 
