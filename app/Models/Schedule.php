@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 /**
  * Class Schedule
@@ -76,16 +75,16 @@ class Schedule extends Model
     ];
 
     protected $casts = [
-        'is_published'              => 'boolean',
-        'meals_breakfast'           => 'boolean',
-        'meals_lunch'               => 'boolean',
-        'meals_dinner'              => 'boolean',
+        'is_published' => 'boolean',
+        'meals_breakfast' => 'boolean',
+        'meals_lunch' => 'boolean',
+        'meals_dinner' => 'boolean',
         'meals_alcoholic_beverages' => 'boolean',
-        'meals_dietry_accomodated'  => 'boolean',
-        'deposit_accepted'          => 'boolean',
-        'deposit_final_date'        => 'datetime:Y-m-d H:i:s',
-        'start_date'                => 'datetime:Y-m-d H:i:s',
-        'end_date'                  => 'datetime:Y-m-d H:i:s',
+        'meals_dietry_accomodated' => 'boolean',
+        'deposit_accepted' => 'boolean',
+        'deposit_final_date' => 'datetime:Y-m-d H:i:s',
+        'start_date' => 'datetime:Y-m-d H:i:s',
+        'end_date' => 'datetime:Y-m-d H:i:s',
     ];
 
     public function location()
@@ -254,7 +253,7 @@ class Schedule extends Model
         }
 
         return $this->bookings()->whereNotIn('id', $q->pluck('id'))->whereNotIn('status', ['completed', 'canceled'])
-                    ->get();
+            ->get();
     }
 
     public function bookings(): HasMany
@@ -265,6 +264,24 @@ class Schedule extends Model
     public function purchases(): HasMany
     {
         return $this->hasMany(Purchase::class);
+    }
+
+    public function hasContractualChanges(): bool
+    {
+        $changes = $this->getRealChangesList();
+        // The Following Data Fields are considered Contractual Terms [Start Date], [Start Time], [End Date], [End Time], [City] and [Country]
+        unset(
+            $changes['location_displayed'],
+            $changes['venue_address'],
+            $changes['venue_name'],
+            $changes['post_code'],
+            $changes['appointment'],
+            $changes['comments'],
+            $changes['url'],
+            $changes['title'],
+            $changes['attendees'],
+        );
+        return count($changes) > 0;
     }
 
     public function hasNonContractualChanges(): bool
@@ -278,7 +295,7 @@ class Schedule extends Model
             } else {
                 // Unset, because another event will be fired for Reschedule Request
                 unset(
-                    $changes['end_date'], $changes['start_date'], $changes['location_id'], $changes['venue'], $changes['city'], $changes['country_id'], $changes['location_displayed']
+                    $changes['end_date'], $changes['start_date'], $changes['location_id'], $changes['venue'], $changes['city'], $changes['country_id']
                 );
                 $result = count($changes) > 0;
             }
@@ -340,14 +357,16 @@ class Schedule extends Model
     {
         $time = Carbon::now()->subMinutes(15);
         $purchased = Booking::where('schedule_id', $this->id)->uncanceled()->sum('amount');
-        $personalFreezed = ScheduleFreeze::where('schedule_id', $this->id)->where('user_id', Auth::id())->where(
-            'freeze_at',
-            '>',
-            $time->toDateTimeString()
-        )->count();
+        $personalFreezed = ScheduleFreeze::query()
+            ->where('schedule_id', $this->id)
+            ->where('user_id', Auth::id())
+            ->where('freeze_at', '>', $time->toDateTimeString())
+            ->count();
         $freezed =
-            ScheduleFreeze::where('schedule_id', $this->id)->where('freeze_at', '>', $time->toDateTimeString())->count(
-            );
+            ScheduleFreeze::query()
+                ->where('schedule_id', $this->id)
+                ->where('freeze_at', '>', $time->toDateTimeString())
+                ->count();
         $available = (int)$this->attendees - ($purchased + $freezed - $personalFreezed);
         return $available < 0 ? 0 : $available;
     }
@@ -414,14 +433,18 @@ class Schedule extends Model
                 $currentDate = Carbon::now();
                 if ($this->service->service_type_id === 'bespoke') {
                     $daysPerPeriod = $this->deposit_instalment_frequency;
-                    $depositFinalDate = $currentDate->addDays($daysPerPeriod * ($periods+1));
+                    $depositFinalDate = $currentDate->addDays($daysPerPeriod * ($periods + 1));
                 } else {
                     $depositFinalDate = Carbon::parse($this->deposit_final_date);
                     $daysDiff = $depositFinalDate->diffInDays($currentDate);
                     $daysPerPeriod = intdiv($daysDiff, $periods);
                 }
                 $amountPerPeriod = (float)($furtherPayments / $periods);
-                $result = ['daysPerPeriod' => $daysPerPeriod, 'amountPerPeriod' => $amountPerPeriod, 'finalPaymentDate' => $depositFinalDate];
+                $result = [
+                    'daysPerPeriod' => $daysPerPeriod,
+                    'amountPerPeriod' => $amountPerPeriod,
+                    'finalPaymentDate' => $depositFinalDate
+                ];
             }
         }
         return $result;

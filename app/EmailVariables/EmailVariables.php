@@ -11,7 +11,6 @@ use App\Models\User;
 use App\Traits\GenerateCalendarLink;
 use App\Traits\RescheduleEmailLinks;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
 
 
@@ -24,6 +23,10 @@ class EmailVariables
 {
 
     use GenerateCalendarLink, RescheduleEmailLinks;
+
+    const TIME_FORMAT = 'H:i';
+    const DATE_FORMAT = 'd-m-Y';
+    private $event;
 
     public function __construct($event)
     {
@@ -58,9 +61,8 @@ class EmailVariables
         return '';
     }
 
-
     /**
-     * @return \App\Models\Schedule|null
+     * @return Schedule|null
      */
     public function getSchedule(): ?Schedule
     {
@@ -98,7 +100,7 @@ class EmailVariables
     public function getEmail_verification_url(): string
     {
         $linkApi = URL::temporarySignedRoute('verify-email', now()->addHours(48), [
-            'user'  => $this->event->user->id,
+            'user' => $this->event->user->id,
             'email' => $this->event->user->email
         ]);
         return config('app.frontend_email_confirm_page') . '?' . explode('?', $linkApi)[1];
@@ -147,7 +149,7 @@ class EmailVariables
     }
 
     /**
-     * @return \App\Models\User|null
+     * @return User|null
      */
     public function getPractitioner(): ?User
     {
@@ -168,8 +170,9 @@ class EmailVariables
      */
     public function getPractitioner_business_name(): ?string
     {
-        return $this->event->user->isPractitioner(
-        ) ? $this->event->user->business_name : $this->event->practitioner->business_name;
+        return $this->event->user->isPractitioner()
+            ? $this->event->user->business_name
+            : $this->event->practitioner->business_name;
     }
 
     /**
@@ -177,7 +180,9 @@ class EmailVariables
      */
     public function getPractitioner_email_address(): string
     {
-        return $this->event->user->isPractitioner() ? $this->event->user->email : $this->event->practitioner->email;
+        return $this->event->user->isPractitioner()
+            ? $this->event->user->email
+            : $this->event->practitioner->email;
     }
 
     /**
@@ -219,7 +224,7 @@ class EmailVariables
      */
     public function getService_url(): ?string
     {
-        return $this->event->service->url;
+        return config('app.frontend_public_service') . $this->event->service->slug;
     }
 
 
@@ -229,7 +234,7 @@ class EmailVariables
     public function getAdd_to_calendar(): ?string
     {
         $this->calendarPresented = true;
-        return $this->generateGoogleLink($this->event->schedule);
+        return $this->generateGoogleLink($this->event);
     }
 
     /**
@@ -294,9 +299,9 @@ class EmailVariables
     public function getSchedule_start_date(): string
     {
         $startDate = $this->getEventStartDate();
-        return $startDate !== null ? Carbon::parse($startDate)->format(
-            'd-m-Y'
-        ) : '';
+        return $startDate !== null
+            ? $this->convertToUserTimezone($startDate)->format(self::DATE_FORMAT)
+            : '';
     }
 
     /**
@@ -305,7 +310,9 @@ class EmailVariables
     public function getSchedule_start_time(): string
     {
         $startDate = $this->getEventStartDate();
-        return $startDate !== null ? Carbon::parse($startDate)->toTimeString() : '';
+        return $startDate !== null
+            ? $this->convertToUserTimezone($startDate)->format(self::TIME_FORMAT)
+            : '';
     }
 
     /**
@@ -314,9 +321,9 @@ class EmailVariables
     public function getSchedule_end_date(): string
     {
         $endDate = $this->getEventEndDate();
-        return $endDate !== null ? Carbon::parse($endDate)->format(
-            'd-m-Y'
-        ) : '';
+        return $endDate !== null
+            ? $this->convertToUserTimezone($endDate)->format(self::DATE_FORMAT)
+            : '';
     }
 
     /**
@@ -325,7 +332,9 @@ class EmailVariables
     public function getSchedule_end_time(): string
     {
         $endDate = $this->getEventEndDate();
-        return $endDate !== null ? Carbon::parse($endDate)->toTimeString() : '';
+        return $endDate !== null
+            ? $this->convertToUserTimezone($endDate)->format(self::TIME_FORMAT)
+            : '';
     }
 
     /**
@@ -358,7 +367,7 @@ class EmailVariables
 
     public function getSchedule_country(): ?string
     {
-        return $this->event->schedule->country->nicename ?? '';
+        return $this->event->schedule->country ? $this->event->schedule->country->nicename : '';
     }
 
     /**
@@ -423,7 +432,7 @@ class EmailVariables
      */
     public function getSubscription_start_date(): string
     {
-        return Carbon::parse($this->event->user->plan_from)->format('d-m-Y');
+        return Carbon::parse($this->event->user->plan_from)->format(self::DATE_FORMAT);
     }
 
     /**
@@ -431,7 +440,7 @@ class EmailVariables
      */
     public function getSubscription_end_date(): string
     {
-        return Carbon::parse($this->event->user->plan_until)->format('d-m-Y');
+        return Carbon::parse($this->event->user->plan_until)->format(self::DATE_FORMAT);
     }
 
     /**
@@ -499,11 +508,11 @@ class EmailVariables
     }
 
     /**
-     * @return float
+     * @return string
      */
-    public function getTotal_paid(): float
+    public function getTotal_paid(): string
     {
-        return (float)$this->event->booking->cost;
+        return config('app.platform_currency_sign')." ".$this->event->booking->cost;
     }
 
     /**
@@ -545,18 +554,18 @@ class EmailVariables
     public function getSee_on_map(): string
     {
         $addressCollection = array_filter([
-                                              $this->event->schedule->venue_name,
-                                              $this->event->schedule->venue_address,
-                                              $this->event->schedule->city,
-                                              $this->event->schedule->country
-                                          ], static function (?string $value) {
+            $this->event->schedule->venue_name,
+            $this->event->schedule->venue_address,
+            $this->event->schedule->city,
+            $this->event->schedule->country ? $this->event->schedule->country->nicename : ''
+        ], static function (?string $value) {
             $trimmedValue = trim($value);
             if (!empty($trimmedValue)) {
                 return str_replace(' ', '+', trim($value));
             }
         });
         return 'https://www.google.com/maps/search/?api=1&map_action=map&query=' .
-               urlencode(implode(',', $addressCollection));
+            urlencode(implode(',', $addressCollection));
     }
 
     /**
@@ -565,7 +574,7 @@ class EmailVariables
     public function getAccept(): string
     {
         return config('app.frontend_reschedule_apply') . '/' . $this->event->reschedule->id . '?token=' .
-               $this->generatePersonalAccessToken($this->event->client);
+            $this->generatePersonalAccessToken($this->event->client);
     }
 
     /**
@@ -574,7 +583,7 @@ class EmailVariables
     public function getDecline(): string
     {
         return config('app.frontend_reschedule_decline') . '/' . $this->event->reschedule->id . '?token=' .
-               $this->generatePersonalAccessToken($this->event->client, 'decline');
+            $this->generatePersonalAccessToken($this->event->client, 'decline');
     }
 
     /**
@@ -628,10 +637,10 @@ class EmailVariables
      */
     public function getReschedule_start_date(): string
     {
-        return isset($this->event->reschedule_schedule) &&
-               $this->event->reschedule_schedule->start_date ? Carbon::parse(
-            $this->event->reschedule_schedule->start_date
-        )->toDateString() : '';
+        return isset($this->event->reschedule_schedule)
+        && $this->event->reschedule_schedule->start_date
+            ? $this->convertToUserTimezone($this->event->reschedule_schedule->start_date)->format(self::DATE_FORMAT)
+            : '';
     }
 
     /**
@@ -639,10 +648,10 @@ class EmailVariables
      */
     public function getReschedule_start_time(): string
     {
-        return isset($this->event->reschedule_schedule) &&
-               $this->event->reschedule_schedule->start_date ? Carbon::parse(
-            $this->event->reschedule_schedule->start_date
-        )->toTimeString() : '';
+        return isset($this->event->reschedule_schedule)
+        && $this->event->reschedule_schedule->start_date
+            ? $this->convertToUserTimezone($this->event->reschedule_schedule->start_date)->format(self::DATE_FORMAT)
+            : '';
     }
 
     /**
@@ -650,9 +659,10 @@ class EmailVariables
      */
     public function getReschedule_end_date(): string
     {
-        return isset($this->event->reschedule_schedule) && $this->event->reschedule_schedule->end_date ? Carbon::parse(
-            $this->event->reschedule_schedule->end_date
-        )->toDateString() : '';
+        return isset($this->event->reschedule_schedule)
+        && $this->event->reschedule_schedule->end_date
+            ? $this->convertToUserTimezone($this->event->reschedule_schedule->end_date)->format(self::DATE_FORMAT)
+            : '';
     }
 
     /**
@@ -660,9 +670,10 @@ class EmailVariables
      */
     public function getReschedule_end_time(): string
     {
-        return isset($this->event->reschedule_schedule) && $this->event->reschedule_schedule->end_date ? Carbon::parse(
-            $this->event->reschedule_schedule->end_date
-        )->toTimeString() : '';
+        return isset($this->event->reschedule_schedule)
+        && $this->event->reschedule_schedule->end_date
+            ? $this->convertToUserTimezone($this->event->reschedule_schedule->end_date)->format(self::DATE_FORMAT)
+            : '';
     }
 
     /**
@@ -694,7 +705,7 @@ class EmailVariables
      */
     public function getReschedule_country(): ?string
     {
-        return isset($this->event->reschedule_schedule) ? $this->event->reschedule_schedule->country : '';
+        return isset($this->event->reschedule_schedule) ? $this->event->reschedule_schedule->country->nicename : '';
     }
 
     /**
@@ -719,7 +730,7 @@ class EmailVariables
     public function getPractitioner_reschedule_message(): ?string
     {
         return $this->event instanceof
-               BookingConfirmation ? $this->event->schedule->booking_message : $this->event->reschedule_schedule->comment;
+        BookingConfirmation ? $this->event->schedule->booking_message : $this->event->reschedule_schedule->comment;
     }
 
     /**
@@ -752,14 +763,14 @@ class EmailVariables
     {
         $str = '';
         if ($this->event->purchase) {
-            $installments = Instalment::where('purchase_id', $this->event->purchase->id)->where(
-                'payment_date',
-                '>',
-                date('Y-m-d H:i:s')
-            )->where('is_paid', 0)->get();
+            $installments = Instalment::query()
+                ->where('purchase_id', $this->event->purchase->id)
+                ->latest('created_at')
+                ->get();
             foreach ($installments as $installment) {
-                $str .= Carbon::parse($installment->payment_date)->format('d-m-Y') . ' ' .
-                        $installment->payment_amount . ' <br/>';
+                $str .= Carbon::parse($installment->payment_date)->format(self::DATE_FORMAT) . ' ' .
+                    config('app.platform_currency_sign').
+                    $installment->payment_amount . ' <br/>';
             }
         }
         return $str;
@@ -772,8 +783,8 @@ class EmailVariables
     {
         $str = '';
         if ($this->event->installmentNext) {
-            $str = Carbon::parse($this->event->installmentNext->payment_date)->format('d-m-Y') . ' ' .
-                   $this->event->installmentNext->payment_amount . ' <br/>';
+            $str = Carbon::parse($this->event->installmentNext->payment_date)->format(self::DATE_FORMAT) . ' ' .
+                $this->event->installmentNext->payment_amount . ' <br/>';
         }
         return $str;
     }
@@ -783,7 +794,19 @@ class EmailVariables
      */
     public function getDeposit_paid(): string
     {
-        return $this->event->purchase->deposit_amount ?? 0;
+        return config('app.platform_currency_sign')." ". ($this->event->purchase->deposit_amount ?? 0);
+    }
+
+    /**
+     * Changes timezone to user defined (+02:00, -06:45, etc)
+     * All users default has London timezone
+     *
+     * @param $datetime
+     * @return Carbon
+     */
+    private function convertToUserTimezone($datetime): Carbon
+    {
+        return Carbon::parse($datetime)->setTimezone($this->event->user->user_timezone->value);
     }
 
 

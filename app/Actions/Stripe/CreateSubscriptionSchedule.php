@@ -14,7 +14,7 @@ class CreateSubscriptionSchedule
         $user = User::where('id', $request->user_id)->with('plan')->first();
 
         $endDate = $request->date_to;
-        if($request->is_dateless) {
+        if ($request->is_dateless) {
             $endDate = Carbon::parse($request->date_to)->addYear(19);
         }
 
@@ -38,10 +38,8 @@ class CreateSubscriptionSchedule
                     ],
                     'coupon' => $coupon->id,
                     'end_date' => strtotime($endDate),
-
                 ],
             ],
         ]);
-
     }
 }

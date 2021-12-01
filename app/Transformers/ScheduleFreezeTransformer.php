@@ -13,18 +13,19 @@ class ScheduleFreezeTransformer extends Transformer
         'practitioner'
     ];
 
-    public function transform(ScheduleFreeze $freeze)
+    public function transform(ScheduleFreeze $freeze): array
     {
         return [
-            'id'              => $freeze->id,
-            'schedule_id'     => $freeze->schedule_id,
-            'user_id'         => $freeze->user_id,
+            'id' => $freeze->id,
+            'schedule_id' => $freeze->schedule_id,
+            'user_id' => $freeze->user_id,
             'practitioner_id' => $freeze->practitioner_id,
-            'quantity'        => $freeze->quantity,
-            'freeze_at'       => $freeze->freeze_at,
-            'created_at'      => $freeze->created_at,
-            'updated_at'      => $freeze->updated_at,
-            'price_id'        => $freeze->price_id,
+            'quantity' => $freeze->quantity,
+            'start_at' => $freeze->start_at,
+            'freeze_at' => $freeze->freeze_at,
+            'created_at' => $freeze->created_at,
+            'updated_at' => $freeze->updated_at,
+            'price_id' => $freeze->price_id,
         ];
     }
 

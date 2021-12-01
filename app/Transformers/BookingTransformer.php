@@ -3,6 +3,7 @@
 namespace App\Transformers;
 
 use App\Models\Booking;
+use Illuminate\Support\Facades\Log;
 
 class BookingTransformer extends Transformer
 {
@@ -46,6 +47,7 @@ class BookingTransformer extends Transformer
             'amount'          => $booking->amount,
             'discount'        => $booking->discount,
             'is_installment'  => $booking->is_installment,
+            'installment_paid'=> $booking->is_installment ? $this->getInstallmentPaidAmount($booking) : 0,
             'is_fully_paid'   => $booking->is_fully_paid,
             'is_active'       => $booking->isActive(),
             'completed_at'    => $booking->completed_at
@@ -100,5 +102,14 @@ class BookingTransformer extends Transformer
     public function includeClientRescheduleRequest(Booking $booking)
     {
         return $this->itemOrNull($booking->client_reschedule_request, new RescheduleRequestTransformer());
+    }
+
+    private function getInstallmentPaidAmount(Booking  $booking)
+    {
+        return $booking->purchase
+            ->instalments()
+            ->whereIsPaid(true)
+            ->get('payment_amount')
+            ->sum('payment_amount');
     }
 }

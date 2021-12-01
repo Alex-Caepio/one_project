@@ -38,7 +38,8 @@ use Laravel\Sanctum\HasApiTokens;
  *
  * @package App\Models
  */
-class User extends Authenticatable implements MustVerifyEmail {
+class User extends Authenticatable implements MustVerifyEmail
+{
 
     use Notifiable, HasApiTokens, HasFactory, PublishedScope, SoftDeletes;
 
@@ -95,6 +96,7 @@ class User extends Authenticatable implements MustVerifyEmail {
         'accepted_client_agreement',
         'business_published_at',
         'connected_at',
+        'timezone_id'
     ];
 
     /**
@@ -119,142 +121,241 @@ class User extends Authenticatable implements MustVerifyEmail {
         'is_published' => 'boolean',
     ];
 
-    public function services() {
+    public function services(): HasMany
+    {
         return $this->hasMany(Service::class);
     }
 
-    public function timezone() {
+    public function user_timezone(): BelongsTo
+    {
+        return $this->belongsTo(Timezone::class, 'timezone_id');
+    }
+
+    public function timezone(): BelongsTo
+    {
         return $this->belongsTo(Timezone::class, 'business_time_zone_id');
     }
 
-    public function articles() {
+    public function articles(): HasMany
+    {
         return $this->hasMany(Article::class);
     }
 
-    public function schedules() {
+    public function schedules(): BelongsToMany
+    {
         return $this->belongsToMany(Schedule::class);
     }
 
-    public function disciplines() {
-        return $this->belongsToMany(Discipline::class, 'discipline_practitioner', 'practitioner_id', 'discipline_id')
-                    ->published()->withTimeStamps();
+    public function disciplines()
+    {
+        return $this
+            ->belongsToMany(
+                Discipline::class,
+                'discipline_practitioner',
+                'practitioner_id',
+                'discipline_id'
+            )
+            ->published()
+            ->withTimeStamps();
     }
 
-    public function promotion_codes() {
-        return $this->belongsToMany(PromotionCode::class, 'user_promotion_code', 'user_id', 'promotion_code_id')
-                    ->withTimeStamps();
+    public function promotion_codes(): BelongsToMany
+    {
+        return $this
+            ->belongsToMany(
+                PromotionCode::class,
+                'user_promotion_code',
+                'user_id',
+                'promotion_code_id'
+            )
+            ->withTimeStamps();
     }
 
-    public function favourite_services() {
-        return $this->belongsToMany(Service::class, 'favorites', 'user_id', 'service_id')->withTimeStamps();
+    public function favourite_services(): BelongsToMany
+    {
+        return $this
+            ->belongsToMany(
+                Service::class,
+                'favorites',
+                'user_id',
+                'service_id'
+            )
+            ->withTimeStamps();
     }
 
-    public function favourite_articles() {
-        return $this->belongsToMany(Article::class, 'article_favorites', 'user_id', 'article_id')->withTimeStamps();
+    public function favourite_articles(): BelongsToMany
+    {
+        return $this
+            ->belongsToMany(
+                Article::class,
+                'article_favorites',
+                'user_id',
+                'article_id'
+            )
+            ->withTimeStamps();
     }
 
-    public function favourite_practitioners() {
-        return $this->belongsToMany(__CLASS__, 'practitioner_favorites', 'practitioner_id', 'user_id')
-                    ->withTimeStamps();
+    public function favourite_practitioners(): BelongsToMany
+    {
+        return $this
+            ->belongsToMany(
+                __CLASS__,
+                'practitioner_favorites',
+                'practitioner_id',
+                'user_id'
+            )
+            ->withTimeStamps();
     }
 
-    public function plan() {
+    public function plan(): BelongsTo
+    {
         return $this->belongsTo(Plan::class);
     }
 
-    public function getCommission() {
-        $customRate = $this->custom_rate()->where('date_from', '<', now()->toDateTimeString())
-                           ->where('date_to', '>', now()->toDateTimeString())->orWhere('indefinite_period', '=', true)
-                           ->first();
+    public function getCommission()
+    {
+        $customRate = $this
+            ->custom_rate()
+            ->where('date_from', '<', now()->toDateTimeString())
+            ->where('date_to', '>', now()->toDateTimeString())
+            ->orWhere('indefinite_period', '=', true)
+            ->first();
 
         return $customRate->rate ?? $this->plan->commission_on_sale;
-
-
     }
 
-    public function custom_rate() {
+    public function custom_rate(): HasMany
+    {
         return $this->hasMany(CustomRate::class);
     }
 
-    public function featured_focus_area() {
-        return $this->belongsToMany(FocusArea::class, 'focus_area_features_user', 'user_id', 'focus_area_id');
+    public function featured_focus_area(): BelongsToMany
+    {
+        return $this
+            ->belongsToMany(
+                FocusArea::class,
+                'focus_area_features_user',
+                'user_id',
+                'focus_area_id'
+            );
     }
 
-    public function focus_areas() {
-        return $this->belongsToMany(FocusArea::class, 'focus_area_user', 'user_id', 'focus_area_id');
+    public function focus_areas(): BelongsToMany
+    {
+        return $this
+            ->belongsToMany(
+                FocusArea::class,
+                'focus_area_user',
+                'user_id',
+                'focus_area_id'
+            );
     }
 
-    public function featured_practitioners() {
-        return $this->belongsToMany(FocusArea::class, 'focus_area_features_user', 'focus_area_id', 'user_id');
+    public function featured_practitioners(): BelongsToMany
+    {
+        return $this
+            ->belongsToMany(
+                FocusArea::class,
+                'focus_area_features_user',
+                'focus_area_id',
+                'user_id'
+            );
     }
 
-    public function featured_main_pages(): BelongsToMany {
-        return $this->belongsToMany(MainPage::class, 'main_page_featured_practitioner', 'user_id', 'main_page_id');
+    public function featured_main_pages(): BelongsToMany
+    {
+        return $this
+            ->belongsToMany(
+                MainPage::class,
+                'main_page_featured_practitioner',
+                'user_id',
+                'main_page_id'
+            );
     }
 
     /**
      * @return bool
      */
-    public function isPractitioner(): bool {
+    public function isPractitioner(): bool
+    {
         return $this->account_type === self::ACCOUNT_PRACTITIONER;
     }
 
     /**
      * @return bool
      */
-    public function isClient(): bool {
+    public function isClient(): bool
+    {
         return $this->account_type === self::ACCOUNT_CLIENT;
     }
 
-    public function promotions(): BelongsToMany {
-        return $this->belongsToMany(Promotion::class, 'promotion_practitioner', 'practitioner_id', 'promotion_id');
+    public function promotions(): BelongsToMany
+    {
+        return $this
+            ->belongsToMany(
+                Promotion::class,
+                'promotion_practitioner',
+                'practitioner_id',
+                'promotion_id');
     }
 
-    public function freezes(): HasMany {
+    public function freezes(): HasMany
+    {
         return $this->hasMany(ScheduleFreeze::class);
     }
 
-    public function bookings(): HasMany {
+    public function bookings(): HasMany
+    {
         return $this->hasMany(Booking::class);
     }
 
-    public function practitioner_bookings(): HasMany {
+    public function practitioner_bookings(): HasMany
+    {
         return $this->hasMany(Booking::class, 'practitioner_id', 'id');
     }
 
-    public function purchases(): HasMany {
+    public function purchases(): HasMany
+    {
         return $this->hasMany(Purchase::class);
     }
 
-    public function instalments(): HasMany {
+    public function instalments(): HasMany
+    {
         return $this->hasMany(Instalment::class);
     }
 
-    public function images(): HasMany {
+    public function images(): HasMany
+    {
         return $this->hasMany(Image::class);
     }
 
-    public function media_images(): MorphMany {
+    public function media_images(): MorphMany
+    {
         return $this->morphMany(MediaImage::class, 'morphesTo', 'model_name', 'model_id');
     }
 
-    public function media_videos(): MorphMany {
+    public function media_videos(): MorphMany
+    {
         return $this->morphMany(MediaVideo::class, 'morphesTo', 'model_name', 'model_id');
     }
 
-    public function service_types(): BelongsToMany {
-        return $this->belongsToMany(ServiceType::class, 'service_type_user','user_id','service_type_id');
+    public function service_types(): BelongsToMany
+    {
+        return $this->belongsToMany(ServiceType::class, 'service_type_user', 'user_id', 'service_type_id');
     }
 
-    public function keywords(): belongsToMany {
-        return $this->belongsToMany(Keyword::class,'keyword_user','user_id','keyword_id');
+    public function keywords(): belongsToMany
+    {
+        return $this->belongsToMany(Keyword::class, 'keyword_user', 'user_id', 'keyword_id');
     }
 
-    public function user_cancellations(): HasMany {
+    public function user_cancellations(): HasMany
+    {
         return $this->hasMany(Cancellation::class, 'id', 'user_id');
     }
 
-    public function practitioner_cancellations(): HasMany {
+    public function practitioner_cancellations(): HasMany
+    {
         return $this->hasMany(Cancellation::class, 'id', 'practitioner_id');
     }
 
@@ -272,28 +373,34 @@ class User extends Authenticatable implements MustVerifyEmail {
             ->orderBy('published_at', 'desc');
     }
 
-    public function calendar(): HasOne {
+    public function calendar(): HasOne
+    {
         return $this->hasOne(GoogleCalendar::class);
     }
 
-    public function country(): BelongsTo {
+    public function country(): BelongsTo
+    {
         return $this->belongsTo(Country::class, 'country_id');
     }
 
-    public function business_country(): BelongsTo {
+    public function business_country(): BelongsTo
+    {
         return $this->belongsTo(Country::class, 'business_country_id');
     }
 
-    public function unavailabilities(): HasMany {
+    public function unavailabilities(): HasMany
+    {
         return $this->hasMany(UserUnavailabilities::class, 'id', 'practitioner_id');
     }
 
 
-    public function isFullyRestricted(): bool {
+    public function isFullyRestricted(): bool
+    {
         return !$this->is_admin && (!$this->is_published || !$this->plan);
     }
 
-    public function onlyUnpublishedAllowed(): bool {
+    public function onlyUnpublishedAllowed(): bool
+    {
         return $this->is_admin || ($this->account_type === User::ACCOUNT_PRACTITIONER && $this->plan);
     }
 

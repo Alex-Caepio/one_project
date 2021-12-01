@@ -12,11 +12,10 @@ class InstallmentController extends Controller
     public function getInstallments(Purchase $purchase, Request $request)
     {
         $installments = Instalment::where('purchase_id', $purchase->id)->with($request->getIncludes())->get();
+
         return response(
-            fractal(
-                $installments,
-                new InstalmentTransformer()
-            )->parseIncludes($request->getIncludes())
+            fractal($installments, new InstalmentTransformer())
+                ->parseIncludes($request->getIncludes())
         );
     }
 }

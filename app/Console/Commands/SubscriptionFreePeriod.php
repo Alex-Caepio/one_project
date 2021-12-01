@@ -11,7 +11,8 @@ use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
-class SubscriptionFreePeriod extends Command {
+class SubscriptionFreePeriod extends Command
+{
     /**
      * The name and signature of the console command.
      *
@@ -31,28 +32,32 @@ class SubscriptionFreePeriod extends Command {
      *
      * @return void
      */
-    public function handle(): void {
+    public function handle(): void
+    {
         $nowDate = Carbon::now()->endOfDay();
         $freePlan = Plan::where('is_free', true)->orderBy('id', 'ASC')->first();
 
-        $practitioners = User::where('account_type', User::ACCOUNT_PRACTITIONER)
-                             ->whereHas('plan', static function($query) use ($nowDate) {
-                                 $query->whereNotNull('plans.free_start_to')
-                                       ->whereNotNull('plans.free_start_from')
-                                       ->where('plans.free_start_from', '<=', $nowDate->format('Y-m-d H:i:s'));
-                             })->whereNull('stripe_plan_id')
-                               ->with('plan')
-                               ->where('plan_until', '<=', $nowDate->format('Y-m-d H:i:s'))
-                               ->get();
+        $practitioners = User::query()
+            ->where('account_type', User::ACCOUNT_PRACTITIONER)
+            ->whereHas('plan', static function ($query) use ($nowDate) {
+                $query
+                    ->whereNotNull('plans.free_start_to')
+                    ->whereNotNull('plans.free_start_from')
+                    ->where('plans.free_start_from', '<=', $nowDate->format('Y-m-d H:i:s'));
+            })
+            ->whereNull('stripe_plan_id')
+            ->with('plan')
+            ->where('plan_until', '<=', $nowDate->format('Y-m-d H:i:s'))
+            ->get();
 
         Log::channel('console_commands_handler')
-           ->info('All practitioners with expired plans will be switched to new plan: ', [
-               'plan_id'          => $freePlan->id ?? null,
-               'date'             => $nowDate->format('d.m.Y'),
-               'practitionersCnt' => $practitioners->count(),
-           ]);
+            ->info('All practitioners with expired plans will be switched to new plan: ', [
+                'plan_id' => $freePlan->id ?? null,
+                'date' => $nowDate->format('d.m.Y'),
+                'practitionersCnt' => $practitioners->count(),
+            ]);
 
-        $practitioners->each(static function($user, $key) use ($freePlan) {
+        $practitioners->each(static function ($user, $key) use ($freePlan) {
             if ($freePlan instanceof Plan) {
                 $user->plan_id = $freePlan->id;
                 $user->plan_until = null;

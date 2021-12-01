@@ -3,7 +3,6 @@
 namespace App\Listeners\Emails;
 
 use App\Events\ServiceScheduleLive;
-use Illuminate\Support\Facades\Log;
 
 class ServiceScheduleLiveEmail extends SendEmailHandler {
 

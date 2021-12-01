@@ -6,46 +6,51 @@ use App\Models\Plan;
 use App\Models\PractitionerCommission;
 use App\Models\Promotion;
 use App\Models\Transfer;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Log;
 use Stripe\StripeClient;
 
-class TransferFundsWithCommissions {
-    public function execute($cost, $practitioner, $schedule = null, $client, $purchase): ?Transfer {
+class TransferFundsWithCommissions
+{
+    public function execute($cost, $practitioner, $schedule = null, $client, $purchase): ?Transfer
+    {
         if (!$practitioner->plan instanceof Plan) {
             Log::channel('practitioner_commissions_error')
                 ->info('Unable to transfer funds to the practitioner. Empty Plan:', [
-                    'user_id'           => $practitioner->id,
-                    'plan_id'           => $practitioner->plan_id,
+                    'user_id' => $practitioner->id,
+                    'plan_id' => $practitioner->plan_id,
                     'stripe_account_id' => $practitioner->stripe_account_id,
                 ]);
 
             return null;
         }
-
         $stripe = app()->make(StripeClient::class);
 
         $practitionerPlan = $practitioner->plan->commission_on_sale;
 
-        $practitionerCommissions =
-            PractitionerCommission::where('practitioner_id', $practitioner->id)->where(function($q) {
-                $q->where('is_dateless', true)->orWhereRaw('date_from <= NOW() AND date_to >= NOW()');
-            })->get();
+        // define if commission is overridden in admin panel
+        $practitionerCommissions = PractitionerCommission::query()
+            ->where('practitioner_id', $practitioner->id)
+            ->where(function (Builder $builder) {
+                return $builder
+                    ->whereRaw('(is_dateless = 0 AND date_from <= NOW() AND date_to >= NOW())')
+            ->orWhere(function (Builder $builder) {
+                        return $builder
+                            ->where('is_dateless', '=', 1)
+                            ->whereNull('date_from')
+                            ->whereNull('date_to');
+                    });
+            })
+            ->min('rate');
 
         // transfer value depends of DiscountType
         if ($purchase->discount > 0 && $purchase->discount_applied === Promotion::APPLIED_HOST) {
             $cost += $purchase->discount;
         }
 
-        $reductions[] = $cost * $practitionerPlan / 100;
+        $amount = $cost - $cost * ($practitionerCommissions ?? $practitionerPlan) / 100;
 
-        foreach ($practitionerCommissions as $practitionerCommission) {
-            $reductions[] = $cost * $practitionerCommission->rate / 100;
-        }
 
-        $amount = $cost;
-        foreach ($reductions as $reduction) {
-            $amount -= $reduction;
-        }
 
         $reference = implode(', ', $purchase->bookings->pluck('reference')->toArray());
 
@@ -77,13 +82,14 @@ class TransferFundsWithCommissions {
         $transfer->description = 'transfer for a schedule purchase';
         $transfer->save();
 
-        Log::channel('practitioner_commissions_success')->info('Commission transfer success:', [
-            'user_id'           => $practitioner->id,
-            'plan_id'           => $practitioner->plan_id,
+        Log::channel('practitioner_commissions_success')
+            ->info('Commission transfer success:', [
+            'user_id' => $practitioner->id,
+            'plan_id' => $practitioner->plan_id,
             'stripe_account_id' => $practitioner->stripe_account_id,
-            'amount'            => $amount,
-            'amount_original'   => $cost,
-            'schedule_id'       => $schedule->id ?? null,
+            'amount' => $amount,
+            'amount_original' => $cost,
+            'schedule_id' => $schedule->id ?? null,
         ]);
 
         return $transfer;

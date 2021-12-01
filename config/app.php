@@ -15,12 +15,13 @@ return [
     */
     'platform_name'                 => env('PLATFORM_NAME', 'Oneness'),
     'platform_email'                => env('PLATFORM_EMAIL', 'hello@holistify.me'),
-    'platform_cancellation_fee'     => env('PLATFORM_CANCELLATION_FEE', 0),
+    'platform_cancellation_fee'     => env('PLATFORM_CANCELLATION_FEE', 3),
     'platform_currency'             => env('PLATFORM_CURRENCY', 'gbp'),
     'platform_calendar'             => env('PLATFORM_CALENDAR_NAME', 'Oneness Holistify'),
     'platform_default_timezone'     => env('PLATFORM_CALENDAR_DEFAULT_TIMEZONE', null),
     'platform_subject_practitioner' => env('PLATFORM_SUBJECT_PREFIX_PRACTITIONER', 'Message from: '),
     'platform_subject_client'       => env('PLATFORM_SUBJECT_PREFIX_CLIENT', 'Message from: '),
+    'platform_currency_sign'       => env('PLATFORM_CURRENCY_SIGN', '&pound;'),
 
     'dateless_service_types' => ['bespoke'],
 
@@ -90,6 +91,7 @@ return [
     'frontend_reschedule_apply'             => env('FRONTEND_RESCHEDULE_APPLY', 'http://localhost'),
     'frontend_reschedule_decline'           => env('FRONTEND_RESCHEDULE_DECLINE', 'http://localhost'),
     'frontend_public_profile'               => env('FRONTEND_PUBLIC_PROFILE', 'http://localhost'),
+    'frontend_public_service'               => env('FRONTEND_PUBLIC_SERVICE', 'http://localhost'),
     'asset_url'                             => env('ASSET_URL', null),
 
     /*

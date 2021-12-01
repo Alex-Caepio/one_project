@@ -30,3 +30,7 @@ properties:
   country_id:
     type: integer
     nullable: false
+  timezone_id:
+     type: integer
+     example: 16
+     nullable: false

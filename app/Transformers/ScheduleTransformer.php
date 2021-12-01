@@ -83,13 +83,9 @@ class ScheduleTransformer extends Transformer
             'url'                          => $schedule->url,
             'book_full_series'             => $schedule->book_full_series,
             'accomodation'                 => $schedule->accomodation,
-            'accomodation_details'         => $this->isUserAllowedViewSecret(
-                $schedule
-            ) ? $schedule->accomodation_details : null,
+            'accomodation_details'         => $schedule->accomodation_details ,
             'travel'                       => $schedule->travel,
-            'travel_details'               => $this->isUserAllowedViewSecret(
-                $schedule
-            ) ? $schedule->travel_details : null,
+            'travel_details'               => $schedule->travel_details,
             'repeat'                       => $schedule->repeat,
             'repeat_every'                 => $schedule->repeat_every,
             'repeat_period'                => $schedule->repeat_period,
