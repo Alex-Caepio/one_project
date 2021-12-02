@@ -44,7 +44,6 @@ class CancelBooking
             throw new Exception('Incorrect model relation in booking #' . $booking->id);
         }
 
-        $transferModel = Transfer::where('purchase_id', $booking->purchase_id)->first();
         $stripeRefund = null;
 
         if ($roleFromRequest !== null) {
@@ -221,13 +220,13 @@ class CancelBooking
             'practitionerFee' => 0,
             'practitionerCharge' => 0
         ];
-
-        $hostFee = (int)config('app.platform_cancellation_fee');
+        $hostFee = (int)config('app.platform_cancellation_fee'); // 3%
 
         if ($actionRole === User::ACCOUNT_PRACTITIONER || $declineRescheduleRequest === true) {
+            $practitionerCommissionOnSale = $booking->practitioner->getCommission();
             $result['isFullRefund'] = true;
-            $result['refundTotal'] = (float)$booking->cost;
-            $result['practitionerFee'] = round(($result['refundTotal'] / 100) * $hostFee);
+            $result['refundTotal'] = $booking->cost - $practitionerCommissionOnSale * 100 / $booking->cost ;
+            $result['practitionerFee'] = round(($booking->cost / 100) * $hostFee);
         } else {
             $result['isFullRefund'] = false;
             $isDateless = $booking->schedule->service->isDateless();
@@ -244,9 +243,9 @@ class CancelBooking
             } else {
                 $result['refundTotal'] = 0;
             }
+            $result['practitionerFee'] = round(($result['refundTotal'] / 100) * $hostFee);
         }
 
-        $result['practitionerFee'] = round(($result['refundTotal'] / 100) * $hostFee);
         $result['refundSmallestUnit'] = (int)($result['refundTotal'] * 100);
         $result['practitionerCharge'] = $result['practitionerFee'] + $result['refundTotal'];
 
