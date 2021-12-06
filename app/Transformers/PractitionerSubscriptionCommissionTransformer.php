@@ -17,20 +17,20 @@ class PractitionerSubscriptionCommissionTransformer extends Transformer
      *
      * @return array
      */
-    public function transform(PractitionerSubscriptionCommission $practitionerSubscriptionCommission)
+    public function transform(PractitionerSubscriptionCommission $commission)
     {
         return [
-            'id'                 => $practitionerSubscriptionCommission->id,
-            'user_id'            => $practitionerSubscriptionCommission->user_id,
-            'rate'               => $practitionerSubscriptionCommission->rate,
-            'commission_on_sale' => $practitionerSubscriptionCommission->commission_on_sale,
-            'date_from'          => $practitionerSubscriptionCommission->date_from->format('Y-m-d'),
-            'date_to'            => $practitionerSubscriptionCommission->date_to->format('Y-m-d'),
-            'is_dateless'        => $practitionerSubscriptionCommission->is_dateless,
-            'created_at'         => $practitionerSubscriptionCommission->created_at,
-            'updated_at'         => $practitionerSubscriptionCommission->updated_at,
-            'stripe_coupon_id'   => $practitionerSubscriptionCommission->stripe_coupon_id,
-            'subscription_schedule_id' => $practitionerSubscriptionCommission->subscription_schedule_id,
+            'id'                 => $commission->id,
+            'user_id'            => $commission->user_id,
+            'rate'               => $commission->rate,
+            'commission_on_sale' => $commission->commission_on_sale,
+            'date_from'          => is_null($commission->date_from) ? null : $commission->date_from->format('Y-m-d'),
+            'date_to'            => is_null($commission->date_to) ? null : $commission->date_to->format('Y-m-d'),
+            'is_dateless'        => $commission->is_dateless,
+            'created_at'         => $commission->created_at,
+            'updated_at'         => $commission->updated_at,
+            'stripe_coupon_id'   => $commission->stripe_coupon_id,
+            'subscription_schedule_id' => $commission->subscription_schedule_id,
         ];
     }
 
