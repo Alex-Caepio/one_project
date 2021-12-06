@@ -84,6 +84,7 @@ class PurchaseController extends Controller
                 $cost = $newCost;
             }
         }
+
         $schedule->load('service');
         $isInstallment = $schedule->deposit_accepted
             && isset($request->installments)
@@ -170,15 +171,16 @@ class PurchaseController extends Controller
                 }
             }
         } catch (Exception $e) {
-            Log::channel('stripe_purchase_schedule_error')->info("Common Purchase Error", [
-                'user_id' => $request->user()->id,
-                'price_id' => $price->id,
-                'service_id' => $schedule->service->id,
-                'practitioner_id' => $schedule->service->user_id,
-                'schedule_id' => $schedule->id,
-                'payment_intent' => $paymentIntent->id ?? null,
-                'message' => $e->getMessage(),
-            ]);
+            Log::channel('stripe_purchase_schedule_error')
+                ->info("Common Purchase Error", [
+                    'user_id' => $request->user()->id,
+                    'price_id' => $price->id,
+                    'service_id' => $schedule->service->id,
+                    'practitioner_id' => $schedule->service->user_id,
+                    'schedule_id' => $schedule->id,
+                    'payment_intent' => $paymentIntent->id ?? null,
+                    'message' => $e->getMessage(),
+                ]);
             $this->connection->rollBack();
             abort(Response::HTTP_INTERNAL_SERVER_ERROR, $e->getMessage());
         }
@@ -227,15 +229,16 @@ class PurchaseController extends Controller
                 $purchase
             );
         } catch (ApiErrorException $e) {
-            Log::channel('stripe_installment_fail')->info('The client could not purchase installment', [
-                'user_id' => $request->user()->id,
-                'price_id' => $price->id,
-                'service_id' => $schedule->service->id,
-                'schedule_id' => $schedule->id,
-                'payment_method' => $payment_method_id,
-                'amount' => $request->amount,
-                'message' => $e->getMessage(),
-            ]);
+            Log::channel('stripe_installment_fail')
+                ->info('The client could not purchase installment', [
+                    'user_id' => $request->user()->id,
+                    'price_id' => $price->id,
+                    'service_id' => $schedule->service->id,
+                    'schedule_id' => $schedule->id,
+                    'payment_method' => $payment_method_id,
+                    'amount' => $request->amount,
+                    'message' => $e->getMessage(),
+                ]);
 
             throw new Exception('Cannot handle installments payment');
         }
@@ -250,26 +253,28 @@ class PurchaseController extends Controller
                 $purchase
             );
 
-            Log::channel('stripe_transfer_success')->info("The practitioner received transfer", [
-                'user_id' => $request->user()->id,
-                'practitioner' => $practitioner->id,
-                'price_id' => $price->id,
-                'service_id' => $schedule->service->id,
-                'schedule_id' => $schedule->id,
-                'payment_method' => $payment_method_id,
-                'amount' => $request->amount,
-            ]);
+            Log::channel('stripe_transfer_success')
+                ->info("The practitioner received transfer", [
+                    'user_id' => $request->user()->id,
+                    'practitioner' => $practitioner->id,
+                    'price_id' => $price->id,
+                    'service_id' => $schedule->service->id,
+                    'schedule_id' => $schedule->id,
+                    'payment_method' => $payment_method_id,
+                    'amount' => $request->amount,
+                ]);
         } catch (ApiErrorException $e) {
-            Log::channel('stripe_transfer_fail')->info("The practitioner could not received transfer", [
-                'user_id' => $request->user()->id,
-                'practitioner' => $practitioner->id,
-                'price_id' => $price->id,
-                'service_id' => $schedule->service->id,
-                'schedule_id' => $schedule->id,
-                'payment_method' => $payment_method_id,
-                'amount' => $request->amount,
-                'message' => $e->getMessage(),
-            ]);
+            Log::channel('stripe_transfer_fail')
+                ->info("The practitioner could not received transfer", [
+                    'user_id' => $request->user()->id,
+                    'practitioner' => $practitioner->id,
+                    'price_id' => $price->id,
+                    'service_id' => $schedule->service->id,
+                    'schedule_id' => $schedule->id,
+                    'payment_method' => $payment_method_id,
+                    'amount' => $request->amount,
+                    'message' => $e->getMessage(),
+                ]);
         }
 
         return $responseData;

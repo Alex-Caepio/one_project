@@ -73,10 +73,10 @@ class ScheduleController extends Controller
 
     public function rescheduleScheduleList(Schedule $schedule, Request $request)
     {
-        $scheduleQuery = Schedule::where('service_id', $schedule->service_id)->where('id', '<>', $schedule->id)->where(
-            'is_published',
-            true
-        );
+        $scheduleQuery = Schedule::query()
+            ->where('service_id', $schedule->service_id)
+            ->where('id', '<>', $schedule->id)
+            ->where('is_published', true);
 
         $requestIncludes = $request->getIncludes();
 
@@ -88,10 +88,11 @@ class ScheduleController extends Controller
 
         // price option for client
         if (Auth::user()->account_type === User::ACCOUNT_CLIENT && $request->filled('booking_id')) {
-            $booking = Booking::with('price')->where('id', (int)$request->get('booking_id'))->where(
-                'schedule_id',
-                $schedule->id
-            )->first();
+            $booking = Booking::query()
+                ->with('price')
+                ->where('id', (int)$request->get('booking_id'))
+                ->where('schedule_id', $schedule->id)
+                ->first();
             if (!$booking) {
                 return response('Booking not found', 500);
             }
@@ -182,7 +183,7 @@ class ScheduleController extends Controller
             $bookingQuery->active();
         }
         $bookingQuery->with($request->getIncludes());
-        $bookingQuery->with(['purchase','purchase.instalments']);
+        $bookingQuery->with(['purchase', 'purchase.instalments']);
         $paginator = $bookingQuery->paginate($request->getLimit());
         $fractal =
             fractal($paginator->getCollection(), new BookingTransformer())
@@ -201,7 +202,7 @@ class ScheduleController extends Controller
 
     public function appointmentsOnDate(Price $price, $date)
     {
-        if (!$timeZone = request()->get('tz')){
+        if (!$timeZone = request()->get('tz')) {
             $timeZone = Carbon::now()->getTimezone()->getName();
         }
 

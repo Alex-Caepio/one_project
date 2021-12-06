@@ -8,7 +8,10 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 
@@ -30,7 +33,8 @@ use Illuminate\Support\Facades\Auth;
  * @property Carbon deleted_at
  * @property ServiceType service_type
  */
-class Service extends Model {
+class Service extends Model
+{
     use SoftDeletes, HasFactory, PublishedScope;
 
     protected $fillable = [
@@ -50,92 +54,137 @@ class Service extends Model {
      * @var array
      */
     protected $casts = [
-        'created_at'   => 'datetime',
-        'updated_at'   => 'datetime',
-        'deleted_at'   => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
         'is_published' => 'boolean',
     ];
 
-    public function scopeFilter(Builder $builder, QueryFilter $filters) {
+    public function scopeFilter(Builder $builder, QueryFilter $filters)
+    {
         return $filters->apply($builder);
     }
 
-    public function media_images() {
+    public function media_images(): MorphMany
+    {
         return $this->morphMany(MediaImage::class, 'morphesTo', 'model_name', 'model_id');
     }
 
-    public function media_videos() {
+    public function media_videos(): MorphMany
+    {
         return $this->morphMany(MediaVideo::class, 'morphesTo', 'model_name', 'model_id');
     }
 
-    public function media_files() {
+    public function media_files(): MorphMany
+    {
         return $this->morphMany(MediaFile::class, 'morphesTo', 'model_name', 'model_id');
     }
 
-    public function user() {
+    public function user(): BelongsTo
+    {
         return $this->belongsTo(User::class);
     }
 
-    public function practitioner() {
+    public function practitioner()
+    {
         return $this->belongsTo(User::class)->withTrashed();
     }
 
-    public function keywords() {
+    public function keywords(): BelongsToMany
+    {
         return $this->belongsToMany(Keyword::class);
     }
 
-    public function disciplines() {
+    public function disciplines()
+    {
         return $this->belongsToMany(Discipline::class)->published();
     }
 
-    public function focus_areas() {
-        return $this->belongsToMany(FocusArea::class, 'focus_area_service', 'service_id', 'focus_area_id')
-                    ->withTimeStamps();
+    public function focus_areas(): BelongsToMany
+    {
+        return $this
+            ->belongsToMany(
+                FocusArea::class,
+                'focus_area_service',
+                'service_id',
+                'focus_area_id'
+            )
+            ->withTimeStamps();
     }
 
-    public function location() {
+    public function location(): BelongsTo
+    {
         return $this->belongsTo(Location::class);
     }
 
-    public function schedules() {
+    public function schedules(): HasMany
+    {
         return $this->hasMany(Schedule::class);
     }
 
-    public function active_schedules() {
-        return $this->hasMany(Schedule::class)->where('is_published', true);
+    public function active_schedules(): HasMany
+    {
+        return $this
+            ->hasMany(Schedule::class)
+            ->where('is_published', true);
     }
 
-    public function favourite_services() {
+    public function favourite_services(): BelongsToMany
+    {
         return $this->belongsToMany(__CLASS__);
     }
 
-    public function service_type() {
+    public function service_type(): BelongsTo
+    {
         return $this->belongsTo(ServiceType::class);
     }
 
-    public function featured_focus_area() {
-        return $this->belongsToMany(FocusArea::class, 'focus_area_featured_service', 'service_id', 'focus_area_id');
+    public function featured_focus_area()
+    {
+        return $this
+            ->belongsToMany(
+                FocusArea::class,
+                'focus_area_featured_service',
+                'service_id',
+                'focus_area_id'
+            );
     }
 
-    public function featured_main_pages(): BelongsToMany {
-        return $this->belongsToMany(MainPage::class, 'main_page_featured_service', 'service_id', 'main_page_id');
+    public function featured_main_pages(): BelongsToMany
+    {
+        return $this
+            ->belongsToMany(
+                MainPage::class,
+                'main_page_featured_service',
+                'service_id',
+                'main_page_id'
+            );
     }
 
-    public function featured_services() {
-        return $this->belongsToMany(FocusArea::class, 'focus_area_featured_service', 'focus_area_id', 'service_id');
+    public function featured_services()
+    {
+        return $this
+            ->belongsToMany(
+                FocusArea::class,
+                'focus_area_featured_service',
+                'focus_area_id',
+                'service_id'
+            );
     }
 
-    public function articles() {
+    public function articles()
+    {
         return $this->belongsToMany(Article::class)->published();
     }
 
-    public function purchases() {
+    public function purchases(): HasMany
+    {
         return $this->hasMany(Purchase::class);
     }
 
-    public function isDateLess() {
+    public function isDateLess(): bool
+    {
         return in_array($this->service_type_id, config('app.dateless_service_types'), true);
     }
-
 
 }

@@ -29,7 +29,15 @@ class PurchaseInstallment
         $customer = $request->user();
         $stripe = app()->make(StripeClient::class);
         $deposit = $this->chargeDeposit($paymentMethodId, $stripe, $schedule, $customer->id, $purchase->id);
-        $subscription = $this->chargeInstallment($paymentMethodId, $cost, $request->installments, $schedule, $purchase, $customer, $stripe);
+        $subscription = $this->chargeInstallment(
+            $paymentMethodId,
+            $cost,
+            $request->installments,
+            $schedule,
+            $purchase,
+            $customer,
+            $stripe
+        );
 
         $purchase->stripe_id = $deposit->id;
 
@@ -41,12 +49,13 @@ class PurchaseInstallment
         $purchase->save();
         $purchase->bookings()->first()->installmentComplete();
 
-        Log::channel('stripe_installment_success')->info('Installment successfully created', [
-            'user_id'        => $request->user()->id,
-            'service_id'     => $schedule->service->id,
-            'schedule_id'    => $schedule->id,
-            'amount'         => $cost
-        ]);
+        Log::channel('stripe_installment_success')
+            ->info('Installment successfully created', [
+                'user_id' => $request->user()->id,
+                'service_id' => $schedule->service->id,
+                'schedule_id' => $schedule->id,
+                'amount' => $cost
+            ]);
 
         return new PaymentIntentDto(
             $deposit->status,
@@ -63,16 +72,26 @@ class PurchaseInstallment
         int $customerId,
         int $purchaseId
     ): PaymentIntent {
-
         $depositAmount = $schedule->deposit_amount;
+        $practitioner = $schedule->service->practitioner;
 
         $paymentIntent = $stripe->paymentIntents->create(
             [
-                'amount'               => (int)($depositAmount * 100),
-                'currency'             => config('app.platform_currency'),
+                'amount' => (int)($depositAmount * 100),
+                'currency' => config('app.platform_currency'),
                 'payment_method_types' => ['card'],
-                'customer'             => Auth::user()->stripe_customer_id,
-                'payment_method'       => $paymentMethodId
+                'customer' => Auth::user()->stripe_customer_id,
+                'payment_method' => $paymentMethodId,
+                'metadata' => [
+                    'Practitioner business email' => $practitioner->business_email,
+                    'Practitioner business name' => $practitioner->business_name,
+                    'Practitioner stripe id' => $practitioner->stripe_customer_id,
+                    'Practitioner connected account id' => $practitioner->stripe_account_id,
+//                    'Client first name' => $client->first_name,
+//                    'Client last name' => $client->last_name,
+//                    'Client stripe id' => $client->stripe_customer_id,
+//                    'Booking reference' => $schedule
+                ]
             ]
         );
 
@@ -91,12 +110,13 @@ class PurchaseInstallment
         $installment->is_paid = true;
         $installment->save();
 
-        Log::channel('stripe_installment_success')->info('Charge deposit: ', [
-            'user_id'        => Auth::user()->id,
-            'service_id'     => $schedule->id,
-            'schedule_id'    => $schedule->id,
-            'amount'         => $depositAmount
-        ]);
+        Log::channel('stripe_installment_success')
+            ->info('Charge deposit: ', [
+                'user_id' => Auth::user()->id,
+                'service_id' => $schedule->id,
+                'schedule_id' => $schedule->id,
+                'amount' => $depositAmount
+            ]);
 
         return $paymentIntent;
     }
@@ -121,19 +141,19 @@ class PurchaseInstallment
 
         $stripePrice = $stripe->prices->create(
             [
-                'currency'    => config('app.platform_currency'),
-                'product'     => $schedule->service->stripe_id,
+                'currency' => config('app.platform_currency'),
+                'product' => $schedule->service->stripe_id,
                 'unit_amount' => (int)($installmentInfo['amountPerPeriod'] * 100),
-                'recurring'   => ['interval' => 'day', 'interval_count' => $installmentInfo['daysPerPeriod']],
+                'recurring' => ['interval' => 'day', 'interval_count' => $installmentInfo['daysPerPeriod']],
             ]
         );
 
         $subscription = $stripe->subscriptions->create(
             [
                 'default_payment_method' => $paymentMethodId,
-                'customer'               => $customer->stripe_customer_id,
-                'cancel_at'              => $finalInstallmentDate->timestamp,
-                'items'                  => [
+                'customer' => $customer->stripe_customer_id,
+                'cancel_at' => $finalInstallmentDate->timestamp,
+                'items' => [
                     ['price' => $stripePrice->id],
                 ],
             ]
@@ -152,13 +172,14 @@ class PurchaseInstallment
             $installment->save();
         }
 
-        Log::channel('stripe_installment_success')->info('Create installments: ', [
-            'user_id'        => Auth::user()->id,
-            'service_id'     => $schedule->service->id,
-            'schedule_id'    => $schedule->id,
-            'amount'         => $installmentInfo['amountPerPeriod'],
-            'daysInPeriod'   => $installmentInfo['daysPerPeriod']
-        ]);
+        Log::channel('stripe_installment_success')
+            ->info('Create installments: ', [
+                'user_id' => Auth::user()->id,
+                'service_id' => $schedule->service->id,
+                'schedule_id' => $schedule->id,
+                'amount' => $installmentInfo['amountPerPeriod'],
+                'daysInPeriod' => $installmentInfo['daysPerPeriod']
+            ]);
 
         return $subscription;
     }
