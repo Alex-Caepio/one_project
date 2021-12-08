@@ -11,6 +11,7 @@ use App\Models\Schedule;
 use App\Models\Service;
 use App\Transformers\ScheduleTransformer;
 use App\Http\Requests\Request;
+use Illuminate\Database\Eloquent\Builder;
 
 class ScheduleController extends Controller {
 
@@ -18,6 +19,19 @@ class ScheduleController extends Controller {
         $scheduleQuery = Schedule::query()->whereHas('service');
         $scheduleQuery->where(function($q) {
             $q->where('schedules.start_date', '>=', now())->orWhereNull('schedules.start_date');
+        });
+
+        $search = $request->get('search');
+        $scheduleQuery->when($search, function (Builder $query, $search) {
+            $query->where(function (Builder $query) use ($search) {
+                $query->whereHas('service', function (Builder $q) use ($search) {
+                    return $q->where('title', 'like', "%$search%");
+                })->orWhere('title', 'like', "%$search%");
+
+                return $query;
+            });
+
+            return $query;
         });
 
         $includes = $request->getIncludes();
