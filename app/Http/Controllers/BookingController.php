@@ -4,13 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Filters\BookingFilters;
 use App\Http\Requests\Bookings\BookingCompleteRequest;
-use App\Http\Requests\Reschedule\RescheduleRequestRequest;
 use App\Http\Requests\Request;
 use App\Models\Booking;
 use App\Models\Notification;
 use App\Models\RescheduleRequest;
 use App\Transformers\BookingTransformer;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class BookingController extends Controller
@@ -36,11 +34,19 @@ class BookingController extends Controller
 
         $query->selectRaw('*, DATEDIFF(bookings.datetime_from, NOW()) as date_diff')->orderByRaw('ABS(date_diff)');
 
+        if($filters->hasUpcomingStatus()) {
+            $query->having('date_diff', '>=', 0);
+        }
+
         $paginator = $query->paginate($request->getLimit());
         $booking = $paginator->getCollection();
 
-        return response(fractal($booking, new BookingTransformer())->parseIncludes($request->getIncludes()))
-            ->withPaginationHeaders($paginator);
+        return response(
+            fractal(
+                $booking,
+                new BookingTransformer()
+            )->parseIncludes($request->getIncludes())
+        )->withPaginationHeaders($paginator);
     }
 
     public function show(Booking $booking, Request $request)
