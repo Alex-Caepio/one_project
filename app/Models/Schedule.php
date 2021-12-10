@@ -277,7 +277,6 @@ class Schedule extends Model
             $changes['post_code'],
             $changes['appointment'],
             $changes['comments'],
-            $changes['url'],
             $changes['title'],
             $changes['attendees'],
         );
