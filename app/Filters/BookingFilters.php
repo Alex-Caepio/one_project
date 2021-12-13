@@ -4,19 +4,39 @@
 namespace App\Filters;
 
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
+
 
 class BookingFilters extends QueryFilter {
 
+    private const STATUS_UPCOMING = 'upcoming';
+    private const STATUS_RESCHEDULED = 'rescheduled';
 
-    public function status(string $status) {
+    private bool $isStatusUpcoming;
+
+    public function __construct(Request $request)
+    {
+        $this->defineIsStatusUpcoming($request);
+
+        parent::__construct($request);
+    }
+
+    public function status(string $status): Builder {
         $status = strtolower($status);
-        if ($status === 'upcoming') {
-            $statuses = ['upcoming', 'rescheduled'];
+
+        if ($this->hasUpcomingStatus()) {
+            $statuses = [static::STATUS_UPCOMING, static::STATUS_RESCHEDULED];
         } else {
             $statuses = [$status];
         }
+
         return $this->builder->whereIn('status', $statuses);
+    }
+
+    public function hasUpcomingStatus(): bool
+    {
+        return $this->isStatusUpcoming;
     }
 
     public function practitioner(int $id) {
@@ -73,5 +93,10 @@ class BookingFilters extends QueryFilter {
         return $this->builder->whereHas('schedule', function($q) use ($country) {
             $q->where('country', '=', strtolower($country));
         });
+    }
+
+    protected function defineIsStatusUpcoming(Request $request): void
+    {
+        $this->isStatusUpcoming = $request->get('status') === static::STATUS_UPCOMING;
     }
 }
