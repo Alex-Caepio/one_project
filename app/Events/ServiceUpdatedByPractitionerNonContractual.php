@@ -7,13 +7,12 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class ServiceUpdatedByPractitionerNonContractual {
+class ServiceUpdatedByPractitionerNonContractual
+{
     use Dispatchable, InteractsWithSockets, SerializesModels, EventFillableFromBooking;
 
-    public function __construct(Schedule $schedule) {
+    public function __construct(Schedule $schedule)
+    {
         $this->schedule = $schedule;
     }
-
-
-
 }
