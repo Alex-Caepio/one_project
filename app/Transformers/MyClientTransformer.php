@@ -2,7 +2,7 @@
 
 namespace App\Transformers;
 
-use App\Models\User;
+use App\Models\BookingView;
 use Carbon\Carbon;
 
 class MyClientTransformer extends Transformer
@@ -12,16 +12,14 @@ class MyClientTransformer extends Transformer
      *
      * @return array
      */
-    public function transform(User $myClient)
+    public function transform(BookingView $myClient)
     {
         return [
-            'id'                => $myClient->id,
-            'name'              => "{$myClient->first_name} {$myClient->last_name}",
-            'country'           => $myClient->country,
-            'city'              => $myClient->city,
-            'bookings'          => (int) $myClient->bookings,
+            'id'                => $myClient->user->id,
+            'name'              => "{$myClient->user->first_name} {$myClient->user->last_name}",
+            'country'           => $myClient->user->country,
+            'city'              => $myClient->user->city,
             'live_bookings'     => (int) $myClient->live_bookings,
-            'attended_bookings' => (int) $myClient->attended_bookings,
             'last_purchase'     => new Carbon($myClient->last_purchase),
             'last_service'      => new Carbon($myClient->last_service),
         ];
