@@ -87,7 +87,9 @@ class Service extends Model
 
     public function practitioner()
     {
-        return $this->belongsTo(User::class)->withTrashed();
+        return $this
+            ->belongsTo(User::class, 'user_id','id')
+            ->withTrashed();
     }
 
     public function keywords(): BelongsToMany
