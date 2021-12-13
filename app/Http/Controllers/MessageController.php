@@ -50,7 +50,7 @@ class MessageController extends Controller
         $emailMessage->forceFill([
             'sender_id' => Auth::id(),
             'receiver_id' => $receiver->id,
-            'text' => $message,
+            'text' => nl2br($message),
         ]);
         $emailMessage->save();
 
