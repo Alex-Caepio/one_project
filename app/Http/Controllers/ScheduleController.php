@@ -187,8 +187,8 @@ class ScheduleController extends Controller
         $paginator = $bookingQuery->paginate($request->getLimit());
         $fractal =
             fractal($paginator->getCollection(), new BookingTransformer())
-                ->parseIncludes($request->getIncludes())
-                ->toArray();
+            ->parseIncludes($request->getIncludes())
+            ->toArray();
 
         return response($fractal)->withPaginationHeaders($paginator);
     }
@@ -320,6 +320,4 @@ class ScheduleController extends Controller
         );
         $freeze->save();
     }
-
-
 }

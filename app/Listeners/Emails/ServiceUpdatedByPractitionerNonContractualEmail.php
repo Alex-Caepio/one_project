@@ -4,8 +4,6 @@ namespace App\Listeners\Emails;
 
 use App\Events\ServiceUpdatedByPractitionerNonContractual;
 use App\Models\Booking;
-use Carbon\Carbon;
-
 
 class ServiceUpdatedByPractitionerNonContractualEmail extends SendEmailHandler
 {
