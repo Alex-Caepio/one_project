@@ -12,45 +12,54 @@ use App\Transformers\EmailMessageTransformer;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 
-class MessageController extends Controller {
-    public function index(Request $request) {
+class MessageController extends Controller
+{
+    public function index(Request $request)
+    {
         $massage = EmailMessage::where('sender_id', Auth::id())->get();
-        return fractal($massage, new EmailMessageTransformer())->parseIncludes($request->getIncludes())->toArray();
 
+        return fractal($massage, new EmailMessageTransformer())->parseIncludes($request->getIncludes())->toArray();
     }
 
-    public function store(MessageRequest $request, User $user) {
+    public function store(MessageRequest $request, User $user)
+    {
         $message = $this->sendMessage($user, $request->get('text'));
 
         return fractal($message, new EmailMessageTransformer())->parseIncludes($request->getIncludes())->respond();
     }
 
-    public function storeMultiple(MessageMultipleRequest $request) {
+    public function storeMultiple(MessageMultipleRequest $request)
+    {
         $users =
-            User::where('account_type', User::ACCOUNT_CLIENT)->whereIn('id', $request->get('users'))
+            User::query()
+                ->where('account_type', User::ACCOUNT_CLIENT)
+                ->whereIn('id', $request->get('users'))
                 ->get();
         foreach ($users as $user) {
             $this->sendMessage($user, $request->get('text'));
         }
+
         return response('', 204);
     }
 
-    private function sendMessage(User $receiver, string $message): EmailMessage {
+    private function sendMessage(User $receiver, string $message): EmailMessage
+    {
         Mail::to($receiver->email)->send(new SendUserMail(Auth::user(), $receiver, $message));
-
 
         $emailMessage = new EmailMessage();
         $emailMessage->forceFill([
-                                     'sender_id'   => Auth::id(),
-                                     'receiver_id' => $receiver->id,
-                                     'text'        => $message,
-                                 ]);
+            'sender_id' => Auth::id(),
+            'receiver_id' => $receiver->id,
+            'text' => $message,
+        ]);
         $emailMessage->save();
+
         return $emailMessage;
     }
 
 
-    public function showByReceiver(User $user, Request $request) {
+    public function showByReceiver(User $user, Request $request)
+    {
         $massage = EmailMessage::where('sender_id', Auth::id())->where('receiver_id', $user->id)->get();
 
         return fractal($massage, new EmailMessageTransformer())->parseIncludes($request->getIncludes())->respond();
