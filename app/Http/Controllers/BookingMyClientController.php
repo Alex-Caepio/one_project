@@ -3,14 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\Booking;
+use App\Models\BookingView;
 use App\Models\Schedule;
-use App\Models\User;
 use App\Models\Purchase;
 use App\Http\Requests\Request;
 use App\Transformers\MyClientClosedTransformer;
 use App\Transformers\MyClientPurchaseTransformer;
 use App\Transformers\MyClientTransformer;
 use App\Transformers\MyClientUpcomingTransformer;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class BookingMyClientController extends Controller
@@ -18,24 +20,29 @@ class BookingMyClientController extends Controller
 
     public function index(Request $request)
     {
-        $query = User::query()->selectRaw(
-            'users.*,
-            count(distinct live_bookings.id) live_bookings,
-            count(distinct attended_bookings.id) attended_bookings,
-            count(distinct bookings.id) bookings,
-            max(bookings.created_at) last_purchase,
-            max(attended_bookings.datetime_from) last_service
-            '
-        )->join('bookings', 'bookings.user_id', '=', 'users.id')
-            ->leftJoin('bookings as live_bookings', function ($q) {
-                $q->on('live_bookings.id', '=', 'bookings.id')
-                    ->on('live_bookings.datetime_from', '>', DB::raw('now()'));
-            })->leftJoin('bookings as attended_bookings', function ($q) {
-                $q->on('attended_bookings.id', '=', 'bookings.id')
-                    ->on('attended_bookings.datetime_from', '<=', DB::raw('now()'));
-            })->join('schedules', 'schedules.id', '=', 'bookings.schedule_id')
-            ->join('services', 'services.id', '=', 'schedules.service_id')
-            ->where('services.user_id', $request->user()->id)->groupBy('users.id');
+        $query = BookingView::query()->with(['user'])
+            ->selectRaw(
+                '*,
+                count(*) as live_bookings,
+                max(created_at) as last_purchase,
+                max(datetime_from) as last_service'
+            )
+            ->where('practitioner_id', Auth::id())
+            ->where(function (Builder $builder) {
+                return $builder
+                    ->where(function (Builder $builder) {
+                        return $builder
+                            ->where('service_type_id', '=', BookingView::BESPOKE_SERVICE_VALUE)
+                            ->whereIn('status', BookingView::LIVE_BOOKING_STATUS);
+                    })
+                    ->orWhere(function (Builder $builder) {
+                        return $builder
+                            ->where('service_type_id', '!=', BookingView::BESPOKE_SERVICE_VALUE)
+                            ->where('datetime_from', '>', DB::raw('now()'));
+                    });
+            })
+            ->groupBy('id');
+
 
         if ($request->hasOrderBy()) {
             $order = $request->getOrderBy();
