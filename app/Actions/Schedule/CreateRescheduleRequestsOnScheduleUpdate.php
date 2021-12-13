@@ -98,5 +98,4 @@ class CreateRescheduleRequestsOnScheduleUpdate
             || isset($this->changesList['location_displayed']);
     }
 
-
 }

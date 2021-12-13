@@ -13,7 +13,4 @@ class ServiceUpdatedByPractitionerNonContractual {
     public function __construct(Schedule $schedule) {
         $this->schedule = $schedule;
     }
-
-
-
 }
