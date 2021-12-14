@@ -44,7 +44,7 @@ class MessageController extends Controller
 
     private function sendMessage(User $receiver, string $message): EmailMessage
     {
-        Mail::to($receiver->email)->send(new SendUserMail(Auth::user(), $receiver, $message));
+        Mail::to($receiver->email)->send(new SendUserMail(Auth::user(), $receiver, nl2br($message)));
 
         $emailMessage = new EmailMessage();
         $emailMessage->forceFill([

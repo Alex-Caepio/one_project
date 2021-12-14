@@ -11,7 +11,7 @@
     <p>Hello {{$receiver->first_name}}</p>
     <p>{{$sender->first_name}} has sent you a message through Holistify:</p>
     <p><b>Message:</b></p>
-    <p><b>{{ $text }}</b></p>
+    <p>{!! $text !!}</p>
     <p>To reply to this message, simply reply to this email and {{$sender->first_name}} will receive your message.</p>
     <p>Thanks<br/>The Holistify Team</p>
 </body>
