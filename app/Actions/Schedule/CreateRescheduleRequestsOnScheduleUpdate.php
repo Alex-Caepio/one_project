@@ -42,11 +42,13 @@ class CreateRescheduleRequestsOnScheduleUpdate
                     'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                     'requested_by' => 'practitioner',
                     'old_location_displayed' => $this->schedule->getOriginal('location_displayed'),
-                    'new_location_displayed' => $this->changesList['location_displayed'],
+                    'new_location_displayed' => $this->changesList['location_displayed'] ?? null,
                     'old_start_date'=> $this->schedule->getOriginal('start_date'),
                     'new_start_date' => $this->schedule->start_date,
                     'old_end_date' => $this->schedule->getOriginal('end_date'),
                     'new_end_date' => $this->schedule->end_date,
+                    'old_url' => $this->schedule->getOriginal('url'),
+                    'new_url' => $this->schedule->url,
                 ];
             }
             // without events handler

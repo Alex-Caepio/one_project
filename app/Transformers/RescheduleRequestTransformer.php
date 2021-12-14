@@ -27,6 +27,8 @@ class RescheduleRequestTransformer extends Transformer
             'new_start_date'         => $rescheduleRequest->new_start_date,
             'old_end_date'           => $rescheduleRequest->old_end_date,
             'new_end_date'           => $rescheduleRequest->new_end_date,
+            'old_url'                => $rescheduleRequest->old_url,
+            'new_url'                => $rescheduleRequest->new_url,
             'created_at'             => $rescheduleRequest->created_at,
             'updated_at'             => $rescheduleRequest->updated_at,
             'old_price_id'           => $rescheduleRequest->old_price_id,
