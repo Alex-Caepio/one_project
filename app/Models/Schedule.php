@@ -27,6 +27,8 @@ class Schedule extends Model
 {
     use HasFactory, SoftDeletes, PublishedScope;
 
+    const DEPOSIT_DELAY = 14; // in days
+
     protected $fillable = [
         'title',
         'service_id',
@@ -287,6 +289,7 @@ class Schedule extends Model
             $changes['url'],
 
         );
+
         return count($changes) > 0;
     }
 
@@ -376,10 +379,11 @@ class Schedule extends Model
             ->count();
         $freezed =
             ScheduleFreeze::query()
-            ->where('schedule_id', $this->id)
-            ->where('freeze_at', '>', $time->toDateTimeString())
-            ->count();
+                ->where('schedule_id', $this->id)
+                ->where('freeze_at', '>', $time->toDateTimeString())
+                ->count();
         $available = (int)$this->attendees - ($purchased + $freezed - $personalFreezed);
+
         return $available < 0 ? 0 : $available;
     }
 
@@ -395,44 +399,47 @@ class Schedule extends Model
 
         $dateNow = Carbon::now();
         $dateFinal = Carbon::parse($this->deposit_final_date);
+
         //can't put installments on expired schedules
         return !$dateNow->isAfter($dateFinal);
     }
 
     public function getInstallmentPeriods(): array
     {
-        $data = [];
+        $periods = [];
         if ($this->service->service_type_id === 'bespoke') {
-            $data[] = $this->deposit_instalments;
+            $periods[] = $this->deposit_instalments;
         } else {
-            $dateNow = Carbon::now();
-            $dateFinal = Carbon::parse($this->deposit_final_date);
-            $daysDiff = $dateNow->diffInDays($dateFinal);
-            $periods = (int)($daysDiff / 14);
-            for ($i = 1; $i <= $periods; $i++) {
-                $data[] += $i;
-            }
+            $periods = range(
+                1,
+                intdiv(
+                    Carbon::parse($this->deposit_final_date)->diffInDays(Carbon::now()),
+                    self::DEPOSIT_DELAY
+                )
+                + 1
+            );
         }
-        return $data;
+
+        return $periods;
     }
 
     public function calculateInstallmentsCalendar($amount, int $periods = 1): array
     {
-        $data = [];
+        $calendar = [];
         $installmentInfo = $this->getInstallmentInfo($amount, $periods);
         if ($installmentInfo !== null) {
-            $daysPerPeriod = $installmentInfo['daysPerPeriod'];
-            $amountPerPeriod = $installmentInfo['amountPerPeriod'];
+            /** @var Carbon $depositFinalDate */
             $depositFinalDate = $installmentInfo['finalPaymentDate'];
-            $currentDate = Carbon::now();
-            $currentDate->addDays($daysPerPeriod);
-            while ($currentDate <= $depositFinalDate) {
-                $date = $currentDate->format('d.m.Y');
-                $data[$date] = round($amountPerPeriod, 2);
-                $currentDate->addDays($daysPerPeriod);
+            $amountPerPeriod = round($installmentInfo['amountPerPeriod'], 2);
+            $p = $depositFinalDate;
+            while ($p->isFuture() && $periods > 0) {
+                $calendar[$p->format('d.m.Y')] = $amountPerPeriod;
+                $p = $depositFinalDate->subDays(self::DEPOSIT_DELAY);
+                $periods--;
             }
         }
-        return $data;
+
+        return $calendar;
     }
 
     public function getInstallmentInfo($amount, int $periods = 1): ?array
@@ -442,24 +449,34 @@ class Schedule extends Model
             $depositInitialValue = $this->deposit_amount;
             $furtherPayments = $amount - $depositInitialValue;
             if ($furtherPayments > 0) {
-                $currentDate = Carbon::now();
                 if ($this->service->service_type_id === 'bespoke') {
+                    $currentDate = Carbon::now();
                     $daysPerPeriod = $this->deposit_instalment_frequency;
-                    $depositFinalDate = $currentDate->addDays($daysPerPeriod * ($periods + 1));
+                    $depositStartDate = $depositFinalDate = $currentDate->addDays($daysPerPeriod * ($periods + 1));
                 } else {
-                    $depositFinalDate = Carbon::parse($this->deposit_final_date)->setTimezone('UTC');
-                    $daysDiff = $depositFinalDate->diffInDays($currentDate);
-                    $daysPerPeriod = intdiv($daysDiff, $periods);
+                    $depositFinalDate = $this->deposit_final_date;
+                    $installmentPeriods = $periods;
+                    $date = Carbon::createFromFormat("Y-m-d H:i:s", $this->deposit_final_date)
+                        ->setTimezone('UTC');
+                    $calendar = [];
+                    while ($date->isFuture() && $installmentPeriods > 0) {
+                        $calendar[] = $date->toDateString();
+                        $date = $date->subDays(self::DEPOSIT_DELAY);
+                        $installmentPeriods--;
+                    }
+                    $depositStartDate = Carbon::parse(end($calendar));
+                    $daysPerPeriod = self::DEPOSIT_DELAY;
                 }
                 $amountPerPeriod = (float)($furtherPayments / $periods);
                 $result = [
                     'daysPerPeriod' => $daysPerPeriod,
                     'amountPerPeriod' => $amountPerPeriod,
-                    'startPaymentDate'=>$depositFinalDate->subDays( $daysPerPeriod * ($periods + 1)),
+                    'startPaymentDate' => $depositStartDate,
                     'finalPaymentDate' => $depositFinalDate
                 ];
             }
         }
+
         return $result;
     }
 }

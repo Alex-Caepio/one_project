@@ -142,7 +142,6 @@ class PurchaseInstallment
         $practitioner = $schedule->service->practitioner;
         $client = $booking->user;
 
-
         if (count($calendarInstallments) === 0) {
             return null;
         }
@@ -163,6 +162,7 @@ class PurchaseInstallment
                 'default_payment_method' => $paymentMethodId,
                 'customer' => $customer->stripe_customer_id,
                 'cancel_at' => $finalInstallmentDate->timestamp,
+                'start_date' => $installmentInfo['startPaymentDate']->timestamp,
                 'items' => [
                     [
                         'price' => $stripePrice->id,
