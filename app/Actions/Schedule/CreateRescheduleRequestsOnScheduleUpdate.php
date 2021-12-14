@@ -4,7 +4,6 @@ namespace App\Actions\Schedule;
 
 use App\Events\ServiceUpdatedByPractitionerContractual;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Http\Request;
 use App\Models\Booking;
 use App\Models\RescheduleRequest;
 use App\Models\Schedule;
@@ -41,26 +40,16 @@ class CreateRescheduleRequestsOnScheduleUpdate
                     'schedule_id' => $booking->schedule_id,
                     'new_schedule_id' => $this->schedule->id,
                     'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                    'requested_by' => 'practitioner'
+                    'requested_by' => 'practitioner',
+                    'old_location_displayed' => $this->schedule->getOriginal('location_displayed'),
+                    'new_location_displayed' => $this->changesList['location_displayed'] ?? null,
+                    'old_start_date'=> $this->schedule->getOriginal('start_date'),
+                    'new_start_date' => $this->schedule->start_date,
+                    'old_end_date' => $this->schedule->getOriginal('end_date'),
+                    'new_end_date' => $this->schedule->end_date,
+                    'old_url' => $this->schedule->getOriginal('url'),
+                    'new_url' => $this->schedule->url,
                 ];
-            }
-
-            if ($this->locationHasChanged() && isset($this->changesList['location_displayed'])) {
-                foreach ($rescheduleRequests as $key => $reschedule) {
-                    $rescheduleRequests[$key]['old_location_displayed'] = $this->schedule->getOriginal(
-                        'location_displayed'
-                    );
-                    $rescheduleRequests[$key]['new_location_displayed'] = $this->changesList['location_displayed'];
-                }
-            }
-
-            if ($this->dateHasChanged()) {
-                foreach ($rescheduleRequests as $key => $reschedule) {
-                    $rescheduleRequests[$key]['old_start_date'] = $this->schedule->getOriginal('start_date');
-                    $rescheduleRequests[$key]['new_start_date'] = $this->schedule->start_date;
-                    $rescheduleRequests[$key]['old_end_date'] = $this->schedule->getOriginal('end_date');
-                    $rescheduleRequests[$key]['new_end_date'] = $this->schedule->end_date;
-                }
             }
             // without events handler
             RescheduleRequest::insert($rescheduleRequests);

@@ -283,10 +283,6 @@ class EmailVariables
      */
     private function getEventEndDate(): ?string
     {
-        if (isset($this->event->booking)) {
-            return $this->event->booking->datetime_to;
-        }
-
         if (isset($this->event->schedule)) {
             return $this->event->schedule->end_date;
         }
