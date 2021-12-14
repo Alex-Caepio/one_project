@@ -62,7 +62,7 @@ Route::post('auth/forgot-password-claim', [ResetPasswordController::class, 'clai
     ->name('claim-reset');
 Route::post('auth/resend-verification', [AuthController::class, 'resendVerification']);
 
-Route::middleware(['stripe'])->group(function() {
+Route::middleware(['stripe'])->group(function () {
     Route::match(['post', 'get'], '/stripe-webhook', [StripeWebhookController::class, 'handler']);
 });
 
@@ -96,7 +96,7 @@ Route::get('/search', [SearchController::class, 'index']);
 Route::get('/latest-two', [LatestTwoController::class, 'index']);
 Route::get('/practitioners/{user}', [UserController::class, 'show']);
 
-Route::middleware(['auth:reschedule-token'])->group(function() {
+Route::middleware(['auth:reschedule-token'])->group(function () {
     Route::match(['post', 'get'], '/accept_reschedule/{rescheduleRequest}', [EmailLinkHandlerController::class, 'acceptReschedule']);
     Route::match(['post', 'get'], '/decline_reschedule/{rescheduleRequest}', [EmailLinkHandlerController::class, 'declineReschedule']);
 });
@@ -157,7 +157,6 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
 
         Route::get('/services/{service}/practitioner-schedules', [ScheduleController::class, 'ownerScheduleList']);
         Route::post('/services/{service}/schedules', [ScheduleController::class, 'store']);
-
     });
 
     Route::post('/articles/{article}/favourite', [ArticleController::class, 'storeFavorite']);
@@ -267,6 +266,4 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::post('/notifications/{notification}/mark-as-read', [NotificationController::class, 'markAsRead']);
 
     Route::get('/installments/{purchase}', [InstallmentController::class, 'getInstallments']);
-
-
 });

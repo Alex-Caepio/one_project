@@ -279,6 +279,13 @@ class Schedule extends Model
             $changes['comments'],
             $changes['title'],
             $changes['attendees'],
+            $changes['meals_alcoholic_beverages'],
+            $changes['meals_breakfast'],
+            $changes['meals_dietry_accomodated'],
+            $changes['meals_dinner'],
+            $changes['meals_lunch'],
+            $changes['url'],
+
         );
         return count($changes) > 0;
     }
@@ -294,11 +301,17 @@ class Schedule extends Model
             } else {
                 // Unset, because another event will be fired for Reschedule Request
                 unset(
-                    $changes['end_date'], $changes['start_date'], $changes['location_id'], $changes['venue'], $changes['city'], $changes['country_id']
+                    $changes['end_date'],
+                    $changes['start_date'],
+                    $changes['location_id'],
+                    $changes['venue'],
+                    $changes['city'],
+                    $changes['country_id'],
                 );
                 $result = count($changes) > 0;
             }
         }
+
         return $result;
     }
 
@@ -363,9 +376,9 @@ class Schedule extends Model
             ->count();
         $freezed =
             ScheduleFreeze::query()
-                ->where('schedule_id', $this->id)
-                ->where('freeze_at', '>', $time->toDateTimeString())
-                ->count();
+            ->where('schedule_id', $this->id)
+            ->where('freeze_at', '>', $time->toDateTimeString())
+            ->count();
         $available = (int)$this->attendees - ($purchased + $freezed - $personalFreezed);
         return $available < 0 ? 0 : $available;
     }
@@ -449,5 +462,4 @@ class Schedule extends Model
         }
         return $result;
     }
-
 }
