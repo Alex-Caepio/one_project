@@ -434,7 +434,7 @@ class Schedule extends Model
                     $daysPerPeriod = $this->deposit_instalment_frequency;
                     $depositFinalDate = $currentDate->addDays($daysPerPeriod * ($periods + 1));
                 } else {
-                    $depositFinalDate = Carbon::parse($this->deposit_final_date);
+                    $depositFinalDate = Carbon::parse($this->deposit_final_date)->setTimezone('UTC');
                     $daysDiff = $depositFinalDate->diffInDays($currentDate);
                     $daysPerPeriod = intdiv($daysDiff, $periods);
                 }
@@ -442,6 +442,7 @@ class Schedule extends Model
                 $result = [
                     'daysPerPeriod' => $daysPerPeriod,
                     'amountPerPeriod' => $amountPerPeriod,
+                    'startPaymentDate'=>$depositFinalDate->subDays( $daysPerPeriod * ($periods + 1)),
                     'finalPaymentDate' => $depositFinalDate
                 ];
             }

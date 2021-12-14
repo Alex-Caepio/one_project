@@ -33,7 +33,7 @@ class PurchaseInstallment
         $deposit = $this->chargeDeposit($paymentMethodId, $stripe, $schedule, $customer->id, $purchase->id, $booking);
         $subscription = $this->chargeInstallment(
             $paymentMethodId,
-            $cost - $schedule->deposit_amount,
+            $cost,
             $request->installments,
             $schedule,
             $purchase,
@@ -88,7 +88,7 @@ class PurchaseInstallment
                 'customer' => Auth::user()->stripe_customer_id,
                 'payment_method' => $paymentMethodId,
                 'metadata' => [
-                    'intents'=>true,
+                    'intents' => true,
                     'Practitioner business email' => $practitioner->business_email,
                     'Practitioner business name' => $practitioner->business_name,
                     'Practitioner stripe id' => $practitioner->stripe_customer_id,
