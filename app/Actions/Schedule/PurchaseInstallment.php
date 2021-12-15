@@ -27,10 +27,11 @@ class PurchaseInstallment
         Purchase $purchase,
         Booking $booking
     ): PaymentIntentDto {
+        $metadata = $this->collectMetadata($schedule, $booking);
         /** @var User $customer */
         $customer = $request->user();
         $stripe = app()->make(StripeClient::class);
-        $deposit = $this->chargeDeposit($paymentMethodId, $stripe, $schedule, $customer->id, $purchase->id, $booking);
+        $deposit = $this->chargeDeposit($paymentMethodId, $stripe, $schedule, $customer->id, $purchase->id, $metadata);
         $subscription = $this->chargeInstallment(
             $paymentMethodId,
             $cost,
@@ -39,7 +40,7 @@ class PurchaseInstallment
             $purchase,
             $customer,
             $stripe,
-            $booking
+            $metadata
         );
 
         $purchase->stripe_id = $deposit->id;
@@ -74,11 +75,9 @@ class PurchaseInstallment
         Schedule $schedule,
         int $customerId,
         int $purchaseId,
-        Booking $booking
+        array $metadata
     ): PaymentIntent {
         $depositAmount = $schedule->deposit_amount;
-        $practitioner = $schedule->service->practitioner;
-        $client = $booking->user;
 
         $paymentIntent = $stripe->paymentIntents->create(
             [
@@ -87,17 +86,7 @@ class PurchaseInstallment
                 'payment_method_types' => ['card'],
                 'customer' => Auth::user()->stripe_customer_id,
                 'payment_method' => $paymentMethodId,
-                'metadata' => [
-                    'intents' => true,
-                    'Practitioner business email' => $practitioner->business_email,
-                    'Practitioner business name' => $practitioner->business_name,
-                    'Practitioner stripe id' => $practitioner->stripe_customer_id,
-                    'Practitioner connected account id' => $practitioner->stripe_account_id,
-                    'Client first name' => $client->first_name,
-                    'Client last name' => $client->last_name,
-                    'Client stripe id' => $client->stripe_customer_id,
-                    'Booking reference' => $booking->reference
-                ]
+                'metadata' => $metadata,
             ]
         );
 
@@ -135,12 +124,10 @@ class PurchaseInstallment
         Purchase $purchase,
         User $customer,
         StripeClient $stripe,
-        Booking $booking
+        array $metadata
     ): ?Subscription {
         $calendarInstallments = $schedule->calculateInstallmentsCalendar($cost, $installments);
         $installmentInfo = $schedule->getInstallmentInfo($cost, $installments);
-        $practitioner = $schedule->service->practitioner;
-        $client = $booking->user;
 
         if (count($calendarInstallments) === 0) {
             return null;
@@ -166,18 +153,10 @@ class PurchaseInstallment
                 'items' => [
                     [
                         'price' => $stripePrice->id,
-                        'metadata' => [
-                            'Practitioner business email' => $practitioner->business_email,
-                            'Practitioner business name' => $practitioner->business_name,
-                            'Practitioner stripe id' => $practitioner->stripe_customer_id,
-                            'Practitioner connected account id' => $practitioner->stripe_account_id,
-                            'Client first name' => $client->first_name,
-                            'Client last name' => $client->last_name,
-                            'Client stripe id' => $client->stripe_customer_id,
-                            'Booking reference' => $booking->reference
-                        ]
+                        'metadata' => $metadata
                     ],
                 ],
+                'metadata' => $metadata
             ]
         );
 
@@ -204,5 +183,23 @@ class PurchaseInstallment
             ]);
 
         return $subscription;
+    }
+
+
+    private function collectMetadata(Schedule $schedule, Booking $booking): array
+    {
+        $practitioner = $schedule->service->practitioner;
+        $client = $booking->user;
+
+        return [
+            'Practitioner business email' => $practitioner->business_email ?? "",
+            'Practitioner business name' => $practitioner->business_name ?? "",
+            'Practitioner stripe id' => $practitioner->stripe_customer_id ?? "",
+            'Practitioner connected account id' => $practitioner->stripe_account_id ?? "",
+            'Client first name' => $client->first_name ?? "",
+            'Client last name' => $client->last_name ?? "",
+            'Client stripe id' => $client->stripe_customer_id ?? "",
+            'Booking reference' => $booking->reference ?? ""
+        ];
     }
 }

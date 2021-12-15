@@ -155,7 +155,6 @@ class PurchaseController extends Controller
             }
 
             if ($cost && !$price->is_free) {
-                Log::debug('Payment _' . ($isInstallment ? 'installment' : 'regular') . '_ with cost ' . $cost);
                 $paymentIntentData = $isInstallment
                     ? $this->payInInstallments($request, $schedule, $price, $practitioner, $cost, $purchase, $booking)
                     : $this->payInstant($request, $schedule, $price, $stripe, $purchase, $practitioner);
@@ -452,4 +451,5 @@ class PurchaseController extends Controller
 
         return array_merge($purchaseData, $paymentIntentData->toArray());
     }
+
 }

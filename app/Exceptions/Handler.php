@@ -14,7 +14,8 @@ use ReflectionException;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
-class Handler extends ExceptionHandler {
+class Handler extends ExceptionHandler
+{
     /**
      * A list of the exception types that are not reported.
      *
@@ -37,6 +38,8 @@ class Handler extends ExceptionHandler {
         if (app()->bound('sentry') && $this->shouldReport($e)) {
             app('sentry')->captureException($e);
         }
+
+        parent::report($e);
     }
 
     /**
@@ -48,8 +51,8 @@ class Handler extends ExceptionHandler {
      *
      * @throws ReflectionException
      */
-    public function render($request, Throwable $e) {
-
+    public function render($request, Throwable $e)
+    {
         if (method_exists($e, 'render') && $response = $e->render($request)) {
             return Router::toResponse($request, $response);
         }
