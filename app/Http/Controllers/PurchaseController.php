@@ -156,7 +156,7 @@ class PurchaseController extends Controller
 
             if ($cost && !$price->is_free) {
                 $paymentIntentData = $isInstallment
-                    ? $this->payInInstallments($request, $schedule, $price, $practitioner, $cost, $purchase)
+                    ? $this->payInInstallments($request, $schedule, $price, $practitioner, $cost, $purchase, $booking)
                     : $this->payInstant($request, $schedule, $price, $stripe, $purchase, $practitioner);
             }
 
@@ -214,7 +214,8 @@ class PurchaseController extends Controller
         Price $price,
         User $practitioner,
         $cost,
-        Purchase $purchase
+        Purchase $purchase,
+        Booking $booking
     ): PaymentIntentDto {
         $payment_method_id = run_action(GetViablePaymentMethod::class, $practitioner, $request->payment_method_id);
         $depositCost = $schedule->deposit_amount * 100 * $request->amount;
@@ -226,7 +227,8 @@ class PurchaseController extends Controller
                 $request,
                 $payment_method_id,
                 $cost,
-                $purchase
+                $purchase,
+                $booking
             );
         } catch (ApiErrorException $e) {
             Log::channel('stripe_installment_fail')
@@ -449,4 +451,5 @@ class PurchaseController extends Controller
 
         return array_merge($purchaseData, $paymentIntentData->toArray());
     }
+
 }

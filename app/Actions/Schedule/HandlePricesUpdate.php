@@ -85,7 +85,10 @@ class HandlePricesUpdate
 
     protected function updatePrices(iterable $prices): void
     {
-        $pricesToUpdate = Price::whereIn('id', $prices->pluck('id'))->get()->keyBy('id');
+        $pricesToUpdate = Price::query()
+            ->whereIn('id', $prices->pluck('id'))
+            ->get()
+            ->keyBy('id');
 
         foreach ($prices as $price) {
             $this->stripe->prices->update($pricesToUpdate[$price['id']]->stripe_id, ['active' => false]);
