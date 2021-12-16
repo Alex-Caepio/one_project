@@ -11,7 +11,6 @@ use Carbon\Carbon;
 
 class CreateRescheduleRequestsOnScheduleUpdate
 {
-
     private Schedule $schedule;
     private array $changesList;
 
@@ -43,7 +42,7 @@ class CreateRescheduleRequestsOnScheduleUpdate
                     'requested_by' => 'practitioner',
                     'old_location_displayed' => $this->schedule->getOriginal('location_displayed'),
                     'new_location_displayed' => $this->changesList['location_displayed'] ?? null,
-                    'old_start_date'=> $this->schedule->getOriginal('start_date'),
+                    'old_start_date' => $this->schedule->getOriginal('start_date'),
                     'new_start_date' => $this->schedule->start_date,
                     'old_end_date' => $this->schedule->getOriginal('end_date'),
                     'new_end_date' => $this->schedule->end_date,
@@ -63,8 +62,8 @@ class CreateRescheduleRequestsOnScheduleUpdate
         return $this->schedule->service->service_type === 'appointment'
             ? $this->schedule->getOutsiderBookings()
             : Booking::where('schedule_id', $this->schedule->id)
-                ->whereNotIn('status', ['completed', 'canceled'])
-                ->get();
+            ->whereNotIn('status', ['completed', 'canceled'])
+            ->get();
     }
 
 
@@ -86,5 +85,4 @@ class CreateRescheduleRequestsOnScheduleUpdate
             || isset($this->changesList['country_id'])
             || isset($this->changesList['location_displayed']);
     }
-
 }

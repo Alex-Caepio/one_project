@@ -11,7 +11,6 @@ use App\Models\Schedule;
 
 class ScheduleObserver
 {
-
     /**
      * Handle the article "updated" event.
      *
@@ -44,13 +43,14 @@ class ScheduleObserver
     public function updated(Schedule $schedule)
     {
         $hasContractualChanges = $schedule->hasContractualChanges();
-        if (in_array($schedule->service->service_type_id, ['workshop', 'events', 'retreat'])
-            && $hasContractualChanges) {
+        if (
+            in_array($schedule->service->service_type_id, ['workshop', 'events', 'retreat'])
+            && $hasContractualChanges
+        ) {
             run_action(CreateRescheduleRequestsOnScheduleUpdate::class, $schedule);
         }
         if ($schedule->hasNonContractualChanges() && !$hasContractualChanges) {
             event(new ServiceUpdatedByPractitionerNonContractual($schedule));
         }
     }
-
 }

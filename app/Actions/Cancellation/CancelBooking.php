@@ -1,15 +1,14 @@
 <?php
 
-
 namespace App\Actions\Cancellation;
 
 use App\Events\BookingCancelledByPractitioner;
 use App\Events\BookingCancelledByClient;
+use App\Events\ContractualServiceUpdateDeclinedBookingCancelled;
 use App\Models\Booking;
 use App\Models\Cancellation;
 use App\Models\Notification;
 use App\Models\RescheduleRequest;
-use App\Models\Transfer;
 use App\Models\User;
 use Carbon\Carbon;
 use Exception;
@@ -69,18 +68,21 @@ class CancelBooking
             ]);
 
         $rescheduleRequest = RescheduleRequest::where('booking_id', $booking->id)->first();
+
         if ($rescheduleRequest) {
             $isAmendment = $rescheduleRequest->isAmendment();
         } else {
             $isAmendment = false;
         }
-        RescheduleRequest::where('booking_id', $booking->id)->delete();
+
+        $rescheduleRequest->delete();
 
         if ($refundData['refundTotal'] > 0) {
             try {
                 $paymentIntent = $this->stripe->paymentIntents->retrieve($booking->purchase->stripe_id);
 
                 $stripeRefundData = ['payment_intent' => $paymentIntent->id];
+
                 if ($refundData['isFullRefund']) {
                     $stripeRefundData['amount'] = $refundData['refundSmallestUnit'];
                 }
@@ -183,7 +185,9 @@ class CancelBooking
 
         $notification->save();
 
-        if ($actionRole === User::ACCOUNT_CLIENT) {
+        if ($declineRescheduleRequest) {
+            event(new ContractualServiceUpdateDeclinedBookingCancelled($booking));
+        } else if ($actionRole === User::ACCOUNT_CLIENT) {
             event(new BookingCancelledByClient($booking, $cancellation));
         } else {
             event(new BookingCancelledByPractitioner($booking));
@@ -209,7 +213,6 @@ class CancelBooking
         return $invoices;
     }
 
-
     private function calculateRefundValue(string $actionRole, Booking $booking, bool $declineRescheduleRequest): array
     {
         $result = [
@@ -225,7 +228,7 @@ class CancelBooking
         if ($actionRole === User::ACCOUNT_PRACTITIONER || $declineRescheduleRequest === true) {
             $practitionerCommissionOnSale = $booking->practitioner->getCommission();
             $result['isFullRefund'] = true;
-            $result['refundTotal'] = $booking->cost - $practitionerCommissionOnSale * 100 / $booking->cost ;
+            $result['refundTotal'] = $booking->cost - $practitionerCommissionOnSale * 100 / $booking->cost;
             $result['practitionerFee'] = round(($booking->cost / 100) * $hostFee);
         } else {
             $result['isFullRefund'] = false;
@@ -251,5 +254,4 @@ class CancelBooking
 
         return $result;
     }
-
 }

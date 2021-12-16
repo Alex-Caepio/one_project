@@ -18,3 +18,4 @@ npm-debug.log
 yarn-error.log
 Dockerfile.local
 config/local.conf
+config/vhost.local

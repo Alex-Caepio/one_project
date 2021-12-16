@@ -29,19 +29,23 @@ class RescheduleRequest extends Model
         'noreply_sent',
     ];
 
-    public function old_schedule(){
+    public function old_schedule()
+    {
         return $this->belongsTo(Schedule::class, 'schedule_id');
     }
 
-    public function new_schedule(){
+    public function new_schedule()
+    {
         return $this->belongsTo(Schedule::class, 'new_schedule_id');
     }
 
-    public function user(){
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
 
-    public function booking(){
+    public function booking()
+    {
         return $this->belongsTo(Booking::class);
     }
 
@@ -50,11 +54,13 @@ class RescheduleRequest extends Model
         return $this->belongsTo(Schedule::class);
     }
 
-    public function old_price() {
+    public function old_price()
+    {
         return $this->belongsTo(Price::class, 'old_price_id');
     }
 
-    public function isAmendment(): bool {
+    public function isAmendment(): bool
+    {
         return $this->schedule_id === $this->new_schedule_id;
     }
 }
