@@ -1,20 +1,18 @@
 <?php
 
-
 namespace App\Actions\RescheduleRequest;
 
 use App\Actions\Cancellation\CancelBooking;
 use App\Events\RescheduleRequestDeclinedByClient;
-use App\Models\Booking;
 use App\Models\Notification;
 use App\Models\RescheduleRequest;
-use App\Models\Schedule;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
-class RescheduleRequestDecline {
-
-    public function execute(RescheduleRequest $rescheduleRequest): void {
+class RescheduleRequestDecline
+{
+    public function execute(RescheduleRequest $rescheduleRequest): void
+    {
         event(new RescheduleRequestDeclinedByClient($rescheduleRequest));
 
         // declined by client of the booking

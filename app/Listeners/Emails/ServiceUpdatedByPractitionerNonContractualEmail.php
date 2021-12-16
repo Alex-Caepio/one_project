@@ -7,7 +7,6 @@ use App\Models\Booking;
 
 class ServiceUpdatedByPractitionerNonContractualEmail extends SendEmailHandler
 {
-
     public function handle(ServiceUpdatedByPractitionerNonContractual $event): void
     {
         $this->templateName = 'Service Updated by Practitioner (Non-Contractual)';
