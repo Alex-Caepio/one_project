@@ -76,9 +76,9 @@ class ScheduleTransformer extends Transformer
             'deposit_amount'               => $schedule->deposit_amount,
             'deposit_instalments'          => $schedule->deposit_instalments,
             'deposit_instalment_frequency' => $schedule->deposit_instalment_frequency,
-            'deposit_final_date'           => $schedule->deposit_final_date ? Carbon::parse(
-                $schedule->deposit_final_date
-            ) : null,
+            'deposit_final_date'           => $schedule->deposit_final_date
+                ? Carbon::parse($schedule->deposit_final_date)->setTime(0,0)
+                : null,
             'booking_message'              => $schedule->booking_message,
             'url'                          => $schedule->url,
             'book_full_series'             => $schedule->book_full_series,
