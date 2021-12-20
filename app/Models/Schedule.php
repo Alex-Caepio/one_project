@@ -379,9 +379,9 @@ class Schedule extends Model
             ->count();
         $freezed =
             ScheduleFreeze::query()
-                ->where('schedule_id', $this->id)
-                ->where('freeze_at', '>', $time->toDateTimeString())
-                ->count();
+            ->where('schedule_id', $this->id)
+            ->where('freeze_at', '>', $time->toDateTimeString())
+            ->count();
         $available = (int)$this->attendees - ($purchased + $freezed - $personalFreezed);
 
         return $available < 0 ? 0 : $available;
@@ -416,7 +416,7 @@ class Schedule extends Model
                     Carbon::parse($this->deposit_final_date)->diffInDays(Carbon::now()),
                     self::DEPOSIT_DELAY
                 )
-                + 1
+                    + 1
             );
         }
 
