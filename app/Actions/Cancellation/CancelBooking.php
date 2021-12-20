@@ -32,7 +32,7 @@ class CancelBooking
         Booking $booking,
         bool $declineRescheduleRequest = false,
         ?string $roleFromRequest = null,
-        ?bool $cancelledByPractitioner = null
+        ?bool $cancelledByPractitioner = false
     ) {
         if (!$booking->isActive()) {
             return;
