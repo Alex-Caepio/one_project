@@ -83,7 +83,7 @@ class CancelBooking
 
                 $stripeRefundData = ['payment_intent' => $paymentIntent->id];
 
-                if ($refundData['isFullRefund']) {
+                if (!$refundData['isFullRefund']) {
                     $stripeRefundData['amount'] = $refundData['refundSmallestUnit'];
                 }
 
@@ -239,7 +239,7 @@ class CancelBooking
             $result['isFullRefund'] = true;
             $result['refundTotal'] = $booking->cost;
             $result['practitionerFee'] = round(($booking->cost / 100) * $hostFee);
-        } else {
+        } else { // cancelled by client
             $result['isFullRefund'] = false;
             $isDateless = $booking->schedule->service->isDateless();
             $bookingDate = $isDateless ? Carbon::parse($booking->created_at) : Carbon::parse($booking->datetime_from);
