@@ -1,4 +1,4 @@
-FROM php:8.1.1-apache
+FROM php:7.4.27-apache
 
 ENV SUPERCRONIC_URL=https://github.com/aptible/supercronic/releases/download/v0.1.12/supercronic-linux-386 \
     SUPERCRONIC=supercronic-linux-386 \
