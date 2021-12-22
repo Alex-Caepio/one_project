@@ -15,17 +15,18 @@ class GetAvailableAppointmentTimeOnDate
     public const STEP = '15 minutes';
     public const STEP_VALUE = '15';
 
-    public function execute(Price $price, string $date, string $timezone) : array
+    public function execute(Price $price, string $date, string $timezone): array
     {
         $schedule = $price->schedule;
 
         /* @ScheduleAvailabilities */
         $availabilities = $this->getAvailabilitiesMatchingDate($date, $schedule);
-        $periods        = $this->availabilitiesToCarbonPeriod($date, $availabilities);
-        $excludedTimes  = $this->getExcludedTimes($schedule, $date, $schedule->buffer_time, $price->duration ?? 0);
+        $periods = $this->availabilitiesToCarbonPeriod($date, $availabilities);
+        $excludedTimes = $this->getExcludedTimes($schedule, $date, $schedule->buffer_time, $price->duration ?? 0);
 
         $this->excludeTimes($periods, $excludedTimes);
         $flatTimes = $this->toTimes($periods, $timezone);
+
         return array_unique($flatTimes);
     }
 
@@ -48,7 +49,7 @@ class GetAvailableAppointmentTimeOnDate
     protected function getAvailabilitiesMatchingDate($date, $schedule)
     {
         $convertedDay = mb_strtolower(Carbon::parse($date)->isoFormat('dddd'));
-        $days         = $this->getMatchingDays($convertedDay);
+        $days = $this->getMatchingDays($convertedDay);
 
         return $schedule->schedule_availabilities()->whereIn('days', $days)->get();
     }
@@ -64,7 +65,7 @@ class GetAvailableAppointmentTimeOnDate
             }
 
             $from = $this->roundMinutes(Carbon::parse("{$date} {$startTime}"));
-            $to   = $this->roundMinutes(Carbon::parse("{$date} {$availability->end_time}"));
+            $to = $this->roundMinutes(Carbon::parse("{$date} {$availability->end_time}"));
 
             if ($from > $to) {
                 continue;
@@ -97,10 +98,13 @@ class GetAvailableAppointmentTimeOnDate
 
         // exclude today past
         $now = Carbon::now();
+        $excludedTimes = [];
 
-        if ($now->format('Y-m-d') === $date) {
-
-            $excludedTimes[] = ['from' => Carbon::now()->startOfDay()->addSecond(), 'to' => $now->addMinutes($buffer)->subSecond()];
+        if ($now->isToday()) {
+            $excludedTimes[] = [
+                'from' => Carbon::now()->startOfDay()->addSecond(),
+                'to' => $now->addMinutes($buffer)->subSecond()
+            ];
         }
 
         $bookings = Booking::whereIn('schedule_id', $scheduleIds)
@@ -117,18 +121,17 @@ class GetAvailableAppointmentTimeOnDate
             ->where('freeze_at', '>', Carbon::now()->subMinutes(15)->toDateTimeString())
             ->get();
 
-        $excludedTimes = [];
         foreach ($bookings as $booking) {
             $excludedTimes[] = [
                 'from' => Carbon::parse($booking->datetime_from)->subMinutes($buffer + $duration)->addSecond(),
-                'to'   => Carbon::parse($booking->datetime_to)->addMinutes($buffer)->subSecond()
+                'to' => Carbon::parse($booking->datetime_to)->addMinutes($buffer)->subSecond()
             ];
         }
 
         foreach ($unavailabilities as $unavailability) {
             $excludedTimes[] = [
                 'from' => Carbon::parse($unavailability->start_date)->subMinutes($duration)->addSecond(),
-                'to'   => Carbon::parse($unavailability->end_date)->subSecond()
+                'to' => Carbon::parse($unavailability->end_date)->subSecond()
             ];
         }
 
@@ -136,16 +139,17 @@ class GetAvailableAppointmentTimeOnDate
         foreach ($globalUnavailabilities as $unavailability) {
             $excludedTimes[] = [
                 'from' => Carbon::parse($unavailability->start_date)->subMinutes($duration)->addSecond(),
-                'to'   => Carbon::parse($unavailability->end_date)->subSecond()
+                'to' => Carbon::parse($unavailability->end_date)->subSecond()
             ];
         }
 
         foreach ($frozenBookings as $frozenBooking) {
             $excludedTimes[] = [
                 'from' => Carbon::parse($frozenBooking->freeze_at)->subMinutes($duration)->addSecond(),
-                'to'   => Carbon::parse($frozenBooking->freeze_at)->addMinutes(15)->subSecond()
+                'to' => Carbon::parse($frozenBooking->freeze_at)->addMinutes(15)->subSecond()
             ];
         }
+
 
         return $excludedTimes;
     }
@@ -165,9 +169,11 @@ class GetAvailableAppointmentTimeOnDate
     }
 
 
-    protected function roundMinutes(Carbon $date) {
+    protected function roundMinutes(Carbon $date)
+    {
         $s = self::STEP_VALUE * 60;
         $date->setTimestamp($s * ceil($date->getTimestamp() / $s));
+
         return $date;
     }
 }
