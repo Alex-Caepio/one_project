@@ -8,6 +8,7 @@ use App\Events\ServiceScheduleCancelled;
 use App\Events\ServiceScheduleLive;
 use App\Events\ServiceUpdatedByPractitionerNonContractual;
 use App\Models\Schedule;
+use App\Models\Service;
 
 class ScheduleObserver
 {
@@ -44,12 +45,15 @@ class ScheduleObserver
     {
         $hasContractualChanges = $schedule->hasContractualChanges();
         if (
-            in_array($schedule->service->service_type_id, ['workshop', 'events', 'retreat'])
+            in_array($schedule->service->service_type_id, [Service::TYPE_WORKSHOP, Service::TYPE_EVENT, Service::TYPE_RETREAT])
             && $hasContractualChanges
         ) {
             run_action(CreateRescheduleRequestsOnScheduleUpdate::class, $schedule);
         }
-        if ($schedule->hasNonContractualChanges() && !$hasContractualChanges) {
+        if ($schedule->hasNonContractualChanges()
+            && !$hasContractualChanges
+            && !in_array($schedule->service->service_type->id, [Service::TYPE_BESPOKE])
+        ) {
             event(new ServiceUpdatedByPractitionerNonContractual($schedule));
         }
     }
