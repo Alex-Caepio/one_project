@@ -42,7 +42,7 @@ class BookingDeposit
         if ($this->schedule->appointment === 'virtual' || !$this->schedule->appointment) {
             return $this->service->isDateLess()
                 ? 'Booking Confirmation - DateLess Virtual With Deposit'
-                : 'Booking Confirmation - Date Physical With Deposit';
+                : 'Booking Confirmation - Event Virtual With Deposit';
         }
 
         return null;
