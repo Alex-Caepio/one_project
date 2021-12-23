@@ -1,0 +1,66 @@
+pipeline{
+    environment{
+        projectName = "oneness-backend"
+        workingEnv = "dev"
+        registryName = "214053718704.dkr.ecr.eu-west-2.amazonaws.com"
+        registryURL = "https://214053718704.dkr.ecr.eu-west-2.amazonaws.com"
+        registryCredentials = "oneness-ecr-creds"
+        AWSregion = "eu-west-2"
+    }
+
+    agent{
+        label "master"
+    }
+
+    stages{
+
+        stage("Build docker image"){
+            steps{
+                configFileProvider([configFile(fileId: 'oneness_envconfig_prod', targetLocation: '.env')]){
+                    script{
+                        dockerImage = docker.build("$registryName/$projectName:$workingEnv", "-f ./Dockerfile.stage ./")
+                    }
+                }
+            }
+        }
+
+        stage("Deploy docker image to AWS ECR"){
+            steps{
+                withAWS(credentials: "$registryCredentials", region: "$AWSregion") {
+                    sh 'aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin 214053718704.dkr.ecr.eu-west-2.amazonaws.com'
+                    sh 'docker push "$registryName/$projectName:$workingEnv"'
+                }
+
+//                script{
+//                    docker.withRegistry("$registryURL","ecr:$AWSregion:$registryCredentials"){
+//                       dockerImage.push()
+//                    }
+//                }
+            }
+        }
+
+        stage("Clean from docker images"){
+            steps{
+                sh '''docker rmi -f $(docker images --filter=reference="$registryName/$projectName" -q) >/dev/null 2>&1'''
+            }
+        }
+
+        stage('ECS Service update') {
+            steps {
+                withAWS(credentials: "$registryCredentials", region: "$AWSregion") {
+                    sh '''aws ecs update-service --cluster stage-app --service back --task-definition backend-prod --force-new-deployment
+                    aws ecs update-service --cluster stage-app --service back-cron --task-definition back-artisan-stage:5 --force-new-deployment
+                    aws ecs run-task --cluster stage-app --count 1 --launch-type EC2 --task-definition back-artisan-stage:4'''
+                }
+            }
+        }
+    }
+    post{
+        success{
+            cleanWs()
+        }
+        failure{
+            echo "========pipeline execution failed========"
+        }
+    }
+}
