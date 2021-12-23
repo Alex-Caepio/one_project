@@ -37,6 +37,12 @@ class Service extends Model
 {
     use SoftDeletes, HasFactory, PublishedScope;
 
+    public const TYPE_APPOINTMENT = 'appointment';
+    public const TYPE_BESPOKE = 'bespoke';
+    public const TYPE_EVENT = 'events';
+    public const TYPE_WORKSHOP = 'workshop';
+    public const TYPE_RETREAT = 'retreat';
+
     protected $fillable = [
         'title',
         'description',
