@@ -9,13 +9,27 @@ use Illuminate\Support\Facades\Auth;
 
 class EventListRequest extends Request {
 
-    public function authorize() {
-        return Auth::user() && Auth::user()->calendar instanceof GoogleCalendar && Auth::user()->calendar->access_token;
+    /**
+     * Determine if the user is authorized to make this request.
+     *
+     * @return bool
+     */
+    public function authorize()
+    {
+        return true;
     }
 
-
-    public function rules(): array {
-        return [];
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array
+     */
+    public function rules()
+    {
+        return [
+            'first_date_point' => 'required|date_format:Y-m-d H:i:s',
+            'last_date_point' => 'required|date_format:Y-m-d H:i:s'
+        ];
     }
 
 }
