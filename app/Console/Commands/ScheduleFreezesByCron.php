@@ -7,7 +7,8 @@ use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
-class ScheduleFreezesByCron extends Command {
+class ScheduleFreezesByCron extends Command
+{
     /**
      * The name and signature of the console command.
      *
@@ -28,8 +29,10 @@ class ScheduleFreezesByCron extends Command {
      *
      * @return void
      */
-    public function handle(): void {
-        $deletedCount = ScheduleFreeze::where('freeze_at', '<', Carbon::now()->subMinutes(15))->delete();
-        $this->comment(__METHOD__ . ': Freeze delete ' . $deletedCount);
+    public function handle(): void
+    {
+        ScheduleFreeze::query()
+            ->where('freeze_at', '<', Carbon::now()->subMinutes(15))
+            ->delete();
     }
 }

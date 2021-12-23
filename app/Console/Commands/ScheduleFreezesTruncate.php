@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Models\ScheduleFreeze;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class ScheduleFreezesTruncate extends Command {
     /**
@@ -33,5 +34,10 @@ class ScheduleFreezesTruncate extends Command {
         $count = ScheduleFreeze::where('freeze_at', '<', $days)->count();
         ScheduleFreeze::where('freeze_at', '<', $days)->delete();
         $this->line('Freeze delete ' . $count . PHP_EOL);
+
+
+        Log::channel('console_commands_handler')
+            ->info('Finalize reschedule requests',
+                ['bookings_count' => count($rescheduleRequests)]);
     }
 }

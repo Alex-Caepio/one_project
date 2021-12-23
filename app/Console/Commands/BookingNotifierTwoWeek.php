@@ -47,6 +47,7 @@ class BookingNotifierTwoWeek extends Command
         }
 
         Log::channel('console_commands_handler')
-            ->info('Booking Reminder - Retreat two weeks. Done...', ['bookings_count' => count($bookings)]);
+            ->info('Booking Reminder - Retreat two weeks. Done...',
+                ['bookings_count' => count($bookings)]);
     }
 }
