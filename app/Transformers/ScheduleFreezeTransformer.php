@@ -26,6 +26,7 @@ class ScheduleFreezeTransformer extends Transformer
             'created_at' => $freeze->created_at,
             'updated_at' => $freeze->updated_at,
             'price_id' => $freeze->price_id,
+            'checkout' => $freeze->checkout_id,
         ];
     }
 

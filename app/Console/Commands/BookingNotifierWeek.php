@@ -47,6 +47,7 @@ class BookingNotifierWeek extends Command
         }
 
         Log::channel('console_commands_handler')
-            ->info('Booking Reminder - Week Workshop/Event. Done...', ['bookings_count' => count($bookings)]);
+            ->info('Booking Reminder - Week Workshop/Event. Done...',
+                ['bookings_count' => count($bookings)]);
     }
 }

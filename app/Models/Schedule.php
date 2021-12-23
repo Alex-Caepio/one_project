@@ -413,7 +413,8 @@ class Schedule extends Model
             $periods = range(
                 1,
                 intdiv(
-                    Carbon::parse($this->deposit_final_date)->diffInDays(Carbon::now()),
+                    Carbon::parse($this->deposit_final_date)
+                        ->diffInDays(Carbon::now()->addDays(self::DEPOSIT_DELAY)),
                     self::DEPOSIT_DELAY
                 )
                 + 1
@@ -458,8 +459,9 @@ class Schedule extends Model
                     $installmentPeriods = $periods;
                     $date = Carbon::createFromFormat("Y-m-d H:i:s", $this->deposit_final_date)
                         ->setTimezone('UTC');
+                    $minStart = Carbon::now()->addDays(self::DEPOSIT_DELAY);
                     $calendar = [];
-                    while ($date->isFuture() && $installmentPeriods > 0) {
+                    while ($date->diffInDays($minStart) > 0 && $installmentPeriods > 0) {
                         $calendar[] = $date->toDateString();
                         $date = $date->subDays(self::DEPOSIT_DELAY);
                         $installmentPeriods--;

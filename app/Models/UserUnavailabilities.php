@@ -16,6 +16,7 @@ class UserUnavailabilities extends Model {
         'start_date',
         'end_date',
     ];
+    public $timestamps = true;
 
     public function user(): HasOne {
         return $this->hasOne(User::class, 'practitioner_id', 'id');

@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Instalment extends Model {
+class Instalment extends Model
+{
     use HasFactory;
     use SoftDeletes;
 
@@ -22,11 +23,13 @@ class Instalment extends Model {
         'deleted_at'
     ];
 
-    public function user(): BelongsTo {
+    public function user(): BelongsTo
+    {
         return $this->belongsTo(User::class);
     }
 
-    public function purchase(): BelongsTo {
+    public function purchase(): BelongsTo
+    {
         return $this->belongsTo(Purchase::class);
     }
 }

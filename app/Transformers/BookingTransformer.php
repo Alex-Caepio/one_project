@@ -106,7 +106,8 @@ class BookingTransformer extends Transformer
 
     private function getInstallmentPaidAmount(Booking  $booking)
     {
-        return $booking->purchase
+        return $booking
+            ->purchase
             ->instalments()
             ->whereIsPaid(true)
             ->get('payment_amount')

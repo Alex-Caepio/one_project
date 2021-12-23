@@ -34,34 +34,44 @@ class InstalmentsNotifier extends Command
     public function handle(): void
     {
         $paymentDate = Carbon::now()->addDays(7);
-        $purchases = Purchase::whereHas(
-            'instalments',
-            static function ($instQuery) use ($paymentDate) {
-                $instQuery->whereRaw("DATE_FORMAT(`payment_date`, '%Y-%m-%d') = ?", $paymentDate->format('Y-m-d'))
-                          ->where('is_paid', 0);
-            }
-        )->where('is_deposit', 1)->whereNull('cancelled_at_subscription')->get();
+        $purchases = Purchase::query()
+            ->whereHas(
+                'instalments',
+                static function ($instQuery) use ($paymentDate) {
+                    $instQuery
+                        ->whereRaw("DATE_FORMAT(`payment_date`, '%Y-%m-%d') = ?", $paymentDate->format('Y-m-d'))
+                        ->where('is_paid', 0);
+                }
+            )
+            ->where('is_deposit', 1)
+            ->whereNull('cancelled_at_subscription')
+            ->get();
 
         Log::channel('console_commands_handler')->info(
             'Purchases with installments payment date: ',
             [
-                'payment_date'       => $paymentDate->format('Y-m-d'),
+                'payment_date' => $paymentDate->format('Y-m-d'),
                 'count_purchases' => count($purchases)
             ]
         );
         foreach ($purchases as $purchase) {
-            $userPaymentSchedule = Instalment::where('purchase_id', $purchase->id)->whereRaw(
+            $userPaymentSchedule = Instalment::where('purchase_id', $purchase->id)
+                ->whereRaw(
                     "DATE_FORMAT(`payment_date`, '%Y-%m-%d') = ?",
                     $paymentDate->startOfDay()->format('Y-m-d')
-                )->where('is_paid', 0)->orderBy('payment_date', 'asc')->first();
+                )
+                ->where('is_paid', 0)
+                ->orderBy('payment_date')
+                ->first();
             if ($userPaymentSchedule) {
-                Log::channel('console_commands_handler')->info(
-                    'Next installment for purchase: ',
-                    [
-                        'purchase_id' => $purchase->id,
-                        'installmentID' => $userPaymentSchedule->id,
-                    ]
-                );
+                Log::channel('console_commands_handler')
+                    ->info(
+                        'Next installment for purchase: ',
+                        [
+                            'purchase_id' => $purchase->id,
+                            'installmentID' => $userPaymentSchedule->id,
+                        ]
+                    );
                 event(new InstalmentPaymentReminder($purchase, $userPaymentSchedule));
             }
         }

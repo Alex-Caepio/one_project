@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Actions\Booking;
 
 use App\Actions\Cancellation\CancelBooking;
@@ -9,9 +8,10 @@ use App\Models\RescheduleRequest;
 use App\Models\Schedule;
 use App\Models\ScheduleFreeze;
 
-class ScheduleAftermath {
-
-    public function execute(Schedule $schedule) {
+class ScheduleAftermath
+{
+    public function execute(Schedule $schedule)
+    {
         RescheduleRequest::where('schedule_id', $schedule->id)->delete();
         RescheduleRequest::where('new_schedule_id', $schedule->id)->delete();
         ScheduleFreeze::where('schedule_id', $schedule->id)->delete();
@@ -19,9 +19,8 @@ class ScheduleAftermath {
         $bookings = Booking::where('schedule_id', $schedule->id)->active()->get();
         if (count($bookings)) {
             foreach ($bookings as $booking) {
-                run_action(CancelBooking::class, $booking);
+                run_action(CancelBooking::class, $booking, false, null, true);
             }
         }
     }
-
 }

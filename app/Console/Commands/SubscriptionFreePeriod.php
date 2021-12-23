@@ -35,7 +35,10 @@ class SubscriptionFreePeriod extends Command
     public function handle(): void
     {
         $nowDate = Carbon::now()->endOfDay();
-        $freePlan = Plan::where('is_free', true)->orderBy('id', 'ASC')->first();
+        $freePlan = Plan::query()
+            ->where('is_free', true)
+            ->orderBy('id')
+            ->first();
 
         $practitioners = User::query()
             ->where('account_type', User::ACCOUNT_PRACTITIONER)

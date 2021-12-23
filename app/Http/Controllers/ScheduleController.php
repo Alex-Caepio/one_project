@@ -30,6 +30,7 @@ use App\Transformers\ScheduleTransformer;
 use App\Http\Requests\Schedule\CreateScheduleInterface;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use Stripe\StripeClient;
 use Illuminate\Support\Facades\Auth;
 
@@ -286,6 +287,7 @@ class ScheduleController extends Controller
     private function createAppointmentFreeze($request, Schedule $schedule)
     {
         $time = Carbon::now();
+        $checkout = Str::random(8);
         foreach ($request->get('availabilities') as $availability) {
             $freeze = new ScheduleFreeze();
             $start = Carbon::parse($availability['datetime_from'])->setTimezone('UTC');
@@ -297,7 +299,8 @@ class ScheduleController extends Controller
                     'practitioner_id' => $schedule->service->user_id,
                     'schedule_id' => $schedule->id,
                     'quantity' => 1,
-                    'price_id' => $request->price_id
+                    'price_id' => $request->price_id,
+                    'checkout_id' => $checkout
                 ]
             );
             $freeze->save();
