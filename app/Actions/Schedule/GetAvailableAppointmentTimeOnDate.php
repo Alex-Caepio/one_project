@@ -22,7 +22,12 @@ class GetAvailableAppointmentTimeOnDate
         /* @ScheduleAvailabilities */
         $availabilities = $this->getAvailabilitiesMatchingDate($date, $schedule);
         $periods = $this->availabilitiesToCarbonPeriod($date, $availabilities);
-        $excludedTimes = $this->getExcludedTimes($schedule, $date, $schedule->buffer_time, $price->duration ?? 0);
+        $excludedTimes = $this->getExcludedTimes(
+            $schedule,
+            $date,
+            $this->getTodayBuffer($schedule),
+            $price->duration ?? 0
+        );
 
         $this->excludeTimes($periods, $excludedTimes);
         $flatTimes = $this->toTimes($periods, $timezone);
@@ -175,5 +180,28 @@ class GetAvailableAppointmentTimeOnDate
         $date->setTimestamp($s * ceil($date->getTimestamp() / $s));
 
         return $date;
+    }
+
+    /**
+     * Returns delay between now and first available appointment booking in minutes
+     *
+     * @param Schedule $schedule
+     * @return int
+     */
+    private function getTodayBuffer(Schedule $schedule): int
+    {
+        switch ($schedule->notice_min_period) {
+            case "hours":
+                $multiplier = 60;
+                break;
+            case "days":
+                $multiplier = 60 * 24;
+                break;
+            default:
+                $multiplier = 1;
+                break;
+        }
+
+        return $schedule->notice_min_time * $multiplier;
     }
 }
