@@ -15,8 +15,6 @@ use Illuminate\Support\Arr;
 
 class BookingSnapshotService
 {
-    const SERVICE_BESPOKE = 'bespoke';
-
     public static function create(Booking $booking)
     {
         $purchase = $booking->purchase;

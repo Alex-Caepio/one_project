@@ -19,6 +19,7 @@ use App\Models\PromotionCode;
 use App\Models\Purchase;
 use App\Models\Schedule;
 use App\Models\ScheduleFreeze;
+use App\Models\Service;
 use App\Models\User;
 use App\Services\BookingSnapshotService;
 use App\Transformers\PromocodeCalculateTransformer;
@@ -161,7 +162,7 @@ class PurchaseController extends Controller
                     : $this->payInstant($request, $schedule, $price, $stripe, $purchase, $practitioner);
             }
 
-            if ($schedule->service->service_type_id === BookingSnapshotService::SERVICE_BESPOKE) {
+            if ($schedule->service->service_type_id === Service::TYPE_BESPOKE) {
                 BookingSnapshotService::create($booking);
             }
 
