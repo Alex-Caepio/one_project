@@ -8,13 +8,15 @@ use App\Http\Requests\CalendarSettings\AuthRequest;
 use App\Http\Requests\CalendarSettings\EventListRequest;
 use App\Http\Requests\CalendarSettings\SettingsRequest;
 use App\Http\Requests\Request;
+use App\Models\Booking;
 use App\Models\GoogleCalendar;
+use App\Models\Service;
 use App\Models\UserUnavailabilities;
-use App\Transformers\GoogleCalendarEventTransformer;
+use App\Transformers\CalendarEventTransformer;
 use App\Transformers\GoogleCalendarTransformer;
 use Carbon\Carbon;
 use Exception;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
@@ -97,10 +99,27 @@ class GoogleCalendarIntegrationController extends Controller
 
     public function getEventList(EventListRequest $request)
     {
-        $gcHelper = new GoogleCalendarHelper(Auth::user()->calendar);
+        $bookings = Booking::query()
+            ->with(['schedule:service_id,id,location_displayed,title', 'schedule.service:id'])
+            ->where('practitioner_id', '=', Auth::id())
+            ->where(function (Builder $builder) use ($request) {
+                return $builder
+                    ->whereBetween('datetime_from', [$request->first_date_point, $request->last_date_point])
+                    ->orWhereBetween('datetime_to', [$request->first_date_point, $request->last_date_point]);
+            })
+            ->whereHas('schedule', function (Builder $builder) {
+                return $builder
+                    ->whereHas('service', function (Builder $builder) {
+                        return $builder
+                            ->where('service_type_id', Service::TYPE_APPOINTMENT)
+                            ->select('id');
+                    })
+                    ->select('id');
+            })
+            ->get();
 
         return response(
-            fractal($gcHelper->getEventList(), new GoogleCalendarEventTransformer())
+            fractal($bookings, new CalendarEventTransformer())
                 ->parseIncludes($request->getIncludes())->toArray()
         );
     }
