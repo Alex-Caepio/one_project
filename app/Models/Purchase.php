@@ -39,7 +39,8 @@ class Purchase extends Model
         'stripe_id',
         'amount',
         'discount',
-        'discount_applied'
+        'discount_applied',
+        'purchase_snapshot_id',
     ];
 
     /**
@@ -77,6 +78,11 @@ class Purchase extends Model
     public function price(): BelongsTo
     {
         return $this->belongsTo(Price::class);
+    }
+
+    public function snapshot(): BelongsTo
+    {
+        return $this->belongsTo(PurchaseSnapshot::class, 'purchase_snapshot_id');
     }
 
     public function instalments(): HasMany

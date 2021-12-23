@@ -23,7 +23,8 @@ class BookingController extends Controller
                     'schedule',
                     'schedule.service',
                     'practitioner',
-                    'schedule.service.practitioner'
+                    'schedule.service.practitioner',
+                    'snapshot',
                 ])
             );
 
@@ -39,7 +40,7 @@ class BookingController extends Controller
         }
 
         $paginator = $query->paginate($request->getLimit());
-        $booking = $paginator->getCollection();
+        $booking = $paginator->getCollection()->toSnapshots();
 
         return response(
             fractal(
@@ -51,6 +52,8 @@ class BookingController extends Controller
 
     public function show(Booking $booking, Request $request)
     {
+        $booking = $booking->snapshot ?? $booking;
+
         $booking->load([
             'schedule' => static function ($scheduleQuery) {
                 $scheduleQuery->withTrashed();
@@ -67,6 +70,7 @@ class BookingController extends Controller
                 $rrQuery->where('requested_by', $bookingForClient ? 'practitioner' : 'client');
             }
         ]);
+
         return fractal($booking, new BookingTransformer())->parseIncludes($request->getIncludes())->toArray();
     }
 

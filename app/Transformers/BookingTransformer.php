@@ -3,12 +3,12 @@
 namespace App\Transformers;
 
 use App\Models\Booking;
-use Illuminate\Support\Facades\Log;
 
 class BookingTransformer extends Transformer
 {
     protected $availableIncludes = [
         'schedule',
+        'schedule_snapshot',
         'user',
         'practitioner',
         'price',

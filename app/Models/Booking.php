@@ -38,7 +38,8 @@ class Booking extends Model {
         'amount',
         'discount',
         'is_fully_paid',
-        'is_installment'
+        'is_installment',
+        'booking_snapshot_id',
     ];
 
 
@@ -80,6 +81,10 @@ class Booking extends Model {
 
     public function schedule() {
         return $this->belongsTo(Schedule::class);
+    }
+
+    public function snapshot() {
+        return $this->belongsTo(BookingSnapshot::class, 'booking_snapshot_id');
     }
 
     public function price() {

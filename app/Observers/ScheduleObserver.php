@@ -49,7 +49,10 @@ class ScheduleObserver
         ) {
             run_action(CreateRescheduleRequestsOnScheduleUpdate::class, $schedule);
         }
-        if ($schedule->hasNonContractualChanges() && !$hasContractualChanges) {
+        if ($schedule->hasNonContractualChanges()
+            && !$hasContractualChanges
+            && !in_array($schedule->service->service_type->id, ['bespoke'])
+        ) {
             event(new ServiceUpdatedByPractitionerNonContractual($schedule));
         }
     }

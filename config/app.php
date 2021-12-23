@@ -213,8 +213,8 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\ResponseServiceProvider::class,
-        FilesystemNoLockFixServiceProvider::class
-
+        FilesystemNoLockFixServiceProvider::class,
+        App\Providers\BookingServiceProvider::class,
     ],
 
     /*

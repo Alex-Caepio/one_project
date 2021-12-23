@@ -20,6 +20,7 @@ use App\Models\Purchase;
 use App\Models\Schedule;
 use App\Models\ScheduleFreeze;
 use App\Models\User;
+use App\Services\BookingSnapshotService;
 use App\Transformers\PromocodeCalculateTransformer;
 use App\Transformers\PurchaseTransformer;
 use Carbon\Carbon;
@@ -158,6 +159,10 @@ class PurchaseController extends Controller
                 $paymentIntentData = $isInstallment
                     ? $this->payInInstallments($request, $schedule, $price, $practitioner, $cost, $purchase, $booking)
                     : $this->payInstant($request, $schedule, $price, $stripe, $purchase, $practitioner);
+            }
+
+            if ($schedule->service->service_type_id === BookingSnapshotService::SERVICE_BESPOKE) {
+                BookingSnapshotService::create($booking);
             }
 
             ScheduleFreeze::where('schedule_id', $schedule->id)->where('user_id', $request->user()->id)->delete();
