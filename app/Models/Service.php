@@ -54,11 +54,6 @@ class Service extends Model
         'is_published'
     ];
 
-    public const TYPE_APPOINTMENT = 'appointment';
-    public const TYPE_BESPOKE = 'bespoke';
-    public const TYPE_EVENT = 'events';
-    public const TYPE_WORKSHOP = 'workshop';
-    public const TYPE_RETREAT = 'retreat';
 
     /**
      * The attributes that should be cast to native types.
