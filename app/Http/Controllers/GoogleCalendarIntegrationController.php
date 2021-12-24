@@ -100,7 +100,10 @@ class GoogleCalendarIntegrationController extends Controller
     public function getEventList(EventListRequest $request)
     {
         $bookings = Booking::query()
-            ->with(['schedule:service_id,id,location_displayed,title', 'schedule.service:id'])
+            ->with([
+                'schedule:service_id,id,location_displayed,title',
+                'user:id,first_name,last_name'
+            ])
             ->where('practitioner_id', '=', Auth::id())
             ->where(function (Builder $builder) use ($request) {
                 return $builder

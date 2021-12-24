@@ -16,7 +16,12 @@ class CalendarEventTransformer extends Transformer
             'location' => $event->schedule->location_displayed,
             'summary' => $event->schedule->title,
             'resource' => [
-                'schedule_id' => $event->schedule_id
+                'schedule_id' => $event->schedule_id,
+                'service_id' => $event->schedule->service_id,
+                'user' => [
+                    'first_name' => $event->user->first_name,
+                    'last_name' => $event->user->last_name,
+                ]
             ]
         ];
     }
