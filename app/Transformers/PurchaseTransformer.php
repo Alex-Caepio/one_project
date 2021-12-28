@@ -23,7 +23,7 @@ class PurchaseTransformer extends Transformer
     /**
      * A Fractal transformer.
      *
-     * @param \App\Models\Purchase $purchase
+     * @param Purchase $purchase
      * @return array
      */
     public function transform(Purchase $purchase): array
