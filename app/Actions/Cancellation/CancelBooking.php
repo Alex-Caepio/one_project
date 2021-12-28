@@ -248,7 +248,8 @@ class CancelBooking
         if ($actionRole === User::ACCOUNT_PRACTITIONER || $declineRescheduleRequest === true) {
             $practitionerCommissionOnSale = $booking->practitioner->getCommission();
             $result['isFullRefund'] = true;
-            $result['refundTotal'] = $booking->cost - $practitionerCommissionOnSale * 100 / $booking->cost;
+            $result['refundTotal'] = $booking->cost - $practitionerCommissionOnSale * 100 /
+                ($booking->cost > 0 ? $booking->cost : 1);
             $result['practitionerFee'] = round(($booking->cost / 100) * $hostFee);
         } else {
             if ($cancelledByPractitioner) {
@@ -258,9 +259,9 @@ class CancelBooking
             } else { // cancelled by client
                 $result['isFullRefund'] = false;
                 $isDateless = $booking->schedule->service->isDateless();
-                $bookingDate = $isDateless ? Carbon::parse($booking->created_at) : Carbon::parse(
-                    $booking->datetime_from
-                );
+                $bookingDate = $isDateless
+                    ? Carbon::parse($booking->created_at)
+                    : Carbon::parse($booking->datetime_from);
                 $now = Carbon::now();
                 $diffValue = $booking->schedule->service->service_type_id === 'appointment'
                     ? $now->diffInHours($bookingDate)

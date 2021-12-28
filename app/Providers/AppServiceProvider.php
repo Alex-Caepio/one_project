@@ -38,13 +38,15 @@ use Stripe\StripeClient;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Relations\Relation;
 
-class AppServiceProvider extends ServiceProvider {
+class AppServiceProvider extends ServiceProvider
+{
     /**
      * Register any application services.
      *
      * @return void
      */
-    public function register() {
+    public function register()
+    {
         //
     }
 
@@ -53,15 +55,16 @@ class AppServiceProvider extends ServiceProvider {
      *
      * @return void
      */
-    public function boot() {
+    public function boot()
+    {
         $this->app->instance(StripeClient::class, new StripeClient(config('services.stripe.secret')));
 
         Relation::morphMap([
-                               'service'    => Service::class,
-                               'discipline' => Discipline::class,
-                               'article'    => Article::class,
-                               'user'       => User::class,
-                           ]);
+            'service' => Service::class,
+            'discipline' => Discipline::class,
+            'article' => Article::class,
+            'user' => User::class,
+        ]);
 
         /* Events Observer */
         Article::observe(ArticleObserver::class);
@@ -75,7 +78,7 @@ class AppServiceProvider extends ServiceProvider {
         RescheduleRequest::observe(RescheduleRequestObserver::class);
         Price::observe(PriceObserver::class);
 
-        $this->app->bind(CreateScheduleInterface::class, function() {
+        $this->app->bind(CreateScheduleInterface::class, function () {
             $serviceType = null;
             if (request()->service) {
                 $serviceType = request()->service->service_type_id;
@@ -115,8 +118,10 @@ class AppServiceProvider extends ServiceProvider {
                     return new AppointmentScheduleRequest();
 
                 default:
-                    abort(500,
-                          'You\'re trying to purchase unrecognized service type. Please contact site administrator for assistance');
+                    abort(
+                        500,
+                        'You\'re trying to purchase unrecognized service type. Please contact site administrator for assistance'
+                    );
             }
         });
     }
