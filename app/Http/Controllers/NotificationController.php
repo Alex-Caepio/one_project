@@ -35,7 +35,8 @@ class NotificationController extends Controller
     {
         $query = Notification::query()
             ->where('client_id', Auth::id())
-            ->where('receiver_id', Auth::id())->where('read_at', null)
+            ->where('receiver_id', Auth::id())
+            ->where('read_at', null)
             ->orderBy('id', 'DESC')
             ->with($request->getIncludes());
 

@@ -14,7 +14,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property Schedule schedule
  * @property int duration
  */
-class Price extends Model {
+class Price extends Model
+{
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
@@ -29,17 +30,19 @@ class Price extends Model {
         'stripe_id'
     ];
 
-    public function schedule(): BelongsTo {
+    public function schedule(): BelongsTo
+    {
         return $this->belongsTo(Schedule::class);
     }
 
-    public function purchases(): HasMany {
+    public function purchases(): HasMany
+    {
         return $this->hasMany(Purchase::class);
     }
 
-    public function bookings(): HasMany {
+    public function bookings(): HasMany
+    {
         return $this->hasMany(Booking::class, 'price_id', 'id');
     }
-
 
 }

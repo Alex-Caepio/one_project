@@ -52,7 +52,12 @@ class CancelBooking
             $actionRole = Auth::id() === $booking->user_id ? User::ACCOUNT_CLIENT : User::ACCOUNT_PRACTITIONER;
         }
 
-        $refundData = $this->calculateRefundValue($actionRole, $booking, $declineRescheduleRequest, $cancelledByPractitioner);
+        $refundData = $this->calculateRefundValue(
+            $actionRole,
+            $booking,
+            $declineRescheduleRequest,
+            $cancelledByPractitioner
+        );
 
         Log::channel('stripe_refund_info')
             ->info('Stripe refund info: ', [
@@ -158,12 +163,14 @@ class CancelBooking
         if ($cancelledByPractitioner) {
             $notificationType = 'booking_canceled_by_practitioner';
             $notification->receiver_id = $booking->user_id;
-        } else if ($actionRole === User::ACCOUNT_CLIENT) {
-            $notificationType = $isAmendment ? 'amendment_canceled_by_client' : 'booking_canceled_by_client';
-            $notification->receiver_id = $booking->practitioner_id;
         } else {
-            $notificationType = 'booking_canceled_by_practitioner';
-            $notification->receiver_id = $booking->user_id;
+            if ($actionRole === User::ACCOUNT_CLIENT) {
+                $notificationType = $isAmendment ? 'amendment_canceled_by_client' : 'booking_canceled_by_client';
+                $notification->receiver_id = $booking->practitioner_id;
+            } else {
+                $notificationType = 'booking_canceled_by_practitioner';
+                $notification->receiver_id = $booking->user_id;
+            }
         }
 
         $notification->type = $notificationType;
@@ -190,12 +197,16 @@ class CancelBooking
 
         if ($cancelledByPractitioner) {
             event(new BookingCancelledByPractitioner($booking));
-        } else if ($declineRescheduleRequest) {
-            event(new ContractualServiceUpdateDeclinedBookingCancelled($booking));
-        } else if ($actionRole === User::ACCOUNT_CLIENT) {
-            event(new BookingCancelledByClient($booking, $cancellation));
         } else {
-            event(new BookingCancelledByPractitioner($booking));
+            if ($declineRescheduleRequest) {
+                event(new ContractualServiceUpdateDeclinedBookingCancelled($booking));
+            } else {
+                if ($actionRole === User::ACCOUNT_CLIENT) {
+                    event(new BookingCancelledByClient($booking, $cancellation));
+                } else {
+                    event(new BookingCancelledByPractitioner($booking));
+                }
+            }
         }
 
         return response(null, 204);
@@ -218,8 +229,12 @@ class CancelBooking
         return $invoices;
     }
 
-    private function calculateRefundValue(string $actionRole, Booking $booking, bool $declineRescheduleRequest, bool $cancelledByPractitioner): array
-    {
+    private function calculateRefundValue(
+        string $actionRole,
+        Booking $booking,
+        bool $declineRescheduleRequest,
+        bool $cancelledByPractitioner
+    ): array {
         $result = [
             'isFullRefund' => false,
             'refundTotal' => 0,
@@ -235,28 +250,32 @@ class CancelBooking
             $result['isFullRefund'] = true;
             $result['refundTotal'] = $booking->cost - $practitionerCommissionOnSale * 100 / $booking->cost;
             $result['practitionerFee'] = round(($booking->cost / 100) * $hostFee);
-        } else if ($cancelledByPractitioner) {
-            $result['isFullRefund'] = true;
-            $result['refundTotal'] = $booking->cost;
-            $result['practitionerFee'] = round(($booking->cost / 100) * $hostFee);
-        } else { // cancelled by client
-            $result['isFullRefund'] = false;
-            $isDateless = $booking->schedule->service->isDateless();
-            $bookingDate = $isDateless ? Carbon::parse($booking->created_at) : Carbon::parse($booking->datetime_from);
-            $now = Carbon::now();
-            $diffValue = $booking->schedule->service->service_type_id === 'appointment'
-                ? $now->diffInHours($bookingDate)
-                : $now->diffInDays($bookingDate);
-            $isRefundAllowed = ($isDateless && $now >= $bookingDate && $diffValue < $booking->schedule->refund_terms)
-                || (!$isDateless && $bookingDate > $now && $diffValue > $booking->schedule->refund_terms);
+        } else {
+            if ($cancelledByPractitioner) {
+                $result['isFullRefund'] = true;
+                $result['refundTotal'] = $booking->cost;
+                $result['practitionerFee'] = round(($booking->cost / 100) * $hostFee);
+            } else { // cancelled by client
+                $result['isFullRefund'] = false;
+                $isDateless = $booking->schedule->service->isDateless();
+                $bookingDate = $isDateless ? Carbon::parse($booking->created_at) : Carbon::parse(
+                    $booking->datetime_from
+                );
+                $now = Carbon::now();
+                $diffValue = $booking->schedule->service->service_type_id === 'appointment'
+                    ? $now->diffInHours($bookingDate)
+                    : $now->diffInDays($bookingDate);
+                $isRefundAllowed = ($isDateless && $now >= $bookingDate && $diffValue < $booking->schedule->refund_terms)
+                    || (!$isDateless && $bookingDate > $now && $diffValue > $booking->schedule->refund_terms);
 
-            if ($isRefundAllowed) {
-                $result['refundTotal'] = (float)$booking->cost / 100 * (100 - $hostFee);
-            } else {
-                $result['refundTotal'] = 0;
+                if ($isRefundAllowed) {
+                    $result['refundTotal'] = (float)$booking->cost / 100 * (100 - $hostFee);
+                } else {
+                    $result['refundTotal'] = 0;
+                }
+
+                $result['practitionerFee'] = round(($result['refundTotal'] / 100) * $hostFee);
             }
-
-            $result['practitionerFee'] = round(($result['refundTotal'] / 100) * $hostFee);
         }
 
         $result['refundSmallestUnit'] = (int)($result['refundTotal'] * 100);

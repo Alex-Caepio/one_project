@@ -28,29 +28,29 @@ class BookingTransformer extends Transformer
     public function transform(Booking $booking)
     {
         return [
-            'id'              => $booking->id,
-            'reference'       => $booking->reference,
-            'user_id'         => $booking->user_id,
-            'schedule_id'     => $booking->schedule_id,
-            'price_id'        => $booking->price_id,
+            'id' => $booking->id,
+            'reference' => $booking->reference,
+            'user_id' => $booking->user_id,
+            'schedule_id' => $booking->schedule_id,
+            'price_id' => $booking->price_id,
             'availability_id' => $booking->availability_id,
-            'datetime_from'   => $booking->datetime_from,
-            'datetime_to'     => $booking->datetime_to,
-            'quantity'        => $booking->quantity,
-            'cost'            => $booking->cost,
-            'promocode_id'    => $booking->promocode_id,
-            'purchase_id'     => $booking->purchase_id,
-            'created_at'      => $booking->created_at,
-            'updated_at'      => $booking->updated_at,
-            'cancelled_at'    => $booking->cancelled_at,
-            'status'          => $booking->status,
-            'amount'          => $booking->amount,
-            'discount'        => $booking->discount,
-            'is_installment'  => $booking->is_installment,
-            'installment_paid'=> $booking->is_installment ? $this->getInstallmentPaidAmount($booking) : 0,
-            'is_fully_paid'   => $booking->is_fully_paid,
-            'is_active'       => $booking->isActive(),
-            'completed_at'    => $booking->completed_at
+            'datetime_from' => $booking->datetime_from,
+            'datetime_to' => $booking->datetime_to,
+            'quantity' => $booking->quantity,
+            'cost' => $booking->cost,
+            'promocode_id' => $booking->promocode_id,
+            'purchase_id' => $booking->purchase_id,
+            'created_at' => $booking->created_at,
+            'updated_at' => $booking->updated_at,
+            'cancelled_at' => $booking->cancelled_at,
+            'status' => $booking->status,
+            'amount' => $booking->amount,
+            'discount' => $booking->discount,
+            'is_installment' => $booking->is_installment,
+            'installment_paid' => $booking->is_installment ? $this->getInstallmentPaidAmount($booking) : 0,
+            'is_fully_paid' => $booking->is_fully_paid,
+            'is_active' => $booking->isActive(),
+            'completed_at' => $booking->completed_at
         ];
     }
 
@@ -104,8 +104,12 @@ class BookingTransformer extends Transformer
         return $this->itemOrNull($booking->client_reschedule_request, new RescheduleRequestTransformer());
     }
 
-    private function getInstallmentPaidAmount(Booking  $booking)
+    private function getInstallmentPaidAmount(Booking $booking): float
     {
+        if (is_null($booking->purchase->instalments())) {
+            return 0;
+        }
+
         return $booking
             ->purchase
             ->instalments()

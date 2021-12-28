@@ -35,19 +35,15 @@ class BookingController extends Controller
 
         $query->selectRaw('*, DATEDIFF(bookings.datetime_from, NOW()) as date_diff')->orderByRaw('ABS(date_diff)');
 
-        if($filters->hasUpcomingStatus()) {
+        if ($filters->hasUpcomingStatus()) {
             $query->having('date_diff', '>=', 0);
         }
 
         $paginator = $query->paginate($request->getLimit());
         $booking = $paginator->getCollection()->toSnapshots();
 
-        return response(
-            fractal(
-                $booking,
-                new BookingTransformer()
-            )->parseIncludes($request->getIncludes())
-        )->withPaginationHeaders($paginator);
+        return response(fractal($booking, new BookingTransformer())->parseIncludes($request->getIncludes()))
+            ->withPaginationHeaders($paginator);
     }
 
     public function show(Booking $booking, Request $request)
@@ -80,6 +76,7 @@ class BookingController extends Controller
         $booking->save();
         Notification::where('booking_id', $booking->id)->delete();
         RescheduleRequest::where('booking_id', $booking->id)->delete();
+
         return response(null, 200);
     }
 }

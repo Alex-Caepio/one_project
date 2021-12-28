@@ -15,7 +15,6 @@ class PriceTransformer extends Transformer {
         $availableBySchedule = $price->schedule ? $price->schedule->getAvailableTicketsCount() : 0;
         $number_unpurchased = !$price->number_available ? 0 : (int)$price->number_available - $ticketsBooked;
 
-
         return [
             'id'                 => $price->id,
             'cost'               => $price->cost,
@@ -26,8 +25,9 @@ class PriceTransformer extends Transformer {
             'duration'           => $this->formatDuration($price->duration),
             'min_purchase'       => $price->min_purchase,
             'number_available'   => (int)$price->number_available,
-            'number_unpurchased' => $number_unpurchased >
-                                    $availableBySchedule ? $availableBySchedule : $number_unpurchased,
+            'number_unpurchased' => $number_unpurchased > $availableBySchedule
+                ? $availableBySchedule
+                : $number_unpurchased,
             'tickets_available'  => $ticketsBooked,
             'tickets_booked'     => $ticketsBooked,
             'stripe_id'          => $price->stripe_id,
