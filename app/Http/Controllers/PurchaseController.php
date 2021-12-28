@@ -327,7 +327,8 @@ class PurchaseController extends Controller
             $purchase->stripe_id = $paymentIntent->id;
             $purchase->save();
         } catch (ApiErrorException $e) {
-            Log::channel('stripe_purchase_schedule_error')->info("Client could not purchase schedule", [
+            Log::channel('stripe_purchase_schedule_error')
+                ->info("Client could not purchase schedule", [
                 'user_id' => $request->user()->id,
                 'price_id' => $price->id,
                 'service_id' => $schedule->service->id,
@@ -345,7 +346,8 @@ class PurchaseController extends Controller
             throw new Exception('Cannot handle instant payment');
         }
 
-        Log::channel('stripe_purchase_schedule_success')->info("Client purchased schedule", [
+        Log::channel('stripe_purchase_schedule_success')
+            ->info("Client purchased schedule", [
             'user_id' => $request->user()->id,
             'price_id' => $price->id,
             'service_id' => $schedule->service->id,
@@ -385,7 +387,8 @@ class PurchaseController extends Controller
                     'discount_applied' => $purchase->discount_applied,
                 ]);
         } catch (ApiErrorException $e) {
-            Log::channel('stripe_transfer_fail')->info("The practitioner could not received transfer", [
+            Log::channel('stripe_transfer_fail')
+                ->info("The practitioner could not received transfer", [
                 'user_id' => $request->user()->id,
                 'practitioner' => $practitioner->id,
                 'price_id' => $price->id,
