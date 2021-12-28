@@ -268,7 +268,7 @@ class EmailVariables
      */
     private function getEventStartDate(): ?string
     {
-        if (!is_null($this->event->booking)) {
+        if (isset($this->event->booking) && !is_null($this->event->booking)) {
             return $this->event->booking->datetime_from;
         }
 
@@ -283,7 +283,7 @@ class EmailVariables
      */
     private function getEventEndDate(): ?string
     {
-        if (!is_null($this->event->booking)) {
+        if (isset($this->event->booking) && !is_null($this->event->booking)) {
             return $this->event->booking->datetime_to;
         }
 
