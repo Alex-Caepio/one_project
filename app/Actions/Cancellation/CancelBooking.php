@@ -134,6 +134,7 @@ class CancelBooking
 
         if ($booking->is_installment) {
             $this->refundInstallment($booking->purchase->subscription_id);
+            $this->stripe->subscriptions->cancel($booking->purchase->subscription_id);
         }
 
         $booking->cancelled_at = Carbon::now();
@@ -201,7 +202,7 @@ class CancelBooking
         return response(null, 204);
     }
 
-    private function refundInstallment($subscription_id): Collection
+    private function refundInstallment($subscription_id): void
     {
         $invoices = $this->stripe->invoices->all([
             'subscription' => $subscription_id,
@@ -209,13 +210,12 @@ class CancelBooking
         ]);
 
         foreach ($invoices as $invoice) {
-            //pi_1IvQI2JM28CvbfqX8gp9BiJG
-            $this->stripe->refunds->create([
-                'payment_intent' => $invoice->paymentIntent
-            ]);
+            if (!is_null($invoice->paymentIntent)) {
+                $this->stripe->refunds->create([
+                    'payment_intent' => $invoice->paymentIntent
+                ]);
+            }
         }
-
-        return $invoices;
     }
 
     private function calculateRefundValue(string $actionRole, Booking $booking, bool $declineRescheduleRequest, bool $cancelledByPractitioner): array
