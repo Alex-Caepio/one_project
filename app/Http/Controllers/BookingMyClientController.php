@@ -143,6 +143,7 @@ class BookingMyClientController extends Controller
         $paginator = Purchase::query()->selectRaw(
             implode(', ', [
                 'purchases.id as id',
+                'purchases.amount as amount',
                 'bookings.id as booking_id',
                 'bookings.reference as booking_reference',
                 'services.id as service_id',
