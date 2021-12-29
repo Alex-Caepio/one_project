@@ -40,13 +40,13 @@ class Kernel extends ConsoleKernel {
     /**
      * Define the application's command schedule.
      *
-     * @param \Illuminate\Console\Scheduling\Schedule $schedule
+     * @param Schedule $schedule
      * @return void
      */
     protected function schedule(Schedule $schedule) {
         $schedule->command('schedule-freezes:cleanup')->everyFifteenMinutes();
         $schedule->command('mark-expired-promo')->everyFifteenMinutes();
-        $schedule->command('bookings:status-update')->daily();
+        $schedule->command('bookings:status-update')->hourly();
 
         $schedule->command('bookings:notifier-week')->daily();
         $schedule->command('bookings:notifier-twoweek')->daily();
