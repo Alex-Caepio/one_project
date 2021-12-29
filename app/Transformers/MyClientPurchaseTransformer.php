@@ -23,7 +23,7 @@ class MyClientPurchaseTransformer extends Transformer
             'purchase_date' => new Carbon($myClientPurchase->purchase_date),
             'client'        => $myClientPurchase->client,
             'paid'          => $myClientPurchase->paid,
-            'purchased'     => 1,
+            'purchased'     => $myClientPurchase->amount,
             'location'      => $myClientPurchase->location,
             'city'          => $myClientPurchase->city,
             'country'       => $myClientPurchase->country,
