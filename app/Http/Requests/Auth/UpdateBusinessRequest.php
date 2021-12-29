@@ -30,7 +30,11 @@ class UpdateBusinessRequest extends Request {
             'business_city'               => 'required|string|max:150',
             'business_phone_number'       => 'required|digits_between:2,255|numeric',
             'business_phone_country_code' => 'required|exists:countries,id|integer',
-            'business_country_id'         => 'required|exists:countries,id|integer'
+            'business_country_id'         => 'required|exists:countries,id|integer',
+            'timezone_id'=>[
+                'required',
+                'exists:timezones,id'
+            ]
         ];
     }
 
