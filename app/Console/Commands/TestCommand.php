@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class TestCommand extends Command
 {
@@ -12,14 +13,14 @@ class TestCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'cron-check:cmd';
+    protected $signature = 'email:test {email}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Test SMTP credentials';
 
     /**
      * Execute the console command.
@@ -28,11 +29,11 @@ class TestCommand extends Command
      */
     public function handle()
     {
-        Log::channel('console_commands_handler')->info(
-            'Check console command',
-            [
-                'time' => date('Y-m-d H:i:s')
-            ]
-        );
+        $email = $this->argument("email");
+        Mail::send('base', [], function ($message) use ($email) {
+            $message
+                ->to($email)
+                ->subject('Testing email '.date("Y-m-d H:i:s"));
+        });
     }
 }
