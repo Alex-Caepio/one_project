@@ -97,8 +97,16 @@ Route::get('/latest-two', [LatestTwoController::class, 'index']);
 Route::get('/practitioners/{user}', [UserController::class, 'show']);
 
 Route::middleware(['auth:reschedule-token'])->group(function () {
-    Route::match(['post', 'get'], '/accept_reschedule/{rescheduleRequest}', [EmailLinkHandlerController::class, 'acceptReschedule']);
-    Route::match(['post', 'get'], '/decline_reschedule/{rescheduleRequest}', [EmailLinkHandlerController::class, 'declineReschedule']);
+    Route::match(
+        ['post', 'get'],
+        '/accept_reschedule/{rescheduleRequest}',
+        [EmailLinkHandlerController::class, 'acceptReschedule']
+    );
+    Route::match(
+        ['post', 'get'],
+        '/decline_reschedule/{rescheduleRequest}',
+        [EmailLinkHandlerController::class, 'declineReschedule']
+    );
 });
 
 Route::get('/schedules/{schedule}/available-instalments', [ScheduleController::class, 'availableInstalments']);
@@ -132,7 +140,6 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::get('/practitioners/favourites', [UserController::class, 'practitionerFavorites']);
 
     Route::middleware(['practitioner'])->group(function () {
-
         /* Profile Update */
         Route::put('/auth/business-profile', [AuthController::class, 'updateBusiness']);
         Route::put('/auth/business-media', [AuthController::class, 'updateMedia']);
@@ -181,7 +188,6 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::post('/plans/{plan}/purchase-trial', [PlanController::class, 'purchaseFree']);
 
 
-
     Route::get('/schedules/{schedule}', [ScheduleController::class, 'show']);
     Route::put('/schedules/{schedule}', [ScheduleController::class, 'update']);
     Route::get('/schedules/{schedule}/attendants', [ScheduleController::class, 'allUser']);
@@ -225,6 +231,7 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::post('messages/users', [MessageController::class, 'storeMultiple']);
     Route::get('/messages', [MessageController::class, 'index']);
     Route::get('/messages/receiver/{user}', [MessageController::class, 'showByReceiver']);
+    Route::get('/messages/conversation/{conversationId}', [MessageController::class, 'getConversation']);
 
     Route::get('/countries', [CountryController::class, 'index']);
 

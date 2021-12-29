@@ -12,7 +12,8 @@ class MessageRequest extends Request
      *
      * @return bool
      */
-    public function authorize() {
+    public function authorize(): bool
+    {
         return $this->user()->id !== $this->user->id;
     }
 
@@ -21,30 +22,43 @@ class MessageRequest extends Request
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
-            'text' => 'required|max:1000'
+            'text' => [
+                'required',
+                'max:1000'
+            ],
+            'conversation_id' => 'nullable'
         ];
     }
 
-    public function withValidator($validator) {
-
-        $validator->after(function($validator) {
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            $booking = Booking::query()
+                ->where('practitioner_id', $this->user()->id)
+                ->where('user_id', $this->user->id)
+                ->active()
+                ->exists();
             // practitioner as sender
             if ($this->user()->isPractitioner()) {
-                if (!$this->user()->is_published && !Booking::where('practitioner_id', $this->user()->id)->where('user_id', $this->user->id)->active()->exists()) {
+                if (!$this->user()->is_published && !$booking) {
                     $validator
                         ->errors()
-                        ->add('text',
-                              'You are not allowed to send message to the client not in your clients list');
+                        ->add(
+                            'text',
+                            'You are not allowed to send message to the client not in your clients list'
+                        );
                 }
             } else {
-                if (!$this->user->is_published && !Booking::where('practitioner_id', $this->user->id)->where('user_id', $this->user()->id)->active()->exists()) {
+                if (!$this->user->is_published && !$booking) {
                     $validator
                         ->errors()
-                        ->add('text',
-                              'You are not allowed to send message to this practitioner');
+                        ->add(
+                            'text',
+                            'You are not allowed to send message to this practitioner'
+                        );
                 }
             }
         });
