@@ -286,8 +286,6 @@ class Schedule extends Model
             $changes['meals_dietry_accomodated'],
             $changes['meals_dinner'],
             $changes['meals_lunch'],
-            $changes['url'],
-
         );
 
         return count($changes) > 0;
