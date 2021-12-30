@@ -88,7 +88,7 @@ class Plan extends Model
         return $this->belongsToMany(ServiceType::class);
     }
 
-    public function isActiveTrial()
+    public function isActiveTrial(): bool
     {
         if (!$this->free_start_from || !$this->free_start_to) {
             return false;

@@ -69,7 +69,8 @@ class PlanController extends Controller
             $plan->save();
             $plan->service_types()->sync($request->get('service_types'));
         } catch (ApiErrorException $e) {
-            Log::channel('stripe_price_error')->info("Client could not purchase plan", [
+            Log::channel('stripe_price_error')
+                ->info("Client could not purchase plan", [
                 'plan_id' => $plan->id,
                 'stripe_id' => $planStripe->id,
                 'product' => $product->id,
