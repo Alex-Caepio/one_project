@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Notification extends Model {
     use HasFactory;
 
+    const RESCHEDULED_BY_PRACTITIONER = 'rescheduled_by_practitioner';
+    const RESCHEDULED_BY_CLIENT = 'rescheduled_by_client';
+
     protected $fillable = [
         'title',
         'client_id',
