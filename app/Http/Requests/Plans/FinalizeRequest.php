@@ -2,12 +2,12 @@
 
 namespace App\Http\Requests\Plans;
 
-use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Stripe\StripeClient;
 
-class PlanTrialRequest extends FormRequest {
+class FinalizeRequest extends FormRequest
+{
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -25,13 +25,20 @@ class PlanTrialRequest extends FormRequest {
      */
     public function rules(): array
     {
-        return [];
+        return [
+            'payment_method_id' => [
+                'required',
+                'string'
+            ],
+            'token' => [
+                'required',
+                'string'
+            ],
+            'intent_id' => [
+                'required',
+                'string'
+            ]
+        ];
     }
 
-    public function withValidator($validator) {
-        $plan = $this->plan;
-        if (!$plan->isActiveTrial()) {
-            $validator->errors()->add('plan', 'Please, select plan with free period');
-        }
-    }
 }

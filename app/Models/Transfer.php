@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string currency
  * @property string description
  * @property string stripe_account_id
+ * @property mixed|null $purchase_id
  */
 class Transfer extends Model
 {
@@ -28,4 +29,3 @@ class Transfer extends Model
 
 
 }
-

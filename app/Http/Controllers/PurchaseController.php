@@ -303,7 +303,7 @@ class PurchaseController extends Controller
         $paymentIntent = null;
         try {
             $client = $request->user();
-            $refference = implode(', ', $purchase->bookings->pluck('reference')->toArray());
+            $reference = implode(', ', $purchase->bookings->pluck('reference')->toArray());
             $paymentIntent = $stripe->paymentIntents->create(
                 [
                     'amount' => $purchase->price * 100,
@@ -313,13 +313,13 @@ class PurchaseController extends Controller
                     'payment_method' => $payment_method_id,
                     'metadata' => [
                         'Practitioner business email' => $practitioner->business_email,
-                        'Practitioner busines name' => $practitioner->business_name,
+                        'Practitioner business name' => $practitioner->business_name,
                         'Practitioner stripe id' => $practitioner->stripe_customer_id,
                         'Practitioner connected account id' => $practitioner->stripe_account_id,
                         'Client first name' => $client->first_name,
                         'Client last name' => $client->last_name,
                         'Client stripe id' => $client->stripe_customer_id,
-                        'Booking reference' => $refference
+                        'Booking reference' => $reference
                     ]
                 ]
             );
@@ -440,7 +440,8 @@ class PurchaseController extends Controller
             $paymentIntent = $paymentIntent->confirm();
             $logData['payment_intent_resulting_status'] = $paymentIntent->status;
 
-            Log::channel('stripe_purchase_finalize_success')->info("Client purchased finalized", $logData);
+            Log::channel('stripe_purchase_finalize_success')
+                ->info("Client purchased finalized", $logData);
         } catch (ApiErrorException $e) {
             Log::channel('stripe_purchase_finalize_failure')->info(
                 "Client purchase finalize failed",

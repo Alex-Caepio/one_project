@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Actions\Plan\CancelSubscription;
+use App\Actions\Plan\FinalizeSubscription;
 use App\Actions\Plan\UpdateSubscription;
+use App\Http\Requests\Plans\FinalizeRequest;
 use App\Http\Requests\Plans\PlanRequest;
 use App\Http\Requests\Plans\PlanTrialRequest;
 use App\Models\Plan;
@@ -50,13 +52,29 @@ class PlanController extends Controller
         return fractal($plans, new PlanTransformer())->parseIncludes($request->getIncludes())->toArray();
     }
 
+    /**
+     * Try to purchase plan if possible or return token for 3ds auth
+     *
+     * @param Plan $plan
+     * @param StripeClient $stripe
+     * @param PlanRequest $request
+     * @return mixed
+     */
     public function purchase(Plan $plan, StripeClient $stripe, PlanRequest $request)
     {
         $user = Auth::user();
         $isNewPlan = empty($user->plan_id);
         run_action(CancelSubscription::class, $user, $stripe);
 
-        $result = run_action(UpdateSubscription::class, $user, $stripe, $plan, $isNewPlan, $request);
+        return run_action(UpdateSubscription::class, $user, $stripe, $plan, $isNewPlan, $request);
+    }
+
+    public function finalize(Plan $plan, StripeClient $stripe, FinalizeRequest $request)
+    {
+        $user = Auth::user();
+        $isNewPlan = empty($user->plan_id);
+
+        $result = run_action(FinalizeSubscription::class, $user, $stripe, $plan, $isNewPlan, $request);
 
         if (!$result) {
             return response()->json([
