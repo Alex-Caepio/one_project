@@ -262,6 +262,13 @@ class EmailVariables
         return $this->event->schedule->title;
     }
 
+    /**
+     * @return string
+     */
+    public function getRescheduled_Schedule_name(): ?string
+    {
+        return $this->event->reschedule_schedule->title;
+    }
 
     /**
      * @return string|null
@@ -424,7 +431,9 @@ class EmailVariables
      */
     public function getSubscription_cost(): string
     {
-        return number_format($this->event->plan->price, 2);
+        $price = isset($this->event->plan) ? number_format($this->event->plan->price, 2) : '';
+
+        return config('app.platform_currency_sign')." ".$price;
     }
 
     /**
@@ -464,7 +473,7 @@ class EmailVariables
      */
     public function getMy_articles(): ?string
     {
-        return config('app.frontend_practitioner_services');
+        return config('app.frontend_practitioner_articles');
     }
 
     /**
@@ -472,7 +481,7 @@ class EmailVariables
      */
     public function getArticle_url(): ?string
     {
-        return $this->event->article->url;
+        return isset($this->event->article) ? $this->event->article->url : '';
     }
 
     /**
@@ -505,6 +514,14 @@ class EmailVariables
     public function getBooking_reference(): string
     {
         return $this->event->booking->reference;
+    }
+
+    /**
+     * @return string
+     */
+    public function getView_client_booking(): string
+    {
+        return config('app.frontend_booking_url').$this->event->booking->id;
     }
 
     /**
