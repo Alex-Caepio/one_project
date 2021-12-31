@@ -227,7 +227,7 @@ class PurchaseController extends Controller
         Booking $booking
     ): PaymentIntentDto {
         $payment_method_id = run_action(GetViablePaymentMethod::class, $practitioner, $request->payment_method_id);
-        $depositCost = $schedule->deposit_amount * 100 * $request->amount;
+        $depositCost = $schedule->deposit_amount * $request->amount;
 
         try {
             $responseData = run_action(

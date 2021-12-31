@@ -6,6 +6,7 @@ use App\Models\Plan;
 use App\Models\PractitionerCommission;
 use App\Models\Promotion;
 use App\Models\Transfer;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Log;
 use Stripe\StripeClient;
@@ -26,29 +27,15 @@ class TransferFundsWithCommissions
         }
         $stripe = app()->make(StripeClient::class);
 
-        $practitionerPlan = $practitioner->plan->commission_on_sale;
-
         // define if commission is overridden in admin panel
-        $practitionerCommissions = PractitionerCommission::query()
-            ->where('practitioner_id', $practitioner->id)
-            ->where(function (Builder $builder) {
-                return $builder
-                    ->whereRaw('(is_dateless = 0 AND date_from <= NOW() AND date_to >= NOW())')
-                    ->orWhere(function (Builder $builder) {
-                        return $builder
-                            ->where('is_dateless', '=', 1)
-                            ->whereNull('date_from')
-                            ->whereNull('date_to');
-                    });
-            })
-            ->min('rate');
+        $practitionerCommissions = $this->getPractitionerRate($practitioner);
 
         // transfer value depends of DiscountType
         if ($purchase->discount > 0 && $purchase->discount_applied === Promotion::APPLIED_HOST) {
             $cost += $purchase->discount;
         }
 
-        $amount = $cost - $cost * ($practitionerCommissions ?? $practitionerPlan) / 100;
+        $amount = $cost - $cost * $practitionerCommissions / 100;
 
         $reference = implode(', ', $purchase->bookings->pluck('reference')->toArray());
 
@@ -91,5 +78,24 @@ class TransferFundsWithCommissions
             ]);
 
         return $transfer;
+    }
+
+    private function getPractitionerRate(User $practitioner)
+    {
+        $rate = PractitionerCommission::query()
+            ->where('practitioner_id', $practitioner->id)
+            ->where(function (Builder $builder) {
+                return $builder
+                    ->whereRaw('(is_dateless = 0 AND date_from <= NOW() AND date_to >= NOW())')
+                    ->orWhere(function (Builder $builder) {
+                        return $builder
+                            ->where('is_dateless', '=', 1)
+                            ->whereNull('date_from')
+                            ->whereNull('date_to');
+                    });
+            })
+            ->min('rate');
+
+        return $rate->rate ?? $practitioner->plan->commission_on_sale;
     }
 }
