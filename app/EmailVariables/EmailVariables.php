@@ -782,10 +782,11 @@ class EmailVariables
         if ($this->event->purchase) {
             $installments = Instalment::query()
                 ->where('purchase_id', $this->event->purchase->id)
+                ->where('is_paid', false)
                 ->latest('created_at')
                 ->orderBy('payment_date')
                 ->get();
-            foreach ($installments->take($installments->count()-1) as $installment) {
+            foreach ($installments as $installment) {
                 $str .= Carbon::parse($installment->payment_date)->format(self::DATE_FORMAT) . ' ' .
                     config('app.platform_currency_sign').
                     $installment->payment_amount . ' <br/>';
