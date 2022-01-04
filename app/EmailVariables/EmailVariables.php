@@ -667,7 +667,7 @@ class EmailVariables
     {
         return isset($this->event->reschedule_schedule)
         && $this->event->reschedule_schedule->start_date
-            ? $this->convertToUserTimezone($this->event->reschedule_schedule->start_date)->format(self::DATE_FORMAT)
+            ? $this->convertToUserTimezone($this->event->reschedule_schedule->start_date)->format(self::TIME_FORMAT)
             : '';
     }
 
@@ -689,7 +689,7 @@ class EmailVariables
     {
         return isset($this->event->reschedule_schedule)
         && $this->event->reschedule_schedule->end_date
-            ? $this->convertToUserTimezone($this->event->reschedule_schedule->end_date)->format(self::DATE_FORMAT)
+            ? $this->convertToUserTimezone($this->event->reschedule_schedule->end_date)->format(self::TIME_FORMAT)
             : '';
     }
 
