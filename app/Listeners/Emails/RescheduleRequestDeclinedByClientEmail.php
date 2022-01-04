@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Mail;
 
 class RescheduleRequestDeclinedByClientEmail extends SendEmailHandler
 {
-    protected ?string $templateName = 'Reschedule Request Declined by Client'/*'Booking Cancelled by Client with Refund'*/;
+    protected ?string $templateName = 'Reschedule Request Declined by Client';
 
     public function handle(RescheduleRequestDeclinedByClient $event): void
     {
