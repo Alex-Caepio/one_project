@@ -8,6 +8,7 @@ use App\Models\Instalment;
 use App\Models\Price;
 use App\Models\Schedule;
 use App\Models\User;
+use App\Traits\EventDates;
 use App\Traits\GenerateCalendarLink;
 use App\Traits\RescheduleEmailLinks;
 use Carbon\Carbon;
@@ -22,7 +23,7 @@ use Illuminate\Support\Facades\URL;
 class EmailVariables
 {
 
-    use GenerateCalendarLink, RescheduleEmailLinks;
+    use GenerateCalendarLink, RescheduleEmailLinks, EventDates;
 
     const TIME_FORMAT = 'H:i';
     const DATE_FORMAT = 'd-m-Y';
@@ -271,41 +272,11 @@ class EmailVariables
     }
 
     /**
-     * @return string|null
-     */
-    private function getEventStartDate(): ?string
-    {
-        if (isset($this->event->booking) && !is_null($this->event->booking)) {
-            return $this->event->booking->datetime_from;
-        }
-
-        if (isset($this->event->schedule)) {
-            return $this->event->schedule->start_date;
-        }
-        return null;
-    }
-
-    /**
-     * @return string|null
-     */
-    private function getEventEndDate(): ?string
-    {
-        if (isset($this->event->booking) && !is_null($this->event->booking)) {
-            return $this->event->booking->datetime_to;
-        }
-
-        if (isset($this->event->schedule)) {
-            return $this->event->schedule->end_date;
-        }
-        return null;
-    }
-
-    /**
      * @return string
      */
     public function getSchedule_start_date(): string
     {
-        $startDate = $this->getEventStartDate();
+        $startDate = $this->getEventStartDate($this->event);
         return $startDate !== null
             ? $this->convertToUserTimezone($startDate)->format(self::DATE_FORMAT)
             : '';
@@ -316,7 +287,8 @@ class EmailVariables
      */
     public function getSchedule_start_time(): string
     {
-        $startDate = $this->getEventStartDate();
+        $startDate = $this->getEventStartDate($this->event);
+
         return $startDate !== null
             ? $this->convertToUserTimezone($startDate)->format(self::TIME_FORMAT)
             : '';
@@ -327,7 +299,7 @@ class EmailVariables
      */
     public function getSchedule_end_date(): string
     {
-        $endDate = $this->getEventEndDate();
+        $endDate = $this->getEventEndDate($this->event);
         return $endDate !== null
             ? $this->convertToUserTimezone($endDate)->format(self::DATE_FORMAT)
             : '';
@@ -338,7 +310,7 @@ class EmailVariables
      */
     public function getSchedule_end_time(): string
     {
-        $endDate = $this->getEventEndDate();
+        $endDate = $this->getEventEndDate($this->event);
         return $endDate !== null
             ? $this->convertToUserTimezone($endDate)->format(self::TIME_FORMAT)
             : '';

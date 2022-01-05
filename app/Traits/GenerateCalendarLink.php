@@ -14,6 +14,7 @@ use Spatie\IcalendarGenerator\Components\Event;
 
 trait GenerateCalendarLink
 {
+    use EventDates;
 
     public bool $calendarPresented = false;
 
@@ -40,8 +41,8 @@ trait GenerateCalendarLink
             return !empty(trim($value));
         });
         $location = urlencode(implode(', ', $locationData));
-        $startDate = Carbon::parse($schedule->start_date)->setTimezone($tz);
-        $endDate = Carbon::parse($schedule->end_date)->setTimezone($tz);
+        $startDate = Carbon::parse($this->getEventStartDate($event))->setTimezone($tz);
+        $endDate = Carbon::parse($this->getEventEndDate($event))->setTimezone($tz);
         return 'https://www.google.com/calendar/render?action=TEMPLATE&text=' . $schedule->service->title .
             '&details=' . urlencode($schedule->title) . '&location=' . $location . '&dates=' .
             $startDate->format(self::$format) . '%2F' . $endDate->format(self::$format);
