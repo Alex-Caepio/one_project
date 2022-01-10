@@ -57,6 +57,8 @@ class Kernel extends ConsoleKernel {
 
         $schedule->command('plan-freeperiod')->daily();
         $schedule->command('instalments:notify')->daily();
+
+        $schedule->command('telescope:prune --hours=48')->daily();
     }
 
     /**
