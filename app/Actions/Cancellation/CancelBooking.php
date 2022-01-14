@@ -235,52 +235,80 @@ class CancelBooking
         bool $declineRescheduleRequest,
         bool $cancelledByPractitioner
     ): array {
+        $stripeFee = (int)config('app.platform_cancellation_fee'); // 3%
+        $stripeFeeAmount = ($booking->cost / 100) * $stripeFee;
+        $planRate = $booking->practitioner->getCommission();
+        $planRateAmount = ($booking->cost / 100) * $planRate;
+
         $result = [
             'isFullRefund' => false,
             'refundTotal' => 0,
             'refundSmallestUnit' => 0,
             'bookingCost' => $booking->cost,
-            'practitionerFee' => 0,
-            'practitionerCharge' => 0
+            'stripeFee' => $stripeFee,
+            'stripeFeeAmount' => $stripeFeeAmount,
+            'planRate' => $planRate,
+            'planRateAmount' => $planRateAmount,
+            'practitionerCharge' => 0,
         ];
-        $hostFee = (int)config('app.platform_cancellation_fee'); // 3%
 
+        // What is the difference with cancellation by practitioner?
         if ($actionRole === User::ACCOUNT_PRACTITIONER || $declineRescheduleRequest === true) {
-            $practitionerCommissionOnSale = $booking->practitioner->getCommission();
-            $result['isFullRefund'] = true;
-            $result['refundTotal'] = $booking->cost - $practitionerCommissionOnSale * 100 /
-                ($booking->cost > 0 ? $booking->cost : 1);
-            $result['practitionerFee'] = round(($booking->cost / 100) * $hostFee);
+            $result = $this->cancelledWithDeclineRescheduleRequest($result);
         } else {
             if ($cancelledByPractitioner) {
-                $result['isFullRefund'] = true;
-                $result['refundTotal'] = $booking->cost;
-                $result['practitionerFee'] = round(($booking->cost / 100) * $hostFee);
+                $result = $this->cancelledByPractitioner($result);
             } else { // cancelled by client
-                $result['isFullRefund'] = false;
-                $isDateless = $booking->schedule->service->isDateless();
-                $bookingDate = $isDateless
-                    ? Carbon::parse($booking->created_at)
-                    : Carbon::parse($booking->datetime_from);
-                $now = Carbon::now();
-                $diffValue = $booking->schedule->service->service_type_id === 'appointment'
-                    ? $now->diffInHours($bookingDate)
-                    : $now->diffInDays($bookingDate);
-                $isRefundAllowed = ($isDateless && $now >= $bookingDate && $diffValue < $booking->schedule->refund_terms)
-                    || (!$isDateless && $bookingDate > $now && $diffValue > $booking->schedule->refund_terms);
-
-                if ($isRefundAllowed) {
-                    $result['refundTotal'] = (float)$booking->cost / 100 * (100 - $hostFee);
-                } else {
-                    $result['refundTotal'] = 0;
-                }
-
-                $result['practitionerFee'] = round(($result['refundTotal'] / 100) * $hostFee);
+                $result = $this->cancelledByClient($result, $booking);
             }
         }
 
         $result['refundSmallestUnit'] = (int)($result['refundTotal'] * 100);
-        $result['practitionerCharge'] = $result['practitionerFee'] + $result['refundTotal'];
+
+        return $result;
+    }
+
+    private function cancelledWithDeclineRescheduleRequest(array $result)
+    {
+        // How can it be a full refund if a plan rate amount is subtracted?
+        $result['isFullRefund'] = true;
+        $result['refundTotal'] = $result['bookingCost'] - $result['planRateAmount'];
+        $result['practitionerCharge'] = 0;
+
+        return $result;
+    }
+
+    private function cancelledByPractitioner(array $result): array
+    {
+        $result['isFullRefund'] = true;
+        $result['refundTotal'] = $result['bookingCost'];
+        $result['practitionerCharge'] = $result['bookingCost'] - $result['planRateAmount'] + $result['stripeFeeAmount'];
+
+        return $result;
+    }
+
+    private function cancelledByClient(array $result, Booking $booking): array
+    {
+        $result['isFullRefund'] = false;
+
+        $isDateless = $booking->schedule->service->isDateless();
+        $bookingDate = $isDateless
+            ? Carbon::parse($booking->created_at)
+            : Carbon::parse($booking->datetime_from);
+        $now = Carbon::now();
+        $diffValue = $booking->schedule->service->service_type_id === 'appointment'
+            ? $now->diffInHours($bookingDate)
+            : $now->diffInDays($bookingDate);
+        $isRefundAllowed = ($isDateless && $now >= $bookingDate && $diffValue < $booking->schedule->refund_terms)
+            || (!$isDateless && $bookingDate > $now && $diffValue > $booking->schedule->refund_terms);
+
+        if ($isRefundAllowed) {
+            $result['refundTotal'] = $result['bookingCost'] - $result['stripeFeeAmount'];
+            $result['practitionerCharge'] = $result['bookingCost'] - $result['planRateAmount'];
+        } else {
+            $result['refundTotal'] = 0;
+            $result['practitionerCharge'] = 0;
+        }
 
         return $result;
     }

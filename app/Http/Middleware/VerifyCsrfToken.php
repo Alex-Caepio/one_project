@@ -13,6 +13,6 @@ class VerifyCsrfToken extends Middleware
      */
     protected $except = [
         // Fixes CSRF token mismatch in local environment
-        'http://localhost:8080/telescope/*'
+        'http://localhost:8080/api/telescope/*'
     ];
 }
