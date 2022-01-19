@@ -9,6 +9,7 @@ use App\Models\Booking;
 use App\Models\Cancellation;
 use App\Models\Notification;
 use App\Models\RescheduleRequest;
+use App\Models\Transfer;
 use App\Models\User;
 use Carbon\Carbon;
 use Exception;
@@ -117,24 +118,7 @@ class CancelBooking
         }
 
         if ($refundData['practitionerCharge'] > 0 && $booking->practitioner->stripe_account_id) {
-            try {
-                $this->stripe->charges->create([
-                    'amount' => $refundData['practitionerCharge'] * 100,
-                    'currency' => config('app.platform_currency'),
-                    'source' => $booking->practitioner->stripe_account_id,
-                    'statement_descriptor_suffix' => $booking->reference
-                ]);
-            } catch (Exception $e) {
-                Log::channel('stripe_refund_fail')
-                    ->info('Stripe refund error: ', [
-                        'user_id' => $booking->user_id ?? null,
-                        'practitioner_id' => $booking->practitioner_id ?? null,
-                        'charge' => $refundData['practitionerCharge'],
-                        'booking_id' => $booking->id ?? null,
-                        'payment_stripe' => $booking->purchase->stripe_id ?? null,
-                        'message' => $e->getMessage(),
-                    ]);
-            }
+            $this->reverseTransferToPractitioner($refundData, $booking);
         }
 
         if ($booking->is_installment) {
@@ -311,5 +295,40 @@ class CancelBooking
         }
 
         return $result;
+    }
+
+    private function reverseTransferToPractitioner(array $refundData, Booking $booking)
+    {
+        $transfer = Transfer::where('purchase_id', $booking->purchase->id)->first();
+        if(! $transfer->id) {
+            return;
+        }
+
+        try {
+            $this->stripe->transfers->createReversal(
+                $transfer->stripe_transfer_id,
+                [
+                    'amount' => $refundData['practitionerCharge'] * 100,
+                    'description' => 'Booking cancelled',
+                    'metadata' => [
+                        'Currency' => config('app.platform_currency'),
+                        'Practitioner connected account id' => $booking->practitioner->stripe_account_id,
+                        'Transfer id' => $transfer->stripe_transfer_id,
+                        'Booking reference' => $booking->reference,
+                    ]
+                ],
+            );
+        } catch (Exception $e) {
+            Log::channel('stripe_refund_fail')
+                ->info('Stripe refund error: ', [
+                    'user_id' => $booking->user_id ?? null,
+                    'practitioner_id' => $booking->practitioner_id ?? null,
+                    'charge' => $refundData['practitionerCharge'],
+                    'booking_id' => $booking->id ?? null,
+                    'payment_stripe' => $booking->purchase->stripe_id ?? null,
+                    'transfer_stripe' => $transfer->stripe_transfer_id ?? null,
+                    'message' => $e->getMessage(),
+                ]);
+        }
     }
 }
