@@ -127,5 +127,10 @@ class AppServiceProvider extends ServiceProvider
                     );
             }
         });
+
+        // Force assets loading via https
+        if(! $this->app->environment('local')) {
+            \URL::forceScheme('https');
+        }
     }
 }
