@@ -16,8 +16,8 @@ class StripeAccountController extends Controller {
         if (!empty($request->user()->stripe_account_id)) {
             return $stripe->accountLinks->create([
                                                      'account'     => $request->user()->stripe_account_id,
-                                                     'refresh_url' => config('app.frontend_stripe_account_refresh'),
-                                                     'return_url'  => config('app.frontend_stripe_account_redirect_back'),
+                                                     'refresh_url' => config('app.frontend_url') . config('app.frontend_stripe_account_refresh'),
+                                                     'return_url'  => config('app.frontend_url') . config('app.frontend_stripe_account_redirect_back'),
                                                      'type'        => 'account_onboarding',
                                                  ]);
         }
