@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string currency
  * @property string description
  * @property string stripe_account_id
+ * @property string stripe_transfer_id
  * @property mixed|null $purchase_id
  */
 class Transfer extends Model

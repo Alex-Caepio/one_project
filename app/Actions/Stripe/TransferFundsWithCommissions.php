@@ -39,10 +39,11 @@ class TransferFundsWithCommissions
 
         $reference = implode(', ', $purchase->bookings->pluck('reference')->toArray());
 
-        $stripe->transfers->create([
+        $stripeTransfer = $stripe->transfers->create([
             'amount' => $amount * 100,
             'currency' => config('app.platform_currency'),
             'destination' => $practitioner->stripe_account_id,
+            'description' => 'New booking transfer to practitioner',
             'metadata' => [
                 'Practitioner business email' => $practitioner->business_email,
                 'Practitioner business name' => $practitioner->business_name,
@@ -58,6 +59,7 @@ class TransferFundsWithCommissions
         $transfer = new Transfer();
         $transfer->user_id = $practitioner->id;
         $transfer->stripe_account_id = $practitioner->stripe_account_id;
+        $transfer->stripe_transfer_id = $stripeTransfer->id;
         $transfer->status = 'success';
         $transfer->amount = $amount;
         $transfer->amount_original = $purchase->price;
