@@ -104,7 +104,7 @@ class EmailVariables
             'user' => $this->event->user->id,
             'email' => $this->event->user->email
         ]);
-        return config('app.frontend_email_confirm_page') . '?' . explode('?', $linkApi)[1];
+        return config('app.frontend_url') . config('app.frontend_email_confirm_page') . '?' . explode('?', $linkApi)[1];
     }
 
 
@@ -122,7 +122,7 @@ class EmailVariables
      */
     public function getReset_password_url(): string
     {
-        return config('app.frontend_reset_password_form_url') . '?token=' . $this->event->reset->token;
+        return config('app.frontend_url') . config('app.frontend_reset_password_form_url') . '?token=' . $this->event->reset->token;
     }
 
     /**
@@ -130,7 +130,7 @@ class EmailVariables
      */
     public function getMy_account(): string
     {
-        return config('app.frontend_account_link');
+        return config('app.frontend_url') . config('app.frontend_account_link');
     }
 
     /**
@@ -138,7 +138,7 @@ class EmailVariables
      */
     public function getMy_profile(): string
     {
-        return config('app.frontend_profile_link');
+        return config('app.frontend_url') . config('app.frontend_profile_link');
     }
 
     /**
@@ -146,7 +146,7 @@ class EmailVariables
      */
     public function getPractitioner_Url(): ?string
     {
-        return config('app.frontend_public_profile') . $this->event->user->slug;
+        return config('app.frontend_url') . config('app.frontend_public_profile') . $this->event->user->id;
     }
 
     /**
@@ -163,7 +163,7 @@ class EmailVariables
      */
     public function getMy_services(): string
     {
-        return config('app.frontend_practitioner_services');
+        return config('app.frontend_url') . config('app.frontend_practitioner_services');
     }
 
     /**
@@ -225,7 +225,7 @@ class EmailVariables
      */
     public function getService_url(): ?string
     {
-        return config('app.frontend_public_service') . $this->event->service->slug;
+        return config('app.frontend_url') . config('app.frontend_public_service') . $this->event->service->slug;
     }
 
 
@@ -445,7 +445,7 @@ class EmailVariables
      */
     public function getMy_articles(): ?string
     {
-        return config('app.frontend_practitioner_articles');
+        return config('app.frontend_url') . config('app.frontend_practitioner_articles');
     }
 
     /**
@@ -455,7 +455,7 @@ class EmailVariables
     {
         $url = isset($this->event->article) ? '/view/' . $this->event->article->id : '';
 
-        return isset($this->event->article) ? config('app.frontend_practitioner_articles') . $url  : '';
+        return isset($this->event->article) ? config('app.frontend_url') . config('app.frontend_practitioner_articles') . $url  : '';
     }
 
     /**
@@ -495,7 +495,7 @@ class EmailVariables
      */
     public function getView_client_booking(): string
     {
-        return config('app.frontend_booking_url').$this->event->booking->id;
+        return config('app.frontend_url') . config('app.frontend_clients_booking_url') . $this->event->booking->id;
     }
 
     /**
@@ -564,7 +564,7 @@ class EmailVariables
      */
     public function getAccept(): string
     {
-        return config('app.frontend_reschedule_apply') . '/' . $this->event->reschedule->id . '?token=' .
+        return config('app.frontend_url') . config('app.frontend_reschedule_apply') . '/' . $this->event->reschedule->id . '?token=' .
             $this->generatePersonalAccessToken($this->event->client);
     }
 
@@ -573,7 +573,7 @@ class EmailVariables
      */
     public function getDecline(): string
     {
-        return config('app.frontend_reschedule_decline') . '/' . $this->event->reschedule->id . '?token=' .
+        return config('app.frontend_url') . config('app.frontend_reschedule_decline') . '/' . $this->event->reschedule->id . '?token=' .
             $this->generatePersonalAccessToken($this->event->client, 'decline');
     }
 
@@ -582,7 +582,7 @@ class EmailVariables
      */
     public function getView_booking(): string
     {
-        return config('app.frontend_booking_url') . $this->event->booking->id;
+        return config('app.frontend_url') . config('app.frontend_booking_url') . $this->event->booking->id;
     }
 
     /**
@@ -598,7 +598,7 @@ class EmailVariables
      */
     public function getRebook(): string
     {
-        return config('app.frontend_booking_url') . $this->event->booking->id;
+        return config('app.frontend_url') . config('app.frontend_booking_url') . $this->event->booking->id;
     }
 
     /**
@@ -606,7 +606,7 @@ class EmailVariables
      */
     public function getView_bookings(): string
     {
-        return config('app.frontend_booking_url');
+        return config('app.frontend_url') . config('app.frontend_booking_url');
     }
 
 

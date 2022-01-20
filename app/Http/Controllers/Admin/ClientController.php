@@ -69,7 +69,7 @@ class ClientController extends Controller {
             'email' => $user->email
         ]);
 
-        $linkFrontend = config('app.frontend_password_reset_link') . '?' . explode('?', $linkApi)[1];
+        $linkFrontend = config('app.frontend_url') . config('app.frontend_password_reset_link') . '?' . explode('?', $linkApi)[1];
 
         Mail::to([
                      'email' => $user->email

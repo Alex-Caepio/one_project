@@ -76,7 +76,7 @@ class SendUserMail extends Mailable
      */
     private function buildReplyLink(): string
     {
-        return config('app.platform_conversation_url') . $this->conversationId;
+        return config('app.frontend_url') . config('app.platform_conversation_url') . $this->conversationId;
     }
 
 }
