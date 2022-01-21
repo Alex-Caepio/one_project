@@ -453,7 +453,7 @@ class EmailVariables
      */
     public function getArticle_url(): ?string
     {
-        $url = isset($this->event->article) ? '/view/' . $this->event->article->id : '';
+        $url = isset($this->event->article) ? '/client-articles/' . $this->event->article->id : '';
 
         return isset($this->event->article) ? config('app.frontend_url') . config('app.frontend_practitioner_articles') . $url  : '';
     }
