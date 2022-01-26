@@ -87,6 +87,7 @@ return [
     'frontend_account_link' => env('FRONTEND_ACCOUNT_LINK', '/account/personal-details'),
     'frontend_practitioner_services' => env('FRONTEND_PRACTITIONER_SERVICES', '/services'),
     'frontend_practitioner_articles' => env('FRONTEND_PRACTITIONER_ARTICLES', '/articles'),
+    'frontend_practitioner_article_url' => env('FRONTEND_PRACTITIONER_ARTICLE_URL', '/biz/practitioner-slug/article/article-slug'),
     'frontend_booking_url' => env('FRONTEND_BOOKING_URL', '/bookings/services/'),
     'frontend_clients_booking_url' => env('FRONTEND_CLIENTS_BOOKING_URL', '/practitioner/services/'),
     'frontend_reschedule_apply' => env('FRONTEND_RESCHEDULE_APPLY', '/accept-reschedule'),
