@@ -453,9 +453,12 @@ class EmailVariables
      */
     public function getArticle_url(): ?string
     {
-        $url = isset($this->event->article) ? '/client-articles/' . $this->event->article->id : '';
-
-        return isset($this->event->article) ? config('app.frontend_url') . config('app.frontend_practitioner_articles') . $url  : '';
+        return isset($this->event->article) ? config('app.frontend_url') .
+            str_replace(
+                ['practitioner-slug', 'article-slug'],
+                [$this->event->user->slug, $this->event->article->slug],
+                config('app.frontend_practitioner_article_url')
+            ) : '';
     }
 
     /**
@@ -495,7 +498,7 @@ class EmailVariables
      */
     public function getView_client_booking(): string
     {
-        return config('app.frontend_url') . config('app.frontend_clients_booking_url') . $this->event->booking->id;
+        return config('app.frontend_url') . config('app.frontend_clients_booking_url') . $this->event->booking->purchase->service->id . '/' . $this->event->booking->schedule->id;
     }
 
     /**

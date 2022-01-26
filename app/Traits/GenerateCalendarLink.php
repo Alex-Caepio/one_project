@@ -21,14 +21,13 @@ trait GenerateCalendarLink
     /**
      * @var string
      */
-    private static string $format = 'Ymd\TH:i\Z';
+    private static string $format = 'Ymd\THi00\Z';
 
 
     public function generateGoogleLink($event): string
     {
         /** @var Schedule $schedule */
         $schedule = $event->schedule;
-        $tz = $event->user->user_timezone->value;
 
         $locationData = array_filter([
             $schedule->url,
@@ -41,8 +40,8 @@ trait GenerateCalendarLink
             return !empty(trim($value));
         });
         $location = urlencode(implode(', ', $locationData));
-        $startDate = Carbon::parse($this->getEventStartDate($event))->setTimezone($tz);
-        $endDate = Carbon::parse($this->getEventEndDate($event))->setTimezone($tz);
+        $startDate = Carbon::parse($this->getEventStartDate($event), 'UTC');
+        $endDate = Carbon::parse($this->getEventEndDate($event), 'UTC');
         return 'https://www.google.com/calendar/render?action=TEMPLATE&text=' . $schedule->service->title .
             '&details=' . urlencode($schedule->title) . '&location=' . $location . '&dates=' .
             $startDate->format(self::$format) . '%2F' . $endDate->format(self::$format);
