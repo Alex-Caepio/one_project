@@ -4,6 +4,7 @@ namespace App\Models;
 
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Class PurchaseSnapshot
@@ -60,5 +61,10 @@ class PurchaseSnapshot extends Purchase
     public function price(): BelongsTo
     {
         return $this->belongsTo(PriceSnapshot::class);
+    }
+
+    public function instalments(): HasMany
+    {
+        return $this->purchase->instalments();
     }
 }

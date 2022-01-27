@@ -40,7 +40,7 @@ class BookingController extends Controller
         }
 
         $paginator = $query->paginate($request->getLimit());
-        $booking = $paginator->getCollection()->toSnapshots();
+        $booking = $paginator->getCollection();
 
         return response(fractal($booking, new BookingTransformer())->parseIncludes($request->getIncludes()))
             ->withPaginationHeaders($paginator);

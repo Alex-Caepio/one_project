@@ -47,7 +47,7 @@ class BookingSnapshot extends Booking {
     }
 
     public function purchase() {
-        return $this->belongsTo(PurchaseSnapshot::class);
+        return $this->belongsTo(PurchaseSnapshot::class, 'purchase_snapshot_id');
     }
 
     public function reschedule_requests(): HasMany {

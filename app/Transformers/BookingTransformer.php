@@ -56,7 +56,7 @@ class BookingTransformer extends Transformer
 
     public function includeSchedule(Booking $booking)
     {
-        return $this->itemOrNull($booking->schedule, new ScheduleTransformer());
+        return $this->itemOrNull($this->getSchedule($booking), new ScheduleTransformer());
     }
 
     public function includeUser(Booking $booking)
@@ -116,5 +116,10 @@ class BookingTransformer extends Transformer
             ->whereIsPaid(true)
             ->get('payment_amount')
             ->sum('payment_amount');
+    }
+
+    private function getSchedule(Booking $booking)
+    {
+        return isset($booking->snapshot) ? $booking->snapshot->schedule : $booking->schedule;
     }
 }
