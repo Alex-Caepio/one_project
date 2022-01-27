@@ -44,6 +44,8 @@ class TransferFundsWithCommissions
             'currency' => config('app.platform_currency'),
             'destination' => $practitioner->stripe_account_id,
             'description' => 'New booking transfer to practitioner',
+            // https://stripe.com/docs/connect/charges-transfers#transfer-availability
+            "source_transaction" => $purchase->stripe_id,
             'metadata' => [
                 'Practitioner business email' => $practitioner->business_email,
                 'Practitioner business name' => $practitioner->business_name,
@@ -52,7 +54,8 @@ class TransferFundsWithCommissions
                 'Client first name' => $client->first_name,
                 'Client last name' => $client->last_name,
                 'Client stripe id' => $client->stripe_customer_id,
-                'Booking reference' => $reference
+                'Booking reference' => $reference,
+                'Payment intent id' => $purchase->stripe_id,
             ]
         ]);
 
