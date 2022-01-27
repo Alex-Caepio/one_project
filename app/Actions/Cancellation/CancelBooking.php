@@ -300,7 +300,7 @@ class CancelBooking
     private function reverseTransferToPractitioner(array $refundData, Booking $booking)
     {
         $transfer = Transfer::where('purchase_id', $booking->purchase->id)->first();
-        if(! $transfer->id) {
+        if(empty($transfer)) {
             return;
         }
 
