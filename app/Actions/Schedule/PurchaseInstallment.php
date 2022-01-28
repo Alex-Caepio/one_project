@@ -65,7 +65,8 @@ class PurchaseInstallment
             $deposit->status,
             $deposit->client_secret,
             $deposit->confirmation_method,
-            $deposit->next_action
+            $deposit->next_action,
+            $deposit->charges->data[0]['id'],
         );
     }
 

@@ -261,7 +261,8 @@ class PurchaseController extends Controller
                 $practitioner,
                 $schedule,
                 $request->user(),
-                $purchase
+                $purchase,
+                $responseData->getChargeId(),
             );
 
             Log::channel('stripe_transfer_success')
@@ -348,6 +349,7 @@ class PurchaseController extends Controller
 
             throw new Exception('Cannot handle instant payment');
         }
+        $chargeId = $paymentIntent->charges->data[0]['id'];
 
         Log::channel('stripe_purchase_schedule_success')
             ->info("Client purchased schedule", [
@@ -371,7 +373,8 @@ class PurchaseController extends Controller
                 $practitioner,
                 $schedule,
                 $client,
-                $purchase
+                $purchase,
+                $chargeId,
             );
 
             Log::channel('stripe_transfer_success')
@@ -412,7 +415,8 @@ class PurchaseController extends Controller
             $paymentIntent->status,
             $paymentIntent->client_secret,
             $paymentIntent->confirmation_method,
-            $paymentIntent->next_action
+            $paymentIntent->next_action,
+            $chargeId
         );
     }
 
