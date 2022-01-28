@@ -20,6 +20,8 @@ class PaymentIntentDto
 
     private ?string $confirmationMethod;
 
+    private ?string $chargeId;
+
     /**
      * Url used for iframe to confirm the payment using 3ds flow version 1
      */
@@ -36,11 +38,13 @@ class PaymentIntentDto
         string        $status,
         ?string       $clientSecret,
         ?string       $confirmationMethod,
-        ?StripeObject $nextAction
+        ?StripeObject $nextAction,
+        ?string $chargeId
     ) {
         $this->status = $status;
         $this->clientSecret = $clientSecret;
         $this->confirmationMethod = $confirmationMethod;
+        $this->chargeId = $chargeId;
 
         if (!$nextAction) {
             return;
@@ -71,6 +75,10 @@ class PaymentIntentDto
             $data['confirmation_method'] = $this->confirmationMethod;
         }
 
+        if ($this->chargeId) {
+            $data['charge_id'] = $this->chargeId;
+        }
+
         if ($this->is3dsConfirmationExternal !== null) {
             $data['is_3ds_confirmation_external'] = $this->is3dsConfirmationExternal;
         }
@@ -80,6 +88,11 @@ class PaymentIntentDto
         }
 
         return $data;
+    }
+
+    public function getChargeId(): ?string
+    {
+        return $this->chargeId;
     }
 
     private function check3dsConfirmationExternal(?string $threeDsCheckType, ?string $redirectUrl): bool

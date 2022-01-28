@@ -13,7 +13,7 @@ use Stripe\StripeClient;
 
 class TransferFundsWithCommissions
 {
-    public function execute($cost, $practitioner, $schedule = null, $client, $purchase): ?Transfer
+    public function execute($cost, $practitioner, $schedule = null, $client, $purchase, $chargeId = null): ?Transfer
     {
         if (!$practitioner->plan instanceof Plan) {
             Log::channel('practitioner_commissions_error')
@@ -45,7 +45,7 @@ class TransferFundsWithCommissions
             'destination' => $practitioner->stripe_account_id,
             'description' => 'New booking transfer to practitioner',
             // https://stripe.com/docs/connect/charges-transfers#transfer-availability
-            "source_transaction" => $purchase->stripe_id,
+            'source_transaction' => $chargeId,
             'metadata' => [
                 'Practitioner business email' => $practitioner->business_email,
                 'Practitioner business name' => $practitioner->business_name,
@@ -55,7 +55,7 @@ class TransferFundsWithCommissions
                 'Client last name' => $client->last_name,
                 'Client stripe id' => $client->stripe_customer_id,
                 'Booking reference' => $reference,
-                'Payment intent id' => $purchase->stripe_id,
+                'Charge id' => $chargeId,
             ]
         ]);
 
