@@ -8,6 +8,12 @@
     <title>{{$replacedSubject}}</title>
 </head>
 <body>
+  <style>
+    table tbody p {
+      margin: 0;
+      margin-bottom: 0.5em;
+    }
+  </style>
 <table>
     @if($logoContent)
         <tr>
