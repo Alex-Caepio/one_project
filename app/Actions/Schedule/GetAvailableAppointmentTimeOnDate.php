@@ -101,14 +101,13 @@ class GetAvailableAppointmentTimeOnDate
     {
         $scheduleIds = Schedule::where('service_id', $schedule->service_id)->pluck('id');
 
-        // exclude today past
-        $now = Carbon::now();
         $excludedTimes = [];
 
-        if ($now->isToday()) {
+        // Exclude today past + schedule buffer between appointments
+        if (Carbon::parse($date)->isToday()) {
             $excludedTimes[] = [
                 'from' => Carbon::now()->startOfDay()->addSecond(),
-                'to' => $now->addMinutes($buffer)->subSecond()
+                'to' => Carbon::now()->addMinutes($buffer)->subSecond()
             ];
         }
 
@@ -128,8 +127,8 @@ class GetAvailableAppointmentTimeOnDate
 
         foreach ($bookings as $booking) {
             $excludedTimes[] = [
-                'from' => Carbon::parse($booking->datetime_from)->subMinutes($buffer + $duration)->addSecond(),
-                'to' => Carbon::parse($booking->datetime_to)->addMinutes($buffer)->subSecond()
+                'from' => Carbon::parse($booking->datetime_from)->subMinutes($schedule->buffer_time + $duration)->addSecond(),
+                'to' => Carbon::parse($booking->datetime_to)->addMinutes($schedule->buffer_time)->subSecond()
             ];
         }
 
