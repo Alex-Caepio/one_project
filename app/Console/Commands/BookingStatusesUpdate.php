@@ -32,15 +32,23 @@ class BookingStatusesUpdate extends Command
     public function handle(): void
     {
         $cntBookings = Booking::query()
-            ->where('datetime_from', '<', Carbon::now())
+            ->with('practitioner.generalTimezone')
+            ->where('datetime_from', '<', Carbon::now()->setTimezone('+14:00'))
             ->whereNotNull('datetime_from')
             ->whereHas('schedule.service', static function ($query) {
                 $query->whereNotIn('services.service_type_id', config('app.dateless_service_types'));
             })
             ->active()
-            ->update(['status' => 'completed']);
+            ->get();
+        $bookingIds = [];
+        foreach ($cntBookings as $booking) {
+            if ($booking->datetime_from < Carbon::now()->setTimezone($booking->practitioner->generalTimezone->value)) {
+                $bookingIds[] = $booking->id;
+            }
+        }
+        Booking::whereIn('id', $bookingIds)->update(['status' => 'completed']);
         Log::channel('console_commands_handler')
             ->info('Mark bookings as completed. Done...',
-                ['bookings_count' => $cntBookings]);
+                ['bookings_count' => $bookingIds]);
     }
 }
