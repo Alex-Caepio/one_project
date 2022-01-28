@@ -404,4 +404,8 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->is_admin || ($this->account_type === User::ACCOUNT_PRACTITIONER && $this->plan);
     }
 
+    public function generalTimezone(): HasOne
+    {
+        return $this->hasOne(Timezone::class, 'id', 'timezone_id');
+    }
 }
