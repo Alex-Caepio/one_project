@@ -71,14 +71,20 @@
 
 ##Setup xdebug
 - Go to phpStorm preferences
-- Add cli interpretter
+- Add CLI interpretter
+
 ![img.png](img.png)
+
 - Chose 'Docker' and image
+
 ![img_1.png](img_1.png)
+
 - Add path mapping
+
 ![img_2.png](img_2.png)
-- Add server with name 'localhost' and file mapping:
-  - for backend directory '/var/www/html'
+
+- Add server with name 'localhost' and file mapping for backend directory '/var/www/html'
+
 ![img_4.png](img_4.png)
 
 ## Additional files needed
