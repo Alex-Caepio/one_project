@@ -5,6 +5,7 @@
 - [Requirements](#requirements)
 - [Installation](#installation)
 - [Updating](#updating)
+- [Xdebug](#setup-xdebug)
 - [Additional files needed](#additional-files-needed)
 - [Troubleshooting](#troubleshooting)
 
@@ -68,6 +69,18 @@
 - Optional if composer.json has been changed `composer install`
 - `php artisan migrate`
 
+##Setup xdebug
+- Go to phpStorm preferences
+- Add cli interpretter
+![img.png](img.png)
+- Chose 'Docker' and image
+![img_1.png](img_1.png)
+- Add path mapping
+![img_2.png](img_2.png)
+- Add server with name 'localhost' and file mapping:
+  - for backend directory '/var/www/html'
+![img_4.png](img_4.png)
+
 ## Additional files needed
 
 ### docker-compose.yml
@@ -81,6 +94,8 @@ networks:
 
 services:
     back:
+        environment:
+            PHP_IDE_CONFIG: serverName=localhost
         build:
             context: back
             dockerfile: Dockerfile.local
@@ -141,6 +156,14 @@ COPY ./config/vhost.local /etc/apache2/sites-enabled/000-default.conf
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
 && apt-get update && apt-get install -y git libzip-dev unzip libpng-dev mysql-common default-mysql-client\
 && docker-php-ext-install zip pdo_mysql gd && a2enmod rewrite headers
+
+RUN pecl install xdebug
+RUN docker-php-ext-enable xdebug \
+    && echo "xdebug.start_with_request=yes" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && echo "xdebug.client_host=host.docker.internal" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && echo "xdebug.remote_enable=1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && echo "xdebug.client_port=9003" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 
 WORKDIR /var/www/html
 ```
