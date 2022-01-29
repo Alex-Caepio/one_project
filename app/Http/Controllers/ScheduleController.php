@@ -98,12 +98,10 @@ class ScheduleController extends Controller
                 return response('Booking not found', 500);
             }
 
-            $scheduleQuery->whereHas(
-                'prices',
-                static function ($query) use ($booking) {
+            $scheduleQuery->with([
+                'prices' => function ($query) use ($booking) {
                     $query->where('prices.cost', '<=', $booking->price->cost)->orWhere('is_free', true);
-                }
-            );
+                }]);
 
             // attendees filtrator
             $scheduleCollection = $scheduleQuery->get()->filter(
