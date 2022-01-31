@@ -93,7 +93,7 @@ return [
     'frontend_reschedule_apply' => env('FRONTEND_RESCHEDULE_APPLY', '/accept-reschedule'),
     'frontend_reschedule_decline' => env('FRONTEND_RESCHEDULE_DECLINE', '/decline-reschedule'),
     'frontend_public_profile' => env('FRONTEND_PUBLIC_PROFILE', '/practitioner/'),
-    'frontend_public_service' => env('FRONTEND_PUBLIC_SERVICE', '/service/'),
+    'frontend_public_service' => env('FRONTEND_PUBLIC_SERVICE', '/biz/practitioner-slug/service/service-slug'),
     'asset_url' => env('ASSET_URL', null),
     'platform_conversation_url' => env('FRONTEND_CONVERSATION_URL', '/conversation/'),
 
