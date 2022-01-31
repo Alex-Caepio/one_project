@@ -52,8 +52,7 @@ class TransactionalEmail extends Mailable
             ->view('mails.custom_emails')
             ->from($this->emailData->from_email, $this->emailData->from_title)
             ->subject($this->replacedSubject)
-            ->to($this->recipient)
-            ->attachCalendar();
+            ->to($this->recipient);
     }
 
 
