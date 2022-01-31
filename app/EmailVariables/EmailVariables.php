@@ -225,7 +225,12 @@ class EmailVariables
      */
     public function getService_url(): ?string
     {
-        return config('app.frontend_url') . config('app.frontend_public_service') . $this->event->service->slug;
+        $user = User::find($this->event->service->user_id);
+        return config('app.frontend_url') . str_replace(
+                ['practitioner-slug', 'service-slug'],
+                [$user->slug, $this->event->service->slug],
+                config('app.frontend_public_service')
+            );
     }
 
 
@@ -268,7 +273,7 @@ class EmailVariables
      */
     public function getRescheduled_Schedule_name(): ?string
     {
-        return $this->event->reschedule_schedule->title;
+        return $this->event->reschedule->new_schedule->title;
     }
 
     /**
@@ -631,9 +636,9 @@ class EmailVariables
      */
     public function getReschedule_start_date(): string
     {
-        return isset($this->event->reschedule_schedule)
-        && $this->event->reschedule_schedule->start_date
-            ? $this->convertToUserTimezone($this->event->reschedule_schedule->start_date)->format(self::DATE_FORMAT)
+        return isset($this->event->reschedule)
+        && $this->event->reschedule->new_start_date
+            ? $this->convertToUserTimezone($this->event->reschedule->new_start_date)->format(self::DATE_FORMAT)
             : '';
     }
 
@@ -642,9 +647,9 @@ class EmailVariables
      */
     public function getReschedule_start_time(): string
     {
-        return isset($this->event->reschedule_schedule)
-        && $this->event->reschedule_schedule->start_date
-            ? $this->convertToUserTimezone($this->event->reschedule_schedule->start_date)->format(self::TIME_FORMAT)
+        return isset($this->event->reschedule)
+        && $this->event->reschedule->new_start_date
+            ? $this->convertToUserTimezone($this->event->reschedule->new_start_date)->format(self::TIME_FORMAT)
             : '';
     }
 
@@ -653,9 +658,9 @@ class EmailVariables
      */
     public function getReschedule_end_date(): string
     {
-        return isset($this->event->reschedule_schedule)
-        && $this->event->reschedule_schedule->end_date
-            ? $this->convertToUserTimezone($this->event->reschedule_schedule->end_date)->format(self::DATE_FORMAT)
+        return isset($this->event->reschedule)
+        && $this->event->reschedule->new_end_date
+            ? $this->convertToUserTimezone($this->event->reschedule->new_end_date)->format(self::DATE_FORMAT)
             : '';
     }
 
@@ -664,9 +669,9 @@ class EmailVariables
      */
     public function getReschedule_end_time(): string
     {
-        return isset($this->event->reschedule_schedule)
-        && $this->event->reschedule_schedule->end_date
-            ? $this->convertToUserTimezone($this->event->reschedule_schedule->end_date)->format(self::TIME_FORMAT)
+        return isset($this->event->reschedule)
+        && $this->event->reschedule->new_end_date
+            ? $this->convertToUserTimezone($this->event->reschedule->new_end_date)->format(self::TIME_FORMAT)
             : '';
     }
 
@@ -675,7 +680,7 @@ class EmailVariables
      */
     public function getReschedule_venue_name(): ?string
     {
-        return isset($this->event->reschedule_schedule) ? $this->event->reschedule_schedule->venue_name : '';
+        return isset($this->event->reschedule->new_schedule) ? $this->event->reschedule->new_schedule->venue_name : '';
     }
 
     /**
@@ -683,7 +688,7 @@ class EmailVariables
      */
     public function getReschedule_venue_address(): ?string
     {
-        return isset($this->event->reschedule_schedule) ? $this->event->reschedule_schedule->venue_address : '';
+        return isset($this->event->reschedule->new_schedule) ? $this->event->reschedule->new_schedule->venue_address : '';
     }
 
     /**
@@ -691,7 +696,7 @@ class EmailVariables
      */
     public function getReschedule_city(): ?string
     {
-        return isset($this->event->reschedule_schedule) ? $this->event->reschedule_schedule->city : '';
+        return isset($this->event->reschedule->new_schedule) ? $this->event->reschedule->new_schedule->city : '';
     }
 
     /**
@@ -699,7 +704,7 @@ class EmailVariables
      */
     public function getReschedule_country(): ?string
     {
-        return isset($this->event->reschedule_schedule) ? $this->event->reschedule_schedule->country->nicename : '';
+        return isset($this->event->reschedule->new_schedule->country) ? $this->event->reschedule->new_schedule->country->nicename : '';
     }
 
     /**
@@ -707,7 +712,7 @@ class EmailVariables
      */
     public function getReschedule_postcode(): ?string
     {
-        return isset($this->event->reschedule_schedule) ? $this->event->reschedule_schedule->post_code : '';
+        return isset($this->event->reschedule) ? $this->event->reschedule->new_schedule->post_code : '';
     }
 
     /**
@@ -715,7 +720,7 @@ class EmailVariables
      */
     public function getReschedule_hosting_url(): ?string
     {
-        return isset($this->event->reschedule_schedule) ? $this->event->reschedule_schedule->url : '';
+        return isset($this->event->reschedule) ? $this->event->reschedule->new_url : '';
     }
 
     /**
@@ -724,7 +729,7 @@ class EmailVariables
     public function getPractitioner_reschedule_message(): ?string
     {
         return $this->event instanceof
-        BookingConfirmation ? $this->event->schedule->booking_message : $this->event->reschedule_schedule->comment;
+        BookingConfirmation ? $this->event->schedule->booking_message : $this->event->reschedule->new_schedule->comment;
     }
 
     /**
