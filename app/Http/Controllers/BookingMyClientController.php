@@ -82,7 +82,7 @@ class BookingMyClientController extends Controller
             ->join('service_types', 'service_types.id', '=', 'services.service_type_id')
             ->join('bookings', static function ($join) {
                     $join->on('bookings.schedule_id', '=', 'schedules.id')
-                        ->whereIn('bookings.status', [BookingView::LIVE_BOOKING_STATUS]);
+                        ->whereIn('bookings.status', BookingView::LIVE_BOOKING_STATUS);
             })
             ->where('services.user_id', $request->user()->id)
             ->whereNotIn('services.service_type_id', ['bespoke', 'appointment'])
