@@ -237,7 +237,7 @@ class CancelBooking
         ];
 
         // What is the difference with cancellation by practitioner?
-        if ($actionRole === User::ACCOUNT_PRACTITIONER || $declineRescheduleRequest === true) {
+        /*if ($actionRole === User::ACCOUNT_PRACTITIONER || $declineRescheduleRequest === true) {
             $result = $this->cancelledWithDeclineRescheduleRequest($result);
         } else {
             if ($cancelledByPractitioner) {
@@ -245,6 +245,11 @@ class CancelBooking
             } else { // cancelled by client
                 $result = $this->cancelledByClient($result, $booking);
             }
+        }*/
+        if ($cancelledByPractitioner) {
+            $result = $this->cancelledByPractitioner($result);
+        } else { // cancelled by client
+            $result = $this->cancelledByClient($result, $booking);
         }
 
         $result['refundSmallestUnit'] = (int)($result['refundTotal'] * 100);
