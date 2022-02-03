@@ -447,6 +447,8 @@ class Schedule extends Model
                     $p = $depositFinalDate->subDays(self::DEPOSIT_DELAY);
                     $periods--;
                 }
+
+                $calendar = array_reverse($calendar);
             }
         }
 
