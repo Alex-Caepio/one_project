@@ -29,6 +29,8 @@ class Schedule extends Model
 
     const DEPOSIT_DELAY = 14; // in days
 
+    private const DATE_FORMAT = 'd.m.Y';
+
     protected $fillable = [
         'title',
         'service_id',
@@ -427,27 +429,29 @@ class Schedule extends Model
         $calendar = [];
         $installmentInfo = $this->getInstallmentInfo($amount, $periods);
 
-        if ($installmentInfo !== null) {
-            if ($this->service->service_type_id === Service::TYPE_BESPOKE) {
-                $start = Carbon::now()->addDays(self::DEPOSIT_DELAY);
-                $amountPerPeriod = round($installmentInfo['amountPerPeriod'], 2);
-                $calendar[$start->format('d.m.Y')] = $amountPerPeriod;
-                $date = $start;
-                for ($i = 0; $i < $this->deposit_instalments - 1; $i++) {
-                    $date = $date->addDays($this->deposit_instalment_frequency);
-                    $calendar[$date->format('d.m.Y')] = $amountPerPeriod;
-                }
-            } else {
-                /** @var Carbon $depositFinalDate */
-                $depositFinalDate = $installmentInfo['finalPaymentDate'];
-                $amountPerPeriod = round($installmentInfo['amountPerPeriod'], 2);
-                $p = $depositFinalDate;
-                while ($p->isFuture() && $periods > 0) {
-                    $calendar[$p->format('d.m.Y')] = $amountPerPeriod;
-                    $p = $depositFinalDate->subDays(self::DEPOSIT_DELAY);
-                    $periods--;
-                }
+        if ($installmentInfo !== null && $this->service->service_type_id === Service::TYPE_BESPOKE) {
+            $start = Carbon::now()->addDays(self::DEPOSIT_DELAY);
+            $amountPerPeriod = round($installmentInfo['amountPerPeriod'], 2);
+            $calendar[$start->format(self::DATE_FORMAT)] = $amountPerPeriod;
+            $date = $start;
+
+            for ($i = 0; $i < $this->deposit_instalments - 1; $i++) {
+                $date = $date->addDays($this->deposit_instalment_frequency);
+                $calendar[$date->format(self::DATE_FORMAT)] = $amountPerPeriod;
             }
+        } elseif ($installmentInfo !== null) {
+            /** @var Carbon $depositFinalDate */
+            $depositFinalDate = $installmentInfo['finalPaymentDate'];
+            $amountPerPeriod = round($installmentInfo['amountPerPeriod'], 2);
+            $p = $depositFinalDate;
+
+            while ($p->isFuture() && $periods > 0) {
+                $calendar[$p->format(self::DATE_FORMAT)] = $amountPerPeriod;
+                $p = $depositFinalDate->subDays(self::DEPOSIT_DELAY);
+                $periods--;
+            }
+
+            $calendar = array_reverse($calendar);
         }
 
         return $calendar;
