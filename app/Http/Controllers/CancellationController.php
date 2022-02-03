@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-
 use App\Actions\Cancellation\CancelBooking;
 use App\Http\Requests\Cancellation\CancelBookingRequest;
 use App\Http\Requests\Cancellation\CancelManyBookingsRequest;
@@ -11,7 +10,6 @@ use App\Http\Requests\Request;
 use App\Models\Booking;
 use App\Models\Cancellation;
 use App\Models\Schedule;
-use App\Models\User;
 use App\Transformers\CancellationTransformer;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -51,11 +49,10 @@ class CancellationController extends Controller {
     }
 
     private function cancelCollection(?Collection $bookings): void {
-        if (count($bookings)) {
+        if ($bookings && count($bookings)) {
             foreach ($bookings as $booking) {
                 run_action(CancelBooking::class, $booking);
             }
         }
     }
-
 }
