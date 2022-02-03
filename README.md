@@ -191,7 +191,7 @@ STRIPE_KEY=
 GOOGLE_CLIENT_ID=
 GOOGLE_API_KEY=
 G_CALENDAR_PREFIX=https://www.googleapis.com/calendar/v3
-GOOGLE_DISCOVERY_DOCS = https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest
+GOOGLE_DISCOVERY_DOCS=https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest
 GOOGLE_SCOPE=https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/calendar.events
 ```
 

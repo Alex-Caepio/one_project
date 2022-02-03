@@ -127,7 +127,7 @@ class PurchaseInstallment
         StripeClient $stripe,
         array $metadata
     ): ?Subscription {
-        $calendarInstallments = $schedule->calculateInstallmentsCalendar($cost, $installments);
+        $calendarInstallments = array_reverse($schedule->calculateInstallmentsCalendar($cost, $installments));
         $installmentInfo = $schedule->getInstallmentInfo($cost, $installments);
 
         if (count($calendarInstallments) === 0) {
