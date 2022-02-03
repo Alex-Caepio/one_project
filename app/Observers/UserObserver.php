@@ -18,7 +18,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 
-class UserObserver {
+class UserObserver
+{
 
     /**
      * Mark all of the articles and services
@@ -26,7 +27,8 @@ class UserObserver {
      * @param \App\Models\User $user
      * @return void
      */
-    public function saving(User $user): void {
+    public function saving(User $user): void
+    {
         if ($user->isPractitioner()) {
 
             if (!$user->business_email) {
@@ -56,32 +58,34 @@ class UserObserver {
      * @param \App\Models\User $user
      * @return void
      */
-    public function deleting(User $user): void {
+    public function deleting(User $user): void
+    {
         if ($user->isPractitioner()) {
-            Article::where('user_id', $user->id)->update([
-                                                             'deleted_at'   => date('Y-m-d H:i:s'),
-                                                             'is_published' => false,
-                                                             'published_at' => null
-                                                         ]);
-            Service::where('user_id', $user->id)->update([
-                                                             'deleted_at'   => date('Y-m-d H:i:s'),
-                                                             'is_published' => false
-                                                         ]);
-
             UserRightsHelper::unpublishPractitioner($user, true);
+
+            Article::where('user_id', $user->id)->update([
+                'deleted_at' => date('Y-m-d H:i:s'),
+                'is_published' => false,
+                'published_at' => null
+            ]);
+
+            Service::where('user_id', $user->id)->update([
+                'deleted_at' => date('Y-m-d H:i:s'),
+                'is_published' => false
+            ]);
         }
         RescheduleRequest::where('user_id', $user->id)->delete();
         ScheduleFreeze::where('user_id', $user->id)->delete();
 
-        foreach($user->bookings()->active()->get() as $booking) {
+        foreach ($user->bookings()->active()->get() as $booking) {
             try {
                 run_action(CancelBooking::class, $booking, false, User::ACCOUNT_CLIENT);
             } catch (\Exception $e) {
                 Log::channel('practitioner_cancel_error')->info('[[Cancellation on unpublish failed]]: ', [
-                    'user_id'         => $booking->user_id ?? null,
+                    'user_id' => $booking->user_id ?? null,
                     'practitioner_id' => $booking->practitioner_id ?? null,
-                    'booking_id'      => $booking->id ?? null,
-                    'message'         => $e->getMessage(),
+                    'booking_id' => $booking->id ?? null,
+                    'message' => $e->getMessage(),
                 ]);
             }
         }

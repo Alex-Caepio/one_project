@@ -37,6 +37,7 @@ class UpdateRequest extends Request {
             'last_name'           => 'string|min:2|max:30',
             'mobile_country_code' => 'exists:countries,id|integer|required_with:mobile_number',
             'country_id'          => 'nullable|integer|exists:countries,id',
+            'timezone_id'         => 'required|exists:timezones,id',
         ];
     }
 

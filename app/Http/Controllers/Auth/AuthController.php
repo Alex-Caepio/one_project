@@ -22,7 +22,6 @@ use App\Models\Country;
 use App\Models\User;
 use App\Traits\hasMediaItems;
 use App\Transformers\UserTransformer;
-use DB;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -183,7 +182,7 @@ class AuthController extends Controller
 
     public function verifyEmail(Request $request)
     {
-        if (!$request->hasValidSignature() || !$request->user || !$request->email) {
+        if (!$request->hasValidSignature() || !isset($request->user) || !isset($request->email)) {
             abort(401);
         }
 
