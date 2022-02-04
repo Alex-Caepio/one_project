@@ -11,8 +11,8 @@ use App\Models\Schedule;
 use App\Models\ScheduleFreeze;
 use App\Models\Service;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Exception;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class UserRightsHelper
@@ -159,9 +159,29 @@ class UserRightsHelper
     {
         self::unpublishArticles($user);
         self::unpublishService($user);
+
         $requestFlag = request('cancel_bookings', false);
         if ($requestFlag === true || $unpublishOnDelete === true) {
-            $bookings = Booking::where('practitioner_id', $user->id)->active()->get();
+            $bookings = Booking::query()
+                ->where('practitioner_id', $user->id)
+                ->where('status', 'upcoming')
+                ->whereHas('schedule', function (Builder $query) {
+                    $query->whereHas('service', function (Builder $query) {
+                        $query->whereIn('services.service_type_id',[
+                            Service::TYPE_EVENT,
+                            Service::TYPE_WORKSHOP,
+                            Service::TYPE_RETREAT,
+                        ]);
+                        $query->orWhere(function(Builder $query) {
+                            $query->where([
+                                ['services.service_type_id', '=', Service::TYPE_APPOINTMENT],
+                                ['bookings.datetime_from', '>', date('Y-m-d H:i:s')],
+                            ]);
+                        });
+                    });
+                })->active()
+                ->get();
+
             foreach ($bookings as $booking) {
                 try {
                     run_action(CancelBooking::class, $booking, false, User::ACCOUNT_PRACTITIONER);

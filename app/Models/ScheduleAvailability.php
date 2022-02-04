@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * @property string days
@@ -43,6 +43,7 @@ class ScheduleAvailability extends Model
         }
 
         $datetime = new Carbon($datetime);
+        $datetime->setTimezone(Auth::user()->generalTimezone->value);
 
         if ($daysFormatted === 'weekdays' && $datetime->isWeekday()) {
             return true;

@@ -2,36 +2,27 @@
 
 namespace App\Http\Controllers;
 
-use App\Actions\Schedule\CreateRescheduleRequestsOnScheduleUpdate;
 use App\Actions\Schedule\GetAvailableAppointmentTimeOnDate;
-use App\Actions\Schedule\HandlePricesUpdate;
 use App\Actions\Schedule\ScheduleStore;
 use App\Actions\Schedule\ScheduleUpdate;
-use App\Events\ServiceScheduleCancelled;
-use App\Events\ServiceScheduleLive;
 use App\Helpers\UserRightsHelper;
 use App\Http\Requests\InstallmentCalendar;
 use App\Http\Requests\Schedule\PurchaseScheduleRequest;
-use App\Http\Requests\Schedule\GenericUpdateSchedule;
 use App\Http\Requests\Schedule\ScheduleOwnerRequest;
+use App\Http\Requests\Schedule\AppointmentScheduleRequest;
 use App\Models\Booking;
-use App\Models\Plan;
 use App\Models\Price;
 use App\Models\Service;
 use App\Models\Schedule;
-use App\Models\ScheduleUser;
 use App\Models\ScheduleFreeze;
 use App\Http\Requests\Request;
 use App\Models\User;
 use App\Transformers\BookingTransformer;
-use App\Transformers\ServiceTransformer;
 use App\Transformers\UserTransformer;
 use App\Transformers\ScheduleTransformer;
 use App\Http\Requests\Schedule\CreateScheduleInterface;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use Stripe\StripeClient;
 use Illuminate\Support\Facades\Auth;
 
 class ScheduleController extends Controller
@@ -133,7 +124,7 @@ class ScheduleController extends Controller
         return fractal($schedule, new ScheduleTransformer())->parseIncludes($request->getIncludes())->toArray();
     }
 
-    public function update(CreateScheduleInterface $request, Schedule $schedule)
+    public function update(AppointmentScheduleRequest $request, Schedule $schedule)
     {
         $schedule = run_action(ScheduleUpdate::class, $request, $schedule);
 

@@ -72,10 +72,6 @@ class GetAvailableAppointmentTimeOnDate
             $from = $this->roundMinutes(Carbon::parse("{$date} {$startTime}"));
             $to = $this->roundMinutes(Carbon::parse("{$date} {$availability->end_time}"));
 
-            if ($from > $to) {
-                continue;
-            }
-
             if ($from->greaterThanOrEqualTo($to)) {
                 $to->addDay();
             }
