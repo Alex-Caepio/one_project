@@ -56,7 +56,7 @@ class ServiceTransformer extends Transformer {
     }
 
     public function includePractitioner(Service $service) {
-        return $this->itemOrNull($service->user, new UserTransformer());
+        return $this->itemOrNull($service->practitioner, new UserTransformer());
     }
 
     public function includeKeywords(Service $service) {
