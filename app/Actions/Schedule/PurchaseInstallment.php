@@ -43,6 +43,11 @@ class PurchaseInstallment
             $metadata
         );
 
+        $chargeId = $deposit->charges->data ? $deposit->charges->data[0]['id'] : null;
+        if ($chargeId === null) {
+            throw new \Exception('Installment deposit charge not found');
+        }
+
         $purchase->stripe_id = $deposit->id;
 
         if ($subscription !== null) {
@@ -66,7 +71,7 @@ class PurchaseInstallment
             $deposit->client_secret,
             $deposit->confirmation_method,
             $deposit->next_action,
-            $deposit->charges->data[0]['id'],
+            $chargeId,
         );
     }
 

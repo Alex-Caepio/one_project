@@ -330,6 +330,11 @@ class PurchaseController extends Controller
                 $stripe->paymentIntents->confirm($paymentIntent->id, ['payment_method' => $payment_method_id]);
             $purchase->stripe_id = $paymentIntent->id;
             $purchase->save();
+
+            $chargeId = $paymentIntent->charges->data ? $paymentIntent->charges->data[0]['id'] : null;
+            if($chargeId === null) {
+                throw new Exception('Cannot handle instant payment');
+            }
         } catch (ApiErrorException $e) {
             Log::channel('stripe_purchase_schedule_error')
                 ->info("Client could not purchase schedule", [
@@ -349,7 +354,6 @@ class PurchaseController extends Controller
 
             throw new Exception('Cannot handle instant payment');
         }
-        $chargeId = $paymentIntent->charges->data[0]['id'];
 
         Log::channel('stripe_purchase_schedule_success')
             ->info("Client purchased schedule", [
@@ -364,6 +368,7 @@ class PurchaseController extends Controller
                 'total' => $purchase->price,
                 'discount' => $purchase->discount,
                 'discount_applied' => $purchase->discount_applied,
+                'charge_id' => $chargeId,
             ]);
 
         try {
