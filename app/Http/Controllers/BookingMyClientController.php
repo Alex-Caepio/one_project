@@ -141,7 +141,8 @@ class BookingMyClientController extends Controller
         $paginator = Purchase::query()->selectRaw(
             implode(', ', [
                 'purchases.id as id',
-                'purchases.amount as amount',
+                'purchases.amount',
+                'purchases.price',
                 'bookings.id as booking_id',
                 'bookings.reference as booking_reference',
                 'services.id as service_id',
@@ -150,7 +151,7 @@ class BookingMyClientController extends Controller
                 'schedules.title as schedule_name',
                 'purchases.created_at as purchase_date',
                 'concat(users.first_name, " ", users.last_name) as client',
-                'purchases.price as paid',
+                'IF(purchases.is_deposit, purchases.deposit_amount, purchases.price) as paid',
                 'schedules.location_displayed as location',
                 'schedules.city as city',
                 'countries.nicename as country',
@@ -158,7 +159,8 @@ class BookingMyClientController extends Controller
                 'schedules.refund_terms as refund_terms',
                 'bookings.reference as reference',
             ])
-        )->join('services', 'services.id', '=', 'purchases.service_id')
+        )
+            ->join('services', 'services.id', '=', 'purchases.service_id')
             ->join('service_types', 'service_types.id', '=', 'services.service_type_id')
             ->join('schedules', 'schedules.id', '=', 'purchases.schedule_id')
             ->leftJoin('countries', 'schedules.country_id', '=', 'countries.id')

@@ -22,6 +22,7 @@ class MyClientPurchaseTransformer extends Transformer
             'schedule_name' => $myClientPurchase->schedule_name,
             'purchase_date' => new Carbon($myClientPurchase->purchase_date),
             'client'        => $myClientPurchase->client,
+            'price'         => $myClientPurchase->price,
             'paid'          => $myClientPurchase->paid,
             'purchased'     => $myClientPurchase->amount,
             'location'      => $myClientPurchase->location,
