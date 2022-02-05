@@ -15,7 +15,6 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Stripe\Collection;
 use Stripe\Exception\ApiErrorException;
 use Stripe\StripeClient;
 
@@ -29,6 +28,11 @@ class CancelBooking
 {
     private StripeClient $stripe;
 
+    public function __construct(StripeClient $stripe)
+    {
+        $this->stripe = $stripe;
+    }
+
     public function execute(
         Booking $booking,
         bool $declineRescheduleRequest = false,
@@ -39,7 +43,6 @@ class CancelBooking
             return;
         }
 
-        $this->stripe = app()->make(StripeClient::class);
         $booking->load(['user', 'practitioner', 'purchase', 'schedule', 'schedule.service']);
         if (!$booking->purchase || !$booking->practitioner || !$booking->user) {
             throw new Exception('Incorrect model relation in booking #' . $booking->id);
@@ -219,16 +222,18 @@ class CancelBooking
         bool $declineRescheduleRequest,
         bool $cancelledByPractitioner
     ): array {
-        $stripeFee = (int)config('app.platform_cancellation_fee'); // 3%
-        $stripeFeeAmount = ($booking->cost / 100) * $stripeFee;
+        $stripeFee = (int) config('app.platform_cancellation_fee'); // 3%
         $planRate = $booking->practitioner->getCommission();
-        $planRateAmount = ($booking->cost / 100) * $planRate;
+        $paid = $booking->is_installment ? $booking->purchase->deposit_amount : $booking->cost;
+
+        $stripeFeeAmount = $paid * $stripeFee / 100;
+        $planRateAmount = $paid * $planRate / 100;
 
         $result = [
             'isFullRefund' => false,
             'refundTotal' => 0,
             'refundSmallestUnit' => 0,
-            'bookingCost' => $booking->cost,
+            'bookingCost' => $paid,
             'stripeFee' => $stripeFee,
             'stripeFeeAmount' => $stripeFeeAmount,
             'planRate' => $planRate,
@@ -305,7 +310,7 @@ class CancelBooking
     private function reverseTransferToPractitioner(array $refundData, Booking $booking)
     {
         $transfer = Transfer::where('purchase_id', $booking->purchase->id)->first();
-        if(empty($transfer)) {
+        if (empty($transfer)) {
             return;
         }
 
