@@ -1,18 +1,14 @@
 <?php
 
-
 namespace App\Actions\Schedule;
 
-
-use App\Http\Requests\Request;
-use App\Http\Requests\Schedule\CreateScheduleInterface;
 use App\Models\Schedule;
 use App\Models\Service;
 
-abstract class ScheduleSave {
-
-
-    protected function saveRelations($request, Schedule $schedule): void {
+abstract class ScheduleSave
+{
+    protected function saveRelations($request, Schedule $schedule): void
+    {
         if ($request->has('media_files')) {
             $schedule->media_files()->delete();
             $schedule->media_files()->createMany($request->get('media_files'));
@@ -39,11 +35,12 @@ abstract class ScheduleSave {
         }
     }
 
-    public function collectRequest($request, Service $service): array {
+    public function collectRequest($request, Service $service): array
+    {
         $data = $request->all();
         $data['service_id'] = $service->id;
         if (isset($data['deposit_accepted']) && $data['deposit_accepted'] === true) {
-            if ($service->service_type_id === 'bespoke') {
+            if ($service->service_type_id === Service::TYPE_BESPOKE) {
                 $data['deposit_final_date'] = null;
             } else {
                 $data['deposit_instalment_frequency'] = null;
@@ -52,5 +49,4 @@ abstract class ScheduleSave {
         }
         return $data;
     }
-
 }

@@ -3,18 +3,35 @@
 namespace App\Http\Requests\Reschedule;
 
 use App\Http\Requests\Request;
+use App\Http\RequestValidators\AvailabilityValidator;
 use App\Models\Booking;
 use App\Models\Schedule;
 use App\Models\Service;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
-class RescheduleRequestRequest extends Request {
+/**
+ * @property-read Booking $booking
+ */
+class RescheduleRequestRequest extends Request
+{
+    private AvailabilityValidator $availabilityValidator;
+
+    public function __construct(array $query = [], array $request = [], array $attributes = [], array $cookies = [], array $files = [], array $server = [], $content = null)
+    {
+        parent::__construct($query, $request, $attributes, $cookies, $files, $server, $content);
+
+        $this->availabilityValidator = app(AvailabilityValidator::class);
+    }
+
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
-    public function authorize() {
+    public function authorize(): bool
+    {
+        /** @var User $loggedUser */
         $loggedUser = Auth::user();
 
         if ($loggedUser->is_admin) {
@@ -47,20 +64,34 @@ class RescheduleRequestRequest extends Request {
      *
      * @return array
      */
-    public function rules() {
-        return [
+    public function rules(): array
+    {
+        $rules = [
             'new_schedule_id' => 'required|exists:schedules,id',
             'comment'         => 'max:150'
         ];
+
+        if ($this->booking->schedule->service->service_type_id === Service::TYPE_APPOINTMENT) {
+            $rules = array_merge($rules, [
+                'availabilities.*.datetime_from' => 'required_with:availabilities',
+                'availabilities'                 => 'required'
+            ]);
+        }
+
+        return $rules;
     }
 
-    public function withValidator($validator): void {
+    public function withValidator($validator): void
+    {
         $validator->after(function($validator) {
-
             if ($this->booking) {
-                if (!Service::whereHas('schedules', function($query) {
-                    $query->where('schedules.id', $this->booking->schedule_id);
-                })->whereNotIn('service_type_id', config('app.dateless_service_types'))->exists()) {
+                if (
+                    !Service::whereHas('schedules', function($query) {
+                        $query->where('schedules.id', $this->booking->schedule_id);
+                    })
+                    ->whereNotIn('service_type_id', config('app.dateless_service_types'))
+                    ->exists()
+                ) {
                     $validator->errors()->add('error', 'This type of schedule cannot be rescheduled');
                 }
 
@@ -68,21 +99,30 @@ class RescheduleRequestRequest extends Request {
                     $validator->errors()->add('error', 'Booking is completed or canceled');
                 }
 
-                if ((int)$this->booking->schedule_id === (int)$this->get('new_schedule_id')) {
+                if ((int) $this->booking->schedule_id === (int) $this->get('new_schedule_id')) {
                     $validator->errors()->add('error', 'Please, select new schedule for reschedule');
                 }
 
-                $newSchedule =
-                    Schedule::where('id', $this->get('new_schedule_id'))->where('is_published', true)->with('service')
-                            ->first();
+                $newSchedule = Schedule::query()
+                    ->where('id', $this->get('new_schedule_id'))
+                    ->where('is_published', true)
+                    ->with('service')
+                    ->first();
+
                 if (!$newSchedule) {
                     $validator->errors()->add('new_schedule_id', 'New schedule is not available');
-                } else {
-                    if ($this->booking->schedule->attendees !== null && $this->booking->schedule->attendees <=
-                                                                        Booking::where('schedule_id', $newSchedule->id)
-                                                                               ->uncanceled()->sum('amount')) {
-                        $validator->errors()->add('new_schedule_id', 'There are no free tickets in schedule');
-                    }
+                } elseif (
+                    $this->booking->schedule->attendees !== null
+                    && $this->booking->schedule->attendees <= Booking::where('schedule_id', $newSchedule->id)->uncanceled()->sum('amount')
+                ) {
+                    $validator->errors()->add('new_schedule_id', 'There are no free tickets in schedule');
+                }
+
+                if ($newSchedule->service->service_type_id === Service::TYPE_APPOINTMENT && $this->has('availabilities')) {
+                    $this->availabilityValidator
+                        ->setSchedule($newSchedule)
+                        ->setDatetimes(array_column($this->get('availabilities'), 'datetime_from'))
+                        ->validate($validator);
                 }
             }
         });

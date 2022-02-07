@@ -150,7 +150,7 @@ class ScheduleController extends Controller
         $personalFreezed = ScheduleFreeze::where('schedule_id', $schedule->id)->where('user_id', Auth::id())->first();
 
         if ($personalFreezed === null) {
-            if ($schedule->service->service_type_id !== 'appointment') {
+            if ($schedule->service->service_type_id !== Service::TYPE_APPOINTMENT) {
                 $this->createNonAppointmentFreeze($request, $schedule);
             } else {
                 $this->createAppointmentFreeze($request, $schedule);

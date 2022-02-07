@@ -4,16 +4,26 @@ namespace App\Http\Requests\Schedule;
 
 use App\Http\Requests\PromotionCode\ValidatePromotionCode;
 use App\Http\Requests\Request;
+use App\Http\RequestValidators\AvailabilityValidator;
 use App\Models\Booking;
-use App\Models\ScheduleAvailability;
-use App\Models\ScheduleUnavailability;
-use App\Models\UserUnavailabilities;
-use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Collection;
+use App\Models\Schedule;
+use App\Models\Service;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Validator;
 
+/**
+ * @property-read Schedule $schedule
+ */
 class PurchaseScheduleRequest extends Request implements CreateScheduleInterface
 {
+    private AvailabilityValidator $availabilityValidator;
+
+    public function __construct(array $query = [], array $request = [], array $attributes = [], array $cookies = [], array $files = [], array $server = [], $content = null)
+    {
+        parent::__construct($query, $request, $attributes, $cookies, $files, $server, $content);
+
+        $this->availabilityValidator = app(AvailabilityValidator::class);
+    }
 
     /**
      * Determine if the user is authorized to make this request.
@@ -45,7 +55,7 @@ class PurchaseScheduleRequest extends Request implements CreateScheduleInterface
             })
         ];
 
-        if ($this->schedule->service->service_type_id === 'appointment') {
+        if ($this->schedule->service->service_type_id === Service::TYPE_APPOINTMENT) {
             $availabilityRules = [
                 'availabilities.*.datetime_from' => 'required_with:availabilities',
                 'availabilities'                 => 'required'
@@ -53,10 +63,11 @@ class PurchaseScheduleRequest extends Request implements CreateScheduleInterface
 
             $rules = array_merge($rules, $availabilityRules);
         }
+
         return $rules;
     }
 
-    public function withValidator($validator): void
+    public function withValidator(Validator $validator): void
     {
         $validator->after(function ($validator) {
             $schedule = $this->schedule;
@@ -70,15 +81,20 @@ class PurchaseScheduleRequest extends Request implements CreateScheduleInterface
             $bookingsCount = Booking::where('price_id', $this->price_id)->uncanceled()->count();
             $requiredAmount = (int)$this->request->get('amount');
 
-            if ($schedule->service->service_type_id !== 'appointment' && (int)$price->number_available > 0) {
-                if (($bookingsCount + $requiredAmount) > (int)$price->number_available) {
-                    $validator->errors()->add('price_id', 'All schedules for that price were sold out');
-                    return;
-                }
+            if (
+                $schedule->service->service_type_id !== Service::TYPE_APPOINTMENT
+                && (int) $price->number_available > 0
+                && ($bookingsCount + $requiredAmount) > (int) $price->number_available
+            ) {
+                $validator->errors()->add('price_id', 'All schedules for that price were sold out');
+                return;
             }
 
-            if ($schedule->service->service_type_id === 'appointment' && $this->has('availabilities')) {
-                $this->validateAvailabilities($validator);
+            if ($schedule->service->service_type_id === Service::TYPE_APPOINTMENT && $this->has('availabilities')) {
+                $this->availabilityValidator
+                    ->setSchedule($this->schedule)
+                    ->setDatetimes(array_column($this->get('availabilities'), 'datetime_from'))
+                    ->validate($validator);
             }
 
             if (!empty($this->get('promo_code'))) {
@@ -95,93 +111,8 @@ class PurchaseScheduleRequest extends Request implements CreateScheduleInterface
                 $availableTicketsPerSchedule = $schedule->getAvailableTicketsCount();
                 if ($availableTicketsPerSchedule < $requiredAmount) {
                     $validator->errors()->add('schedule_id', 'All quotes on the schedule are sold out');
-                    return;
                 }
             }
         });
-    }
-
-    protected function validateAvailabilities($validator): void
-    {
-        $availabilitiesRequest = $this->get('availabilities');
-        $availabilitiesDatabase = $this->schedule->schedule_availabilities;
-        $unavailabilities = $this->schedule->schedule_unavailabilities;
-        $globalUnavailabilities =
-            UserUnavailabilities::where('practitioner_id', $this->schedule->service->user_id)->get();
-
-        if (!$availabilitiesDatabase) {
-            return;
-        }
-
-        foreach ($availabilitiesRequest as $key => $availabilityRequest) {
-
-            if (Carbon::parse($availabilityRequest['datetime_from']) <= Carbon::now()) {
-                $validator->errors()->add("availabilities.$key.datetime_from", 'This timeslot is unavailable');
-                return;
-            }
-
-            if ($this->schedule->service->service_type_id === 'appointment') {
-                $alreadyBookedAppointment = Booking::where('practitioner_id', $this->schedule->service->user_id)->where(
-                    'datetime_from',
-                    $availabilityRequest['datetime_from']
-                )->whereHas('schedule.service', static function ($serviceQuery) {
-                    $serviceQuery->where('services.service_type_id', 'appointment');
-                })->uncanceled()->exists();
-                if ($alreadyBookedAppointment) {
-                    $validator->errors()->add("availabilities.$key.datetime_from", 'This time slot is already booked');
-                    return;
-                }
-            }
-
-
-            if ($globalUnavailabilities &&
-                $this->withinUnavailabilities($availabilityRequest['datetime_from'], $globalUnavailabilities)) {
-                $validator->errors()->add(
-                    "availabilities.$key.datetime_from",
-                    'That date marked as unavailable by practitioner'
-                );
-                return;
-            }
-
-            if ($unavailabilities &&
-                $this->withinUnavailabilities($availabilityRequest['datetime_from'], $unavailabilities)) {
-                $validator->errors()->add(
-                    "availabilities.$key.datetime_from",
-                    'That date marked as unavailable by practitioner'
-                );
-                return;
-            }
-
-            if (!$this->fits($availabilityRequest['datetime_from'], $availabilitiesDatabase)) {
-                $validator->errors()->add(
-                    "availabilities.$key.datetime_from",
-                    'No available time slot for selected appointment'
-                );
-                return;
-            }
-        }
-    }
-
-    protected function withinUnavailabilities($datetime, Collection $unavailabilities): bool
-    {
-        foreach ($unavailabilities as $unavailability) {
-            /** @var ScheduleUnavailability $unavailability */
-            /** @var UserUnavailabilities $unavailability */
-            if ($unavailability->fits($datetime)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    protected function fits($datetime, $availabilities)
-    {
-        foreach ($availabilities as $availability) {
-            /** @var ScheduleAvailability $availability */
-            if ($availability->fits($datetime)) {
-                return true;
-            }
-        }
-        return false;
     }
 }

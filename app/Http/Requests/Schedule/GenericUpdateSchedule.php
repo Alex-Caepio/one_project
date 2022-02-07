@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Schedule;
 
 use App\Http\Requests\Request;
+use App\Models\Service;
 use App\Traits\ScheduleValidator;
 
 class GenericUpdateSchedule extends Request implements CreateScheduleInterface {
@@ -24,7 +25,7 @@ class GenericUpdateSchedule extends Request implements CreateScheduleInterface {
      * @return array
      */
     public function rules() {
-        if ($this->schedule->service->service_type_id === 'appointment') {
+        if ($this->schedule->service->service_type_id === Service::TYPE_APPOINTMENT) {
             return [
                 'schedule_unavailabilities.*.start_date' => 'required_with:schedule_unavailabilities',
                 'schedule_unavailabilities.*.end_date'   => 'required_with:schedule_unavailabilities',
@@ -32,7 +33,7 @@ class GenericUpdateSchedule extends Request implements CreateScheduleInterface {
             ];
         }
 
-        if ($this->schedule->service->service_type_id !== 'bespoke') {
+        if ($this->schedule->service->service_type_id !== Service::TYPE_BESPOKE) {
             return [
                 'refund_terms' => 'required',
             ];

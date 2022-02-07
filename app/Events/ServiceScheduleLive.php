@@ -9,8 +9,8 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class ServiceScheduleLive {
-
+class ServiceScheduleLive
+{
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public Service $service;
@@ -18,28 +18,25 @@ class ServiceScheduleLive {
     public Schedule $schedule;
     public ?string $template;
 
-    public function __construct(Schedule $schedule) {
+    public function __construct(Schedule $schedule)
+    {
         $this->schedule = $schedule;
         $this->service = $schedule->service;
         $this->user = $schedule->service->user;
         $this->template = $this->getTemplate($schedule);
     }
 
-
-    /**
-     * @param \App\Models\Schedule $schedule
-     * @return string
-     */
-    private function getTemplate(Schedule $schedule): ?string {
-        if ($schedule->service->service_type_id === 'retreat') {
+    private function getTemplate(Schedule $schedule): ?string
+    {
+        if ($schedule->service->service_type_id === Service::TYPE_RETREAT) {
             return 'Service Schedule Live - Retreat';
         }
 
-        if ($schedule->service->service_type_id === 'appointment') {
+        if ($schedule->service->service_type_id === Service::TYPE_APPOINTMENT) {
             return 'Service Schedule Live - Appointments';
         }
 
-        if ($schedule->service->service_type_id === 'bespoke') {
+        if ($schedule->service->service_type_id === Service::TYPE_BESPOKE) {
             return 'Service Schedule Live - Date-less';
         }
 

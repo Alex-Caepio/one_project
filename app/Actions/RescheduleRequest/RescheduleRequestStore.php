@@ -7,8 +7,10 @@ use App\Models\Booking;
 use App\Models\RescheduleRequest;
 use App\Models\Schedule;
 
-class RescheduleRequestStore {
-    public function execute(Booking $booking, $request): RescheduleRequest {
+class RescheduleRequestStore
+{
+    public function execute(Booking $booking, $request): RescheduleRequest
+    {
         $rescheduleRequest = new RescheduleRequest();
         $newSchedule = Schedule::find($request->get('new_schedule_id'));
         $oldSchedule = Schedule::find($booking->schedule_id);
@@ -21,8 +23,7 @@ class RescheduleRequestStore {
             'new_price_id'    => $request->get('new_price_id'),
             'comment'         => $request->get('comment'),
             'old_price_id'    => $booking->price_id,
-            'requested_by'    => $request->user()->id ===
-                                 $booking->user_id ? 'client' : 'practitioner',
+            'requested_by'    => $request->user()->id === $booking->user_id ? 'client' : 'practitioner',
         ];
 
         if ($newSchedule->location_displayed !== $oldSchedule->location_displayed) {
