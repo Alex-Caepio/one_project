@@ -139,29 +139,27 @@ class BookingMyClientController extends Controller
     public function purchases(Request $request)
     {
         $paginator = Purchase::query()->selectRaw(
-            implode(', ', [
-                'purchases.id as id',
-                'purchases.amount as amount',
-                'bookings.id as booking_id',
-                'bookings.reference as booking_reference',
-                'services.id as service_id',
-                'services.title as service_name',
-                'service_types.name as service_type',
-                'schedules.title as schedule_name',
-                'purchases.created_at as purchase_date',
-                'concat(users.first_name, " ", users.last_name) as client',
-                'purchases.price as paid',
-                'schedules.location_displayed as location',
-                'schedules.city as city',
-                'countries.nicename as country',
-                'schedules.url as url',
-                'schedules.refund_terms as refund_terms',
-                'bookings.reference as reference',
-            ])
-        )->join('services', 'services.id', '=', 'purchases.service_id')
+                implode(', ', [
+                    'purchases.id as id',
+                    'purchases.amount as amount',
+                    'purchases.created_at as purchase_date',
+                    'purchases.price as paid',
+                    'bookings.id as booking_id',
+                    'bookings.reference as booking_reference',
+                    'bookings.reference as reference',
+                    'concat(users.first_name, " ", users.last_name) as client',
+                    'services.id as service_id',
+                    'services.title as service_name',
+                    'service_types.name as service_type',
+                    'schedule_snapshots.title as schedule_name',
+                    'schedule_snapshots.location_displayed as location',
+                    'schedule_snapshots.city as city',
+                    'schedule_snapshots.url as url',
+                    'schedule_snapshots.refund_terms as refund_terms',
+                    'countries.nicename as country',
+                ])
+            )->join('services', 'services.id', '=', 'purchases.service_id')
             ->join('service_types', 'service_types.id', '=', 'services.service_type_id')
-            ->join('schedules', 'schedules.id', '=', 'purchases.schedule_id')
-            ->leftJoin('countries', 'schedules.country_id', '=', 'countries.id')
             ->join('users', 'users.id', '=', 'purchases.user_id')
             ->join('bookings', static function ($join) {
                 $join->on(function ($join) {
@@ -169,9 +167,13 @@ class BookingMyClientController extends Controller
                         ->whereNotIn('bookings.status', ['canceled', 'completed']);
                 });
             })
+            ->join('booking_snapshots', 'booking_snapshots.booking_id', '=', 'bookings.id')
+            ->join('schedule_snapshots', 'schedule_snapshots.schedule_id', '=', 'booking_snapshots.schedule_snapshot_id')
+            ->join('countries', 'schedule_snapshots.country_id', '=', 'countries.id')
             ->where('services.user_id', $request->user()->id)
             ->where('services.service_type_id', '=', 'bespoke')
-            ->orderBy('id', 'desc')->paginate($request->getLimit());
+            ->orderBy('id', 'desc')
+            ->paginate($request->getLimit());
 
         $purchases = $paginator->getCollection();
 
