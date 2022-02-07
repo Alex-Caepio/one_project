@@ -10,7 +10,7 @@ class BookingView extends Model
     protected $table = 'view_booking';
 
     public const LIVE_BOOKING_STATUS = ['upcoming', 'rescheduled'];
-    public const BESPOKE_SERVICE_VALUE = 'bespoke';
+    public const BESPOKE_SERVICE_VALUE = Service::TYPE_BESPOKE;
 
     public function user(): BelongsTo
     {

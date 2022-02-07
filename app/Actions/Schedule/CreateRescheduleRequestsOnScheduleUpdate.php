@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Collection;
 use App\Models\Booking;
 use App\Models\RescheduleRequest;
 use App\Models\Schedule;
+use App\Models\Service;
 use Carbon\Carbon;
 
 class CreateRescheduleRequestsOnScheduleUpdate
@@ -59,7 +60,7 @@ class CreateRescheduleRequestsOnScheduleUpdate
 
     private function getBookings(): ?Collection
     {
-        return $this->schedule->service->service_type === 'appointment'
+        return $this->schedule->service->service_type === Service::TYPE_APPOINTMENT
             ? $this->schedule->getOutsiderBookings()
             : Booking::where('schedule_id', $this->schedule->id)
             ->whereNotIn('status', ['completed', 'canceled'])

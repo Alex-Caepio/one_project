@@ -9,6 +9,7 @@ use App\Models\Booking;
 use App\Models\Cancellation;
 use App\Models\Notification;
 use App\Models\RescheduleRequest;
+use App\Models\Service;
 use App\Models\Transfer;
 use App\Models\User;
 use Carbon\Carbon;
@@ -290,7 +291,7 @@ class CancelBooking
             ? Carbon::parse($booking->created_at)
             : Carbon::parse($booking->datetime_from);
         $now = Carbon::now();
-        $diffValue = $booking->schedule->service->service_type_id === 'appointment'
+        $diffValue = $booking->schedule->service->service_type_id === Service::TYPE_APPOINTMENT
             ? $now->diffInHours($bookingDate)
             : $now->diffInDays($bookingDate);
         $isRefundAllowed = ($isDateless && $now >= $bookingDate && $diffValue < $booking->schedule->refund_terms)

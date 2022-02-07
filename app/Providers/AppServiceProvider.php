@@ -90,7 +90,7 @@ class AppServiceProvider extends ServiceProvider
             }
 
             switch ($serviceType) {
-                case 'workshop':
+                case Service::TYPE_WORKSHOP:
                     return new WorkshopScheduleRequest();
 
                 case 'econtent':
@@ -102,22 +102,22 @@ class AppServiceProvider extends ServiceProvider
                 case 'class':
                     return new ClassScheduleRequest();
 
-                case 'bespoke':
+                case Service::TYPE_BESPOKE:
                     return new BespokeProgramScheduleRequest();
 
-                case 'events':
+                case Service::TYPE_EVENT:
                     return new EventScheduleRequest();
 
                 case 'product':
                     return new ProductScheduleRequest();
 
-                case 'retreat':
+                case Service::TYPE_RETREAT:
                     return new RetreatScheduleRequest();
 
                 case 'training_program':
                     return new TrainingProgramScheduleRequest();
 
-                case 'appointment':
+                case Service::TYPE_APPOINTMENT:
                     return new AppointmentScheduleRequest();
 
                 default:

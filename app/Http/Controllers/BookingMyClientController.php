@@ -7,6 +7,7 @@ use App\Models\BookingView;
 use App\Models\Schedule;
 use App\Models\Purchase;
 use App\Http\Requests\Request;
+use App\Models\Service;
 use App\Transformers\MyClientClosedTransformer;
 use App\Transformers\MyClientPurchaseTransformer;
 use App\Transformers\MyClientTransformer;
@@ -85,7 +86,7 @@ class BookingMyClientController extends Controller
                         ->whereIn('bookings.status', BookingView::LIVE_BOOKING_STATUS);
             })
             ->where('services.user_id', $request->user()->id)
-            ->whereNotIn('services.service_type_id', ['bespoke', 'appointment'])
+            ->whereNotIn('services.service_type_id', [Service::TYPE_BESPOKE, Service::TYPE_APPOINTMENT])
             ->groupBy('schedules.id')
             ->orderByRaw('ABS(date_diff)')
             ->paginate($request->getLimit());

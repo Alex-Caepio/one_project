@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Scopes\PublishedScope;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -22,6 +23,9 @@ use Illuminate\Support\Facades\DB;
  * @property float deposit_amount
  * @property string deposit_final_date
  * @property Service service
+ *
+ * @property-read Collection|ScheduleAvailability[] $schedule_availabilities
+ * @property-read Collection|ScheduleUnavailability[] $schedule_unavailabilities
  */
 class Schedule extends Model
 {
@@ -299,7 +303,7 @@ class Schedule extends Model
 
         $result = false;
         if (count($changes)) {
-            if ($this->service->service_type_id === 'bespoke') {
+            if ($this->service->service_type_id === Service::TYPE_BESPOKE) {
                 $result = true;
             } else {
                 // Unset, because another event will be fired for Reschedule Request
@@ -393,7 +397,7 @@ class Schedule extends Model
             return false;
         }
 
-        if ($this->service->service_type_id === 'bespoke') {
+        if ($this->service->service_type_id === Service::TYPE_BESPOKE) {
             return true;
         }
 
@@ -407,7 +411,7 @@ class Schedule extends Model
     public function getInstallmentPeriods(): array
     {
         $periods = [];
-        if ($this->service->service_type_id === 'bespoke') {
+        if ($this->service->service_type_id === Service::TYPE_BESPOKE) {
             $periods[] = $this->deposit_instalments;
         } else {
             $periods = range(

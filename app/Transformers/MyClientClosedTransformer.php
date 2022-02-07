@@ -2,6 +2,7 @@
 
 namespace App\Transformers;
 
+use App\Models\Service;
 use Carbon\Carbon;
 
 class MyClientClosedTransformer extends Transformer
@@ -35,9 +36,9 @@ class MyClientClosedTransformer extends Transformer
     {
         if ($myClientPurchase->status_full !== 'completed') {
             return $myClientPurchase->cancelled_date;
-        } elseif ($myClientPurchase->service_type === 'bespoke') {
+        } elseif ($myClientPurchase->service_type === Service::TYPE_BESPOKE) {
             return $myClientPurchase->completed_date;
-        } elseif ($myClientPurchase->service_type === 'appointment') {
+        } elseif ($myClientPurchase->service_type === Service::TYPE_APPOINTMENT) {
             return $myClientPurchase->start_date;
         }
         return $myClientPurchase->closure_date;
