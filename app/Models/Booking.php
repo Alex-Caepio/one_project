@@ -11,15 +11,18 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * @property float commission_on_sale
+ * @property float $commission_on_sale
+ * @property int $is_installment
+ * @property int $is_fully_paid
+ *
+ * @property-read Purchase $purchase
+ * @property-read User $practitioner
  */
 class Booking extends Model
 {
-
     use HasFactory, SoftDeletes;
 
     protected $observables = ['instalment_complete'];
-
 
     protected $fillable = [
         'user_id',
