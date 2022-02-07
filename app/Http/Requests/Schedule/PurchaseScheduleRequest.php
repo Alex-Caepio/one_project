@@ -53,6 +53,7 @@ class PurchaseScheduleRequest extends Request implements CreateScheduleInterface
 
             $rules = array_merge($rules, $availabilityRules);
         }
+
         return $rules;
     }
 
@@ -174,10 +175,10 @@ class PurchaseScheduleRequest extends Request implements CreateScheduleInterface
         return false;
     }
 
-    protected function fits($datetime, $availabilities)
+    protected function fits($datetime, $availabilities): bool
     {
+        /** @var ScheduleAvailability $availability */
         foreach ($availabilities as $availability) {
-            /** @var ScheduleAvailability $availability */
             if ($availability->fits($datetime)) {
                 return true;
             }

@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int $is_fully_paid
  *
  * @property-read Purchase $purchase
+ * @property-read Schedule $schedule
  * @property-read User $practitioner
  */
 class Booking extends Model
