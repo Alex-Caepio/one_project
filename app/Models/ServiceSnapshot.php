@@ -40,7 +40,7 @@ class ServiceSnapshot extends Service
 
     public function service()
     {
-        return $this->belongsTo(Service::class);
+        return $this->belongsTo(Service::class, 'service_id')->withTrashed();
     }
 
     public function keywords(): BelongsToMany
