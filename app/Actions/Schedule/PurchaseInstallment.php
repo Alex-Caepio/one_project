@@ -7,10 +7,13 @@ use App\DTO\Schedule\PaymentIntentDto;
 use App\Http\Requests\Schedule\PurchaseScheduleRequest;
 use App\Models\Booking;
 use App\Models\Instalment;
+use App\Models\PractitionerCommission;
+use App\Models\Promotion;
 use App\Models\Purchase;
 use App\Models\Schedule;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Stripe\PaymentIntent;
@@ -111,12 +114,15 @@ class PurchaseInstallment
         $installment->is_paid = true;
         $installment->save();
 
+        $chargeId = $paymentIntent->charges->data ? $paymentIntent->charges->data[0]['id'] : null;
+
         Log::channel('stripe_installment_success')
             ->info('Charge deposit: ', [
                 'user_id' => Auth::user()->id,
                 'service_id' => $schedule->id,
                 'schedule_id' => $schedule->id,
-                'amount' => $depositAmount
+                'amount' => $depositAmount,
+                'charge_id' => $chargeId,
             ]);
 
         return $paymentIntent;
@@ -150,6 +156,11 @@ class PurchaseInstallment
             ]
         );
 
+        // get practitioner commission for subscription
+        $practitioner = $schedule->service->user;
+        $practitionerCommissions = $this->getPractitionerRate($practitioner);
+
+        // create subscription
         $subscription = $stripe->subscriptions->create(
             [
                 'default_payment_method' => $paymentMethodId,
@@ -161,6 +172,10 @@ class PurchaseInstallment
                         'price' => $stripePrice->id,
                         'metadata' => $metadata
                     ],
+                ],
+                'application_fee_percent' => $practitionerCommissions,
+                'transfer_data' => [
+                    'destination' => $practitioner->stripe_account_id,
                 ],
                 'metadata' => $metadata
             ]
@@ -191,7 +206,6 @@ class PurchaseInstallment
         return $subscription;
     }
 
-
     private function collectMetadata(Schedule $schedule, Booking $booking): array
     {
         $practitioner = $schedule->service->practitioner;
@@ -207,5 +221,24 @@ class PurchaseInstallment
             'Client stripe id' => $client->stripe_customer_id ?? "",
             'Booking reference' => $booking->reference ?? ""
         ];
+    }
+
+    private function getPractitionerRate(User $practitioner)
+    {
+        $rate = PractitionerCommission::query()
+            ->where('practitioner_id', $practitioner->id)
+            ->where(function (Builder $builder) {
+                return $builder
+                    ->whereRaw('(is_dateless = 0 AND date_from <= NOW() AND date_to >= NOW())')
+                    ->orWhere(function (Builder $builder) {
+                        return $builder
+                            ->where('is_dateless', '=', 1)
+                            ->whereNull('date_from')
+                            ->whereNull('date_to');
+                    });
+            })
+            ->min('rate');
+
+        return $rate->rate ?? $practitioner->plan->commission_on_sale;
     }
 }
