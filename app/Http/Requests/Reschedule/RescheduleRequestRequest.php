@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Reschedule;
 
 use App\Http\Requests\Request;
+use App\Http\RequestValidators\AvailabilityValidator;
 use App\Models\Booking;
 use App\Models\Schedule;
 use App\Models\Service;
@@ -14,6 +15,15 @@ use Illuminate\Support\Facades\Auth;
  */
 class RescheduleRequestRequest extends Request
 {
+    private AvailabilityValidator $availabilityValidator;
+
+    public function __construct(array $query = [], array $request = [], array $attributes = [], array $cookies = [], array $files = [], array $server = [], $content = null)
+    {
+        parent::__construct($query, $request, $attributes, $cookies, $files, $server, $content);
+
+        $this->availabilityValidator = app(AvailabilityValidator::class);
+    }
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -60,7 +70,13 @@ class RescheduleRequestRequest extends Request
             'new_schedule_id' => 'required|exists:schedules,id',
             'comment'         => 'max:150'
         ];
-    }
+
+        if ($this->booking->schedule->service->service_type_id === Service::TYPE_APPOINTMENT) {
+            $rules = array_merge($rules, [
+                'availabilities.*.datetime_from' => 'required_with:availabilities',
+                'availabilities'                 => 'required'
+            ]);
+        }
 
         return $rules;
     }
@@ -100,6 +116,13 @@ class RescheduleRequestRequest extends Request
                     && $this->booking->schedule->attendees <= Booking::where('schedule_id', $newSchedule->id)->uncanceled()->sum('amount')
                 ) {
                     $validator->errors()->add('new_schedule_id', 'There are no free tickets in schedule');
+                }
+
+                if ($newSchedule->service->service_type_id === Service::TYPE_APPOINTMENT && $this->has('availabilities')) {
+                    $this->availabilityValidator
+                        ->setSchedule($newSchedule)
+                        ->setDatetimes(array_column($this->get('availabilities'), 'datetime_from'))
+                        ->validate($validator);
                 }
             }
         });
