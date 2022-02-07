@@ -161,7 +161,6 @@ class BookingMyClientController extends Controller
                 ])
             )->join('services', 'services.id', '=', 'purchases.service_id')
             ->join('service_types', 'service_types.id', '=', 'services.service_type_id')
-            ->leftJoin('countries', 'schedules.country_id', '=', 'countries.id')
             ->join('users', 'users.id', '=', 'purchases.user_id')
             ->join('bookings', static function ($join) {
                 $join->on(function ($join) {
@@ -171,7 +170,7 @@ class BookingMyClientController extends Controller
             })
             ->join('booking_snapshots', 'booking_snapshots.booking_id', '=', 'bookings.id')
             ->join('schedule_snapshots', 'schedule_snapshots.id', '=', 'booking_snapshots.schedule_snapshot_id')
-            ->join('countries', 'schedule_snapshots.country_id', '=', 'countries.id')
+            ->leftJoin('countries', 'schedule_snapshots.country_id', '=', 'countries.id')
             ->where('services.user_id', $request->user()->id)
             ->where('services.service_type_id', '=', 'bespoke')
             ->orderBy('id', 'desc')
