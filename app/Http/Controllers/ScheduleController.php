@@ -124,7 +124,7 @@ class ScheduleController extends Controller
         return fractal($schedule, new ScheduleTransformer())->parseIncludes($request->getIncludes())->toArray();
     }
 
-    public function update(AppointmentScheduleRequest $request, Schedule $schedule)
+    public function update(CreateScheduleInterface $request, Schedule $schedule)
     {
         $schedule = run_action(ScheduleUpdate::class, $request, $schedule);
 
