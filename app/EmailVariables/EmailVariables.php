@@ -146,7 +146,11 @@ class EmailVariables
      */
     public function getPractitioner_Url(): ?string
     {
-        return config('app.frontend_url') . config('app.frontend_public_profile') . $this->event->user->id;
+        return config('app.frontend_url') . str_replace(
+                ['practitioner-slug'],
+                [$this->event->user->slug],
+                config('app.frontend_public_profile')
+            );
     }
 
     /**
@@ -505,6 +509,14 @@ class EmailVariables
     {
         $scheduleId = isset($this->event->reschedule) ? $this->event->reschedule->new_schedule_id : $this->event->booking->schedule->id;
         return config('app.frontend_url') . config('app.frontend_clients_booking_url') . $this->event->booking->purchase->service->id . '/' . $scheduleId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getView_client_purchase(): string
+    {
+        return config('app.frontend_url') . config('app.frontend_client_purchase_url') . $this->event->booking->purchase->service->id . '/' . $this->event->booking->purchase->id;
     }
 
     /**
