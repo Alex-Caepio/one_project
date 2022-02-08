@@ -209,10 +209,25 @@ class CancelBooking
         ]);
 
         foreach ($invoices as $invoice) {
-            if (!is_null($invoice->paymentIntent)) {
-                $this->stripe->refunds->create([
-                    'payment_intent' => $invoice->paymentIntent
+            if (!is_null($invoice['payment_intent'])) {
+                $stripeFee = (int) config('app.platform_cancellation_fee'); // 3%
+                $result = $this->stripe->refunds->create([
+                    'payment_intent' => $invoice['payment_intent'],
+                    'amount' => $invoice['amount_paid'] - $invoice['amount_paid'] / 100 * $stripeFee,
+                    'refund_application_fee' => true,
+                    'reverse_transfer' => true,
                 ]);
+                if ($result) {
+                    Log::channel('stripe_refund_success')
+                        ->info('Payment intent refund result: ', [
+                            'refund' => $result,
+                        ]);
+                }
+            } else {
+                Log::channel('stripe_refund_fail')
+                    ->info('Invoice has no payment intent: ', [
+                        'invoice' => $invoice,
+                    ]);
             }
         }
     }

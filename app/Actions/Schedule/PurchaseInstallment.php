@@ -219,7 +219,8 @@ class PurchaseInstallment
             'Client first name' => $client->first_name ?? "",
             'Client last name' => $client->last_name ?? "",
             'Client stripe id' => $client->stripe_customer_id ?? "",
-            'Booking reference' => $booking->reference ?? ""
+            'Booking reference' => $booking->reference ?? "",
+            'Type' => 'Installment Purchase',
         ];
     }
 
