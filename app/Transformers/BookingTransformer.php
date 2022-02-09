@@ -3,6 +3,7 @@
 namespace App\Transformers;
 
 use App\Models\Booking;
+use App\Models\BookingSnapshot;
 
 class BookingTransformer extends Transformer
 {
@@ -27,11 +28,11 @@ class BookingTransformer extends Transformer
      */
     public function transform(Booking $booking)
     {
-        return [
+        $result = [
             'id' => $booking->id,
             'reference' => $booking->reference,
             'user_id' => $booking->user_id,
-            'schedule_id' => $booking->schedule->id,
+            'schedule_id' => $booking->schedule_id,
             'price_id' => $booking->price_id,
             'availability_id' => $booking->availability_id,
             'datetime_from' => $booking->datetime_from,
@@ -39,7 +40,7 @@ class BookingTransformer extends Transformer
             'quantity' => $booking->quantity,
             'cost' => $booking->cost,
             'promocode_id' => $booking->promocode_id,
-            'purchase_id' => $booking->purchase->id,
+            'purchase_id' => $booking->purchase_id,
             'created_at' => $booking->created_at,
             'updated_at' => $booking->updated_at,
             'cancelled_at' => $booking->cancelled_at,
@@ -52,6 +53,15 @@ class BookingTransformer extends Transformer
             'is_active' => $booking->isActive(),
             'completed_at' => $booking->completed_at
         ];
+
+        if ($booking instanceof BookingSnapshot) {
+            $result = array_merge($result, [
+                'schedule_id' => $booking->schedule->id,
+                'purchase_id' => $booking->purchase->id,
+            ]);
+        }
+
+        return $result;
     }
 
     public function includeSchedule(Booking $booking)
