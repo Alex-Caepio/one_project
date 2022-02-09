@@ -27,6 +27,8 @@ namespace App\Models;
  */
 class PromotionSnapshot extends Promotion {
 
+    protected $guarded = [];
+
     public function promotion()
     {
         return $this->belongsTo(Promotion::class);
