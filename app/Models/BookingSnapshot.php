@@ -2,13 +2,15 @@
 
 namespace App\Models;
 
-
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property float commission_on_sale
+ *
+ * @property-read Booking $booking
  */
-class BookingSnapshot extends Booking {
+class BookingSnapshot extends Booking
+{
     protected $fillable = [
         'user_id',
         'practitioner_id',
@@ -38,20 +40,23 @@ class BookingSnapshot extends Booking {
         return $this->belongsTo(Booking::class);
     }
 
-    public function schedule() {
+    public function schedule()
+    {
         return $this->belongsTo(ScheduleSnapshot::class, 'schedule_snapshot_id');
     }
 
-    public function price() {
+    public function price()
+    {
         return $this->belongsTo(PriceSnapshot::class)->withTrashed();
     }
 
-    public function purchase() {
+    public function purchase()
+    {
         return $this->belongsTo(PurchaseSnapshot::class, 'purchase_snapshot_id');
     }
 
-    public function reschedule_requests(): HasMany {
+    public function reschedule_requests(): HasMany
+    {
         return $this->hasMany(RescheduleRequest::class, 'booking_id');
     }
 }
-

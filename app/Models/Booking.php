@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  *
  * @property-read Purchase $purchase
  * @property-read Schedule $schedule
+ * @property-read BookingSnapshot $snapshot
  * @property-read User $practitioner
  */
 class Booking extends Model
@@ -47,7 +48,6 @@ class Booking extends Model
         'is_installment',
         'booking_snapshot_id',
     ];
-
 
     /**
      * fire event
@@ -140,5 +140,4 @@ class Booking extends Model
     {
         return $this->hasOne(RescheduleRequest::class)->where('requested_by', 'practitioner');
     }
-
 }

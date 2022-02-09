@@ -23,10 +23,8 @@ class BookingTransformer extends Transformer
 
     /**
      * A Fractal transformer.
-     *
-     * @return array
      */
-    public function transform(Booking $booking)
+    public function transform(Booking $booking): array
     {
         $result = [
             'id' => $booking->id,
@@ -58,6 +56,8 @@ class BookingTransformer extends Transformer
             $result = array_merge($result, [
                 'schedule_id' => $booking->schedule->id,
                 'purchase_id' => $booking->purchase->id,
+                'cancelled_at' => $booking->booking->cancelled_at,
+                'status' => $booking->booking->status,
             ]);
         }
 
