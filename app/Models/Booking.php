@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int $is_installment
  * @property int $is_fully_paid
  *
+ * @property-read Price $price
  * @property-read Purchase $purchase
  * @property-read Schedule $schedule
  * @property-read BookingSnapshot $snapshot
