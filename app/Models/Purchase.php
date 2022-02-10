@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property mixed stripe_id
  * @property mixed subscription_id
  * @property mixed deposit_amount
+ * @property mixed reference
  */
 class Purchase extends Model
 {
