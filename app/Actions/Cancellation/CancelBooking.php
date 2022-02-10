@@ -92,10 +92,7 @@ class CancelBooking
                 $paymentIntent = $this->stripe->paymentIntents->retrieve($booking->purchase->stripe_id);
 
                 $stripeRefundData = ['payment_intent' => $paymentIntent->id];
-
-                if (!$refundData['isFullRefund']) {
-                    $stripeRefundData['amount'] = $refundData['refundSmallestUnit'];
-                }
+                $stripeRefundData['amount'] = $refundData['refundSmallestUnit'];
 
                 $stripeRefund = $this->stripe->refunds->create($stripeRefundData);
                 Log::channel('stripe_refund_success')
@@ -273,7 +270,8 @@ class CancelBooking
             $result = $this->cancelledByClient($result, $booking);
         }
 
-        $result['refundSmallestUnit'] = (int)($result['refundTotal'] * 100);
+
+        $result['refundSmallestUnit'] = intval(sprintf("%.0f", $result['refundTotal'] * 100));
 
         return $result;
     }
@@ -290,9 +288,9 @@ class CancelBooking
 
     private function cancelledByPractitioner(array $result): array
     {
-        $result['isFullRefund'] = true;
-        $result['refundTotal'] = $result['bookingCost'];
-        $result['practitionerCharge'] = $result['bookingCost'] - $result['planRateAmount'] + $result['stripeFeeAmount'];
+        $result['isFullRefund'] = false;
+        $result['refundTotal'] = $result['bookingCost'] - $result['stripeFeeAmount'];
+        $result['practitionerCharge'] = $result['bookingCost'] - $result['planRateAmount'];
 
         return $result;
     }
