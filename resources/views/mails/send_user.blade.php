@@ -13,7 +13,10 @@
     <p><b>Message:</b></p>
     <p>{!! $text !!}</p>
 {{--    <p>To reply to this message, simply reply to this email and {{$sender->first_name}} will receive your message.</p>--}}
-    <p><a href="{{ $replyLink }}">Reply</a></p>
+    <p><a
+        href="{{ $replyLink }}"
+        style="font-size: 16px; margin-bottom: 8px; padding: 8px 24px; color: #ffffff; text-align: center; background-color: #db7a6a; border-radius: 25px; cursor: pointer; margin: 6px 0; display: inline-block; user-select: none; box-sizing: border-box;"
+        >Reply</a></p>
     <p>Thanks<br/>The Holistify Team</p>
 </body>
 </html>
