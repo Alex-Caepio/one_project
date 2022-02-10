@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property float $commission_on_sale
  * @property int $is_installment
  * @property int $is_fully_paid
+ * @property string $status
  *
  * @property-read Price $price
  * @property-read Purchase $purchase
@@ -24,6 +25,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Booking extends Model
 {
     use HasFactory, SoftDeletes;
+
+    public const CANCELED_STATUS = 'canceled';
+    public const COMPLETED_STATUS = 'completed';
+    public const RESCHEDULED_STATUS = 'rescheduled';
 
     protected $observables = ['instalment_complete'];
 
@@ -64,7 +69,7 @@ class Booking extends Model
      */
     public function scopeActive(Builder $query): Builder
     {
-        return $query->whereNotIn('status', ['canceled', 'completed']);
+        return $query->whereNotIn('status', self::getInactiveStatuses());
     }
 
     /**
@@ -73,13 +78,13 @@ class Booking extends Model
      */
     public function scopeUncanceled(Builder $query): Builder
     {
-        return $query->where('status', '!=', 'canceled');
+        return $query->where('status', '!=', self::CANCELED_STATUS);
     }
 
 
     public function isActive(): bool
     {
-        return !in_array($this->status, ['canceled', 'completed']);
+        return !in_array($this->status, self::getInactiveStatuses());
     }
 
     public function user()
@@ -140,5 +145,13 @@ class Booking extends Model
     public function practitioner_reschedule_request(): HasOne
     {
         return $this->hasOne(RescheduleRequest::class)->where('requested_by', 'practitioner');
+    }
+
+    public static function getInactiveStatuses(): array
+    {
+        return [
+            self::CANCELED_STATUS,
+            self::COMPLETED_STATUS,
+        ];
     }
 }

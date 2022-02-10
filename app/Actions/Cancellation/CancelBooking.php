@@ -131,7 +131,7 @@ class CancelBooking
         }
 
         $booking->cancelled_at = Carbon::now();
-        $booking->status = 'canceled';
+        $booking->status = Booking::CANCELED_STATUS;
         $booking->save();
 
         $cancellation = new Cancellation();

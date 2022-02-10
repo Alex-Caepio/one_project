@@ -72,7 +72,7 @@ class BookingController extends Controller
 
     public function complete(Booking $booking, BookingCompleteRequest $request)
     {
-        $booking->status = 'completed';
+        $booking->status = Booking::COMPLETED_STATUS;
         $booking->save();
         Notification::where('booking_id', $booking->id)->delete();
         RescheduleRequest::where('booking_id', $booking->id)->delete();
