@@ -171,6 +171,7 @@ class UserRightsHelper
                             Service::TYPE_EVENT,
                             Service::TYPE_WORKSHOP,
                             Service::TYPE_RETREAT,
+                            Service::TYPE_BESPOKE,
                         ]);
                         $query->orWhere(function(Builder $query) {
                             $query->where([
