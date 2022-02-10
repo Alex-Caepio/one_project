@@ -111,7 +111,6 @@ class AvailabilityValidator implements RequestValidatorInterface
             }
         }
 
-
         if (
             $this->userUnavailabilities->count()
             && $this->withinUnavailabilities($from, $this->userUnavailabilities)

@@ -99,7 +99,10 @@ class RescheduleRequestRequest extends Request
                     $validator->errors()->add('error', 'Booking is completed or canceled');
                 }
 
-                if ((int) $this->booking->schedule_id === (int) $this->get('new_schedule_id')) {
+                if (
+                    (int) $this->booking->schedule_id === (int) $this->get('new_schedule_id')
+                    && $this->booking->schedule->service->service_type_id !== Service::TYPE_APPOINTMENT
+                ) {
                     $validator->errors()->add('error', 'Please, select new schedule for reschedule');
                 }
 

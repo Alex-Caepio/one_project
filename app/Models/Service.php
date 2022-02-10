@@ -13,7 +13,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\Auth;
 
 /**
  * Class Service
@@ -21,7 +20,7 @@ use Illuminate\Support\Facades\Auth;
  * @property int id
  * @property int user_id
  * @property int is_published
- * @property int service_type_id
+ * @property string service_type_id
  * @property string url
  * @property string title
  * @property string string
@@ -53,7 +52,6 @@ class Service extends Model
         'published_at',
         'is_published'
     ];
-
 
     /**
      * The attributes that should be cast to native types.
@@ -95,7 +93,7 @@ class Service extends Model
     public function practitioner()
     {
         return $this
-            ->belongsTo(User::class, 'user_id','id')
+            ->belongsTo(User::class, 'user_id', 'id')
             ->withTrashed();
     }
 
@@ -195,5 +193,4 @@ class Service extends Model
     {
         return in_array($this->service_type_id, config('app.dateless_service_types'), true);
     }
-
 }

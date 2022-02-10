@@ -9,7 +9,6 @@ use App\Helpers\UserRightsHelper;
 use App\Http\Requests\InstallmentCalendar;
 use App\Http\Requests\Schedule\PurchaseScheduleRequest;
 use App\Http\Requests\Schedule\ScheduleOwnerRequest;
-use App\Http\Requests\Schedule\AppointmentScheduleRequest;
 use App\Models\Booking;
 use App\Models\Price;
 use App\Models\Service;
@@ -27,7 +26,6 @@ use Illuminate\Support\Facades\Auth;
 
 class ScheduleController extends Controller
 {
-
     public function index(Service $service, Request $request)
     {
         $scheduleQuery = Schedule::where('service_id', $service->id)->with('service');
@@ -65,10 +63,14 @@ class ScheduleController extends Controller
 
     public function rescheduleScheduleList(Schedule $schedule, Request $request)
     {
-        $scheduleQuery = Schedule::query()
-            ->where('service_id', $schedule->service_id)
-            ->where('id', '<>', $schedule->id)
-            ->where('is_published', true);
+        $scheduleQuery = Schedule::where([
+            'service_id' => $schedule->service_id,
+            'is_published' => true,
+        ]);
+
+        if ($schedule->service->service_type_id !== Service::TYPE_APPOINTMENT) {
+            $scheduleQuery->where('id', '<>', $schedule->id);
+        }
 
         $requestIncludes = $request->getIncludes();
 
@@ -79,12 +81,13 @@ class ScheduleController extends Controller
         );
 
         // price option for client
-        if (Auth::user()->account_type === User::ACCOUNT_CLIENT && $request->filled('booking_id')) {
+        if (Auth::user()->account_type === User::ACCOUNT_CLIENT && $request->has('booking_id')) {
+            /** @var Booking $booking */
             $booking = Booking::query()
                 ->with('price')
-                ->where('id', (int)$request->get('booking_id'))
                 ->where('schedule_id', $schedule->id)
-                ->first();
+                ->find((int) $request->get('booking_id'));
+
             if (!$booking) {
                 return response('Booking not found', 500);
             }
@@ -92,7 +95,8 @@ class ScheduleController extends Controller
             $scheduleQuery->with([
                 'prices' => function ($query) use ($booking) {
                     $query->where('prices.cost', '<=', $booking->price->cost)->orWhere('is_free', true);
-                }]);
+                }
+            ]);
 
             // attendees filtrator
             $scheduleCollection = $scheduleQuery->get()->filter(

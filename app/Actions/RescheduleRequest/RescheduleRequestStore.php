@@ -6,10 +6,11 @@ namespace App\Actions\RescheduleRequest;
 use App\Models\Booking;
 use App\Models\RescheduleRequest;
 use App\Models\Schedule;
+use Illuminate\Http\Request;
 
 class RescheduleRequestStore
 {
-    public function execute(Booking $booking, $request): RescheduleRequest
+    public function execute(Booking $booking, Request $request): RescheduleRequest
     {
         $rescheduleRequest = new RescheduleRequest();
         $newSchedule = Schedule::find($request->get('new_schedule_id'));
