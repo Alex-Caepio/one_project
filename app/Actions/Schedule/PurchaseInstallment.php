@@ -34,7 +34,7 @@ class PurchaseInstallment
         /** @var User $customer */
         $customer = $request->user();
         $stripe = app()->make(StripeClient::class);
-        $deposit = $this->chargeDeposit($paymentMethodId, $stripe, $schedule, $customer->id, $purchase->id, $metadata);
+        $deposit = $this->chargeDeposit($paymentMethodId, $stripe, $schedule, $customer->id, $purchase, $metadata);
         $subscription = $this->chargeInstallment(
             $paymentMethodId,
             $cost,
@@ -83,10 +83,11 @@ class PurchaseInstallment
         StripeClient $stripe,
         Schedule $schedule,
         int $customerId,
-        int $purchaseId,
+        Purchase $purchase,
         array $metadata
     ): PaymentIntent {
         $depositAmount = $schedule->deposit_amount;
+        $reference = implode(', ', $purchase->bookings->pluck('reference')->toArray());
 
         $paymentIntent = $stripe->paymentIntents->create(
             [
@@ -108,10 +109,11 @@ class PurchaseInstallment
 
         $installment = new Instalment();
         $installment->user_id = $customerId;
-        $installment->purchase_id = $purchaseId;
+        $installment->purchase_id = $purchase->id;
         $installment->payment_date = date('Y-m-d H:i:s');
         $installment->payment_amount = $depositAmount;
         $installment->is_paid = true;
+        $installment->reference = $reference;
         $installment->save();
 
         $chargeId = $paymentIntent->charges->data ? $paymentIntent->charges->data[0]['id'] : null;
@@ -140,6 +142,7 @@ class PurchaseInstallment
     ): ?Subscription {
         $calendarInstallments = $schedule->calculateInstallmentsCalendar($cost, $installments);
         $installmentInfo = $schedule->getInstallmentInfo($cost, $installments);
+        $reference = implode(', ', $purchase->bookings->pluck('reference')->toArray());
 
         if (count($calendarInstallments) === 0) {
             return null;
@@ -191,6 +194,8 @@ class PurchaseInstallment
             $installment->purchase_id = $purchase->id;
             $installment->payment_date = Carbon::parse($date);
             $installment->payment_amount = $value;
+            $installment->reference = $reference;
+            $installment->subscription_id = $subscription->id;
             $installment->save();
         }
 
@@ -200,6 +205,8 @@ class PurchaseInstallment
                 'service_id' => $schedule->service->id,
                 'schedule_id' => $schedule->id,
                 'amount' => $installmentInfo['amountPerPeriod'],
+                'reference' => $reference,
+                'subscription_id' => $subscription->id,
                 'daysInPeriod' => $installmentInfo['daysPerPeriod']
             ]);
 

@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Actions\Stripe\AccountHandler;
+use App\Actions\Stripe\InvoiceHandler;
 use App\Actions\Stripe\SubscriptionHandler;
 
 class StripeRequest {
@@ -11,7 +12,7 @@ class StripeRequest {
         'customer'       => [
             'subscription' => SubscriptionHandler::class
         ],
-        //'invoice' => InvoiceHandler::class,
+        'invoice' => InvoiceHandler::class,
         'account' => AccountHandler::class,
     ];
 
