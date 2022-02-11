@@ -13,16 +13,14 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 /**
- * Class Schedule
- *
- * @property int id
- * @property int buffer_time
- * @property int deposit_instalments
- * @property int deposit_instalment_frequency
- * @property bool deposit_accepted
- * @property float deposit_amount
- * @property string deposit_final_date
- * @property Service service
+ * @property int $id
+ * @property int $buffer_time
+ * @property int $deposit_instalments
+ * @property int $deposit_instalment_frequency
+ * @property bool $deposit_accepted
+ * @property float $deposit_amount
+ * @property string $deposit_final_date
+ * @property Service $service
  *
  * @property-read Collection|ScheduleAvailability[] $schedule_availabilities
  * @property-read Collection|ScheduleUnavailability[] $schedule_unavailabilities
