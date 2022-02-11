@@ -44,6 +44,20 @@ class FinalizeSubscription
 
             if ($plan->isActiveTrial()) {
                 $subscriptionData['trial_end'] = Carbon::now()->addMonths($plan->free_period_length)->timestamp;
+
+                Log::channel('stripe_plans_info')
+                    ->info('Plan is on trial', [
+                        'plan_id' => $plan->id ?? null,
+                        'stripe_plan_id' => $subscription->id ?? null,
+                        'subscription_trial_end' => $subscriptionData['trial_end'],
+                        'plan_free_start_from' => $plan->free_start_from,
+                        'plan_free_start_to' => $plan->free_start_to,
+                        'user_id' => $user->id ?? null,
+                        'stripe_customer_id' => $user->stripe_customer_id ?? null,
+                        'payment_method_id' => $request->payment_method_id ?? null,
+                        'price_stripe_id' => $plan->stripe_id,
+                        'subscription_data' => $subscriptionData,
+                    ]);
             }
 
             $subscription = $stripeClient->subscriptions->create($subscriptionData);
