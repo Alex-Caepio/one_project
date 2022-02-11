@@ -260,7 +260,7 @@ class Schedule extends Model
             $q->whereNotBetween('datetime_from', [$unavailability->start_date, $unavailability->end_date]);
         }
 
-        return $this->bookings()->whereNotIn('id', $q->pluck('id'))->whereNotIn('status', ['completed', 'canceled'])
+        return $this->bookings()->whereNotIn('id', $q->pluck('id'))->whereNotIn('status', Booking::getInactiveStatuses())
             ->get();
     }
 
