@@ -22,8 +22,12 @@ use Illuminate\Support\Facades\DB;
  * @property string $deposit_final_date
  * @property Service $service
  *
+ * @property-read Service $service
  * @property-read Collection|ScheduleAvailability[] $schedule_availabilities
  * @property-read Collection|ScheduleUnavailability[] $schedule_unavailabilities
+ * @property-read Collection|Price[] $prices
+ *
+ * @method Collection|self[]|self|null find(int|array $ids)
  */
 class Schedule extends Model
 {
