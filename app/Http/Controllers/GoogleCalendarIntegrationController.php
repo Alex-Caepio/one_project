@@ -105,7 +105,7 @@ class GoogleCalendarIntegrationController extends Controller
                 'user:id,first_name,last_name'
             ])
             ->where('practitioner_id', '=', Auth::id())
-            ->whereNotIn('status', ['canceled', 'completed'])
+            ->whereNotIn('status', Booking::getInactiveStatuses())
             ->where(function (Builder $builder) use ($request) {
                 return $builder
                     ->whereBetween('datetime_from', [$request->first_date_point, $request->last_date_point])

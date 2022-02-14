@@ -10,10 +10,8 @@ use App\Transformers\ArticleTransformer;
 use App\Transformers\ServiceTransformer;
 use App\Transformers\UserTransformer;
 
-
 class LatestTwoController extends Controller
 {
-
     public function index(Request $request)
     {
         $includes = $request->getIncludes();
@@ -33,7 +31,7 @@ class LatestTwoController extends Controller
             }
         )->with($servicesIncludes)->limit(2)->orderBy('last_published', 'desc')->get();
 
-        $practitioners = User::where('account_type', 'practitioner')->where('is_published', true)->limit(2)->orderBy(
+        $practitioners = User::where('account_type', User::ACCOUNT_PRACTITIONER)->where('is_published', true)->limit(2)->orderBy(
             'business_published_at',
             'desc'
         )->get();

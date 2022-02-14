@@ -2,15 +2,14 @@
 
 namespace App\Listeners\Emails;
 
-use App\EmailVariables\EmailVariables;
 use App\Events\AccountTerminatedByAdmin;
-use App\Models\CustomEmail;
-use Illuminate\Support\Facades\Mail;
+use App\Models\User;
 
-class AccountTerminatedByAdminEmail extends SendEmailHandler {
-
-    public function handle(AccountTerminatedByAdmin $event): void {
-        $this->type = $event->user->isClient() ? 'client' : 'practitioner';
+class AccountTerminatedByAdminEmail extends SendEmailHandler
+{
+    public function handle(AccountTerminatedByAdmin $event): void
+    {
+        $this->type = $event->user->isClient() ? User::ACCOUNT_CLIENT : User::ACCOUNT_PRACTITIONER;
         $this->toEmail = $event->user->email;
         $this->templateName = 'Account Terminated by Admin';
         $this->event = $event;

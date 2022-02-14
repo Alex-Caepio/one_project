@@ -13,23 +13,30 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 /**
- * Class Schedule
+ * @property int $id
+ * @property int $buffer_time
+ * @property string $buffer_period
+ * @property int $deposit_instalments
+ * @property int $deposit_instalment_frequency
+ * @property bool $deposit_accepted
+ * @property float $deposit_amount
+ * @property string $deposit_final_date
+ * @property Service $service
  *
- * @property int id
- * @property int buffer_time
- * @property int deposit_instalments
- * @property int deposit_instalment_frequency
- * @property bool deposit_accepted
- * @property float deposit_amount
- * @property string deposit_final_date
- * @property Service service
- *
+ * @property-read Service $service
  * @property-read Collection|ScheduleAvailability[] $schedule_availabilities
  * @property-read Collection|ScheduleUnavailability[] $schedule_unavailabilities
+ * @property-read Collection|Price[] $prices
+ *
+ * @method static Collection|self[]|self|null find(int|array $ids)
  */
 class Schedule extends Model
 {
     use HasFactory, SoftDeletes, PublishedScope;
+
+    public const MINS_BUFFER_PERIOD = 'mins';
+    public const HOURS_BUFFER_PERIOD = 'hours';
+    public const DAYS_BUFFER_PERIOD = 'days';
 
     const DEPOSIT_DELAY = 14; // in days
 
@@ -260,7 +267,7 @@ class Schedule extends Model
             $q->whereNotBetween('datetime_from', [$unavailability->start_date, $unavailability->end_date]);
         }
 
-        return $this->bookings()->whereNotIn('id', $q->pluck('id'))->whereNotIn('status', ['completed', 'canceled'])
+        return $this->bookings()->whereNotIn('id', $q->pluck('id'))->whereNotIn('status', Booking::getInactiveStatuses())
             ->get();
     }
 

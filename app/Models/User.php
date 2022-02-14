@@ -18,27 +18,22 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
 /**
- * Class User
- *
- * @property int id
- * @property string email
- * @property string last_name
- * @property string first_name
- * @property string account_type
- * @property string stripe_account_id
- * @property string stripe_customer_id
- * @property string default_payment_method
- * @property string default_fee_payment_method
- * @property Carbon email_verified_at
- * @property Plan plan
- * @property Collection latest_services
- * @property Collection latest_articles
- *
- * @package App\Models
+ * @property int $id
+ * @property string $email
+ * @property string $last_name
+ * @property string $first_name
+ * @property string $account_type
+ * @property string $stripe_account_id
+ * @property string $stripe_customer_id
+ * @property string $default_payment_method
+ * @property string $default_fee_payment_method
+ * @property Carbon $email_verified_at
+ * @property-read Plan $plan
+ * @property-read Collection $latest_services
+ * @property-read Collection $latest_articles
  */
 class User extends Authenticatable implements MustVerifyEmail
 {
-
     use Notifiable, HasApiTokens, HasFactory, PublishedScope, SoftDeletes;
 
     public const ACCOUNT_PRACTITIONER = 'practitioner';
@@ -294,7 +289,8 @@ class User extends Authenticatable implements MustVerifyEmail
                 Promotion::class,
                 'promotion_practitioner',
                 'practitioner_id',
-                'promotion_id');
+                'promotion_id'
+            );
     }
 
     public function freezes(): HasMany

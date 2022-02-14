@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Filters\QueryFilter;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -15,6 +16,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int $is_installment
  * @property int $is_fully_paid
  * @property string $status
+ * @property int $user_id
+ * @property int $practitioner_id
+ * @property int $price_id
+ * @property int $schedule_id
+ * @property Carbon|string $datetime_from
+ * @property Carbon|string $datetime_to
  *
  * @property-read Price $price
  * @property-read Purchase $purchase
@@ -139,12 +146,12 @@ class Booking extends Model
 
     public function client_reschedule_request(): HasOne
     {
-        return $this->hasOne(RescheduleRequest::class)->where('requested_by', 'client');
+        return $this->hasOne(RescheduleRequest::class)->where('requested_by', User::ACCOUNT_CLIENT);
     }
 
     public function practitioner_reschedule_request(): HasOne
     {
-        return $this->hasOne(RescheduleRequest::class)->where('requested_by', 'practitioner');
+        return $this->hasOne(RescheduleRequest::class)->where('requested_by', User::ACCOUNT_PRACTITIONER);
     }
 
     public static function getInactiveStatuses(): array

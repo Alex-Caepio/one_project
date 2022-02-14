@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use App\Models\Booking;
 use Carbon\Carbon;
-use Carbon\Exceptions\Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
@@ -46,7 +45,7 @@ class BookingStatusesUpdate extends Command
                 $bookingIds[] = $booking->id;
             }
         }
-        Booking::whereIn('id', $bookingIds)->update(['status' => 'completed']);
+        Booking::whereIn('id', $bookingIds)->update(['status' => Booking::COMPLETED_STATUS]);
         Log::channel('console_commands_handler')
             ->info('Mark bookings as completed. Done...',
                 ['bookings_count' => $bookingIds]);

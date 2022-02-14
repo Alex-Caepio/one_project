@@ -8,6 +8,7 @@ use App\Models\Booking;
 use App\Models\RescheduleRequest;
 use App\Models\Schedule;
 use App\Models\Service;
+use App\Models\User;
 use Carbon\Carbon;
 
 class CreateRescheduleRequestsOnScheduleUpdate
@@ -40,7 +41,7 @@ class CreateRescheduleRequestsOnScheduleUpdate
                     'schedule_id' => $booking->schedule_id,
                     'new_schedule_id' => $this->schedule->id,
                     'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                    'requested_by' => 'practitioner',
+                    'requested_by' => User::ACCOUNT_PRACTITIONER,
                     'old_location_displayed' => $this->schedule->getOriginal('location_displayed'),
                     'new_location_displayed' => $this->changesList['location_displayed'] ?? null,
                     'old_start_date' => $this->schedule->getOriginal('start_date'),
@@ -63,7 +64,7 @@ class CreateRescheduleRequestsOnScheduleUpdate
         return $this->schedule->service->service_type === Service::TYPE_APPOINTMENT
             ? $this->schedule->getOutsiderBookings()
             : Booking::where('schedule_id', $this->schedule->id)
-            ->whereNotIn('status', ['completed', 'canceled'])
+            ->whereNotIn('status', Schedule::getInactiveStatuses())
             ->get();
     }
 

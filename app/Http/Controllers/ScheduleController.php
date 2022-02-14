@@ -151,6 +151,7 @@ class ScheduleController extends Controller
 
     public function freeze(Schedule $schedule, PurchaseScheduleRequest $request)
     {
+        /** @var ScheduleFreeze $personalFreezed */
         $personalFreezed = ScheduleFreeze::where('schedule_id', $schedule->id)->where('user_id', Auth::id())->first();
 
         if ($personalFreezed === null) {

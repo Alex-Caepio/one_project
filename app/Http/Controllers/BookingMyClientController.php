@@ -127,7 +127,7 @@ class BookingMyClientController extends Controller
             ->join('purchases', 'purchases.id', '=', 'bookings.purchase_id')
             ->join('users', 'users.id', '=', 'bookings.user_id')
             ->where('services.user_id', $request->user()->id)
-            ->whereIn('bookings.status', ['completed', 'canceled'])->paginate($request->getLimit());
+            ->whereIn('bookings.status', Booking::getInactiveStatuses())->paginate($request->getLimit());
 
         $bookings = $paginator->getCollection();
 
@@ -166,7 +166,7 @@ class BookingMyClientController extends Controller
             ->join('bookings', static function ($join) {
                 $join->on(function ($join) {
                     $join->on('bookings.purchase_id', '=', 'purchases.id')
-                        ->whereNotIn('bookings.status', ['canceled', 'completed']);
+                        ->whereNotIn('bookings.status', Booking::getInactiveStatuses());
                 });
             })
             ->join('booking_snapshots', 'booking_snapshots.booking_id', '=', 'bookings.id')

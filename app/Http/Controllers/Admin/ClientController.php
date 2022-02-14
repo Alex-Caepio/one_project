@@ -16,13 +16,13 @@ use App\Actions\Stripe\CreateStripeUserByEmail;
 use App\Http\Requests\Admin\ClientCreateRequest;
 use App\Http\Requests\Admin\ClientUpdateRequest;
 use App\Http\Requests\Admin\ClientDestroyRequest;
-use Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
 
-class ClientController extends Controller {
-
-    public function index(Request $request) {
+class ClientController extends Controller
+{
+    public function index(Request $request)
+    {
         $userQuery = User::where('account_type', User::ACCOUNT_CLIENT);
         $userFilter = new UserFiltrator();
         $userFilter->apply($userQuery, $request);
@@ -31,14 +31,20 @@ class ClientController extends Controller {
 
         $paginator = $userQuery->with($includes)->paginate($request->getLimit());
         $practitioners = $paginator->getCollection();
-        return response(fractal($practitioners,
-                                new UserTransformer())->parseIncludes($includes))->withPaginationHeaders($paginator);
+        return response(fractal(
+            $practitioners,
+            new UserTransformer()
+        )->parseIncludes($includes))->withPaginationHeaders($paginator);
     }
 
-    public function store(ClientCreateRequest $request) {
+    public function store(ClientCreateRequest $request)
+    {
         $customer = run_action(CreateStripeUserByEmail::class, $request->email);
-        $user = run_action(CreateUserFromRequest::class, $request,
-                           ['stripe_customer_id' => $customer->id, 'is_admin' => null, 'account_type' => 'client']);
+        $user = run_action(CreateUserFromRequest::class, $request, [
+            'stripe_customer_id' => $customer->id,
+            'is_admin' => null,
+            'account_type' => User::ACCOUNT_CLIENT
+        ]);
 
         $token = $user->createToken('access-token');
         $user->withAccessToken($token);
@@ -48,22 +54,26 @@ class ClientController extends Controller {
         return fractal($user, new UserTransformer())->parseIncludes('access_token')->respond();
     }
 
-    public function show(User $client, ClientShowRequest $request) {
+    public function show(User $client, ClientShowRequest $request)
+    {
         return fractal($client, new UserTransformer())->parseIncludes($request->getIncludes())->toArray();
     }
 
-    public function update(ClientUpdateRequest $request, User $client) {
+    public function update(ClientUpdateRequest $request, User $client)
+    {
         $client->forceFill($request->all());
         $client->save();
         return fractal($client, new UserTransformer())->respond();
     }
 
-    public function destroy(User $client, ClientDestroyRequest $request) {
+    public function destroy(User $client, ClientDestroyRequest $request)
+    {
         run_action(DeleteUser::class, $client, $request);
         return response(null, 204);
     }
 
-    protected function sendVerificationEmail($user) {
+    protected function sendVerificationEmail($user)
+    {
         $linkApi = URL::temporarySignedRoute('verify-email', now()->addMinute(60), [
             'user'  => $user->id,
             'email' => $user->email
@@ -72,7 +82,7 @@ class ClientController extends Controller {
         $linkFrontend = config('app.frontend_url') . config('app.frontend_password_reset_link') . '?' . explode('?', $linkApi)[1];
 
         Mail::to([
-                     'email' => $user->email
-                 ])->send(new VerifyEmail($linkFrontend));
+            'email' => $user->email
+        ])->send(new VerifyEmail($linkFrontend));
     }
 }

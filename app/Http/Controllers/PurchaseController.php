@@ -69,6 +69,7 @@ class PurchaseController extends Controller
         Schedule $schedule,
         StripeClient $stripe
     ): array {
+        /** @var Price $price */
         $price = $schedule->prices()->where('id', $request->get('price_id'))->first();
         $cost = $price->cost * $request->amount;
         $practitioner = $schedule->service->user;
@@ -112,6 +113,7 @@ class PurchaseController extends Controller
             $purchase->save();
 
             if ($schedule->service->service_type_id === Service::TYPE_APPOINTMENT) {
+                /** @var string[] $availabilities */
                 $availabilities = $request->get('availabilities');
 
                 if ($discount > 0) {
