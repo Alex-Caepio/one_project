@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Actions\Promo\CalculatePromoPrice;
+use App\Actions\Promo\PromoIsAvailable;
 use App\Actions\Schedule\PurchaseInstallment;
 use App\Actions\Stripe\GetViablePaymentMethod;
 use App\Actions\Stripe\TransferFundsWithCommissions;
@@ -77,7 +78,7 @@ class PurchaseController extends Controller
         $promo = null;
         $discount = $discountPerAppointment = 0;
 
-        if ($request->has('promo_code')) {
+        if ($request->filled('promo_code')) {
             $promo = PromotionCode::where('name', $request->get('promo_code'))->with('promotion')->first();
             if ($promo instanceof PromotionCode) {
                 $newCost = run_action(CalculatePromoPrice::class, $promo, $request->amount, $price->cost);
@@ -85,6 +86,11 @@ class PurchaseController extends Controller
                     $discount = $cost - $newCost;
                 }
                 $cost = $newCost;
+            }
+
+            /* Is balance enought for giving discount */
+            if (!run_action(PromoIsAvailable::class, $promo, $request->amount, $price->cost)) {
+                abort(503, PromoIsAvailable::INSUFFICIENT_BALANCE);
             }
         }
 
@@ -211,6 +217,10 @@ class PurchaseController extends Controller
         $price = $schedule->prices()->find($request->get('price_id'));
         if (!$price) {
             abort(500, 'Price not found');
+        }
+
+        if (!run_action(PromoIsAvailable::class, $promo, $request->amount, $price->cost)) {
+            abort(503, PromoIsAvailable::INSUFFICIENT_BALANCE);
         }
 
         return fractal(

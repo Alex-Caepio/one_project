@@ -14,7 +14,18 @@ namespace App\Models;
  * @property mixed name
  * @property mixed id
  */
-class PromotionCodeSnapshot extends PromotionCode {
+class PromotionCodeSnapshot extends PromotionCode
+{
+    protected $fillable = [
+        'name',
+        'status',
+        'uses_per_code',
+        'uses_per_client',
+        'promotion_id',
+        'promotion_snapshot_id',
+        'promotion_code_id'
+    ];
+
     public function promotionCode()
     {
         return $this->belongsTo(PromotionCode::class);
