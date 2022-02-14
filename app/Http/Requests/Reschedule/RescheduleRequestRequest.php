@@ -72,15 +72,11 @@ class RescheduleRequestRequest extends Request
             'comment'         => 'max:150'
         ];
 
-        if ($this->booking->schedule->service->service_type_id === Service::TYPE_APPOINTMENT) {
-            $priceIds = $this->booking->schedule->service
-                ->schedules()
-                ->with('prices')
-                ->get()
-                ->pluck('prices')
-                ->collapse()
-                ->pluck('id')
-                ->toArray();
+        if (
+            $this->has('new_schedule_id')
+            && $this->booking->schedule->service->service_type_id === Service::TYPE_APPOINTMENT
+        ) {
+            $priceIds = Schedule::find($this->get('new_schedule_id'))->prices()->pluck('id')->toArray();
 
             $rules = array_merge($rules, [
                 'availabilities.*.datetime_from' => 'required_with:availabilities',
