@@ -50,7 +50,7 @@ class BookingSnapshotService
             unset($promotionCodeSnapshotArr['promotion_id']);
             $promotionCodeSnapshotArr['promotion_snapshot_id'] = $promotionSnapshot->id;
             $promotionCodeSnapshotArr['promotion_code_id'] = $purchase->promocode->id;
-            $promotionCodeSnapshot = PromotionCodeSnapshot::create($promotionCodeSnapshotArr);
+            $promotionCodeSnapshot = PromotionCodeSnapshot::firstOrCreate(['name' => $promotionCodeSnapshotArr['name']] ,$promotionCodeSnapshotArr);
         }
 
         $purchaseSnapshotArr = Arr::except($purchase->getAttributes(), 'id');

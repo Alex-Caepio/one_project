@@ -30,22 +30,30 @@ class TransferFundsWithCommissions
         // define if commission is overridden in admin panel
         $practitionerCommissions = $this->getPractitionerRate($practitioner);
 
+        $request['source_transaction'] = $chargeId;
+
         // transfer value depends of DiscountType
         if ($purchase->discount > 0 && $purchase->discount_applied === Promotion::APPLIED_HOST) {
             $cost += $purchase->discount;
+            unset($request['source_transaction']);
         }
 
         $amount = $cost - $cost * $practitionerCommissions / 100;
 
         $reference = implode(', ', $purchase->bookings->pluck('reference')->toArray());
-
-        $stripeTransfer = $stripe->transfers->create([
+        /*
+         *      When we should transfer to practitioner less than was paid by client
+         *   important to point SOURCE_TRANSACTION, because in case of negative balance
+         *   transfer to practitioner will be rejected by stripe
+         *      When client used promocode transfer amount to practitioner will be more
+         *   than client paid. In that case we could not use SOURCE_TRANSACTION.
+         */
+        $request = array_merge($request, [
             'amount' => $amount * 100,
             'currency' => config('app.platform_currency'),
             'destination' => $practitioner->stripe_account_id,
             'description' => 'New booking transfer to practitioner',
             // https://stripe.com/docs/connect/charges-transfers#transfer-availability
-            'source_transaction' => $chargeId,
             'metadata' => [
                 'Practitioner business email' => $practitioner->business_email,
                 'Practitioner business name' => $practitioner->business_name,
@@ -58,6 +66,8 @@ class TransferFundsWithCommissions
                 'Charge id' => $chargeId,
             ]
         ]);
+
+        $stripeTransfer = $stripe->transfers->create($request);
 
         $transfer = new Transfer();
         $transfer->user_id = $practitioner->id;
