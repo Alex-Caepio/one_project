@@ -35,6 +35,20 @@ class RescheduleRequestStore
                 : User::ACCOUNT_PRACTITIONER,
         ];
 
+
+
+        // Для appointment нету старого времени
+        // Нужно получить дату назначения и расписание.
+        // Извлечь время услуги
+
+        // $newSchedule->prices
+
+        // Для типа извлечь время заказа из request
+        // Prices + buffer_time
+        // Нужно получить имя цены - объект цены, т.к. в нем длительность услуги.
+        // Буфер - время между заказом
+        // end_date -> start_time + duration in day + buffer
+
         if ($newSchedule->location_displayed !== $oldSchedule->location_displayed) {
             $data['old_location_displayed'] = $oldSchedule->location_dislpayed;
             $data['new_location_displayed'] = $newSchedule->location_dislpayed;
@@ -55,7 +69,7 @@ class RescheduleRequestStore
             && $request->has('availabilities.0.datetime_from')
         ) {
             /** @var Price $price */
-            $price = $newSchedule->prices()->where('id', $request->get('price_id'))->first();
+            $price = $newSchedule->prices()->where('id', $request->get('new_price_id'))->first();
             /** @var string $availability */
             $datetimeFrom = $request->input('availabilities.0.datetime_from');
             $data['old_start_date'] = $booking->datetime_from;
