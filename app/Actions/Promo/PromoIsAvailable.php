@@ -16,7 +16,7 @@ class PromoIsAvailable
     {
         $price = run_action(CalculatePromoPrice::class, $promo, $amount, $cost);
         $discount = $cost * $amount - $price;
-        $needToTransfer = $discount / ($promo->promotion->applied_to == Promotion::APPLIED_HOST ? 1 : 2);
+        $needToTransfer = $price + $discount / ($promo->promotion->applied_to == Promotion::APPLIED_HOST ? 1 : 2);
 
         try {
             $balance = (app()->make(StripeClient::class))->balance->retrieve();
