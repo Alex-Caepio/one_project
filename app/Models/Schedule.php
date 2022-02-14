@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\DB;
 /**
  * @property int $id
  * @property int $buffer_time
+ * @property string $buffer_period
  * @property int $deposit_instalments
  * @property int $deposit_instalment_frequency
  * @property bool $deposit_accepted
@@ -27,11 +28,15 @@ use Illuminate\Support\Facades\DB;
  * @property-read Collection|ScheduleUnavailability[] $schedule_unavailabilities
  * @property-read Collection|Price[] $prices
  *
- * @method Collection|self[]|self|null find(int|array $ids)
+ * @method static Collection|self[]|self|null find(int|array $ids)
  */
 class Schedule extends Model
 {
     use HasFactory, SoftDeletes, PublishedScope;
+
+    public const MINS_BUFFER_PERIOD = 'mins';
+    public const HOURS_BUFFER_PERIOD = 'hours';
+    public const DAYS_BUFFER_PERIOD = 'days';
 
     const DEPOSIT_DELAY = 14; // in days
 

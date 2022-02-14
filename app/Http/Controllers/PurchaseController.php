@@ -69,6 +69,7 @@ class PurchaseController extends Controller
         Schedule $schedule,
         StripeClient $stripe
     ): array {
+        /** @var Price $price */
         $price = $schedule->prices()->where('id', $request->get('price_id'))->first();
         $cost = $price->cost * $request->amount;
         $practitioner = $schedule->service->user;
