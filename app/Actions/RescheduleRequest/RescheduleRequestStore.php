@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Actions\RescheduleRequest;
 
 use App\Models\Booking;
