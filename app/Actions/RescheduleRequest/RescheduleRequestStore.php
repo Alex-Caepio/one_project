@@ -22,18 +22,6 @@ class RescheduleRequestStore
         /** @var Schedule $oldSchedule */
         $oldSchedule = Schedule::find($booking->schedule_id);
 
-        // Для appointment нету старого времени
-        // Нужно получить дату назначения и расписание.
-        // Извлечь время услуги
-
-        // $newSchedule->prices
-
-        // Для типа извлечь время заказа из request
-        // Prices + buffer_time
-        // Нужно получить имя цены - объект цены, т.к. в нем длительность услуги.
-        // Буфер - время между заказом
-        // end_date -> start_time + duration in day + buffer
-
         $data = [
             'user_id'         => $booking->user_id,
             'booking_id'      => $booking->id,
