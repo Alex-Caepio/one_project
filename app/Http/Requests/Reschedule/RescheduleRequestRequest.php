@@ -9,6 +9,7 @@ use App\Models\Schedule;
 use App\Models\Service;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 /**
  * @property-read Booking $booking
@@ -72,9 +73,15 @@ class RescheduleRequestRequest extends Request
         ];
 
         if ($this->booking->schedule->service->service_type_id === Service::TYPE_APPOINTMENT) {
+            $idValue = $this->booking->schedule->prices->pluck('id');
+
             $rules = array_merge($rules, [
                 'availabilities.*.datetime_from' => 'required_with:availabilities',
-                'availabilities'                 => 'required'
+                'availabilities'                 => 'required',
+                'price_id'                       => [
+                    'required',
+                    Rule::in($idValue)
+                ],
             ]);
         }
 
