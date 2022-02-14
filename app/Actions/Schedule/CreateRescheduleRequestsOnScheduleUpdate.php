@@ -64,7 +64,7 @@ class CreateRescheduleRequestsOnScheduleUpdate
         return $this->schedule->service->service_type === Service::TYPE_APPOINTMENT
             ? $this->schedule->getOutsiderBookings()
             : Booking::where('schedule_id', $this->schedule->id)
-            ->whereNotIn('status', Schedule::getInactiveStatuses())
+            ->whereNotIn('status', Booking::getInactiveStatuses())
             ->get();
     }
 

@@ -73,14 +73,21 @@ class RescheduleRequestRequest extends Request
         ];
 
         if ($this->booking->schedule->service->service_type_id === Service::TYPE_APPOINTMENT) {
-            $idValue = $this->booking->schedule->prices->pluck('id');
+            $priceIds = $this->booking->schedule->service
+                ->schedules()
+                ->with('prices')
+                ->get()
+                ->pluck('prices')
+                ->collapse()
+                ->pluck('id')
+                ->toArray();
 
             $rules = array_merge($rules, [
                 'availabilities.*.datetime_from' => 'required_with:availabilities',
                 'availabilities'                 => 'required',
-                'price_id'                       => [
+                'new_price_id'                       => [
                     'required',
-                    Rule::in($idValue)
+                    Rule::in($priceIds)
                 ],
             ]);
         }
