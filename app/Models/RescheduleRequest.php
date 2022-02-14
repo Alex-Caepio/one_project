@@ -5,6 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+/**
+ * @property int $new_schedule_id
+ * @property int $new_price_id
+ * @property string $new_start_date
+ * @property string $new_end_date
+ */
 class RescheduleRequest extends Model
 {
     use HasFactory;
