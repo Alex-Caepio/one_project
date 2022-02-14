@@ -51,13 +51,13 @@ class RescheduleRequestStore
         }
 
         if (
-            $booking->schedule->service_type_id === Service::TYPE_APPOINTMENT
+            $booking->schedule->service->service_type_id === Service::TYPE_APPOINTMENT
             && $request->has('availabilities.0.datetime_from')
         ) {
             /** @var Price $price */
             $price = $newSchedule->prices()->where('id', $request->get('price_id'))->first();
             /** @var string $availability */
-            $datetimeFrom = $request->get('availabilities.0.datetime_from');
+            $datetimeFrom = $request->input('availabilities.0.datetime_from');
             $data['old_start_date'] = $booking->datetime_from;
             $data['old_end_date'] = $booking->datetime_to;
             $data['new_start_date'] = $datetimeFrom;
