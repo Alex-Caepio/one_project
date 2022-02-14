@@ -2,10 +2,8 @@
 
 namespace App\Listeners\Emails;
 
-use App\EmailVariables\EmailVariables;
 use App\Events\RescheduleRequestDeclinedByClient;
-use App\Models\CustomEmail;
-use Illuminate\Support\Facades\Mail;
+use App\Models\User;
 
 class RescheduleRequestDeclinedByClientEmail extends SendEmailHandler
 {
@@ -15,7 +13,7 @@ class RescheduleRequestDeclinedByClientEmail extends SendEmailHandler
     {
         $this->event = $event;
         $this->toEmail = $event->practitioner->email;
-        $this->type = 'practitioner';
+        $this->type = User::ACCOUNT_PRACTITIONER;
         $this->sendCustomEmail();
     }
 }

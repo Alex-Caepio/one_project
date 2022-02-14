@@ -5,13 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class CustomEmail extends Model {
+class CustomEmail extends Model
+{
     use HasFactory;
 
-    public const CLIENT_EMAIL = 'client';
-    public const PRACTITIONER_EMAIL = 'practitioner';
+    public const CLIENT_EMAIL = User::ACCOUNT_CLIENT;
+    public const PRACTITIONER_EMAIL = User::ACCOUNT_PRACTITIONER;
     public const ALL_EMAIL = 'all';
-
 
     protected $fillable = [
         'logo',
@@ -26,11 +26,11 @@ class CustomEmail extends Model {
         'name',
     ];
 
-
     /**
      * @return string|null
      */
-    public function getEmbedImageContent(): ?string {
+    public function getEmbedImageContent(): ?string
+    {
         return !empty($this->logo) ? base64_decode(preg_replace('/^data:image\/\w+;base64,/', '', $this->logo)) : null;
     }
 }

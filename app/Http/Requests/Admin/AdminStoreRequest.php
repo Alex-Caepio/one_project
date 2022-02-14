@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Admin;
 
+use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -34,7 +35,7 @@ class AdminStoreRequest extends FormRequest
             'last_name'               => 'required|string|min:2|max:30',
             'account_type'            => [
                 'required',
-                Rule::in(['client', 'practitioner']),
+                Rule::in([User::ACCOUNT_CLIENT, User::ACCOUNT_PRACTITIONER]),
             ],
         ];
     }

@@ -2,19 +2,16 @@
 
 namespace App\Listeners\Emails;
 
-use App\EmailVariables\EmailVariables;
-use App\Events\BookingConfirmation;
 use App\Events\BookingDeposit;
-use App\Models\CustomEmail;
-use App\Models\Schedule;
-use Illuminate\Support\Facades\Mail;
+use App\Models\User;
 
-class BookingDepositEmail extends SendEmailHandler {
-
+class BookingDepositEmail extends SendEmailHandler
+{
     /**
      * @param \App\Events\BookingDeposit $event
      */
-    public function handle(BookingDeposit $event): void {
+    public function handle(BookingDeposit $event): void
+    {
         if ($event->template === null) {
             return;
         }
@@ -23,15 +20,14 @@ class BookingDepositEmail extends SendEmailHandler {
 
         // client
         $this->toEmail = $event->user->email;
-        $this->type = 'client';
+        $this->type = User::ACCOUNT_CLIENT;
         $this->event->recipient = $event->user;
         $this->sendCustomEmail();
 
         //practitioner
         $this->toEmail = $event->practitioner->email;
-        $this->type = 'practitioner';
+        $this->type = User::ACCOUNT_PRACTITIONER;
         $this->event->recipient = $event->practitioner;
         $this->sendCustomEmail();
     }
-
 }

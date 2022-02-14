@@ -13,13 +13,13 @@ use App\Transformers\ArticleTransformer;
 use App\Transformers\ServiceTransformer;
 use App\Transformers\UserTransformer;
 
-
-class SearchController extends Controller {
-
-    public function index(Request $request) {
+class SearchController extends Controller
+{
+    public function index(Request $request)
+    {
         $articles = Article::query()->where('articles.is_published', true)->orderBy('articles.id', 'desc');
         $services = Service::query()->where('services.is_published', true)->orderBy('services.id', 'desc');
-        $practitioners = User::where('account_type', 'practitioner')->where('users.is_published', true)->orderBy('id', 'desc');
+        $practitioners = User::where('account_type', User::ACCOUNT_PRACTITIONER)->where('users.is_published', true)->orderBy('id', 'desc');
 
         $articleFiltrator = new ArticleFiltrator();
         $articleFiltrator->apply($articles, $request, true);

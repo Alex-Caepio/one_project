@@ -112,6 +112,7 @@ class PurchaseController extends Controller
             $purchase->save();
 
             if ($schedule->service->service_type_id === Service::TYPE_APPOINTMENT) {
+                /** @var string[] $availabilities */
                 $availabilities = $request->get('availabilities');
 
                 if ($discount > 0) {
