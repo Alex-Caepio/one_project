@@ -55,7 +55,7 @@ class RescheduleRequestStore
             && $request->has('availabilities.0.datetime_from')
         ) {
             /** @var Price $price */
-            $price = $newSchedule->prices()->where('id', $request->get('price_id'))->first();
+            $price = $newSchedule->prices()->where('id', $request->get('new_price_id'))->first();
             /** @var string $availability */
             $datetimeFrom = $request->input('availabilities.0.datetime_from');
             $data['old_start_date'] = $booking->datetime_from;
