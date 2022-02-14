@@ -4,9 +4,12 @@
 namespace App\Actions\RescheduleRequest;
 
 use App\Models\Booking;
+use App\Models\Price;
 use App\Models\RescheduleRequest;
 use App\Models\Schedule;
+use App\Models\Service;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class RescheduleRequestStore
@@ -18,6 +21,18 @@ class RescheduleRequestStore
         $newSchedule = Schedule::find($request->get('new_schedule_id'));
         /** @var Schedule $oldSchedule */
         $oldSchedule = Schedule::find($booking->schedule_id);
+
+        // Для appointment нету старого времени
+        // Нужно получить дату назначения и расписание.
+        // Извлечь время услуги
+
+        // $newSchedule->prices
+
+        // Для типа извлечь время заказа из request
+        // Prices + buffer_time
+        // Нужно получить имя цены - объект цены, т.к. в нем длительность услуги.
+        // Буфер - время между заказом
+        // end_date -> start_time + duration in day + buffer
 
         $data = [
             'user_id'         => $booking->user_id,
@@ -45,6 +60,20 @@ class RescheduleRequestStore
         if ($newSchedule->end_date !== $oldSchedule->end_date) {
             $data['old_end_date'] = $oldSchedule->end_date;
             $data['new_end_date'] = $newSchedule->end_date;
+        }
+
+        if (
+            $booking->schedule->service_type_id === Service::TYPE_APPOINTMENT
+            && $request->has('availabilities.0.datetime_from')
+        ) {
+            /** @var Price $price */
+            $price = $newSchedule->prices()->where('id', $request->get('price_id'))->first();
+            /** @var string $availability */
+            $datetimeFrom = $request->get('availabilities.0.datetime_from');
+            $data['old_start_date'] = $booking->datetime_from;
+            $data['old_end_date'] = $booking->datetime_to;
+            $data['new_start_date'] = $datetimeFrom;
+            $data['new_end_date'] =  (new Carbon($datetimeFrom))->addMinutes($price->duration);
         }
 
         $rescheduleRequest->forceFill($data);
