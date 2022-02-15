@@ -27,7 +27,7 @@ class RescheduleRequestDecline
                 $booking = $rescheduleRequest->booking;
                 $notification = new Notification();
                 $notification->receiver_id = $booking->practitioner_id;
-                $notification->type = 'declined_by_client';
+                $notification->type = Notification::DECLINED_BY_CLIENT;
                 $notification->client_id = $booking->user_id;
                 $notification->practitioner_id = $booking->practitioner_id;
                 $notification->booking_id = $booking->id;
