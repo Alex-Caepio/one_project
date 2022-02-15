@@ -45,6 +45,6 @@ class ValidatePromocodeRequest extends Request {
 
         $schedule = $this->schedule;
         $service = $this->schedule->service;
-        ValidatePromotionCode::validate($validator, $name, $service, $schedule, $price->cost * $this->get('amount'));
+        ValidatePromotionCode::validate($validator, $name, $service, $schedule, $price->cost * $this->get('amount'), $this->get('amount'));
     }
 }

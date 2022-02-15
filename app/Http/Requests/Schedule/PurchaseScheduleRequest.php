@@ -103,7 +103,8 @@ class PurchaseScheduleRequest extends Request implements CreateScheduleInterface
                     $this->get('promo_code'),
                     $schedule->service,
                     $schedule,
-                    $this->get('amount') * $price->cost
+                    $this->get('amount') * $price->cost,
+                    $this->get('amount')
                 );
             }
 
