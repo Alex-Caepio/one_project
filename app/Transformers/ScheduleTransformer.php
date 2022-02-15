@@ -55,7 +55,7 @@ class ScheduleTransformer extends Transformer
             'id'                           => $schedule->id,
             'title'                        => $schedule->title,
             'location_id'                  => $schedule->location_id,
-            'service_id'                   => $schedule->service_id,
+            'service_id'                   => $schedule->service_id ?? $schedule->service->id,
             'start_date'                   => $schedule->start_date ? Carbon::parse($schedule->start_date) : null,
             'end_date'                     => $schedule->end_date ? Carbon::parse($schedule->end_date) : null,
             'attendees'                    => $schedule->attendees,
