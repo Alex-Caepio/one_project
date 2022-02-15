@@ -5,11 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Notification extends Model {
+class Notification extends Model
+{
     use HasFactory;
 
     const RESCHEDULED_BY_PRACTITIONER = 'rescheduled_by_practitioner';
     const RESCHEDULED_BY_CLIENT = 'rescheduled_by_client';
+    const BOOKING_CANCELED_BY_CLIENT = 'booking_canceled_by_client';
+    const BOOKING_CANCELED_BY_PRACTITIONER = 'booking_canceled_by_practitioner';
+    const AMENDMENT_CANCELED_BY_PRACTITIONER = 'amendment_canceled_by_client';
+    const DECLINED_BY_CLIENT = 'declined_by_client';
 
     protected $fillable = [
         'title',
@@ -46,24 +51,28 @@ class Notification extends Model {
         'new_enddate'   => 'datetime',
     ];
 
-    public function client() {
+    public function client()
+    {
         return $this->belongsTo(User::class, 'client_id')->withTrashed();
     }
 
-    public function practitioner() {
+    public function practitioner()
+    {
         return $this->belongsTo(User::class, 'practitioner_id')->withTrashed();
     }
 
-    public function receiver() {
+    public function receiver()
+    {
         return $this->belongsTo(User::class, 'receiver_id');
     }
 
-    public function price() {
+    public function price()
+    {
         return $this->belongsTo(Price::class, 'price_id')->withTrashed();
     }
 
-    public function booking() {
+    public function booking()
+    {
         return $this->belongsTo(Booking::class, 'booking_id');
     }
-
 }

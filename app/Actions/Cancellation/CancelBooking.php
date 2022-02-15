@@ -147,14 +147,16 @@ class CancelBooking
         $notification = new Notification();
 
         if ($cancelledByPractitioner) {
-            $notificationType = 'booking_canceled_by_practitioner';
+            $notificationType = Notification::BOOKING_CANCELED_BY_PRACTITIONER;
             $notification->receiver_id = $booking->user_id;
         } else {
             if ($actionRole === User::ACCOUNT_CLIENT) {
-                $notificationType = $isAmendment ? 'amendment_canceled_by_client' : 'booking_canceled_by_client';
+                $notificationType = $isAmendment
+                    ? Notification::AMENDMENT_CANCELED_BY_PRACTITIONER
+                    : Notification::BOOKING_CANCELED_BY_CLIENT;
                 $notification->receiver_id = $booking->practitioner_id;
             } else {
-                $notificationType = 'booking_canceled_by_practitioner';
+                $notificationType = Notification::BOOKING_CANCELED_BY_PRACTITIONER;
                 $notification->receiver_id = $booking->user_id;
             }
         }
