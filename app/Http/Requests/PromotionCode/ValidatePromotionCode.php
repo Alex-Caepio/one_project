@@ -11,6 +11,7 @@ use App\Models\Service;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Validator;
+use App\Actions\Promo\PromoIsAvailable;
 
 class ValidatePromotionCode {
 
@@ -22,7 +23,7 @@ class ValidatePromotionCode {
      * @param int $totalCost
      */
     public static function validate(Validator $validator, string $promocodeName, Service $service,
-                                    ?Schedule $schedule, $totalCost = 0): void {
+                                    ?Schedule $schedule, $totalCost = 0, $amount = 1): void {
         if (!$promoCode = PromotionCode::where('name', $promocodeName)->whereHas('promotion', function($query) {
             $query->where('status', Promotion::STATUS_ACTIVE);
         })->where('status', PromotionCode::STATUS_ACTIVE)->with(['promotion'])->first()) {
@@ -43,6 +44,11 @@ class ValidatePromotionCode {
 
         $serviceDisciplines = $service->disciplines()->pluck('disciplines.id')->toArray();
         $serviceFocusAreas = $service->focus_areas()->pluck('focus_areas.id')->toArray();
+
+        if ($promotion->applied_to === Promotion::APPLIED_HOST &&
+            !run_action(PromoIsAvailable::class, $promoCode, $amount, $totalCost)) {
+            $validator->errors()->add('promo_code', 'Promo code is unavailable');
+        }
 
         if ($eligibleUsers->count() && !$eligibleUsers->has(Auth::id())) {
             $validator->errors()->add('promo_code', 'Promo code user is invalid');
