@@ -195,11 +195,9 @@ class ScheduleController extends Controller
         return response(null, 204);
     }
 
-    public function appointmentsOnDate(Price $price, $date)
+    public function appointmentsOnDate(Price $price, string $date, Request $request)
     {
-        if (!$timeZone = request()->get('tz')) {
-            $timeZone = Carbon::now()->getTimezone()->getName();
-        }
+        $timeZone = $request->get('tz') ?? Carbon::now()->getTimezone()->getName();
 
         return run_action(GetAvailableAppointmentTimeOnDate::class, $price, $date, $timeZone);
     }
