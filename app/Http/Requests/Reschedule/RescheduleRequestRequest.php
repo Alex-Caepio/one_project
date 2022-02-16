@@ -81,7 +81,7 @@ class RescheduleRequestRequest extends Request
             $rules = array_merge($rules, [
                 'availabilities.*.datetime_from' => 'required_with:availabilities',
                 'availabilities'                 => 'required',
-                'new_price_id'                       => [
+                'new_price_id'                   => [
                     'required',
                     Rule::in($priceIds)
                 ],

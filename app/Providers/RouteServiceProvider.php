@@ -67,7 +67,9 @@ class RouteServiceProvider extends ServiceProvider
         });
 
         Route::bind('reschedule_request', function ($value) {
-            return RescheduleRequest::where('id', $value)->where('requested_by', User::ACCOUNT_PRACTITIONER)
+            return RescheduleRequest::query()
+                ->where('id', $value)
+                ->whereIn('requested_by', RescheduleRequest::getPractitionerRequestValues())
                 ->firstOrFail();
         });
 

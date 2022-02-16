@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Filters\QueryFilter;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -28,6 +29,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property-read Schedule $schedule
  * @property-read BookingSnapshot $snapshot
  * @property-read User $practitioner
+ * @property-read Collection|RescheduleRequest[] $reschedule_requests
+ * @property-read RescheduleRequest|null $client_reschedule_request
+ * @property-read RescheduleRequest|null $practitioner_reschedule_request
  */
 class Booking extends Model
 {
@@ -146,12 +150,14 @@ class Booking extends Model
 
     public function client_reschedule_request(): HasOne
     {
-        return $this->hasOne(RescheduleRequest::class)->where('requested_by', User::ACCOUNT_CLIENT);
+        return $this->hasOne(RescheduleRequest::class)->where('requested_by', RescheduleRequest::REQUESTED_BY_CLIENT);
     }
 
     public function practitioner_reschedule_request(): HasOne
     {
-        return $this->hasOne(RescheduleRequest::class)->where('requested_by', User::ACCOUNT_PRACTITIONER);
+        return $this
+            ->hasOne(RescheduleRequest::class)
+            ->whereIn('requested_by', RescheduleRequest::getPractitionerRequestValues());
     }
 
     public static function getInactiveStatuses(): array

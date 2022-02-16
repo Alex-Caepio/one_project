@@ -8,7 +8,6 @@ use App\Http\Requests\Request;
 use App\Models\Booking;
 use App\Models\Notification;
 use App\Models\RescheduleRequest;
-use App\Models\User;
 use App\Transformers\BookingTransformer;
 use Illuminate\Support\Facades\Auth;
 
@@ -64,7 +63,11 @@ class BookingController extends Controller
         $bookingForClient = Auth::user()->id === $booking->user_id;
         $booking->load([
             'reschedule_requests' => static function ($rrQuery) use ($bookingForClient) {
-                $rrQuery->where('requested_by', $bookingForClient ? User::ACCOUNT_PRACTITIONER : User::ACCOUNT_CLIENT);
+                if ($bookingForClient) {
+                    $rrQuery->whereIn('requested_by', RescheduleRequest::getPractitionerRequestValues());
+                } else {
+                    $rrQuery->where('requested_by', RescheduleRequest::REQUESTED_BY_CLIENT);
+                }
             }
         ]);
 
