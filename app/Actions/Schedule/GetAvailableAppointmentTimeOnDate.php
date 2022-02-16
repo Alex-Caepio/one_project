@@ -110,6 +110,7 @@ class GetAvailableAppointmentTimeOnDate
         $bookings = Booking::whereIn('schedule_id', $scheduleIds)
             ->where('datetime_from', '>=', "{$date} 00:00:00")
             ->where('datetime_from', '<=', "{$date} 23:59:59")
+            ->where('status', '!=', 'canceled')
             ->get();
 
         $unavailabilities = $schedule->schedule_unavailabilities()
