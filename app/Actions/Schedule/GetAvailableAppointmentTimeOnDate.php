@@ -2,13 +2,14 @@
 
 namespace App\Actions\Schedule;
 
-
 use App\Models\Booking;
 use App\Models\Price;
 use App\Models\Schedule;
+use App\Models\ScheduleAvailability;
 use App\Models\UserUnavailabilities;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
+use Illuminate\Database\Eloquent\Collection;
 
 class GetAvailableAppointmentTimeOnDate
 {
@@ -19,9 +20,9 @@ class GetAvailableAppointmentTimeOnDate
     {
         $schedule = $price->schedule;
 
-        /* @ScheduleAvailabilities */
+        /** @var Collection|ScheduleAvailability[] $availabilities */
         $availabilities = $this->getAvailabilitiesMatchingDate($date, $schedule);
-        $periods = $this->availabilitiesToCarbonPeriod($date, $availabilities);
+        $periods = $this->availabilitiesToCarbonPeriod($date, $price, $availabilities);
         $excludedTimes = $this->getExcludedTimes(
             $schedule,
             $date,
@@ -59,7 +60,13 @@ class GetAvailableAppointmentTimeOnDate
         return $schedule->schedule_availabilities()->whereIn('days', $days)->get();
     }
 
-    protected function availabilitiesToCarbonPeriod($date, $availabilities)
+    /**
+     * @param string $date
+     * @param Collection|ScheduleAvailability[] $availabilities
+     *
+     * @return CarbonPeriod[]
+     */
+    protected function availabilitiesToCarbonPeriod(string $date, Price $price, Collection $availabilities): array
     {
         $periods = [];
         foreach ($availabilities as $availability) {
@@ -70,7 +77,7 @@ class GetAvailableAppointmentTimeOnDate
             }
 
             $from = $this->roundMinutes(Carbon::parse("{$date} {$startTime}"));
-            $to = $this->roundMinutes(Carbon::parse("{$date} {$availability->end_time}"));
+            $to = $this->roundMinutes(Carbon::parse("{$date} {$availability->end_time}")->subMinutes($price->duration));
 
             if ($from->greaterThanOrEqualTo($to)) {
                 $to->addDay();
