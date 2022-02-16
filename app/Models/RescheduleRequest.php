@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
+ * @property string $requested_by
  * @property int $new_schedule_id
  * @property int $new_price_id
  * @property string $new_start_date
@@ -14,6 +15,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class RescheduleRequest extends Model
 {
     use HasFactory;
+
+    public const REQUESTED_BY_PRACTITIONER = 'practitioner';
+    public const REQUESTED_BY_CLIENT = 'client';
 
     protected $fillable = [
         'schedule_id',
