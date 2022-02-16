@@ -93,6 +93,7 @@ class PurchaseScheduleRequest extends Request implements CreateScheduleInterface
             if ($schedule->service->service_type_id === Service::TYPE_APPOINTMENT && $this->has('availabilities')) {
                 $this->availabilityValidator
                     ->setSchedule($this->schedule)
+                    ->setPrice($price)
                     ->setDatetimes(array_column($this->get('availabilities'), 'datetime_from'))
                     ->validate($validator);
             }
