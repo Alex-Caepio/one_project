@@ -15,6 +15,7 @@ class Notification extends Model
     const BOOKING_CANCELED_BY_PRACTITIONER = 'booking_canceled_by_practitioner';
     const AMENDMENT_CANCELED_BY_PRACTITIONER = 'amendment_canceled_by_client';
     const DECLINED_BY_CLIENT = 'declined_by_client';
+    const SCHEDULE_CHANGED_BY_PRACTITIONER = 'schedule_changed_by_practitioner';
 
     protected $fillable = [
         'title',
