@@ -16,7 +16,7 @@ class RescheduleRequestDecline
 
         // declined by client of the booking
         if (
-            $rescheduleRequest->requested_by === RescheduleRequest::REQUESTED_BY_PRACTITIONER
+            in_array($rescheduleRequest->requested_by, RescheduleRequest::getPractitionerRequestValues(), true)
             && $rescheduleRequest->user_id === Auth::id()
         ) {
             if ((int)$rescheduleRequest->schedule_id === (int)$rescheduleRequest->new_schedule_id) {
