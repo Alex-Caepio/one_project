@@ -18,16 +18,22 @@ class BookingRescheduleAcceptedByClient
 
     public bool $informPractitioner;
 
-    public function __construct(Booking $booking, bool $informPractitioner = true)
+    public string $notificationType;
+
+    public function __construct(Booking $booking, bool $informPractitioner, string $notificationType)
     {
         $this->booking = $booking;
         $this->informPractitioner = $informPractitioner;
+        $this->notificationType = $notificationType;
         $this->fillEvent();
 
         $notification = new Notification();
-        $rescheduleRequest = RescheduleRequest::where(['booking_id' => $booking->id, 'user_id' => $booking->user_id])->firstOrFail();
+        $rescheduleRequest = RescheduleRequest::where([
+            'booking_id' => $booking->id,
+            'user_id' => $booking->user_id
+        ])->firstOrFail();
         $notification->receiver_id = $booking->practitioner_id;
-        $notification->type = Notification::RESCHEDULED_BY_PRACTITIONER;
+        $notification->type = $notificationType;
         $notification->client_id = $booking->user_id;
         $notification->practitioner_id = $booking->practitioner_id;
         $notification->booking_id = $booking->id;
