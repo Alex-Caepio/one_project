@@ -3,19 +3,21 @@
 namespace App\Observers;
 
 use App\Actions\Cancellation\CancelBooking;
+use App\Actions\Plan\CancelSubscription;
 use App\Events\AccountDeleted;
 use App\Events\AccountTerminatedByAdmin;
 use App\Events\BusinessProfileLive;
 use App\Events\BusinessProfileUnpublished;
 use App\Helpers\UserRightsHelper;
 use App\Models\Article;
-use App\Models\Booking;
 use App\Models\RescheduleRequest;
 use App\Models\ScheduleFreeze;
 use App\Models\Service;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Stripe\StripeClient;
+
 
 
 class UserObserver
@@ -73,6 +75,9 @@ class UserObserver
                 'deleted_at' => date('Y-m-d H:i:s'),
                 'is_published' => false
             ]);
+
+            $stripeClient = app()->make(StripeClient::class);
+            run_action(CancelSubscription::class, $user, $stripeClient);
         }
         RescheduleRequest::where('user_id', $user->id)->delete();
         ScheduleFreeze::where('user_id', $user->id)->delete();
