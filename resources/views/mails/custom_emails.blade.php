@@ -11,7 +11,7 @@
   <style>
     table tbody p {
       margin: 0;
-      margin-bottom: 0.5em;
+      margin-bottom: 1em;
     }
   </style>
 <table>
