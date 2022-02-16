@@ -17,6 +17,7 @@ class RescheduleRequest extends Model
     use HasFactory;
 
     public const REQUESTED_BY_PRACTITIONER = 'practitioner';
+    public const REQUESTED_BY_PRACTITIONER_IN_SCHEDULE = 'schedule';
     public const REQUESTED_BY_CLIENT = 'client';
 
     protected $fillable = [
@@ -72,5 +73,13 @@ class RescheduleRequest extends Model
     public function isAmendment(): bool
     {
         return $this->schedule_id === $this->new_schedule_id;
+    }
+
+    public static function getPractitionerRequestValues(): array
+    {
+        return [
+            self::REQUESTED_BY_PRACTITIONER,
+            self::REQUESTED_BY_PRACTITIONER_IN_SCHEDULE
+        ];
     }
 }
