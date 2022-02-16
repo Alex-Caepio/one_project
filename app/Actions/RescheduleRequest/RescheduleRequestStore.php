@@ -7,7 +7,6 @@ use App\Models\Price;
 use App\Models\RescheduleRequest;
 use App\Models\Schedule;
 use App\Models\Service;
-use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -30,8 +29,8 @@ class RescheduleRequestStore
             'comment'         => $request->get('comment'),
             'old_price_id'    => $booking->price_id,
             'requested_by'    => $request->user()->id === $booking->user_id
-                ? User::ACCOUNT_CLIENT
-                : User::ACCOUNT_PRACTITIONER,
+                ? RescheduleRequest::REQUESTED_BY_CLIENT
+                : RescheduleRequest::REQUESTED_BY_PRACTITIONER,
         ];
 
         if ($newSchedule->location_displayed !== $oldSchedule->location_displayed) {

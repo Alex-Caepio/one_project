@@ -13,7 +13,6 @@ use App\Http\Requests\Request;
 use App\Models\RescheduleRequest;
 use App\Actions\RescheduleRequest\RescheduleRequestStore;
 use App\Models\Schedule;
-use App\Models\User;
 use App\Transformers\RescheduleRequestTransformer;
 use Illuminate\Support\Facades\Auth;
 
@@ -42,7 +41,12 @@ class RescheduleRequestController extends Controller
         $includes = $request->getIncludes();
         $queryBuilder = RescheduleRequest::where('user_id', Auth::id())->orderBy('id', 'desc');
         if ($forClient !== null) {
-            $queryBuilder->where('requested_by', $forClient === true ? User::ACCOUNT_PRACTITIONER : User::ACCOUNT_CLIENT);
+            if ($forClient) {
+                $queryBuilder->whereIn('requested_by', RescheduleRequest::getPractitionerRequestValues());
+            } else {
+                $queryBuilder->where('requested_by', RescheduleRequest::REQUESTED_BY_CLIENT);
+            }
+
         }
 
         return $queryBuilder->with($includes)->paginate($request->getLimit())->getCollection();

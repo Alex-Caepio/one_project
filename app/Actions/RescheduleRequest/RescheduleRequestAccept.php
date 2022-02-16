@@ -4,6 +4,7 @@ namespace App\Actions\RescheduleRequest;
 
 use App\Events\BookingRescheduleAcceptedByClient;
 use App\Models\Booking;
+use App\Models\Notification;
 use App\Models\RescheduleRequest;
 
 class RescheduleRequestAccept
@@ -17,9 +18,16 @@ class RescheduleRequestAccept
         $booking->datetime_to = $rescheduleRequest->new_end_date;
         $booking->price_id = $rescheduleRequest->new_price_id;
         $booking->status = Booking::RESCHEDULED_STATUS;
-
         $booking->update();
-        event(new BookingRescheduleAcceptedByClient($booking, $informPractitioner));
+
+        if ($rescheduleRequest->requested_by === RescheduleRequest::REQUESTED_BY_PRACTITIONER) {
+            $notificationType = Notification::RESCHEDULED_BY_PRACTITIONER;
+        } elseif ($rescheduleRequest->requested_by === RescheduleRequest::REQUESTED_BY_PRACTITIONER_IN_SCHEDULE) {
+            $notificationType = Notification::SCHEDULE_CHANGED_BY_PRACTITIONER;
+        }
+
+        event(new BookingRescheduleAcceptedByClient($booking, $informPractitioner, $notificationType));
+
         $rescheduleRequest->delete();
     }
 }

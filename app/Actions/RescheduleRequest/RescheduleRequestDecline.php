@@ -6,7 +6,6 @@ use App\Actions\Cancellation\CancelBooking;
 use App\Events\RescheduleRequestDeclinedByClient;
 use App\Models\Notification;
 use App\Models\RescheduleRequest;
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class RescheduleRequestDecline
@@ -16,7 +15,10 @@ class RescheduleRequestDecline
         event(new RescheduleRequestDeclinedByClient($rescheduleRequest));
 
         // declined by client of the booking
-        if ($rescheduleRequest->requested_by === User::ACCOUNT_PRACTITIONER && $rescheduleRequest->user_id === Auth::id()) {
+        if (
+            in_array($rescheduleRequest->requested_by, RescheduleRequest::getPractitionerRequestValues(), true)
+            && $rescheduleRequest->user_id === Auth::id()
+        ) {
             if ((int)$rescheduleRequest->schedule_id === (int)$rescheduleRequest->new_schedule_id) {
                 run_action(
                     CancelBooking::class,
