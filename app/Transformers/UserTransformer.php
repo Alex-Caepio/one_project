@@ -2,7 +2,6 @@
 
 namespace App\Transformers;
 
-use App\Models\GoogleCalendar;
 use App\Models\User;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
@@ -224,5 +223,4 @@ class UserTransformer extends Transformer
     {
         return $this->itemOrNull($user->business_country, new CountryTransformer());
     }
-
 }

@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Transformers;
-
 
 use App\Models\Booking;
 use App\Models\Schedule;
@@ -18,7 +16,6 @@ class ScheduleTransformer extends Transformer
     {
         $this->authUser = Auth::user() === null ? Auth::guard('sanctum')->user() : null;
     }
-
 
     protected $availableIncludes = [
         'location',
@@ -45,8 +42,8 @@ class ScheduleTransformer extends Transformer
             return true;
         }
 
-        return $schedule->service->user_id === $this->authUser->id ||
-               Booking::where('schedule_id', $schedule->id)->where('user_id', $this->authUser->id)->exists();
+        return $schedule->service->user_id === $this->authUser->id
+            || Booking::where('schedule_id', $schedule->id)->where('user_id', $this->authUser->id)->exists();
     }
 
     public function transform(Schedule $schedule)
@@ -77,13 +74,13 @@ class ScheduleTransformer extends Transformer
             'deposit_instalments'          => $schedule->deposit_instalments,
             'deposit_instalment_frequency' => $schedule->deposit_instalment_frequency,
             'deposit_final_date'           => $schedule->deposit_final_date
-                ? Carbon::parse($schedule->deposit_final_date)->setTime(0,0)
+                ? Carbon::parse($schedule->deposit_final_date)->setTime(0, 0)
                 : null,
             'booking_message'              => $schedule->booking_message,
             'url'                          => $schedule->url,
             'book_full_series'             => $schedule->book_full_series,
             'accomodation'                 => $schedule->accomodation,
-            'accomodation_details'         => $schedule->accomodation_details ,
+            'accomodation_details'         => $schedule->accomodation_details,
             'travel'                       => $schedule->travel,
             'travel_details'               => $schedule->travel_details,
             'repeat'                       => $schedule->repeat,
