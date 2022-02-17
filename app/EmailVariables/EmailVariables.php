@@ -195,7 +195,7 @@ class EmailVariables
      */
     public function getAdmin_termination_message(): ?string
     {
-        return $this->event->user->termination_message;
+        return str_replace("\n", '<br>', $this->event->user->termination_message);
     }
 
     /**
@@ -221,7 +221,7 @@ class EmailVariables
      */
     public function getService_name(): ?string
     {
-        return $this->event->service->title;
+        return str_replace("\n", '<br>', $this->event->service->title);
     }
 
     /**
@@ -380,7 +380,7 @@ class EmailVariables
      */
     public function getPractitioner_schedule_message(): ?string
     {
-        return $this->event->schedule->booking_message;
+        return str_replace("\n", '<br>', $this->event->schedule->booking_message);
     }
 
     /**
@@ -745,8 +745,9 @@ class EmailVariables
      */
     public function getPractitioner_reschedule_message(): ?string
     {
-        return $this->event instanceof
+        $comment = $this->event instanceof
         BookingConfirmation ? $this->event->schedule->booking_message : $this->event->reschedule->new_schedule->comment;
+        return str_replace("\n", '<br>', $comment);
     }
 
     /**
