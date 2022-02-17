@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Scopes\PublishedScope;
 use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 /**
  * @property int $id
@@ -451,19 +453,16 @@ class Schedule extends Model
                 $calendar[$date->format(self::DATE_FORMAT)] = $amountPerPeriod;
             }
         } elseif ($installmentInfo !== null) {
-            /** @var Carbon $depositFinalDate */
-            $depositFinalDate = $installmentInfo['finalPaymentDate'];
-            $amountPerPeriod = round($installmentInfo['amountPerPeriod'], 2);
-            $p = $depositFinalDate;
-
-            while ($p->isFuture() && $periods > 0) {
-                $calendar[$p->format(self::DATE_FORMAT)] = $amountPerPeriod;
-                $p = $depositFinalDate->subDays(self::DEPOSIT_DELAY);
-                $periods--;
-            }
-
-            $calendar = array_reverse($calendar);
+            $calendar = $this->calculateInternalCalendar($installmentInfo);
         }
+
+        $calendar = array_reverse($calendar);
+
+        Log::channel('stripe_plans_info')
+            ->info('calculateInstallmentsCalendar', [
+                'installmentInfo' => $installmentInfo,
+                'calendar' => $calendar,
+            ]);
 
         return $calendar;
     }
@@ -477,35 +476,63 @@ class Schedule extends Model
             if ($furtherPayments > 0) {
                 if ($this->service->service_type_id === Service::TYPE_BESPOKE) {
                     $daysPerPeriod = $this->deposit_instalment_frequency;
-                    $depositStartDate = Carbon::now()->addDays(self::DEPOSIT_DELAY);
-                    $depositFinalDate = Carbon::now()->addDays(
+                    $installmentFirstDate = Carbon::now()->addDays(self::DEPOSIT_DELAY);
+                    $installmentLastDate = Carbon::now()->addDays(
                         self::DEPOSIT_DELAY + ($this->deposit_instalments - 1) * $daysPerPeriod
                     );
                 } else {
-                    $depositFinalDate = $this->deposit_final_date;
+                    $installmentLastDate = Carbon::parse($this->deposit_final_date, 'UTC');
+                    $installmentTotalDays = CarbonPeriod::create(Carbon::now('UTC'), $installmentLastDate)->days()->count();
                     $installmentPeriods = $periods;
-                    $date = Carbon::createFromFormat("Y-m-d H:i:s", $this->deposit_final_date)
-                        ->setTimezone('UTC');
-                    $minStart = Carbon::now()->addDays(self::DEPOSIT_DELAY);
+                    $installmentPeriodDays = floor($installmentTotalDays / $installmentPeriods);
+
                     $calendar = [];
-                    while ($date->diffInDays($minStart) > 0 && $installmentPeriods > 0) {
-                        $calendar[] = $date->toDateString();
-                        $date = $date->subDays(self::DEPOSIT_DELAY);
-                        $installmentPeriods--;
+                    $calendarCurrentDate = Carbon::parse($installmentLastDate, 'UTC');
+                    for ($i = $installmentPeriods; $i > 0; $i--) {
+                        $calendar[] = $calendarCurrentDate->toDateTimeString();
+                        $calendarCurrentDate->subDays($installmentPeriodDays);
                     }
-                    $depositStartDate = Carbon::parse(end($calendar));
-                    $daysPerPeriod = self::DEPOSIT_DELAY;
+
+                    $installmentFirstDate = Carbon::parse(last($calendar), 'UTC');
                 }
                 $amountPerPeriod = (float)($furtherPayments / $periods);
+
                 $result = [
-                    'daysPerPeriod' => $daysPerPeriod,
+                    'calendar' => $calendar,
+                    'totalAmount' => $amount,
+                    'furtherPayments' => $furtherPayments,
                     'amountPerPeriod' => $amountPerPeriod,
-                    'startPaymentDate' => $depositStartDate,
-                    'finalPaymentDate' => $depositFinalDate
+                    'daysPerPeriod' => $installmentPeriodDays,
+                    'startPaymentDate' => $installmentFirstDate,
+                    'finalPaymentDate' => $installmentLastDate,
+                    'installmentFirstDate' => $installmentFirstDate,
+                    'installmentLastDate' => $installmentLastDate,
+                    'installmentTotalDays' => $installmentTotalDays,
+                    'installmentPeriods' => $installmentPeriods,
+                    'installmentPeriodDays' => $installmentPeriodDays,
                 ];
             }
         }
 
         return $result;
+    }
+
+    private function calculateInternalCalendar($installmentInfo = []): array
+    {
+        $calendar = [];
+
+        if (!$installmentInfo) {
+            return $calendar;
+        }
+
+        $amountPerPeriod = round($installmentInfo['amountPerPeriod'], 2);
+        $calendarCurrentDate = Carbon::parse($installmentInfo['finalPaymentDate'], 'UTC');
+
+        for ($i = $installmentInfo['installmentPeriods']; $i > 0; $i--) {
+            $calendar[$calendarCurrentDate->format(self::DATE_FORMAT)] = $amountPerPeriod;
+            $calendarCurrentDate->subDays($installmentInfo['installmentPeriodDays']);
+        }
+
+        return $calendar;
     }
 }
