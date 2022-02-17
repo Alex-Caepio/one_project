@@ -3,6 +3,7 @@
 namespace App\Transformers;
 
 use App\Models\Service;
+use App\Models\ServiceSnapshot;
 use League\Fractal\Resource\Collection;
 
 class ServiceTransformer extends Transformer
@@ -25,7 +26,11 @@ class ServiceTransformer extends Transformer
         'last_published'
     ];
 
-    public function transform(Service $service) {
+    /**
+     * @param Service|ServiceSnapshot $service
+     */
+    public function transform(Service $service)
+    {
         return [
             'id'                          => $service->id,
             'title'                       => $service->title,
@@ -33,7 +38,7 @@ class ServiceTransformer extends Transformer
             'locations'                   => $service->locations,
             'basic_location'              => $service->basic_location,
             'deposit_instalment_payments' => $service->deposit_instalment_payments,
-            'user_id'                     => $service->user_id,
+            'user_id'                     => $service->user_id ?? $service->service->user_id,
             'is_published'                => (bool)$service->is_published,
             'introduction'                => $service->introduction,
             'slug'                        => $service->slug,
@@ -49,8 +54,12 @@ class ServiceTransformer extends Transformer
         ];
     }
 
-    public function includeUser(Service $service) {
-        return $this->itemOrNull($service->user, new UserTransformer());
+    /**
+     * @param Service|ServiceSnapshot $service
+     */
+    public function includeUser(Service $service)
+    {
+        return $this->itemOrNull($service->user ?? $service->service->user, new UserTransformer());
     }
 
     public function includePractitioner(Service $service)
