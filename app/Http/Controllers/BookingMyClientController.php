@@ -150,6 +150,8 @@ class BookingMyClientController extends Controller
                     'bookings.reference as reference',
                     'concat(users.first_name, " ", users.last_name) as client',
                     'IF(purchases.is_deposit, purchases.deposit_amount, purchases.price) as paid',
+                    'purchases.is_deposit',
+                    'purchases.deposit_amount',
                     'services.id as service_id',
                     'services.title as service_name',
                     'service_types.name as service_type',
