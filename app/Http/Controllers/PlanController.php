@@ -103,6 +103,6 @@ class PlanController extends Controller
             ], 422);
         }
 
-        return response('', 204);
+        return $result;
     }
 }
