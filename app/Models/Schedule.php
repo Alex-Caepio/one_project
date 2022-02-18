@@ -474,6 +474,7 @@ class Schedule extends Model
             $depositInitialValue = $this->deposit_amount;
             $furtherPayments = $amount - $depositInitialValue;
             if ($furtherPayments > 0) {
+                $calendar = [];
                 if ($this->service->service_type_id === Service::TYPE_BESPOKE) {
                     $daysPerPeriod = $this->deposit_instalment_frequency;
                     $installmentFirstDate = Carbon::now()->addDays(self::DEPOSIT_DELAY);
@@ -486,7 +487,6 @@ class Schedule extends Model
                     $installmentPeriods = $periods;
                     $installmentPeriodDays = floor($installmentTotalDays / $installmentPeriods);
 
-                    $calendar = [];
                     $calendarCurrentDate = Carbon::parse($installmentLastDate, 'UTC');
                     for ($i = $installmentPeriods; $i > 0; $i--) {
                         $calendar[] = $calendarCurrentDate->toDateTimeString();
