@@ -31,6 +31,7 @@ use Laravel\Sanctum\HasApiTokens;
  * @property-read Plan $plan
  * @property-read Collection $latest_services
  * @property-read Collection $latest_articles
+ * @property-read PractitionerSubscriptionDiscount|null $practitionerSubscriptionDiscount
  */
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -401,5 +402,10 @@ class User extends Authenticatable implements MustVerifyEmail
     public function generalTimezone(): HasOne
     {
         return $this->hasOne(Timezone::class, 'id', 'timezone_id');
+    }
+
+    public function practitionerSubscriptionDiscount(): HasOne
+    {
+        return $this->hasOne(PractitionerSubscriptionDiscount::class);
     }
 }
