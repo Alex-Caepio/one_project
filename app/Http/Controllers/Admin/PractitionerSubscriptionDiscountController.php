@@ -18,15 +18,14 @@ class PractitionerSubscriptionDiscountController extends Controller
 {
     public function index(Request $request): Response
     {
-        $practitionerSubscriptionCommission = PractitionerSubscriptionDiscount::query();
-
-        $includes = $request->getIncludes();
         /** @var LengthAwarePaginator $paginator */
-        $paginator = $practitionerSubscriptionCommission->with($includes)->paginate($request->getLimit());
-        $practitionerSubscriptionCommission = $paginator->getCollection();
+        $paginator = PractitionerSubscriptionDiscount::query()
+            ->with($request->getIncludes())
+            ->paginate($request->getLimit());
+        $discounts = $paginator->getCollection();
 
         return response(
-            fractal($practitionerSubscriptionCommission, new PractitionerSubscriptionDiscountTransformer())
+            fractal($discounts, new PractitionerSubscriptionDiscountTransformer())
                 ->parseIncludes($request->getIncludes())
                 ->toArray()
             )
