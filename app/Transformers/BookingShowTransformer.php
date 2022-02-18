@@ -29,7 +29,7 @@ class BookingShowTransformer extends Transformer {
     ];
 
     public function transform(Booking $booking) {
-        $booking = $booking->snapshot;
+        $booking = $booking->snapshot ?? $booking;
 
         if ($booking instanceof BookingSnapshot) {
             return [
