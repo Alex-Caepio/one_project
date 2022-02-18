@@ -12,6 +12,7 @@ use App\Models\PractitionerSubscriptionDiscount;
 use App\Transformers\PractitionerSubscriptionDiscountTransformer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class PractitionerSubscriptionDiscountController extends Controller
 {
@@ -20,9 +21,8 @@ class PractitionerSubscriptionDiscountController extends Controller
         $practitionerSubscriptionCommission = PractitionerSubscriptionDiscount::query();
 
         $includes = $request->getIncludes();
-        $paginator = $practitionerSubscriptionCommission->with($includes)
-            ->paginate($request->getLimit());
-
+        /** @var LengthAwarePaginator $paginator */
+        $paginator = $practitionerSubscriptionCommission->with($includes)->paginate($request->getLimit());
         $practitionerSubscriptionCommission = $paginator->getCollection();
 
         return response(
