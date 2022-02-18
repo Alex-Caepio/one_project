@@ -22,6 +22,7 @@ use App\Models\ScheduleFreeze;
 use App\Models\Service;
 use App\Models\User;
 use App\Services\BookingSnapshotService;
+use App\Transformers\BookingShowTransformer;
 use App\Transformers\PromocodeCalculateTransformer;
 use App\Transformers\PurchaseTransformer;
 use Carbon\Carbon;
@@ -62,6 +63,11 @@ class PurchaseController extends Controller
                 ->parseIncludes($request->getIncludes())
         )
             ->withPaginationHeaders($paginator);
+    }
+
+    public function show(Request $request, Booking $booking) {
+        return fractal($booking, new BookingShowTransformer())
+            ->parseIncludes($request->getIncludes())->respond();
     }
 
     public function purchase(

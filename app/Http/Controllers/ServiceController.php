@@ -4,21 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Actions\Service\ServiceStore;
 use App\Actions\Service\ServiceUpdate;
-use App\Events\ServiceUnpublished;
 use App\Http\Requests\Services\CopyServiceRequest;
 use App\Http\Requests\Services\ServiceOwnerRequest;
 use App\Http\Requests\Services\UpdateServiceRequest;
 use App\Models\Service;
 use App\Http\Requests\Request;
 use App\Filters\ServiceFiltrator;
-use App\Events\ServiceListingLive;
 use App\Transformers\ServiceTransformer;
 use App\Http\Requests\Services\StoreServiceRequest;
 use App\Http\Requests\Services\ServicePublishRequest;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Stripe\StripeClient;
 
 class ServiceController extends Controller {
@@ -56,7 +53,7 @@ class ServiceController extends Controller {
 
     public function practitionerServiceShow(ServiceOwnerRequest $request, Service $service) {
         if ($request->get('with')) {
-            $service->load(array_filter($request->getArrayFromRequest('with'), static function($value) use($service) {
+            $service->load(array_filter($request->getArrayFromRequest('with'), static function($value) use ($service) {
                 $relationParts = explode('.', $value);
                 if (method_exists($service, $relationParts[0])) {
                     return $value;

@@ -23,7 +23,6 @@ use Illuminate\Support\Facades\Log;
  * @property bool $deposit_accepted
  * @property float $deposit_amount
  * @property string $deposit_final_date
- * @property Service $service
  *
  * @property-read Service $service
  * @property-read Collection|ScheduleAvailability[] $schedule_availabilities

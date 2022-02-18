@@ -1,6 +1,5 @@
 <?php
 
-use App\Events\ChangeOfSubscription;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\QuoteController;
 use App\Http\Controllers\Auth\ResetPasswordController;
@@ -154,6 +153,7 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
         Route::delete('articles/{article}', [ArticleController::class, 'destroy']);
 
         Route::get('services-practitioner', [ServiceController::class, 'practitionerServiceList']);
+        Route::get('purchase-practitioner/{booking}', [PurchaseController::class, 'show']);
         Route::get('services-practitioner/{service}', [ServiceController::class, 'practitionerServiceShow']);
         Route::post('services', [ServiceController::class, 'store']);
         Route::put('services/{service}', [ServiceController::class, 'update']);

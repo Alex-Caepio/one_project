@@ -4,17 +4,26 @@ namespace App\Transformers;
 
 use App\Models\Booking;
 use App\Models\Schedule;
+use App\Models\ScheduleSnapshot;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 
 class ScheduleTransformer extends Transformer
 {
     private ?User $authUser;
+    private ?Collection $bookings;
 
     public function __construct()
     {
         $this->authUser = Auth::user() === null ? Auth::guard('sanctum')->user() : null;
+        $this->bookings = null;
+    }
+
+    public function setBooking(Booking $booking) {
+        $this->bookings = collect([$booking]);
+        return $this;
     }
 
     protected $availableIncludes = [
@@ -32,27 +41,18 @@ class ScheduleTransformer extends Transformer
         'country'
     ];
 
-    private function isUserAllowedViewSecret(Schedule $schedule): bool
-    {
-        if (!$this->authUser) {
-            return false;
-        }
-
-        if ($this->authUser->is_admin) {
-            return true;
-        }
-
-        return $schedule->service->user_id === $this->authUser->id
-            || Booking::where('schedule_id', $schedule->id)->where('user_id', $this->authUser->id)->exists();
-    }
-
     public function transform(Schedule $schedule)
     {
+        if (isset($this->bookings)) {
+            $schedule = $this->bookings->first()->snapshot->schedule;
+        }
+
         return [
-            'id'                           => $schedule->id,
+            'id'                           => $schedule instanceof ScheduleSnapshot ? $schedule->schedule->id : $schedule->id,
             'title'                        => $schedule->title,
             'location_id'                  => $schedule->location_id,
-            'service_id'                   => $schedule->service_id ?? $schedule->service->id,
+            'service_id'                   => $schedule instanceof ScheduleSnapshot ? $schedule->schedule->service_id :
+                                                ($schedule->service_id ?? $schedule->service->id),
             'start_date'                   => $schedule->start_date ? Carbon::parse($schedule->start_date) : null,
             'end_date'                     => $schedule->end_date ? Carbon::parse($schedule->end_date) : null,
             'attendees'                    => $schedule->attendees,
@@ -155,7 +155,7 @@ class ScheduleTransformer extends Transformer
 
     public function includeBookings(Schedule $schedule)
     {
-        return $this->collectionOrNull($schedule->bookings, new BookingTransformer());
+        return $this->collectionOrNull($this->bookings ?: $schedule->bookings, new BookingTransformer());
     }
 
     public function includeRescheduleRequests(Schedule $schedule)
