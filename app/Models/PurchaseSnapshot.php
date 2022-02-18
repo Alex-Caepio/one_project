@@ -50,7 +50,7 @@ class PurchaseSnapshot extends Purchase
 
     public function service(): BelongsTo
     {
-        return $this->belongsTo(ServiceSnapshot::class);
+        return $this->belongsTo(ServiceSnapshot::class, 'service_snapshot_id');
     }
 
     public function promocode(): BelongsTo
