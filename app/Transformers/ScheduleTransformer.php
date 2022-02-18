@@ -3,6 +3,7 @@
 namespace App\Transformers;
 
 use App\Models\Booking;
+use App\Models\BookingSnapshot;
 use App\Models\Schedule;
 use App\Models\ScheduleSnapshot;
 use App\Models\User;
@@ -44,7 +45,8 @@ class ScheduleTransformer extends Transformer
     public function transform(Schedule $schedule)
     {
         if (isset($this->bookings)) {
-            $schedule = $this->bookings->first()->snapshot->schedule;
+            $booking = $this->bookings->first();
+            $schedule = $booking->snapshot ? $booking->snapshot->schedule : $booking->schedule;
         }
 
         return [
