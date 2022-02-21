@@ -24,6 +24,8 @@ class RescheduleRequestAccept
             $notificationType = Notification::RESCHEDULED_BY_PRACTITIONER;
         } elseif ($rescheduleRequest->requested_by === RescheduleRequest::REQUESTED_BY_PRACTITIONER_IN_SCHEDULE) {
             $notificationType = Notification::SCHEDULE_CHANGED_BY_PRACTITIONER;
+        } elseif ($rescheduleRequest->requested_by === RescheduleRequest::REQUESTED_BY_CLIENT) {
+            $notificationType = Notification::BOOKING_CANCELED_BY_CLIENT;
         }
 
         event(new BookingRescheduleAcceptedByClient($booking, $informPractitioner, $notificationType));
