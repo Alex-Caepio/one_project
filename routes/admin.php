@@ -5,7 +5,6 @@ use App\Http\Controllers\Admin\BookingController;
 use App\Http\Controllers\Admin\MainPageController;
 use App\Http\Controllers\Admin\PlanController;
 use App\Http\Controllers\Admin\ClientController;
-use App\Http\Controllers\Admin\PractitionerSubscriptionCommissionController;
 use App\Http\Controllers\Admin\PromotionController;
 use App\Http\Controllers\Admin\ScheduleController;
 use App\Http\Controllers\Admin\ServiceController;
@@ -16,6 +15,7 @@ use App\Http\Controllers\Admin\CustomEmailController;
 use App\Http\Controllers\Admin\PractitionerController;
 use App\Http\Controllers\Admin\PromotionCodeController;
 use App\Http\Controllers\Admin\ArticleController;
+use App\Http\Controllers\Admin\PractitionerSubscriptionDiscountController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth:sanctum'])->group(function () {
@@ -118,12 +118,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::put('/practitioner-commissions/{practitionerCommission}',[PractitionerCommissionController::class,'update']);
         Route::delete('/practitioner-commissions/{practitionerCommission}',[PractitionerCommissionController::class,'delete']);
 
-        Route::get('/practitioner-subscription-commissions',[PractitionerSubscriptionCommissionController::class,'index']);
-        Route::get('/practitioner-subscription-commissions/{subscriptionCommission}',[PractitionerSubscriptionCommissionController::class,'show']);
-        Route::post('/practitioner-subscription-commissions',[PractitionerSubscriptionCommissionController::class,'store']);
-        Route::put('/practitioner-subscription-commissions/{subscriptionCommission}',[PractitionerSubscriptionCommissionController::class,'update']);
-        Route::delete('/practitioner-subscription-commissions/{subscriptionCommission}',[PractitionerSubscriptionCommissionController::class,'delete']);
-
+        Route::prefix('/practitioner-subscription-discounts')->group(function () {
+            Route::get('',[PractitionerSubscriptionDiscountController::class,'index']);
+            Route::get('/{discount}',[PractitionerSubscriptionDiscountController::class,'show']);
+            Route::post('',[PractitionerSubscriptionDiscountController::class,'store']);
+            Route::put('/{discount}',[PractitionerSubscriptionDiscountController::class,'update']);
+            Route::delete('/{discount}',[PractitionerSubscriptionDiscountController::class,'delete']);
+        });
 
         Route::get('/schedules', [ScheduleController::class, 'index']);
         Route::post('/schedules/service/{service}', [ScheduleController::class, 'store']);
