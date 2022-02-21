@@ -21,6 +21,7 @@ use App\Transformers\UserTransformer;
 use App\Transformers\ScheduleTransformer;
 use App\Http\Requests\Schedule\CreateScheduleInterface;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 
@@ -109,6 +110,16 @@ class ScheduleController extends Controller
             );
         } else {
             $scheduleCollection = $scheduleQuery->get();
+        }
+
+        /** @var Collection $scheduleCollection */
+        $scheduleCollection = $scheduleCollection->filter(fn (Schedule $item): bool => $item->prices->count());
+
+        if (
+            $schedule->service->service_type_id === Service::TYPE_APPOINTMENT
+            && $scheduleCollection->sum(fn (Schedule $item): int => $item->prices->count()) <= 1
+        ) {
+            $scheduleCollection = new Collection();
         }
 
         return fractal($scheduleCollection, new ScheduleTransformer())->parseIncludes($requestIncludes)->toArray();
