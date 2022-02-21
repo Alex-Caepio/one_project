@@ -507,12 +507,8 @@ class EmailVariables
      */
     public function getView_client_booking(): string
     {
-        /*
-        Keep because not obvious moment
         $scheduleId = isset($this->event->reschedule) ? $this->event->reschedule->new_schedule_id : $this->event->booking->schedule->id;
         return config('app.frontend_url') . config('app.frontend_clients_booking_url') . $this->event->booking->purchase->service->id . '/' . $scheduleId;
-        */
-        return $this->getView_client_purchase();
     }
 
     /**
