@@ -309,8 +309,8 @@ class CancelBooking
         $diffValue = $booking->schedule->service->service_type_id === Service::TYPE_APPOINTMENT
             ? $now->diffInHours($bookingDate)
             : $now->diffInDays($bookingDate);
-        $isRefundAllowed = ($isDateless && $now >= $bookingDate && $diffValue < $booking->schedule->refund_terms)
-            || (!$isDateless && $bookingDate > $now && $diffValue > $booking->schedule->refund_terms);
+        $isRefundAllowed = ($isDateless && $now >= $bookingDate && ($booking->schedule->refund_terms == 0 || $diffValue < $booking->schedule->refund_terms))
+            || (!$isDateless && $bookingDate > $now && ($booking->schedule->refund_terms == 0 || $diffValue > $booking->schedule->refund_terms));
 
         if ($isRefundAllowed) {
             $result['refundTotal'] = $result['bookingCost'] - $result['stripeFeeAmount'];
