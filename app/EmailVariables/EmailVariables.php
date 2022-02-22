@@ -516,7 +516,7 @@ class EmailVariables
      */
     public function getView_client_purchase(): string
     {
-        return config('app.frontend_url') . config('app.frontend_client_purchase_url') . $this->event->booking->purchase->service->id . '/' . $this->event->booking->purchase->id;
+        return config('app.frontend_url') . config('app.frontend_client_purchase_url') . $this->event->booking->purchase->service->id . '/' . $this->event->booking->id;
     }
 
     /**
