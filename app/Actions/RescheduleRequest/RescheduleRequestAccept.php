@@ -6,6 +6,7 @@ use App\Events\BookingRescheduleAcceptedByClient;
 use App\Models\Booking;
 use App\Models\Notification;
 use App\Models\RescheduleRequest;
+use App\Models\Service;
 
 class RescheduleRequestAccept
 {
@@ -16,7 +17,12 @@ class RescheduleRequestAccept
         $booking->schedule_id = $rescheduleRequest->new_schedule_id;
         $booking->datetime_from = $rescheduleRequest->new_start_date;
         $booking->datetime_to = $rescheduleRequest->new_end_date;
-        $booking->price_id = $rescheduleRequest->new_price_id;
+
+        if ($booking->schedule->service->service_type_id !== Service::TYPE_BESPOKE) {
+            // Change the relation, but don't change the paid cost
+            $booking->price_id = $rescheduleRequest->new_price_id;
+        }
+
         $booking->status = Booking::RESCHEDULED_STATUS;
         $booking->update();
 
