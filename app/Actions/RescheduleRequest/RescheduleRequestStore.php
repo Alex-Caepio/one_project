@@ -25,7 +25,10 @@ class RescheduleRequestStore
             'booking_id'      => $booking->id,
             'schedule_id'     => $booking->schedule_id,
             'new_schedule_id' => $request->get('new_schedule_id'),
-            'new_price_id'    => $request->get('new_price_id'),
+            // Receive prices except services of the bespoke type.
+            'new_price_id'    => $booking->schedule->service->service_type_id !== Service::TYPE_BESPOKE
+                ? $request->get('new_price_id')
+                : $booking->price_id,
             'comment'         => $request->get('comment'),
             'old_price_id'    => $booking->price_id,
             'requested_by'    => $request->user()->id === $booking->user_id

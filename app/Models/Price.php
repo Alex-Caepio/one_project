@@ -9,8 +9,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * Class Price
- *
+ * @property int $cost
+ * @property bool $is_free
  * @property Schedule schedule
  * @property int duration
  */
@@ -44,5 +44,4 @@ class Price extends Model
     {
         return $this->hasMany(Booking::class, 'price_id', 'id');
     }
-
 }
