@@ -8,6 +8,7 @@ use App\Events\ContractualServiceUpdateDeclinedBookingCancelled;
 use App\Models\Booking;
 use App\Models\Cancellation;
 use App\Models\Notification;
+use App\Models\Promotion;
 use App\Models\RescheduleRequest;
 use App\Models\Service;
 use App\Models\Transfer;
@@ -55,6 +56,10 @@ class CancelBooking
             $actionRole = $roleFromRequest;
         } else {
             $actionRole = Auth::id() === $booking->user_id ? User::ACCOUNT_CLIENT : User::ACCOUNT_PRACTITIONER;
+        }
+
+        if ($actionRole === User::ACCOUNT_PRACTITIONER) {
+            $cancelledByPractitioner = true;
         }
 
         $refundData = $this->calculateRefundValue(
@@ -256,18 +261,8 @@ class CancelBooking
             'practitionerCharge' => 0,
         ];
 
-        // What is the difference with cancellation by practitioner?
-        /*if ($actionRole === User::ACCOUNT_PRACTITIONER || $declineRescheduleRequest === true) {
-            $result = $this->cancelledWithDeclineRescheduleRequest($result);
-        } else {
-            if ($cancelledByPractitioner) {
-                $result = $this->cancelledByPractitioner($result);
-            } else { // cancelled by client
-                $result = $this->cancelledByClient($result, $booking);
-            }
-        }*/
         if ($cancelledByPractitioner) {
-            $result = $this->cancelledByPractitioner($result);
+            $result = $this->cancelledByPractitioner($result, $booking);
         } else { // cancelled by client
             $result = $this->cancelledByClient($result, $booking);
         }
@@ -288,11 +283,17 @@ class CancelBooking
         return $result;
     }
 
-    private function cancelledByPractitioner(array $result): array
+    private function cancelledByPractitioner(array $result, Booking $booking): array
     {
         $result['isFullRefund'] = false;
         $result['refundTotal'] = $result['bookingCost'] - $result['stripeFeeAmount'];
         $result['practitionerCharge'] = $result['bookingCost'] - $result['planRateAmount'];
+
+        if ($booking->purchase->discount_applied === Promotion::APPLIED_HOST) {
+            $result['practitionerCharge'] = ($result['bookingCost'] + $booking->purchase->discount) * (100 - $result['planRate']) / 100;
+        } else if ($booking->purchase->discount_applied === Promotion::APPLIED_BOTH) {
+            $result['practitionerCharge'] = ($result['bookingCost'] + $booking->purchase->discount / 2) * (100 - $result['planRate']) / 100;
+        }
 
         return $result;
     }
