@@ -8,7 +8,6 @@ use App\Http\Requests\Schedule\PurchaseScheduleRequest;
 use App\Models\Booking;
 use App\Models\Instalment;
 use App\Models\PractitionerCommission;
-use App\Models\Promotion;
 use App\Models\Purchase;
 use App\Models\Schedule;
 use App\Models\User;
@@ -86,7 +85,7 @@ class PurchaseInstallment
         Purchase $purchase,
         array $metadata
     ): PaymentIntent {
-        $depositAmount = $schedule->deposit_amount;
+        $depositAmount = $schedule->deposit_amount * $purchase->amount;
         $reference = implode(', ', $purchase->bookings->pluck('reference')->toArray());
 
         $paymentIntent = $stripe->paymentIntents->create(
@@ -140,8 +139,8 @@ class PurchaseInstallment
         StripeClient $stripe,
         array $metadata
     ): ?Subscription {
-        $calendarInstallments = $schedule->calculateInstallmentsCalendar($cost, $installments);
-        $installmentInfo = $schedule->getInstallmentInfo($cost, $installments);
+        $calendarInstallments = $schedule->calculateInstallmentsCalendar($cost, $purchase->amount, $installments);
+        $installmentInfo = $schedule->getInstallmentInfo($cost, $purchase->amount, $installments);
         $reference = implode(', ', $purchase->bookings->pluck('reference')->toArray());
 
         if (count($calendarInstallments) === 0) {

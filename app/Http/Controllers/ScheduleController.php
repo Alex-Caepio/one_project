@@ -264,7 +264,7 @@ class ScheduleController extends Controller
             }
             $total = $price->cost * $request->amount;
 
-            return response($schedule->calculateInstallmentsCalendar($total, $targetPeriod));
+            return response($schedule->calculateInstallmentsCalendar($total, $request->amount, $targetPeriod));
         }
 
         return response([]);
