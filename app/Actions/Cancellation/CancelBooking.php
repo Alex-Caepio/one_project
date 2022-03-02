@@ -244,7 +244,7 @@ class CancelBooking
     ): array {
         $stripeFee = (int) config('app.platform_cancellation_fee'); // 3%
         $planRate = $booking->practitioner->getCommission();
-        $paid = $booking->is_installment ? $booking->purchase->deposit_amount : $booking->cost;
+        $paid = $booking->is_installment ? $booking->purchase->amount * $booking->purchase->deposit_amount : $booking->cost;
 
         $stripeFeeAmount = $paid * $stripeFee / 100;
         $planRateAmount = $paid * $planRate / 100;
@@ -335,7 +335,7 @@ class CancelBooking
             $this->stripe->transfers->createReversal(
                 $transfer->stripe_transfer_id,
                 [
-                    'amount' => $refundData['practitionerCharge'] * 100,
+                    'amount' => $transfer->amount * 100,
                     'description' => 'Booking cancelled',
                     'metadata' => [
                         'Currency' => config('app.platform_currency'),

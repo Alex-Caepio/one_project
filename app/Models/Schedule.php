@@ -436,10 +436,10 @@ class Schedule extends Model
         return $periods;
     }
 
-    public function calculateInstallmentsCalendar($amount, int $periods = 1): array
+    public function calculateInstallmentsCalendar(float $cost, int $amount = 1, int $periods = 1): array
     {
         $calendar = [];
-        $installmentInfo = $this->getInstallmentInfo($amount, $periods);
+        $installmentInfo = $this->getInstallmentInfo($cost, $amount, $periods);
 
         if ($installmentInfo !== null && $this->service->service_type_id === Service::TYPE_BESPOKE) {
             $start = Carbon::now()->addDays($this->deposit_instalment_frequency);
@@ -466,12 +466,12 @@ class Schedule extends Model
         return $calendar;
     }
 
-    public function getInstallmentInfo($amount, int $periods = 1): ?array
+    public function getInstallmentInfo(float $cost, int $amount = 1, int $periods = 1): ?array
     {
         $result = null;
         if ($this->isInstallmentAvailable()) {
             $depositInitialValue = $this->deposit_amount;
-            $furtherPayments = $amount - $depositInitialValue;
+            $furtherPayments = $cost - $depositInitialValue * $amount;
             if ($furtherPayments > 0) {
                 if ($this->service->service_type_id === Service::TYPE_BESPOKE) {
                     $installmentPeriodDays = $this->deposit_instalment_frequency;
@@ -497,7 +497,7 @@ class Schedule extends Model
 
                 $result = [
                     'calendar' => $calendar ?? [],
-                    'totalAmount' => $amount,
+                    'totalAmount' => $cost,
                     'furtherPayments' => $furtherPayments,
                     'amountPerPeriod' => $amountPerPeriod,
                     'daysPerPeriod' => $installmentPeriodDays,
