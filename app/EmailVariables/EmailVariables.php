@@ -221,7 +221,7 @@ class EmailVariables
      */
     public function getService_name(): ?string
     {
-        return str_replace("\n", '<br>', $this->event->service->title);
+        return str_replace("\n", '<br>', $this->event->service->title ?? '');
     }
 
     /**
