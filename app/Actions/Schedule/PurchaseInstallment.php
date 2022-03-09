@@ -167,7 +167,8 @@ class PurchaseInstallment
             [
                 'default_payment_method' => $paymentMethodId,
                 'customer' => $customer->stripe_customer_id,
-                'cancel_at' => $finalInstallmentDate->timestamp,
+                'cancel_at' => $finalInstallmentDate->addDay()->timestamp,
+                'proration_behavior' => 'none',
                 'trial_end' => $installmentInfo['startPaymentDate']->timestamp,
                 'items' => [
                     [
