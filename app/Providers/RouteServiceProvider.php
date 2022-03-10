@@ -46,10 +46,18 @@ class RouteServiceProvider extends ServiceProvider
         });
 
         Route::bind('publicService', function ($value) {
-            return Service::published()->where('id', (int)$value)->orWhere('slug', (string)$value)
+            $service = Service::published();
+
+            $service->where('slug', (string)$value)
                 ->whereHas('user', function ($query) {
                     $query->published();
-                })->firstOrFail();
+                });
+
+            if (strcmp(intval($value), $value) === 0) {
+                $service->orWhere('id', $value);
+            }
+
+            return $service->firstOrFail();
         });
 
         Route::bind('service', function ($value) {
