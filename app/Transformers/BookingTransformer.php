@@ -54,8 +54,9 @@ class BookingTransformer extends Transformer
 
         if ($booking instanceof BookingSnapshot) {
             $result = array_merge($result, [
-                'schedule_id' => $booking->schedule->id,
-                'purchase_id' => $booking->purchase->id,
+                'id' => $booking->booking->id,
+                'schedule_id' => $booking->booking->schedule->id,
+                'purchase_id' => $booking->booking->purchase->id,
                 'cancelled_at' => $booking->booking->cancelled_at,
                 'status' => $booking->booking->status,
             ]);
