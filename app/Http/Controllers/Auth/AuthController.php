@@ -95,7 +95,7 @@ class AuthController extends Controller
             $stripe->customers->update($user->stripe_customer_id, ['email' => $request->get('email')]);
         }
 
-        $user->update($request->all($request->getValidatorKeys()));
+        $user->update($request->input());
 
         if ($request->filled('password')) {
             $user->password = Hash::make($request->get('password'));
