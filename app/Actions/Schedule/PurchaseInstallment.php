@@ -90,7 +90,7 @@ class PurchaseInstallment
 
         $paymentIntent = $stripe->paymentIntents->create(
             [
-                'amount' => (int)($depositAmount * 100),
+                'amount' => intval(round(($depositAmount * 100))),
                 'currency' => config('app.platform_currency'),
                 'payment_method_types' => ['card'],
                 'customer' => Auth::user()->stripe_customer_id,
@@ -153,7 +153,7 @@ class PurchaseInstallment
             [
                 'currency' => config('app.platform_currency'),
                 'product' => $schedule->service->stripe_id,
-                'unit_amount' => (int)($installmentInfo['amountPerPeriod'] * 100),
+                'unit_amount' => intval(round($installmentInfo['amountPerPeriod'] * 100)),
                 'recurring' => ['interval' => 'day', 'interval_count' => $installmentInfo['daysPerPeriod']],
             ]
         );
