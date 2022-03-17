@@ -217,7 +217,7 @@ class CancelBooking
                 $stripeFee = (int) config('app.platform_cancellation_fee'); // 3%
                 $result = $this->stripe->refunds->create([
                     'payment_intent' => $invoice['payment_intent'],
-                    'amount' => $invoice['amount_paid'] - $invoice['amount_paid'] / 100 * $stripeFee,
+                    'amount' => $invoice['amount_paid'] - round($invoice['amount_paid'] / 100 * $stripeFee, 0, PHP_ROUND_HALF_DOWN),
                     'refund_application_fee' => true,
                     'reverse_transfer' => true,
                 ]);
@@ -246,8 +246,8 @@ class CancelBooking
         $planRate = $booking->practitioner->getCommission();
         $paid = $booking->is_installment ? $booking->purchase->amount * $booking->purchase->deposit_amount : $booking->cost;
 
-        $stripeFeeAmount = $paid * $stripeFee / 100;
-        $planRateAmount = $paid * $planRate / 100;
+        $stripeFeeAmount = round($paid * $stripeFee / 100, 2);
+        $planRateAmount = round($paid * $planRate / 100, 2);
 
         $result = [
             'isFullRefund' => false,
@@ -290,9 +290,9 @@ class CancelBooking
         $result['practitionerCharge'] = $result['bookingCost'] - $result['planRateAmount'];
 
         if ($booking->purchase->discount_applied === Promotion::APPLIED_HOST) {
-            $result['practitionerCharge'] = ($result['bookingCost'] + $booking->purchase->discount) * (100 - $result['planRate']) / 100;
+            $result['practitionerCharge'] = round(($result['bookingCost'] + $booking->purchase->discount) * (100 - $result['planRate']) / 100);
         } else if ($booking->purchase->discount_applied === Promotion::APPLIED_BOTH) {
-            $result['practitionerCharge'] = ($result['bookingCost'] + $booking->purchase->discount / 2) * (100 - $result['planRate']) / 100;
+            $result['practitionerCharge'] = round(($result['bookingCost'] + $booking->purchase->discount / 2) * (100 - $result['planRate']) / 100);
         }
 
         return $result;
