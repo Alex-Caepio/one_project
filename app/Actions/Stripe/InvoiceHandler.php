@@ -60,7 +60,7 @@ class InvoiceHandler {
             ->where('subscription_id', $this->_requestSubscriptionId)
             ->where('payment_amount', $this->_requestAmountPaid)
             ->where('is_paid', 0)
-            ->orderBy('id', 'asc')
+            ->orderBy('payment_date')
             ->first();
 
         if ($instalment) {
