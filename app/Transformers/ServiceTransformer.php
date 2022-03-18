@@ -37,7 +37,6 @@ class ServiceTransformer extends Transformer
             'description'                 => $service->description,
             'locations'                   => $service->locations,
             'basic_location'              => $service->basic_location,
-            'deposit_instalment_payments' => $service->deposit_instalment_payments,
             'user_id'                     => $service->user_id ?? $service->service->user_id,
             'is_published'                => (bool)$service->is_published,
             'introduction'                => $service->introduction,
