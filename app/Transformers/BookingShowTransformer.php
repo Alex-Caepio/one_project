@@ -38,7 +38,6 @@ class BookingShowTransformer extends Transformer {
                 'description'                 => $booking->purchase->service->description,
                 'locations'                   => $booking->purchase->service->locations,
                 'basic_location'              => $booking->purchase->service->basic_location,
-                'deposit_instalment_payments' => $booking->purchase->service->deposit_instalment_payments,
                 'user_id'                     => $booking->purchase->service->user_id,
                 'is_published'                => (bool)$booking->purchase->service->is_published,
                 'introduction'                => $booking->purchase->service->introduction,
@@ -61,7 +60,6 @@ class BookingShowTransformer extends Transformer {
             'description'                 => $booking->schedule->service->description,
             'locations'                   => $booking->schedule->service->locations,
             'basic_location'              => $booking->schedule->service->basic_location,
-            'deposit_instalment_payments' => $booking->schedule->service->deposit_instalment_payments,
             'user_id'                     => $booking->schedule->service->user_id,
             'is_published'                => (bool)$booking->schedule->service->is_published,
             'introduction'                => $booking->schedule->service->introduction,
@@ -107,7 +105,8 @@ class BookingShowTransformer extends Transformer {
     }
 
     public function includeActiveSchedules(Booking $booking) {
-        return $this->collectionOrNull($booking->schedule->service->active_schedules, (new ScheduleTransformer())->setBooking($booking));
+        return $this->collectionOrNull(collect([$booking->schedule->service->active_schedules->first()]),
+                (new ScheduleTransformer())->setBooking($booking));
     }
 
     public function includeFavoritesService(Booking $booking) {
