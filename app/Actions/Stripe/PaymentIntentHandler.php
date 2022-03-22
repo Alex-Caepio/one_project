@@ -35,7 +35,10 @@ class PaymentIntentHandler
         $dataObject = $request->getObject();
 
         // Filter payment intents. We need only subscription update
-        if (count($dataObject['metadata']) > 0 && $dataObject['description'] !== 'Subscription update') {
+        if (
+            (count($dataObject['metadata']) > 0 && $dataObject['description'] !== 'Subscription update') ||
+            empty($dataObject['transfer_data']['amount'])
+        ) {
             return;
         }
 
