@@ -106,4 +106,8 @@ class Purchase extends Model
         return $filters->apply($builder);
     }
 
+    public function transfer(): HasMany
+    {
+        return $this->hasMany(Transfer::class);
+    }
 }

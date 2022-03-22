@@ -17,6 +17,7 @@
     </testsuite>
   </testsuites>
   <php>
+    <server name="HTTPS" value="off"/>
     <server name="APP_ENV" value="testing"/>
     <server name="BCRYPT_ROUNDS" value="4"/>
     <server name="CACHE_DRIVER" value="array"/>

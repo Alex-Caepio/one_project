@@ -161,6 +161,7 @@ class PurchaseInstallment
         // get practitioner commission for subscription
         $practitioner = $schedule->service->user;
         $practitionerCommissions = $this->getPractitionerRate($practitioner);
+        $toTransferPercent = 100 - $practitionerCommissions;
 
         // create subscription
         $subscription = $stripe->subscriptions->create(
@@ -176,9 +177,9 @@ class PurchaseInstallment
                         'metadata' => $metadata
                     ],
                 ],
-                'application_fee_percent' => $practitionerCommissions,
                 'transfer_data' => [
                     'destination' => $practitioner->stripe_account_id,
+                    'amount_percent' => $toTransferPercent,
                 ],
                 'metadata' => $metadata
             ]

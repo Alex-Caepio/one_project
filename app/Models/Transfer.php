@@ -22,7 +22,7 @@ class Transfer extends Model
 {
     use HasFactory;
 
-    protected $fillable = [];
+    protected $guarded = [];
 
     public function purchase(): BelongsTo {
         return $this->belongsTo(Purchase::class);
