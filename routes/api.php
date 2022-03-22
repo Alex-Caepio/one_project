@@ -61,8 +61,8 @@ Route::post('auth/forgot-password-claim', [ResetPasswordController::class, 'clai
     ->name('claim-reset');
 Route::post('auth/resend-verification', [AuthController::class, 'resendVerification']);
 
-Route::middleware(['stripe'])->group(function () {
-    Route::match(['post', 'get'], '/stripe-webhook', [StripeWebhookController::class, 'handler']);
+Route::name('stripe.')->middleware(['stripe'])->group(function () {
+    Route::match(['post', 'get'], '/stripe-webhook', [StripeWebhookController::class, 'handler'])->name('webhook');
 });
 
 /* Public Routes For Services And Articles */

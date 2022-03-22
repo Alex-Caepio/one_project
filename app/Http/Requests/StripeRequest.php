@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Actions\Stripe\AccountHandler;
 use App\Actions\Stripe\InvoiceHandler;
 use App\Actions\Stripe\SubscriptionHandler;
+use App\Actions\Stripe\PaymentIntentHandler;
 
 class StripeRequest {
 
@@ -14,6 +15,7 @@ class StripeRequest {
         ],
         'invoice' => InvoiceHandler::class,
         'account' => AccountHandler::class,
+        'payment_intent' => PaymentIntentHandler::class,
     ];
 
     private string $_type;

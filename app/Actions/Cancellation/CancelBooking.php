@@ -9,6 +9,7 @@ use App\Models\Booking;
 use App\Models\Cancellation;
 use App\Models\Notification;
 use App\Models\Promotion;
+use App\Models\Purchase;
 use App\Models\RescheduleRequest;
 use App\Models\Service;
 use App\Models\Transfer;
@@ -37,10 +38,11 @@ class CancelBooking
 
     public function execute(
         Booking $booking,
-        bool $declineRescheduleRequest = false,
+        bool    $declineRescheduleRequest = false,
         ?string $roleFromRequest = null,
-        ?bool $cancelledByPractitioner = false
-    ) {
+        ?bool   $cancelledByPractitioner = false
+    )
+    {
         if (!$booking->isActive()) {
             return;
         }
@@ -207,19 +209,42 @@ class CancelBooking
 
     private function refundInstallment($subscription_id): void
     {
+        // refund to holistify stripe account
+        $purchase = Purchase::where('subscription_id', $subscription_id)->first();
+        $transfers = $purchase->transfer()->where('is_installment', true)->whereNull('stripe_transfer_reversal_id')->get();
+
+        try {
+            foreach ($transfers as $transfer) {
+                $result = $this->stripe->transfers->createReversal($transfer->stripe_transfer_id);
+                $transfer->stripe_transfer_reversal_id = $result->id;
+                $transfer->save();
+
+                Log::channel('stripe_refund_success')
+                    ->info('Reversal transfer success: ', [
+                        'Parent transfer id' => $transfer->stripe_transfer_id,
+                    ]);
+            }
+        } catch (\Exception $e) {
+            Log::channel('stripe_refund_fail')
+                ->info('Reversal transfer failed: ', [
+                    'Parent transfer id' => $transfer->stripe_transfer_id,
+                ]);
+            return;
+        }
+
+        // then refund to user
         $invoices = $this->stripe->invoices->all([
             'subscription' => $subscription_id,
-            'status' => 'paid'
+            'status' => 'paid',
         ]);
 
         foreach ($invoices as $invoice) {
             if (!is_null($invoice['payment_intent'])) {
-                $stripeFee = (int) config('app.platform_cancellation_fee'); // 3%
+                $stripeFee = (int)config('app.platform_cancellation_fee'); // 3%
                 $result = $this->stripe->refunds->create([
                     'payment_intent' => $invoice['payment_intent'],
                     'amount' => $invoice['amount_paid'] - round($invoice['amount_paid'] / 100 * $stripeFee, 0, PHP_ROUND_HALF_DOWN),
-                    'refund_application_fee' => true,
-                    'reverse_transfer' => true,
+                    'reverse_transfer' => false,
                 ]);
                 if ($result) {
                     Log::channel('stripe_refund_success')
@@ -237,12 +262,13 @@ class CancelBooking
     }
 
     private function calculateRefundValue(
-        string $actionRole,
+        string  $actionRole,
         Booking $booking,
-        bool $declineRescheduleRequest,
-        bool $cancelledByPractitioner
-    ): array {
-        $stripeFee = (int) config('app.platform_cancellation_fee'); // 3%
+        bool    $declineRescheduleRequest,
+        bool    $cancelledByPractitioner
+    ): array
+    {
+        $stripeFee = (int)config('app.platform_cancellation_fee'); // 3%
         $planRate = $booking->practitioner->getCommission();
         $paid = $booking->is_installment ? $booking->purchase->amount * $booking->purchase->deposit_amount : $booking->cost;
 
