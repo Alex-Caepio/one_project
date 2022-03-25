@@ -19,7 +19,11 @@ class RescheduleRequestDecline
             in_array($rescheduleRequest->requested_by, RescheduleRequest::getPractitionerRequestValues(), true)
             && $rescheduleRequest->user_id === Auth::id()
         ) {
-            if ((int)$rescheduleRequest->schedule_id === (int)$rescheduleRequest->new_schedule_id) {
+            if (
+                (int)$rescheduleRequest->schedule_id === (int)$rescheduleRequest->new_schedule_id &&
+                $rescheduleRequest->old_start_date === $rescheduleRequest->new_start_date &&
+                $rescheduleRequest->old_end_date === $rescheduleRequest->new_end_date
+            ) {
                 run_action(
                     CancelBooking::class,
                     $rescheduleRequest->booking,
