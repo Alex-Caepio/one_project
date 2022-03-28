@@ -7,6 +7,7 @@ use App\Events\BookingCancelledByClient;
 use App\Events\ContractualServiceUpdateDeclinedBookingCancelled;
 use App\Models\Booking;
 use App\Models\Cancellation;
+use App\Models\Instalment;
 use App\Models\Notification;
 use App\Models\Promotion;
 use App\Models\Purchase;
@@ -185,7 +186,7 @@ class CancelBooking
         $notification->datetime_from = $booking->datetime_from;
         $notification->datetime_to = $booking->datetime_to;
         $notification->price_id = $booking->price_id;
-        $notification->price_refunded = $refundData['refundTotal'];
+        $notification->price_refunded = $booking->is_installment ? $refundData['installmentRefund'] : $refundData['refundTotal'];
         $notification->price_payed = $booking->cost;
 
         $notification->save();
@@ -275,16 +276,27 @@ class CancelBooking
         $stripeFeeAmount = round($paid * $stripeFee / 100, 2);
         $planRateAmount = round($paid * $planRate / 100, 2);
 
+        if ($booking->is_installment) {
+            $installmentAmount = Instalment::where('purchase_id', $booking->purchase->id)
+                ->where('is_paid', 1)
+                ->sum('payment_amount');
+            $installmentFeeAmount = round($installmentAmount * $stripeFee / 100, 2);
+        }
+
+
         $result = [
             'isFullRefund' => false,
             'refundTotal' => 0,
             'refundSmallestUnit' => 0,
-            'bookingCost' => $paid,
+            'bookingCost' => $paid, // in case of installment it equals to deposit
             'stripeFee' => $stripeFee,
             'stripeFeeAmount' => $stripeFeeAmount,
             'planRate' => $planRate,
             'planRateAmount' => $planRateAmount,
             'practitionerCharge' => 0,
+            'installmentAmount' => $installmentAmount ?? 0,
+            'installmentFeeAmount' => $installmentFeeAmount ?? 0,
+            'installmentRefund' => $booking->is_installment ? $installmentAmount - $installmentFeeAmount : 0,
         ];
 
         if ($cancelledByPractitioner) {
@@ -352,7 +364,11 @@ class CancelBooking
 
     private function reverseTransferToPractitioner(array $refundData, Booking $booking)
     {
-        $transfer = Transfer::where('purchase_id', $booking->purchase->id)->first();
+        $transfer = Transfer::where('purchase_id', $booking->purchase->id)
+            ->where('is_installment', 0)
+            ->whereNull('stripe_transfer_reversal_id')
+            ->first();
+
         if (empty($transfer)) {
             return;
         }
