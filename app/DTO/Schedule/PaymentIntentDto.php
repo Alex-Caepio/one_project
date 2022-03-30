@@ -61,6 +61,16 @@ class PaymentIntentDto
         $this->is3dsConfirmationExternal = $this->check3dsConfirmationExternal($threeDsCheckType, $this->redirectUrl);
     }
 
+    public function __call($name, $arguments): ?string
+    {
+        $operation = 'get';
+        if (strpos($name, $operation) === 0) {
+            $property = str_replace($operation, '', strtolower($name));
+            return $this->$property;
+        }
+        return null;
+    }
+
     public function toArray(): array
     {
         $data = [

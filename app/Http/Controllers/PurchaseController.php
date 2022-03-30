@@ -168,6 +168,12 @@ class PurchaseController extends Controller
                 $paymentIntentData = $isInstallment
                     ? $this->payInInstallments($request, $schedule, $price, $practitioner, $cost, $purchase, $booking)
                     : $this->payInstant($request, $schedule, $price, $stripe, $purchase, $practitioner);
+
+                // if 3ds required
+                if ($paymentIntentData->getStatus() === PaymentIntent::STATUS_REQUIRES_ACTION) {
+                    $this->connection->rollBack();
+                    return $paymentIntentData->toArray();
+                }
             }
 
             if ($schedule->service->service_type_id === Service::TYPE_BESPOKE) {
@@ -313,29 +319,46 @@ class PurchaseController extends Controller
         try {
             $client = $request->user();
             $reference = implode(', ', $purchase->bookings->pluck('reference')->toArray());
-            $paymentIntent = $stripe->paymentIntents->create(
-                [
-                    'amount' => $purchase->price * 100,
-                    'currency' => config('app.platform_currency'),
-                    'payment_method_types' => ['card'],
-                    'customer' => Auth::user()->stripe_customer_id,
-                    'payment_method' => $payment_method_id,
-                    'metadata' => [
-                        'Practitioner business email' => $practitioner->business_email,
-                        'Practitioner business name' => $practitioner->business_name,
-                        'Practitioner stripe id' => $practitioner->stripe_customer_id,
-                        'Practitioner connected account id' => $practitioner->stripe_account_id,
-                        'Client first name' => $client->first_name,
-                        'Client last name' => $client->last_name,
-                        'Client stripe id' => $client->stripe_customer_id,
-                        'Booking reference' => $reference
-                    ]
-                ]
-            );
 
-            /** @var PaymentIntent $paymentIntent */
-            $paymentIntent =
-                $stripe->paymentIntents->confirm($paymentIntent->id, ['payment_method' => $payment_method_id]);
+            if ($request->input('payment_intent')) {
+                $paymentIntent = $stripe->paymentIntents->retrive($request->input('payment_intent'));
+            } else {
+                $paymentIntent = $stripe->paymentIntents->create(
+                    [
+                        'amount' => $purchase->price * 100,
+                        'currency' => config('app.platform_currency'),
+                        'payment_method_types' => ['card'],
+                        'customer' => Auth::user()->stripe_customer_id,
+                        'payment_method' => $payment_method_id,
+                        'metadata' => [
+                            'Practitioner business email' => $practitioner->business_email,
+                            'Practitioner business name' => $practitioner->business_name,
+                            'Practitioner stripe id' => $practitioner->stripe_customer_id,
+                            'Practitioner connected account id' => $practitioner->stripe_account_id,
+                            'Client first name' => $client->first_name,
+                            'Client last name' => $client->last_name,
+                            'Client stripe id' => $client->stripe_customer_id,
+                            'Booking reference' => $reference
+                        ]
+                    ]
+                );
+
+                /** @var PaymentIntent $paymentIntent */
+                $paymentIntent =
+                    $stripe->paymentIntents->confirm($paymentIntent->id, ['payment_method' => $payment_method_id]);
+            }
+
+            // For 3ds need to be confirmed
+            if ($paymentIntent->status === PaymentIntent::STATUS_REQUIRES_ACTION) {
+                return new PaymentIntentDto(
+                    $paymentIntent->status,
+                    $paymentIntent->client_secret,
+                    $paymentIntent->confirmation_method,
+                    $paymentIntent->next_action,
+                    null
+                );
+            }
+
             $purchase->stripe_id = $paymentIntent->id;
             $purchase->save();
 
