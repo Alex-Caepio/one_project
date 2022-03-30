@@ -321,7 +321,7 @@ class PurchaseController extends Controller
             $reference = implode(', ', $purchase->bookings->pluck('reference')->toArray());
 
             if ($request->input('payment_intent')) {
-                $paymentIntent = $stripe->paymentIntents->retrive($request->input('payment_intent'));
+                $paymentIntent = $stripe->paymentIntents->retrieve($request->input('payment_intent'));
             } else {
                 $paymentIntent = $stripe->paymentIntents->create(
                     [
