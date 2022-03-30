@@ -37,6 +37,11 @@ class PromoIsAvailable
             return true;
         }
 
+        Log::channel('stripe_insufficient_balance')
+            ->info("Insufficient balance", [
+                'need_to_transfer' => $needToTransfer,
+            ]);
+
         return false;
     }
 }
