@@ -2,8 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Actions\RescheduleRequest\RescheduleRequestAccept;
-use App\Events\RescheduleRequestNoReplyFromClient;
+use App\Actions\RescheduleRequest\RescheduleRequestDecline;
 use App\Models\RescheduleRequest;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -32,7 +31,8 @@ class RescheduleNoReplyFinishCommand extends Command
             })
             ->get();
         foreach ($rescheduleRequests as $rr) {
-            run_action(RescheduleRequestAccept::class, $rr);
+            $rr->automatic = true;
+            run_action(RescheduleRequestDecline::class, $rr);
         }
         Log::channel('console_commands_handler')
             ->info('Finalize reschedule requests',
