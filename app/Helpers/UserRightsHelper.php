@@ -34,7 +34,7 @@ class UserRightsHelper
         }
 
         return $user->plan->article_publishing_unlimited ||
-            $user->articles()->published()->count() < (int)$user->plan->article_publishing;
+            $user->articles()->published()->count() <= (int)$user->plan->article_publishing;
     }
 
     /**
