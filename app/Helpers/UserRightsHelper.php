@@ -109,7 +109,7 @@ class UserRightsHelper
             return true;
         }
 
-        return $service->schedules()->count() < (int)$user->plan->schedules_per_service;
+        return $service->schedules()->where('is_published', 1)->count() <= (int)$user->plan->schedules_per_service;
     }
 
     public static function userAllowDeposit(User $user): bool
@@ -132,7 +132,7 @@ class UserRightsHelper
             return false;
         }
 
-        return $user->plan->unlimited_bookings || $cntAttendies < $user->plan->amount_bookings;
+        return $user->plan->unlimited_bookings || $cntAttendies <= $user->plan->amount_bookings;
     }
 
     /**

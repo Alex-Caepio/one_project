@@ -33,7 +33,7 @@ trait ScheduleValidator {
         }
 
         if (!UserRightsHelper::userAllowAttendees($scheduleUser, $this->attendees)) {
-            $validator->errors()->add('attendees', "You're limited to {$plan->amount_bookings} attendees");
+            $validator->errors()->add('attendees', "You're limited to {$plan->amount_bookings} attendees by your subscription plan");
         }
 
         if ($this->getBoolFromRequest('deposit_accepted') === true && !UserRightsHelper::userAllowDeposit($scheduleUser)) {
