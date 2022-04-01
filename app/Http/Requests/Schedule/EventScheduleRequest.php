@@ -48,7 +48,7 @@ class EventScheduleRequest extends GenericSchedule
             'prices.*.cost.required_if'               => 'The cost field is required when setting prices.',
             'prices.*.is_free.required'               => 'The is_free field is required when setting prices.',
             'prices.*.available_till.before'          => 'The available_till field should be before the end_date field.',
-            'prices.*.number_available.lte:attendees' => 'The tickets_available field should be less or equal max attendees.',
+            'prices.*.number_available.lte'           => 'The tickets_available field should be less or equal max attendees.',
             'end_date.after'                          => 'End date and time must be after the start date and time.',
         ];
     }
