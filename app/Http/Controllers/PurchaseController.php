@@ -350,8 +350,8 @@ class PurchaseController extends Controller
             }
 
             // For 3ds need to be confirmed
-            if ($paymentIntent->status === PaymentIntent::STATUS_REQUIRES_ACTION) {
-                return new PaymentIntentDto(
+            if (in_array($paymentIntent->status, [PaymentIntent::STATUS_REQUIRES_ACTION, 'requires_source_action'])) {
+                    return new PaymentIntentDto(
                     $paymentIntent->status,
                     $paymentIntent->client_secret,
                     $paymentIntent->confirmation_method,
