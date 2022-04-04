@@ -170,7 +170,8 @@ class PurchaseController extends Controller
                     : $this->payInstant($request, $schedule, $price, $stripe, $purchase, $practitioner);
 
                 // if 3ds required
-                if ($paymentIntentData->getStatus() === PaymentIntent::STATUS_REQUIRES_ACTION) {
+                // requires_source_action https://stripe.com/docs/payments/payment-intents/migration?lang=curl
+                if (in_array($paymentIntentData->getStatus(), [PaymentIntent::STATUS_REQUIRES_ACTION, 'requires_source_action'])) {
                     $this->connection->rollBack();
                     return $paymentIntentData->toArray();
                 }
