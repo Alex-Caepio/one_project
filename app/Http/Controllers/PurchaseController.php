@@ -350,9 +350,12 @@ class PurchaseController extends Controller
             }
 
             // For 3ds need to be confirmed
+            Log::channel('stripe_purchase_instant')
+                ->info("Instant payment", $paymentIntent->toArray());
+
             if (in_array($paymentIntent->status, [PaymentIntent::STATUS_REQUIRES_ACTION, 'requires_source_action'])) {
                     return new PaymentIntentDto(
-                    $paymentIntent->status,
+                    PaymentIntent::STATUS_REQUIRES_ACTION,
                     $paymentIntent->client_secret,
                     $paymentIntent->confirmation_method,
                     $paymentIntent->next_action,
