@@ -476,6 +476,9 @@ class Schedule extends Model
                 if ($this->service->service_type_id === Service::TYPE_BESPOKE) {
                     $installmentPeriodDays = $this->deposit_instalment_frequency;
                     $installmentFirstDate = Carbon::now()->addDays($installmentPeriodDays);
+                    $installmentCancelDate = Carbon::now()->addDays(
+                        $installmentPeriodDays + $this->deposit_instalments * $installmentPeriodDays
+                    );
                     $installmentLastDate = Carbon::now()->addDays(
                         $installmentPeriodDays + ($this->deposit_instalments - 1) * $installmentPeriodDays
                     );
@@ -484,6 +487,7 @@ class Schedule extends Model
                     $installmentTotalDays = CarbonPeriod::create(Carbon::now('UTC'), $installmentLastDate)->days()->count();
                     $installmentPeriods = $periods;
                     $installmentPeriodDays = floor($installmentTotalDays / $installmentPeriods);
+                    $installmentCancelDate =  Carbon::parse($this->deposit_final_date, 'UTC')->addDays($installmentPeriodDays);
 
                     $calendarCurrentDate = Carbon::parse($installmentLastDate, 'UTC');
                     for ($i = $installmentPeriods; $i > 0; $i--) {
@@ -505,6 +509,7 @@ class Schedule extends Model
                     'finalPaymentDate' => $installmentLastDate,
                     'installmentFirstDate' => $installmentFirstDate,
                     'installmentLastDate' => $installmentLastDate,
+                    'installmentCancelDate' => $installmentCancelDate,
                     'installmentTotalDays' => $installmentTotalDays ?? null,
                     'installmentPeriods' => $installmentPeriods ?? null,
                     'installmentPeriodDays' => $installmentPeriodDays,

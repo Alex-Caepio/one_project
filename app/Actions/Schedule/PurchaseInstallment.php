@@ -147,8 +147,6 @@ class PurchaseInstallment
             return null;
         }
 
-        $finalInstallmentDate = $installmentInfo['finalPaymentDate'];
-
         $stripePrice = $stripe->prices->create(
             [
                 'currency' => config('app.platform_currency'),
@@ -168,8 +166,7 @@ class PurchaseInstallment
             [
                 'default_payment_method' => $paymentMethodId,
                 'customer' => $customer->stripe_customer_id,
-                'cancel_at' => $finalInstallmentDate->addDay()->timestamp,
-                'proration_behavior' => 'none',
+                'cancel_at' => $installmentInfo['installmentCancelDate']->timestamp,
                 'trial_end' => $installmentInfo['startPaymentDate']->timestamp,
                 'items' => [
                     [
