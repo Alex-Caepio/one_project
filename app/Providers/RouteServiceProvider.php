@@ -39,8 +39,13 @@ class RouteServiceProvider extends ServiceProvider
     public function boot()
     {
         Route::bind('publicArticle', function ($value) {
-            return Article::published()->where('id', (int)$value)->orWhere('slug', (string)$value)
-                ->whereHas('user', function ($query) {
+            $article = Article::published()->orWhere('slug', (string)$value);
+
+            if (strcmp(intval($value), $value) === 0) {
+                $article->orWhere('id', $value);
+            }
+
+            return $article->whereHas('user', function ($query) {
                     $query->published();
                 })->firstOrFail();
         });
@@ -61,7 +66,7 @@ class RouteServiceProvider extends ServiceProvider
         });
 
         Route::bind('service', function ($value) {
-            return Service::where('id', $value)->orWhere('slug', $value)->firstOrFail();
+            return $this->getBySlugId(new Service(), $value);
         });
 
         Route::bind('promotionWithTrashed', function ($value) {
@@ -82,19 +87,19 @@ class RouteServiceProvider extends ServiceProvider
         });
 
         Route::bind('focusArea', function ($value) {
-            return FocusArea::where('id', $value)->orWhere('slug', $value)->firstOrFail();
+            return $this->getBySlugId(new FocusArea(), $value);
         });
 
         Route::bind('discipline', function ($value) {
-            return Discipline::where('id', $value)->orWhere('slug', $value)->firstOrFail();
+            return $this->getBySlugId(new Discipline(), $value);
         });
 
         Route::bind('user', function ($value) {
-            return User::where('id', $value)->orWhere('slug', $value)->firstOrFail();
+            return $this->getBySlugId(User::published(), $value);
         });
 
         Route::bind('practitioner', function ($value) {
-            return User::where('id', $value)->orWhere('slug', $value)->firstOrFail();
+            return $this->getBySlugId(User::published(), $value);
         });
 
 
@@ -148,5 +153,18 @@ class RouteServiceProvider extends ServiceProvider
             ->middleware('api')
             ->namespace($this->namespace)
             ->group(base_path('routes/admin.php'));
+    }
+
+    /*
+     * @return Model $model
+     */
+    protected function getBySlugId($model, string $value) {
+        $model->where('slug', $value);
+
+        if (strcmp(intval($value), $value) === 0) {
+            $model->orWhere('id', $value);
+        }
+
+        return $model->firstOrFail();
     }
 }
