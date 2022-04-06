@@ -30,6 +30,7 @@ class UpdateServiceRequest extends Request {
             'introduction' => 'string|min:5|max:500',
             'image_url'    => 'nullable|url',
             'icon_url'     => 'nullable|url',
+            'slug'         => 'nullable|regex:#^[a-zA-Z0-9_-]*$#',
         ];
     }
 
