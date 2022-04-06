@@ -12,6 +12,7 @@ use App\Models\Service;
 use App\Models\User;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Database\Eloquent\Builder;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -66,7 +67,7 @@ class RouteServiceProvider extends ServiceProvider
         });
 
         Route::bind('service', function ($value) {
-            return $this->getBySlugId(new Service(), $value);
+            return $this->getBySlugId(Service::query(), $value);
         });
 
         Route::bind('promotionWithTrashed', function ($value) {
@@ -87,11 +88,11 @@ class RouteServiceProvider extends ServiceProvider
         });
 
         Route::bind('focusArea', function ($value) {
-            return $this->getBySlugId(new FocusArea(), $value);
+            return $this->getBySlugId(FocusArea::query(), $value);
         });
 
         Route::bind('discipline', function ($value) {
-            return $this->getBySlugId(new Discipline(), $value);
+            return $this->getBySlugId(Discipline::query(), $value);
         });
 
         Route::bind('user', function ($value) {
@@ -158,13 +159,13 @@ class RouteServiceProvider extends ServiceProvider
     /*
      * @return Model $model
      */
-    protected function getBySlugId($model, string $value) {
-        $model->where('slug', $value);
+    protected function getBySlugId(Builder $builder, string $value) {
+        $builder->where('slug', $value);
 
         if (strcmp(intval($value), $value) === 0) {
-            $model->orWhere('id', $value);
+            $builder->orWhere('id', $value);
         }
 
-        return $model->firstOrFail();
+        return $builder->firstOrFail();
     }
 }

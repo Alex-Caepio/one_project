@@ -128,6 +128,12 @@ return [
             'permission' => 0777
         ],
 
+        'stripe_insufficient_balance' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/stripe_insufficient_balance.log'),
+            'permission' => 0777
+        ],
+
         'stripe_client_success' => [
             'driver' => 'daily',
             'path' => storage_path('logs/stripe_client_success.log'),
