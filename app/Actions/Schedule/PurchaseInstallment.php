@@ -113,6 +113,7 @@ class PurchaseInstallment
         $installment->payment_amount = $depositAmount;
         $installment->is_paid = true;
         $installment->reference = $reference;
+        $installment->is_deposit = true;
         $installment->save();
 
         $chargeId = $paymentIntent->charges->data ? $paymentIntent->charges->data[0]['id'] : null;
