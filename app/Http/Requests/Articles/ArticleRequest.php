@@ -24,11 +24,12 @@ class ArticleRequest extends Request {
      */
     public function rules(): array {
         return [
-            'title'        => 'required_if:is_published,true|string|min:5|max:120',
+            'title'        => 'required_if:is_published,true|string|min:5|max:120|regex:#^[a-zA-Z0-9_-]*$#',
             'description'  => 'required_if:is_published,true|string|min:5|max:15000',
             'is_published' => 'required|boolean',
             'introduction' => 'required_if:is_published,true|string|min:5|max:200',
             'image_url'    => 'nullable|url',
+            'slug'         => 'nullable|regex:#^[a-zA-Z0-9_-]*$#',
         ];
     }
 
