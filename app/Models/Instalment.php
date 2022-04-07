@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * @property int is_paid
+ * @property int is_deposit
  */
 class Instalment extends Model
 {
@@ -23,7 +24,8 @@ class Instalment extends Model
         'payment_amount',
         'created_at',
         'updated_at',
-        'deleted_at'
+        'deleted_at',
+        'is_deposit',
     ];
 
     public function user(): BelongsTo

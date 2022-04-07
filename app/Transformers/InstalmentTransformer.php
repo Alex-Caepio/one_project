@@ -27,6 +27,7 @@ class InstalmentTransformer extends Transformer {
             'created_at'     => $instalments->created_at,
             'updated_at'     => $instalments->updated_at,
             'deleted_at'     => $instalments->deleted_at,
+            'is_deposit'     => $instalments->is_deposit,
         ];
     }
 
