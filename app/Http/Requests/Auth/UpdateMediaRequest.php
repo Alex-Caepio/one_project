@@ -17,7 +17,7 @@ class UpdateMediaRequest extends Request {
      * @return bool
      */
     public function authorize() {
-        return Auth::user()->isPractitioner() || Auth::user()->id_admin;
+        return Auth::user()->isPractitioner() || Auth::user()->is_admin;
     }
 
     /**
@@ -35,8 +35,8 @@ class UpdateMediaRequest extends Request {
             'business_country_id'   => 'nullable|required|exists:countries,id|integer',
             'slug'                  => [
                 Rule::unique('users', 'slug')->ignore($practitioner->id),
+                Rule::when(true, 'regex:#^[a-zA-Z0-9_-]*$#'),
             ],
-            'is_published'          => 'required|bool',
         ];
     }
 
@@ -45,17 +45,19 @@ class UpdateMediaRequest extends Request {
         $practitioner = $this->getPractitioner();
 
         if ($practitioner instanceof User) {
-            $validator->setRules([
-                                     'business_address'            => 'nullable|required_if:is_published,true|max:255',
-                                     'business_email'              => 'nullable|required_if:is_published,true|max:255|email',
-                                     'business_phone_number'       => 'nullable|required_if:is_published,true|digits_between:2,255|numeric',
-                                     'business_phone_country_code' => 'nullable|required_if:is_published,true|exists:countries,id|integer',
-                                 ])->setData([
-                                                 'business_address'            => $practitioner->business_address,
-                                                 'business_email'              => $practitioner->business_email,
-                                                 'business_phone_number'       => $practitioner->business_phone_number,
-                                                 'business_phone_country_code' => $practitioner->business_phone_country_code,
-                                             ])->validate();
+            $validator->addRules([
+                'business_address' => 'nullable|required_if:is_published,true|max:255',
+                'business_email' => 'nullable|required_if:is_published,true|max:255|email',
+                'business_phone_number' => 'nullable|required_if:is_published,true|digits_between:2,255|numeric',
+                'business_phone_country_code' => 'nullable|required_if:is_published,true|exists:countries,id|integer',
+            ]);
+
+            $validator->setData(array_merge($validator->getData(), [
+                'business_address' => $practitioner->business_address,
+                'business_email' => $practitioner->business_email,
+                'business_phone_number' => $practitioner->business_phone_number,
+                'business_phone_country_code' => $practitioner->business_phone_country_code,
+            ]));
 
         } else {
             abort(403, 'Practitioner is not defined');
