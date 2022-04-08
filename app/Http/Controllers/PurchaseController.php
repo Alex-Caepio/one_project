@@ -142,7 +142,6 @@ class PurchaseController extends Controller
                     $booking->discount = $discountPerAppointment;
                     $booking->is_installment = $isInstallment;
                     $booking->is_fully_paid = !$isInstallment;
-                    $booking->save();
                     event(new AppointmentBooked($booking));
                 }
             } else {
@@ -161,7 +160,6 @@ class PurchaseController extends Controller
                 $booking->is_installment = $isInstallment;
                 $booking->is_fully_paid = !$isInstallment;
                 $booking->discount = $discount;
-                $booking->save();
             }
 
             if ($cost && !$price->is_free) {
@@ -177,9 +175,7 @@ class PurchaseController extends Controller
                 }
             }
 
-            if ($schedule->service->service_type_id === Service::TYPE_BESPOKE) {
-                BookingSnapshotService::create($booking);
-            }
+
 
             ScheduleFreeze::where('schedule_id', $schedule->id)->where('user_id', $request->user()->id)->delete();
 
@@ -204,6 +200,12 @@ class PurchaseController extends Controller
                 ]);
             $this->connection->rollBack();
             abort(Response::HTTP_INTERNAL_SERVER_ERROR, $e->getMessage());
+        }
+
+        $booking->save();
+
+        if ($schedule->service->service_type_id === Service::TYPE_BESPOKE) {
+            BookingSnapshotService::create($booking);
         }
 
         $this->connection->commit();
