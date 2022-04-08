@@ -149,7 +149,7 @@ class BookingMyClientController extends Controller
                     'bookings.reference as booking_reference',
                     'bookings.reference as reference',
                     'concat(users.first_name, " ", users.last_name) as client',
-                    'IF(purchases.is_deposit, SUM(instalments.payment_amount), purchases.price) as paid',
+                    'IF(purchases.is_deposit, (SELECT SUM(i.payment_amount) FROM instalments as i WHERE i.is_paid = 1 AND i.purchase_id = purchases.id GROUP BY i.purchase_id), purchases.price) as paid',
                     'purchases.is_deposit',
                     'purchases.deposit_amount',
                     'services.id as service_id',
@@ -165,10 +165,6 @@ class BookingMyClientController extends Controller
             ->join('services', 'services.id', '=', 'purchases.service_id')
             ->join('service_types', 'service_types.id', '=', 'services.service_type_id')
             ->join('users', 'users.id', '=', 'purchases.user_id')
-            ->leftJoin('instalments', function($join){
-                $join->on('instalments.purchase_id', '=', 'purchases.id')
-                    ->where('instalments.is_paid', 1);
-            })
             ->join('bookings', static function ($join) {
                 $join->on(function ($join) {
                     $join->on('bookings.purchase_id', '=', 'purchases.id')
@@ -181,7 +177,6 @@ class BookingMyClientController extends Controller
             ->where('services.user_id', $request->user()->id)
             ->where('services.service_type_id', '=', 'bespoke')
             ->orderBy('id', 'desc')
-            ->groupBy('instalments.purchase_id')
             ->paginate($request->getLimit());
 
         $purchases = $paginator->getCollection();
