@@ -37,6 +37,7 @@ class UpdateMediaRequest extends Request {
                 Rule::unique('users', 'slug')->ignore($practitioner->id),
                 Rule::when(true, 'regex:#^[a-zA-Z0-9_-]*$#'),
             ],
+            'is_published'          => 'bool',
         ];
     }
 
