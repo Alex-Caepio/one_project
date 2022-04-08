@@ -30,7 +30,7 @@ class PromoIsAvailable
         }
 
         if (!empty($balance->available)) {
-            $balanceAmount = array_shift($balance->available)->amount;
+            $balanceAmount = round(array_shift($balance->available)->amount / 100, 2);
         }
 
         if ($balanceAmount >= $needToTransfer) {
