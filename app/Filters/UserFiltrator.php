@@ -4,7 +4,6 @@ namespace App\Filters;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use App\Http\Requests\Request;
 
 class UserFiltrator
@@ -39,7 +38,7 @@ class UserFiltrator
         /* Disciplines */
         if ($request->filled('discipline_id') || $request->filled('disciplineId')) {
             $disciplineId = $request->filled('discipline_id') ? $request->get('discipline_id') : $request->get('disciplineId');
-            $queryBuilder->whereHas('disciplines', function($q) use ($disciplineId) {
+            $queryBuilder->whereHas('disciplines', function ($q) use ($disciplineId) {
                 $q->where('disciplines.id', (int)$disciplineId);
             });
         }
@@ -63,8 +62,9 @@ class UserFiltrator
                         'LIKE',
                         $emailReplace
                     )->orWhere('email', 'LIKE', $emailReplace)
-                     ->orWhere('business_name', 'LIKE', $search)
-                     ->orWhereHas(
+                        ->orWhere('business_name', 'LIKE', $search)
+                        ->orWhere('business_city', 'LIKE', $search)
+                        ->orWhereHas(
                             'keywords',
                             static function ($dQuery) use ($search) {
                                 $dQuery->where('keywords.title', 'LIKE', $search);
