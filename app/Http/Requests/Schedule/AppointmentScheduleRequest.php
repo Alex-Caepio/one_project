@@ -19,7 +19,7 @@ class AppointmentScheduleRequest extends GenericSchedule
             'prices.*.name'                          => Rule::requiredIf(function () {
                 return count($this->prices) > 1;
             }),
-            'prices.*.duration'                      => ['required', Rule::notIn(['', '00:00'])],
+            'prices.*.duration'                      => ['required', Rule::notIn(['', '00:00', '0'])],
             'prices.*.cost'                          => 'required_if:prices.*.is_free,false',
             'prices.*.is_free'                       => 'required',
             'prices.*.available_till'                => 'nullable|before:end_date',
@@ -53,6 +53,7 @@ class AppointmentScheduleRequest extends GenericSchedule
 
             'prices.*.name.required'         => 'The name field is required when setting prices.',
             'prices.*.duration.required'     => 'The duration field is required when setting prices.',
+            'prices.*.duration.not_in'       => 'Please enter a duration.',
             'prices.*.cost.required_if'      => 'The cost field is required when setting prices.',
             'prices.*.is_free.required'      => 'The is_free field is required when setting prices.',
             'prices.*.available_till.before' => 'The available_till field should be before the end_date field.',
