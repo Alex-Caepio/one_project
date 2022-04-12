@@ -58,7 +58,6 @@ class PurchaseInstallment
 
         $purchase->deposit_amount = $schedule->deposit_amount;
         $purchase->save();
-        $purchase->bookings()->first()->installmentComplete();
 
         Log::channel('stripe_installment_success')
             ->info('Installment successfully created', [

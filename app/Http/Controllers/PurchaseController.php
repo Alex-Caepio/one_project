@@ -203,6 +203,9 @@ class PurchaseController extends Controller
         }
 
         $booking->save();
+        if ($purchase->is_deposit) {
+            $booking->installmentComplete();
+        }
 
         if ($schedule->service->service_type_id === Service::TYPE_BESPOKE) {
             BookingSnapshotService::create($booking);
