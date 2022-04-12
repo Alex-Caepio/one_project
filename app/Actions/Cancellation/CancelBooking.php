@@ -42,8 +42,7 @@ class CancelBooking
         bool    $declineRescheduleRequest = false,
         ?string $roleFromRequest = null,
         ?bool   $cancelledByPractitioner = false
-    )
-    {
+    ) {
         if (!$booking->isActive()) {
             return;
         }
@@ -260,6 +259,9 @@ class CancelBooking
                     ]);
             }
         }
+
+        $purchase->cancelled_at_subscription = Carbon::now();
+        $purchase->save();
     }
 
     private function calculateRefundValue(
@@ -267,8 +269,7 @@ class CancelBooking
         Booking $booking,
         bool    $declineRescheduleRequest,
         bool    $cancelledByPractitioner
-    ): array
-    {
+    ): array {
         $stripeFee = (int)config('app.platform_cancellation_fee'); // 3%
         $planRate = $booking->practitioner->getCommission();
         $paid = $booking->is_installment ? $booking->purchase->amount * $booking->purchase->deposit_amount : $booking->cost;
