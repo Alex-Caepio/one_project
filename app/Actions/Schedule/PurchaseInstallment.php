@@ -29,7 +29,7 @@ class PurchaseInstallment
         Purchase $purchase,
         Booking $booking
     ): PaymentIntentDto {
-        $metadata = $this->collectMetadata($schedule, $booking);
+        $metadata = $this->collectMetadata($schedule, $booking, $purchase);
         /** @var User $customer */
         $customer = $request->user();
         $stripe = app()->make(StripeClient::class);
@@ -211,7 +211,7 @@ class PurchaseInstallment
         return $subscription;
     }
 
-    private function collectMetadata(Schedule $schedule, Booking $booking): array
+    private function collectMetadata(Schedule $schedule, Booking $booking, Purchase $purchase): array
     {
         $practitioner = $schedule->service->practitioner;
         $client = $booking->user;
@@ -225,6 +225,7 @@ class PurchaseInstallment
             'Client last name' => $client->last_name ?? "",
             'Client stripe id' => $client->stripe_customer_id ?? "",
             'Booking reference' => $booking->reference ?? "",
+            'Promoted by' => $purchase->promocode->promotion->applied_to ?? "",
             'Type' => 'Installment Purchase',
         ];
     }
