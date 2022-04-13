@@ -33,7 +33,7 @@ class BookingShowTransformer extends Transformer {
 
         if ($booking instanceof BookingSnapshot) {
             return [
-                'id'                          => $booking->booking->schedule_with_trashed->service->id,
+                'id'                          => $booking->booking->schedule->service->id,
                 'title'                       => $booking->purchase->service->title,
                 'description'                 => $booking->purchase->service->description,
                 'locations'                   => $booking->purchase->service->locations,
@@ -50,7 +50,7 @@ class BookingShowTransformer extends Transformer {
                 'icon_url'                    => $booking->purchase->service->icon_url,
                 'stripe_id'                   => $booking->purchase->service->stripe_id,
                 'published_at'                => $booking->purchase->service->published_at,
-                'last_published'              => $this->dateTime($booking->schedule_with_trashed->service->last_published),
+                'last_published'              => $this->dateTime($booking->schedule ->service->last_published),
             ];
         }
 
