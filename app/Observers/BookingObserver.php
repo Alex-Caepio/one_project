@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Events\BookingConfirmation;
 use App\Events\BookingDeposit;
+use App\Helpers\BookingHelper;
 use App\Models\Booking;
 use App\Models\RescheduleRequest;
 
@@ -19,10 +20,7 @@ class BookingObserver
     public function creating(Booking $booking): void
     {
         if (!$booking->reference) {
-            do {
-                $reference = unique_string(8);
-            } while (Booking::where('reference', $reference)->exists());
-            $booking->reference = $reference;
+            $booking->reference = BookingHelper::generateReference();
         }
     }
 

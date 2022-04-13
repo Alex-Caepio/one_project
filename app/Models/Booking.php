@@ -53,6 +53,7 @@ class Booking extends Model
         'datetime_to',
         'quantity',
         'cost',
+        'reference',
         'promocode_id',
         'created_at',
         'updated_at',

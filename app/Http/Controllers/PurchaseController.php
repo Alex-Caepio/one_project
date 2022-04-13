@@ -9,6 +9,7 @@ use App\Actions\Stripe\TransferFundsWithCommissions;
 use App\DTO\Schedule\PaymentIntentDto;
 use App\Events\AppointmentBooked;
 use App\Filters\PurchaseFilters;
+use App\Helpers\BookingHelper;
 use App\Http\Requests\PromotionCode\ValidatePromocodeRequest;
 use App\Http\Requests\Request;
 use App\Http\Requests\Schedule\PurchaseFinalizeRequest;
@@ -142,7 +143,6 @@ class PurchaseController extends Controller
                     $booking->discount = $discountPerAppointment;
                     $booking->is_installment = $isInstallment;
                     $booking->is_fully_paid = !$isInstallment;
-                    event(new AppointmentBooked($booking));
                 }
             } else {
                 $booking = new Booking();
@@ -162,10 +162,12 @@ class PurchaseController extends Controller
                 $booking->discount = $discount;
             }
 
+            $booking->reference = BookingHelper::generateReference();
+
             if ($cost && !$price->is_free) {
                 $paymentIntentData = $isInstallment
                     ? $this->payInInstallments($request, $schedule, $price, $practitioner, $cost, $purchase, $booking)
-                    : $this->payInstant($request, $schedule, $price, $stripe, $purchase, $practitioner);
+                    : $this->payInstant($request, $schedule, $price, $stripe, $purchase, $practitioner, $booking);
 
                 // if 3ds required
                 // requires_source_action https://stripe.com/docs/payments/payment-intents/migration?lang=curl
@@ -203,6 +205,11 @@ class PurchaseController extends Controller
         }
 
         $booking->save();
+
+        if ($schedule->service->service_type_id === Service::TYPE_APPOINTMENT) {
+            event(new AppointmentBooked($booking));
+        }
+
         if ($purchase->is_deposit) {
             $booking->installmentComplete();
         }
@@ -283,6 +290,7 @@ class PurchaseController extends Controller
                 $request->user(),
                 $purchase,
                 $responseData->getChargeId(),
+                $booking
             );
 
             Log::channel('stripe_transfer_success')
@@ -318,13 +326,25 @@ class PurchaseController extends Controller
         Price $price,
         $stripe,
         Purchase $purchase,
-        $practitioner
+        $practitioner,
+        $booking
     ): PaymentIntentDto {
         $payment_method_id = run_action(GetViablePaymentMethod::class, $practitioner, $request->payment_method_id);
         $paymentIntent = null;
         try {
             $client = $request->user();
-            $reference = implode(', ', $purchase->bookings->pluck('reference')->toArray());
+
+            if (!empty($booking)) {
+                $reference = $booking->reference;
+            } else {
+                $reference = implode(', ', $purchase->bookings->pluck('reference')->toArray());
+            }
+
+            if (!empty($purchase->promocode)) {
+                $applied_to = $purchase->promocode->promotion->applied_to;
+            } else {
+                $applied_to = '';
+            }
 
             if ($request->input('payment_intent')) {
                 $paymentIntent = $stripe->paymentIntents->retrieve($request->input('payment_intent'));
@@ -344,7 +364,8 @@ class PurchaseController extends Controller
                             'Client first name' => $client->first_name,
                             'Client last name' => $client->last_name,
                             'Client stripe id' => $client->stripe_customer_id,
-                            'Booking reference' => $reference
+                            'Booking reference' => $reference,
+                            'Promoted by' => $applied_to,
                         ]
                     ]
                 );
@@ -420,6 +441,7 @@ class PurchaseController extends Controller
                 $client,
                 $purchase,
                 $chargeId,
+                $booking
             );
 
             Log::channel('stripe_transfer_success')

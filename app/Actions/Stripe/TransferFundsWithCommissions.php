@@ -13,7 +13,7 @@ use Stripe\StripeClient;
 
 class TransferFundsWithCommissions
 {
-    public function execute($cost, $practitioner, $schedule = null, $client, $purchase, $chargeId = null): ?Transfer
+    public function execute($cost, $practitioner, $schedule = null, $client, $purchase, $chargeId = null, $booking = null): ?Transfer
     {
         if (!$practitioner->plan instanceof Plan) {
             Log::channel('practitioner_commissions_error')
@@ -40,7 +40,18 @@ class TransferFundsWithCommissions
 
         $amount = $cost - $cost * $practitionerCommissions / 100;
 
-        $reference = implode(', ', $purchase->bookings->pluck('reference')->toArray());
+        if (!empty($booking)) {
+            $reference = $booking->reference;
+        } else {
+            $reference = implode(', ', $purchase->bookings->pluck('reference')->toArray());
+        }
+
+        if (!empty($purchase->promocode)) {
+            $applied_to = $purchase->promocode->promotion->applied_to;
+        } else {
+            $applied_to = '';
+        }
+
         /*
          *      When we should transfer to practitioner less than was paid by client
          *   important to point SOURCE_TRANSACTION, because in case of negative balance
@@ -63,6 +74,7 @@ class TransferFundsWithCommissions
                 'Client last name' => $client->last_name,
                 'Client stripe id' => $client->stripe_customer_id,
                 'Booking reference' => $reference,
+                'Promoted by' => $applied_to,
                 'Charge id' => $chargeId,
             ]
         ]);
