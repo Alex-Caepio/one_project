@@ -46,7 +46,7 @@ class ScheduleTransformer extends Transformer
     {
         if (isset($this->bookings)) {
             $booking = $this->bookings->first();
-            $schedule = $booking->snapshot ? $booking->snapshot->schedule : $booking->schedule;
+            $schedule = $booking->snapshot ? $booking->snapshot->schedule : $booking->schedule()->withTrashed()->first();
         }
 
         return [

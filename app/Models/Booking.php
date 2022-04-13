@@ -27,6 +27,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property-read Price $price
  * @property-read Purchase $purchase
  * @property-read Schedule $schedule
+ * @property-read Schedule $schedule_with_trashed
  * @property-read BookingSnapshot $snapshot
  * @property-read User $practitioner
  * @property-read Collection|RescheduleRequest[] $reschedule_requests
@@ -112,6 +113,11 @@ class Booking extends Model
     public function schedule()
     {
         return $this->belongsTo(Schedule::class);
+    }
+
+    public function schedule_with_trashed()
+    {
+        return $this->belongsTo(Schedule::class, 'schedule_id')->withTrashed();
     }
 
     public function snapshot()
