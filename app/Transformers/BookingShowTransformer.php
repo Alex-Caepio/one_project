@@ -33,7 +33,7 @@ class BookingShowTransformer extends Transformer {
 
         if ($booking instanceof BookingSnapshot) {
             return [
-                'id'                          => $booking->booking->schedule->service->id,
+                'id'                          => $booking->booking->schedule_with_trashed->service->id,
                 'title'                       => $booking->purchase->service->title,
                 'description'                 => $booking->purchase->service->description,
                 'locations'                   => $booking->purchase->service->locations,
@@ -50,75 +50,75 @@ class BookingShowTransformer extends Transformer {
                 'icon_url'                    => $booking->purchase->service->icon_url,
                 'stripe_id'                   => $booking->purchase->service->stripe_id,
                 'published_at'                => $booking->purchase->service->published_at,
-                'last_published'              => $this->dateTime($booking->schedule->service->last_published),
+                'last_published'              => $this->dateTime($booking->schedule_with_trashed->service->last_published),
             ];
         }
 
         return [
-            'id'                          => $booking->schedule->service->id,
-            'title'                       => $booking->schedule->service->title,
-            'description'                 => $booking->schedule->service->description,
-            'locations'                   => $booking->schedule->service->locations,
-            'basic_location'              => $booking->schedule->service->basic_location,
-            'user_id'                     => $booking->schedule->service->user_id,
-            'is_published'                => (bool)$booking->schedule->service->is_published,
-            'introduction'                => $booking->schedule->service->introduction,
-            'slug'                        => $booking->schedule->service->slug,
-            'service_type_id'             => $booking->schedule->service->service_type_id,
-            'created_at'                  => $booking->schedule->service->created_at,
-            'updated_at'                  => $booking->schedule->service->updated_at,
-            'deleted_at'                  => $booking->schedule->service->deleted_at,
-            'image_url'                   => $booking->schedule->service->image_url,
-            'icon_url'                    => $booking->schedule->service->icon_url,
-            'stripe_id'                   => $booking->schedule->service->stripe_id,
-            'published_at'                => $booking->schedule->service->published_at,
-            'last_published'              => $this->dateTime($booking->schedule->service->last_published),
+            'id'                          => $booking->schedule_with_trashed->service->id,
+            'title'                       => $booking->schedule_with_trashed->service->title,
+            'description'                 => $booking->schedule_with_trashed->service->description,
+            'locations'                   => $booking->schedule_with_trashed->service->locations,
+            'basic_location'              => $booking->schedule_with_trashed->service->basic_location,
+            'user_id'                     => $booking->schedule_with_trashed->service->user_id,
+            'is_published'                => (bool)$booking->schedule_with_trashed->service->is_published,
+            'introduction'                => $booking->schedule_with_trashed->service->introduction,
+            'slug'                        => $booking->schedule_with_trashed->service->slug,
+            'service_type_id'             => $booking->schedule_with_trashed->service->service_type_id,
+            'created_at'                  => $booking->schedule_with_trashed->service->created_at,
+            'updated_at'                  => $booking->schedule_with_trashed->service->updated_at,
+            'deleted_at'                  => $booking->schedule_with_trashed->service->deleted_at,
+            'image_url'                   => $booking->schedule_with_trashed->service->image_url,
+            'icon_url'                    => $booking->schedule_with_trashed->service->icon_url,
+            'stripe_id'                   => $booking->schedule_with_trashed->service->stripe_id,
+            'published_at'                => $booking->schedule_with_trashed->service->published_at,
+            'last_published'              => $this->dateTime($booking->schedule_with_trashed->service->last_published),
         ];
     }
 
     public function includeUser(Booking $booking) {
-        return $this->itemOrNull($booking->schedule->service->user, new UserTransformer());
+        return $this->itemOrNull($booking->schedule_with_trashed->service->user, new UserTransformer());
     }
 
     public function includePractitioner(Booking $booking) {
-        return $this->itemOrNull($booking->schedule->service->practitioner, new UserTransformer());
+        return $this->itemOrNull($booking->schedule_with_trashed->service->practitioner, new UserTransformer());
     }
 
     public function includeKeywords(Booking $booking) {
-        return $this->collectionOrNull($booking->schedule->service->keywords, new KeywordTransformer());
+        return $this->collectionOrNull($booking->schedule_with_trashed->service->keywords, new KeywordTransformer());
     }
 
     public function includeDisciplines(Booking $booking) {
-        return $this->collectionOrNull($booking->schedule->service->disciplines, new DisciplineTransformer());
+        return $this->collectionOrNull($booking->schedule_with_trashed->service->disciplines, new DisciplineTransformer());
     }
 
     public function includeFocusAreas(Booking $booking) {
-        return $this->collectionOrNull($booking->schedule->service->focus_areas, new FocusAreaTransformer());
+        return $this->collectionOrNull($booking->schedule_with_trashed->service->focus_areas, new FocusAreaTransformer());
     }
 
     public function includeLocation(Booking $booking) {
-        return $this->itemOrNull($booking->schedule->service->location, new LocationTransformer());
+        return $this->itemOrNull($booking->schedule_with_trashed->service->location, new LocationTransformer());
     }
 
     public function includeSchedules(Booking $booking) {
-        return $this->collectionOrNull($booking->schedule->service->schedules, new ScheduleTransformer());
+        return $this->collectionOrNull($booking->schedule_with_trashed->service->schedules, new ScheduleTransformer());
     }
 
     public function includeActiveSchedules(Booking $booking) {
-        return $this->collectionOrNull(collect([$booking->schedule->service->active_schedules->first()]),
+        return $this->collectionOrNull(collect([$booking->schedule_with_trashed->service->active_schedules()->withTrashed()->first()]),
                 (new ScheduleTransformer())->setBooking($booking));
     }
 
     public function includeFavoritesService(Booking $booking) {
-        return $this->collectionOrNull($booking->schedule->service->favourite_services, new ServiceTransformer());
+        return $this->collectionOrNull($booking->schedule_with_trashed->service->favourite_services, new ServiceTransformer());
     }
 
     public function includeServiceType(Booking $booking) {
-        return $this->itemOrNull($booking->schedule->service->service_type, new ServiceTypeTransformer());
+        return $this->itemOrNull($booking->schedule_with_trashed->service->service_type, new ServiceTypeTransformer());
     }
 
     public function includeArticles(Booking $booking) {
-        return $this->collectionOrNull($booking->schedule->service->articles, new ArticleTransformer());
+        return $this->collectionOrNull($booking->schedule_with_trashed->service->articles, new ArticleTransformer());
     }
 
     /**
@@ -126,7 +126,7 @@ class BookingShowTransformer extends Transformer {
      * @return \League\Fractal\Resource\Collection|null
      */
     public function includeMediaImages(Booking $booking): ?Collection {
-        return $this->collectionOrNull($booking->schedule->service->media_images, new MediaImageTransformer());
+        return $this->collectionOrNull($booking->schedule_with_trashed->service->media_images, new MediaImageTransformer());
     }
 
     /**
@@ -134,7 +134,7 @@ class BookingShowTransformer extends Transformer {
      * @return \League\Fractal\Resource\Collection|null
      */
     public function includeMediaVideos(Booking $booking): ?Collection {
-        return $this->collectionOrNull($booking->schedule->service->media_videos, new MediaVideoTransformer());
+        return $this->collectionOrNull($booking->schedule_with_trashed->service->media_videos, new MediaVideoTransformer());
     }
 
     /**
@@ -142,7 +142,7 @@ class BookingShowTransformer extends Transformer {
      * @return \League\Fractal\Resource\Collection|null
      */
     public function includeMediaFiles(Booking $booking): ?Collection {
-        return $this->collectionOrNull($booking->schedule->service->media_files, new MediaFileTransformer());
+        return $this->collectionOrNull($booking->schedule_with_trashed->service->media_files, new MediaFileTransformer());
     }
 
     /**
@@ -150,7 +150,7 @@ class BookingShowTransformer extends Transformer {
      * @return \League\Fractal\Resource\Collection|null
      */
     public function includeLastPublished(Booking $booking): ?Collection {
-        return $this->collectionOrNull(Service::where('id', '<>', $booking->schedule->service->id)->published()
+        return $this->collectionOrNull(Service::where('id', '<>', $booking->schedule_with_trashed->service->id)->published()
                                               ->orderBy('updated_at', 'desc')->limit(3)->get(), new self());
     }
 
