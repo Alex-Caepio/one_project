@@ -33,10 +33,8 @@ class BookingController extends Controller
             $query->orderBy($order['column'], $order['direction']);
         }
 
-        $query->selectRaw('*, DATEDIFF(bookings.datetime_from, NOW()) as date_diff')->orderByRaw('ABS(date_diff)');
-
         if ($filters->hasUpcomingStatus()) {
-            $query->having('date_diff', '>=', 0);
+            $query->whereRaw('(DATEDIFF(bookings.datetime_from, NOW()) >= 0 OR bookings.datetime_from = bookings.datetime_to)');
         }
 
         $paginator = $query->paginate($request->getLimit());
