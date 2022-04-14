@@ -28,6 +28,8 @@ class BookingController extends Controller
                 ])
             );
 
+        $query->orderBy('bookings.datetime_from', 'DESC');
+
         if ($request->hasOrderBy()) {
             $order = $request->getOrderBy();
             $query->orderBy($order['column'], $order['direction']);
