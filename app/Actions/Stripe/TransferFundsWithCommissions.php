@@ -13,7 +13,7 @@ use Stripe\StripeClient;
 
 class TransferFundsWithCommissions
 {
-    public function execute($cost, $practitioner, $schedule = null, $client, $purchase, $chargeId = null, $booking = null): ?Transfer
+    public function execute($cost, $practitioner, $schedule, $client, $purchase, $chargeId = null, $booking = null): ?Transfer
     {
         if (!$practitioner->plan instanceof Plan) {
             Log::channel('practitioner_commissions_error')
@@ -60,7 +60,7 @@ class TransferFundsWithCommissions
          *   than client paid. In that case we could not use SOURCE_TRANSACTION.
          */
         $request = array_merge($request, [
-            'amount' => $amount * 100,
+            'amount' => intval(round($amount * 100, 0, PHP_ROUND_HALF_DOWN)),
             'currency' => config('app.platform_currency'),
             'destination' => $practitioner->stripe_account_id,
             'description' => 'New booking transfer to practitioner',

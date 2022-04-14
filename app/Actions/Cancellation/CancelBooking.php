@@ -378,7 +378,7 @@ class CancelBooking
             $this->stripe->transfers->createReversal(
                 $transfer->stripe_transfer_id,
                 [
-                    'amount' => $transfer->amount * 100,
+                    'amount' => intval(round($transfer->amount * 100, 0, PHP_ROUND_HALF_DOWN)),
                     'description' => 'Booking cancelled',
                     'metadata' => [
                         'Currency' => config('app.platform_currency'),
