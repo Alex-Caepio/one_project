@@ -29,7 +29,7 @@ class ScheduleStore extends ScheduleSave
             foreach ($prices as $key => $price) {
                 $stripePrice = $stripe->prices
                     ->create([
-                        'unit_amount' => $prices[$key]['cost'],
+                        'unit_amount' => intval(round($prices[$key]['cost'] * 100, 0, PHP_ROUND_HALF_DOWN)),
                         'currency' => config('app.platform_currency'),
                         'product' => $service->stripe_id,
                     ]);
