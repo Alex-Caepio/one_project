@@ -34,6 +34,7 @@ use App\Events\ServiceScheduleLive;
 use App\Events\ServiceUnpublished;
 use App\Events\ServiceUpdatedByPractitionerContractual;
 use App\Events\ServiceUpdatedByPractitionerNonContractual;
+use App\Events\ServiceUpdatedNonContractual;
 use App\Events\SubscriptionConfirmation;
 use App\Events\UserRegistered;
 use App\Listeners\AppointmentBookedEventHandler;
@@ -68,12 +69,12 @@ use App\Listeners\Emails\ServiceScheduleLiveEmail;
 use App\Listeners\Emails\ServiceUnpublishedEmail;
 use App\Listeners\Emails\ServiceUpdatedByPractitionerContractualEmail;
 use App\Listeners\Emails\ServiceUpdatedByPractitionerNonContractualEmail;
+use App\Listeners\Emails\ServiceUpdatedNonContractualEmail;
 use App\Listeners\Emails\SubscriptionConfirmationEmail;
 use App\Listeners\Emails\WelcomeVerification;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Event;
 
 class EventServiceProvider extends ServiceProvider {
     /**
@@ -174,6 +175,9 @@ class EventServiceProvider extends ServiceProvider {
         ],
         ServiceUnpublished::class                               => [
             ServiceUnpublishedEmail::class
+        ],
+        ServiceUpdatedNonContractual::class                     => [
+            ServiceUpdatedNonContractualEmail::class
         ],
         ServiceUpdatedByPractitionerContractual::class          => [
             ServiceUpdatedByPractitionerContractualEmail::class
