@@ -193,4 +193,15 @@ class Service extends Model
     {
         return in_array($this->service_type_id, config('app.dateless_service_types'), true);
     }
+
+    public function hasUpdates(): bool
+    {
+        $changes = $this->getChanges();
+        unset($changes['updated_at']);
+        unset($changes['published_at']);
+        if(count($changes) !== 0) {
+            return true;
+        }
+        return false;
+    }
 }
