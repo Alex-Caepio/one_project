@@ -9,6 +9,7 @@ use App\Models\Transfer;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Log;
+use Stripe\Exception\ApiErrorException;
 use Stripe\StripeClient;
 
 class TransferFundsWithCommissions
@@ -78,6 +79,26 @@ class TransferFundsWithCommissions
                 'Charge id' => $chargeId,
             ]
         ]);
+
+        try {
+            foreach ($stripe->invoices->all() as $invoice) {
+                $stripe->invoices->update($invoice['id'], ['metadata' => [
+                    'Practitioner business email' => $practitioner->business_email,
+                    'Practitioner business name' => $practitioner->business_name,
+                    'Practitioner stripe id' => $practitioner->stripe_customer_id,
+                    'Practitioner connected account id' => $practitioner->stripe_account_id,
+                    'Client first name' => $client->first_name,
+                    'Client last name' => $client->last_name,
+                    'Client stripe id' => $client->stripe_customer_id,
+                    'Booking reference' => $reference,
+                    'Promoted by' => $applied_to,
+                ]]);
+            }
+        } catch (ApiErrorException $e) {
+            Log::info('The invoices are not available', [
+                'message' => $e->getMessage(),
+            ]);
+        }
 
         $stripeTransfer = $stripe->transfers->create($request);
 

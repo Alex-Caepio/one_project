@@ -15,6 +15,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Stripe\Exception\ApiErrorException;
 use Stripe\PaymentIntent;
 use Stripe\StripeClient;
 use Stripe\Subscription;
@@ -44,6 +45,16 @@ class PurchaseInstallment
             $stripe,
             $metadata
         );
+
+        try {
+            foreach ($stripe->invoices->all() as $invoice) {
+                $stripe->invoices->update($invoice['id'], $metadata);
+            }
+        } catch (ApiErrorException $e) {
+            Log::info('The invoices are not available', [
+                'message' => $e->getMessage(),
+            ]);
+        }
 
         $chargeId = $deposit->charges->data ? $deposit->charges->data[0]['id'] : null;
         if ($chargeId === null) {
