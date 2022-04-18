@@ -90,6 +90,8 @@ class Schedule extends Model
         'is_published'
     ];
 
+    public $isScheduleFilesUpdated = false;
+
     protected $casts = [
         'is_published' => 'boolean',
         'meals_breakfast' => 'boolean',
@@ -300,6 +302,7 @@ class Schedule extends Model
             $changes['meals_dietry_accomodated'],
             $changes['meals_dinner'],
             $changes['meals_lunch'],
+            $changes['is_schedule_files_updated'],
         );
 
         return count($changes) > 0;
@@ -333,6 +336,11 @@ class Schedule extends Model
     public function getRealChangesList(): array
     {
         $changes = $this->getChanges();
+
+        if ($this->isScheduleFilesUpdated) {
+            $changes = array_merge($changes, ['is_schedule_files_updated' => true]);
+        }
+
         unset($changes['updated_at'], $changes['created_at'], $changes['is_published'], $changes['deleted_at']);
 
         if (isset($changes['start_date']) && !empty($changes['start_date'])) {
