@@ -6,7 +6,8 @@ namespace App\Actions\Schedule;
 
 use App\Models\Schedule;
 
-class ScheduleUpdate extends ScheduleSave {
+class ScheduleUpdate extends ScheduleSave
+{
 
     public function execute($request, Schedule $schedule): Schedule
     {
@@ -30,12 +31,15 @@ class ScheduleUpdate extends ScheduleSave {
 
     private function isFilesUpdated(array $files, Schedule $schedule): bool
     {
-        $newFilesArr = array_map(function($el){
+        $newFilesArr = array_map(function ($el) {
             return $el['url'];
         }, $files);
 
         $oldFilesArr = $schedule->schedule_files->pluck('url')->toArray();
-        if (count(array_diff($newFilesArr, $oldFilesArr)) > 0) {
+        if (
+            !empty(array_diff($newFilesArr, $oldFilesArr))
+            || !empty(array_diff($oldFilesArr, $newFilesArr))
+        ) {
             return true;
         }
         return false;
