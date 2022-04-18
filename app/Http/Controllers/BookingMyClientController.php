@@ -149,7 +149,7 @@ class BookingMyClientController extends Controller
                     'bookings.reference as booking_reference',
                     'bookings.reference as reference',
                     'concat(users.first_name, " ", users.last_name) as client',
-                    'IF(purchases.is_deposit, (SELECT SUM(i.payment_amount) FROM instalments as i WHERE i.is_paid = 1 AND i.purchase_id = purchases.id GROUP BY i.purchase_id), purchases.price) as paid',
+                    'IF(purchases.is_deposit, CAST((SELECT SUM(i.payment_amount) FROM instalments as i WHERE i.is_paid = 1 AND i.purchase_id = purchases.id GROUP BY i.purchase_id) AS DECIMAL(18,2)), purchases.price) as paid',
                     'purchases.is_deposit',
                     'purchases.deposit_amount',
                     'services.id as service_id',
