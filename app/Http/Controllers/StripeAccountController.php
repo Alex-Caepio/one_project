@@ -63,7 +63,10 @@ class StripeAccountController extends Controller {
 
     private function setConnected(Account $account) {
         if ($account->id === Auth::user()->stripe_account_id) {
-            if (!Auth::user()->connected_at) {
+            if (
+                !Auth::user()->connected_at
+                && $account->charges_enabled === true
+            ) {
                 Log::channel('stripe_client_success')->info("Successfully connected: ", $account->toArray());
                 Auth::user()->connected_at = now();
                 Auth::user()->save();
