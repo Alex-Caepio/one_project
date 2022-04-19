@@ -112,7 +112,7 @@ class BookingMyClientController extends Controller
                 'concat(users.first_name, " ", users.last_name) as client',
                 'users.id as client_id',
                 'bookings.reference as reference',
-                'purchases.price as paid',
+                'IF(purchases.is_deposit, CAST((SELECT SUM(i.payment_amount) FROM instalments as i WHERE i.is_paid = 1 AND i.purchase_id = purchases.id GROUP BY i.purchase_id) AS DECIMAL(18,2)), purchases.price) as paid',
                 'bookings.datetime_to as closure_date',
                 'bookings.datetime_from as start_date',
                 'bookings.cancelled_at as cancelled_date',
