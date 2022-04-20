@@ -48,12 +48,14 @@ class ScheduleObserver
             in_array($schedule->service->service_type_id, [Service::TYPE_WORKSHOP, Service::TYPE_EVENT, Service::TYPE_RETREAT])
             && $hasContractualChanges
         ) {
+            $schedule->isScheduleFilesUpdated = false;
             run_action(CreateRescheduleRequestsOnScheduleUpdate::class, $schedule);
         }
         if ($schedule->hasNonContractualChanges()
             && !$hasContractualChanges
             && !in_array($schedule->service->service_type->id, [Service::TYPE_BESPOKE])
         ) {
+            $schedule->isScheduleFilesUpdated = false;
             event(new ServiceUpdatedByPractitionerNonContractual($schedule));
         }
     }

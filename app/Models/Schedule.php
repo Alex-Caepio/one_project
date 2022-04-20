@@ -337,10 +337,6 @@ class Schedule extends Model
     {
         $changes = $this->getChanges();
 
-        if ($this->isScheduleFilesUpdated) {
-            $changes = array_merge($changes, ['is_schedule_files_updated' => true]);
-        }
-
         unset($changes['updated_at'], $changes['created_at'], $changes['is_published'], $changes['deleted_at']);
 
         if (isset($changes['start_date']) && !empty($changes['start_date'])) {
