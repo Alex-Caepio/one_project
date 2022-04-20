@@ -277,7 +277,7 @@ class EmailVariables
      */
     public function getRescheduled_Schedule_name(): ?string
     {
-        return $this->event->reschedule->new_schedule->title;
+        return isset($this->event->reschedule) ? $this->event->reschedule->new_schedule->title : $this->event->schedule->title;
     }
 
     /**
