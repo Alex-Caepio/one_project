@@ -21,7 +21,7 @@ class RescheduleNoReplyCommand extends Command
             ->has('old_schedule')
             ->whereRaw(
                 "DATE_FORMAT(`created_at`, '%Y-%m-%d') = ?",
-                Carbon::now()->subDays(10)->format('Y-m-d')
+                Carbon::now()->subDays(2)->format('Y-m-d')
             )
             ->orWhereHas('old_schedule', static function ($query) {
                 $query->whereRaw(
@@ -35,7 +35,9 @@ class RescheduleNoReplyCommand extends Command
         }
 
         Log::channel('console_commands_handler')
-            ->info('Send practitioner notification',
-                ['bookings_count' => count($rescheduleRequests)]);
+            ->info(
+                'Send practitioner notification',
+                ['bookings_count' => count($rescheduleRequests)]
+            );
     }
 }
