@@ -2,6 +2,7 @@
 
 namespace App\Actions\Schedule;
 
+use App\Events\ServiceUpdatedByPractitionerNonContractual;
 use App\Models\Schedule;
 use App\Models\Service;
 
@@ -27,6 +28,12 @@ abstract class ScheduleSave
         if ($request->has('schedule_files')) {
             $schedule->schedule_files()->delete();
             $schedule->schedule_files()->createMany($request->get('schedule_files'));
+            if (
+                $schedule->isScheduleFilesUpdated === true &&
+                !in_array($schedule->service->service_type->id, [Service::TYPE_BESPOKE])
+            ) {
+                event(new ServiceUpdatedByPractitionerNonContractual($schedule));
+            }
         }
 
         if ($request->has('schedule_hidden_files')) {

@@ -18,7 +18,7 @@ class ScheduleFile extends Model
         'name',
     ];
 
-    public function  schedules()
+    public function  schedule()
     {
         return $this->belongsTo(Schedule::class);
     }
