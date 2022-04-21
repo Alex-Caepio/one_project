@@ -10,6 +10,7 @@ use App\Events\ArticlePublished;
 use App\Events\ArticleUnpublished;
 use App\Events\BookingCancelledByPractitioner;
 use App\Events\BookingCancelledByClient;
+use App\Events\BookingCancelledToClient;
 use App\Events\BookingConfirmation;
 use App\Events\BookingDeposit;
 use App\Events\BookingEventVirtualWithDeposit;
@@ -45,6 +46,7 @@ use App\Listeners\Emails\ArticlePublishedEmail;
 use App\Listeners\Emails\ArticleUnpublishedEmail;
 use App\Listeners\Emails\BookingCancelledByClientEmail;
 use App\Listeners\Emails\BookingCancelledByPractitionerEmail;
+use App\Listeners\Emails\BookingCancelledToClientEmail;
 use App\Listeners\Emails\BookingConfirmationEmail;
 use App\Listeners\Emails\BookingDepositEmail;
 use App\Listeners\Emails\BookingEventVirtualWithDepositEmail;
@@ -107,13 +109,16 @@ class EventServiceProvider extends ServiceProvider {
         BookingCancelledByPractitioner::class                   => [
             BookingCancelledByPractitionerEmail::class,
         ],
+        BookingCancelledToClient::class                         => [
+            BookingCancelledToClientEmail::class,
+        ],
         BookingCancelledByClient::class                         => [
             BookingCancelledByClientEmail::class,
         ],
         BookingConfirmation::class                              => [
             BookingConfirmationEmail::class
         ],
-        BookingDeposit::class                              => [
+        BookingDeposit::class                                   => [
             BookingDepositEmail::class
         ],
         BookingEventVirtualWithDeposit::class                   => [

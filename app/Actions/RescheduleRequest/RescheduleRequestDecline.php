@@ -5,6 +5,7 @@ namespace App\Actions\RescheduleRequest;
 use App\Actions\Cancellation\CancelBooking;
 use App\Events\RescheduleRequestDeclinedByClient;
 use App\Events\RescheduleRequestNoReplyFromClient;
+use App\Events\BookingCancelledToClient;
 use App\Models\Notification;
 use App\Models\RescheduleRequest;
 use Illuminate\Support\Facades\Auth;
@@ -51,7 +52,12 @@ class RescheduleRequestDecline
                 $notification->price_payed = $booking->cost;
                 $notification->save();
             }
-            event(new RescheduleRequestDeclinedByClient($rescheduleRequest));
+            // Email to practitioner
+            if ($rescheduleRequest->requested_by === RescheduleRequest::REQUESTED_BY_PRACTITIONER_IN_SCHEDULE) {
+                event(new BookingCancelledToClient($rescheduleRequest->booking, $rescheduleRequest->booking->cancellation));
+            } else {
+                event(new RescheduleRequestDeclinedByClient($rescheduleRequest));
+            }
         }
 
         if ($rescheduleRequest->automatic === true) {
