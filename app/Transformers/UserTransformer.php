@@ -34,7 +34,6 @@ class UserTransformer extends Transformer
         'unavailabilities',
         'country',
         'business_country',
-        'timezone_id'
     ];
 
     public function transform(User $user)
@@ -95,7 +94,9 @@ class UserTransformer extends Transformer
             'business_country_id' => $user->business_country_id,
             'business_published_at' => $user->business_published_at,
             'connected_at' => $user->connected_at,
-            'timezone_id' => $user->timezone_id
+            'timezone_id' => $user->timezone_id,
+            'timezone_code' => $user->user_timezone->label,
+            'timezone_value' => $user->user_timezone->value,
         ];
     }
 

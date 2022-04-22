@@ -123,7 +123,6 @@ Route::middleware(['auth:sanctum', 'unsuspended'])->group(function () {
     Route::delete('auth/profile', [AuthController::class, 'delete']);
     Route::post('auth/profile/avatar', [AuthController::class, 'avatar']);
     Route::post('auth/profile/background', [AuthController::class, 'background']);
-    Route::get('auth/profile/timezone', [AuthController::class, 'timezone']);
     Route::get('auth/quotes/articles', [QuoteController::class, 'quotesArticles']);
     Route::get('auth/quotes/services/{service}/schedules', [QuoteController::class, 'quotesServices']);
     Route::get('auth/quotes/schedules/{schedule}/prices', [QuoteController::class, 'quotesPrices']);
