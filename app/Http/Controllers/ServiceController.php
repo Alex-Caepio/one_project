@@ -80,7 +80,6 @@ class ServiceController extends Controller
     {
         $service->is_published = false;
         $service->save();
-        // return response()->json([$service->isUnpublished()]);
         return response(null, 204);
     }
 
