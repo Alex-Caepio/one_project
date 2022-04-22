@@ -199,7 +199,16 @@ class Service extends Model
         $changes = $this->getChanges();
         unset($changes['updated_at']);
         unset($changes['published_at']);
-        if(count($changes) !== 0) {
+        if (count($changes) !== 0) {
+            return true;
+        }
+        return false;
+    }
+
+    public function visibilityChanged(): bool
+    {
+        $changes = $this->syncChanges()->getChanges();
+        if (isset($changes['is_published'])) {
             return true;
         }
         return false;
