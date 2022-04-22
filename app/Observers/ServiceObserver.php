@@ -51,7 +51,8 @@ class ServiceObserver
      * Handle the article "deleting" event.
      * Drop Published Fields.
      */
-    public function deleting(Service $service): void {
+    public function deleting(Service $service): void
+    {
         $this->clearPublishedState($service);
         $service->saveQuietly();
         $this->deleteSchedules($service);
@@ -68,10 +69,10 @@ class ServiceObserver
             ->schedules()
             ->published()
             ->get()
-            ->each(static function($schedule, $key) {
+            ->each(static function ($schedule, $key) {
                 $schedule->is_published = false;
                 $schedule->save();
-        });
+            });
     }
 
     private function deleteSchedules(Service $service): void
@@ -79,15 +80,16 @@ class ServiceObserver
         $service
             ->schedules()
             ->get()
-            ->each(static function($schedule, $key) {
+            ->each(static function ($schedule, $key) {
                 $schedule->delete();
-        });
+            });
     }
 
     public function updated(Service $service): void
     {
         if (
             $service->hasUpdates()
+            && !$service->visibilityChanged()
             && !in_array($service->service_type->id, [Service::TYPE_BESPOKE])
         ) {
             event(new ServiceUpdatedNonContractual($service));

@@ -18,16 +18,19 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Stripe\StripeClient;
 
-class ServiceController extends Controller {
+class ServiceController extends Controller
+{
 
-    public function index(Request $request) {
+    public function index(Request $request)
+    {
         $paginator = $this->getServiceList(Service::where('services.is_published', true), $request);
         $services = $paginator->getCollection();
         $fractal = fractal($services, new ServiceTransformer())->parseIncludes($request->getIncludes())->toArray();
         return response($fractal)->withPaginationHeaders($paginator);
     }
 
-    public function practitionerServiceList(Request $request) {
+    public function practitionerServiceList(Request $request)
+    {
         $paginator = $this->getServiceList(Service::where('user_id', Auth::user()->id), $request, true);
         $services = $paginator->getCollection();
         $fractal = fractal($services, new ServiceTransformer())->parseIncludes($request->getIncludes())->toArray();
@@ -40,20 +43,23 @@ class ServiceController extends Controller {
      * @param bool $ignoreSearchTerms
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    private function getServiceList(Builder $queryBuilder, Request $request, bool $ignoreSearchTerms = false): LengthAwarePaginator {
+    private function getServiceList(Builder $queryBuilder, Request $request, bool $ignoreSearchTerms = false): LengthAwarePaginator
+    {
         $serviceFilter = new ServiceFiltrator();
         $serviceFilter->apply($queryBuilder, $request, $ignoreSearchTerms);
 
         return $queryBuilder->with($request->getIncludes())->paginate($request->getLimit());
     }
 
-    public function show(Request $request, Service $publicService) {
+    public function show(Request $request, Service $publicService)
+    {
         return fractal($publicService, new ServiceTransformer())->parseIncludes($request->getIncludes())->respond();
     }
 
-    public function practitionerServiceShow(ServiceOwnerRequest $request, Service $service) {
+    public function practitionerServiceShow(ServiceOwnerRequest $request, Service $service)
+    {
         if ($request->get('with')) {
-            $service->load(array_filter($request->getArrayFromRequest('with'), static function($value) use ($service) {
+            $service->load(array_filter($request->getArrayFromRequest('with'), static function ($value) use ($service) {
                 $relationParts = explode('.', $value);
                 if (method_exists($service, $relationParts[0])) {
                     return $value;
@@ -64,37 +70,44 @@ class ServiceController extends Controller {
             ->parseIncludes($request->getIncludes())->respond();
     }
 
-    public function destroy(Service $service, ServiceOwnerRequest $request) {
+    public function destroy(Service $service, ServiceOwnerRequest $request)
+    {
         $service->delete();
         return response(null, 204);
     }
 
-    public function unpublish(Service $service, ServiceOwnerRequest $request) {
+    public function unpublish(Service $service, ServiceOwnerRequest $request)
+    {
         $service->is_published = false;
         $service->save();
+        // return response()->json([$service->isUnpublished()]);
         return response(null, 204);
     }
 
-    public function store(StoreServiceRequest $request, StripeClient $stripe) {
+    public function store(StoreServiceRequest $request, StripeClient $stripe)
+    {
         $service = run_action(ServiceStore::class, $request, $stripe);
-        if ($service === null)  {
+        if ($service === null) {
             return abort(500, 'Service cannot be created');
         }
         return fractal($service, new ServiceTransformer())->respond();
     }
 
-    public function update(UpdateServiceRequest $request, Service $service) {
+    public function update(UpdateServiceRequest $request, Service $service)
+    {
         $service = run_action(ServiceUpdate::class, $request, $service);
         return fractal($service, new ServiceTransformer())->respond();
     }
 
-    public function publish(Service $service, ServicePublishRequest $request) {
+    public function publish(Service $service, ServicePublishRequest $request)
+    {
         $service->is_published = true;
         $service->save();
         return response(null, 204);
     }
 
-    public function storeFavorite(Service $service) {
+    public function storeFavorite(Service $service)
+    {
         if ($service->favorite()) {
             return response(null, 200);
         }
@@ -103,19 +116,21 @@ class ServiceController extends Controller {
         return response(null, 201);
     }
 
-    public function deleteFavorite(Service $service) {
+    public function deleteFavorite(Service $service)
+    {
         Auth::user()->favourite_services()->detach($service->id);
         return response(null, 204);
     }
 
-    public function copy(Service $service, CopyServiceRequest $request) {
+    public function copy(Service $service, CopyServiceRequest $request)
+    {
         $serviceCopy = $service->replicate();
         $serviceCopy->title = "{$service->title} (copy)";
         $serviceCopy->is_published = false;
         $serviceCopy->published_at = null;
         $serviceCopy->save();
 
-        foreach($service->schedules as $schedule) {
+        foreach ($service->schedules as $schedule) {
             $scheduleCopy = $schedule->replicate();
             $scheduleCopy->service_id = $serviceCopy->id;
             $scheduleCopy->is_published = false;
@@ -127,13 +142,13 @@ class ServiceController extends Controller {
                 $priceCopy->save();
             }
 
-            foreach($schedule->schedule_availabilities as $scheduleAvailabilitie) {
+            foreach ($schedule->schedule_availabilities as $scheduleAvailabilitie) {
                 $scheduleAvailabilitieCopy = $scheduleAvailabilitie->replicate();
                 $scheduleAvailabilitieCopy->schedule_id = $scheduleCopy->id;
                 $scheduleAvailabilitieCopy->save();
             }
 
-            foreach($schedule->schedule_unavailabilities as $scheduleUnavailabilitie) {
+            foreach ($schedule->schedule_unavailabilities as $scheduleUnavailabilitie) {
                 $scheduleUnavailabilitieCopy = $scheduleUnavailabilitie->replicate();
                 $scheduleUnavailabilitieCopy->schedule_id = $scheduleCopy->id;
                 $scheduleUnavailabilitieCopy->save();
@@ -141,5 +156,4 @@ class ServiceController extends Controller {
         }
         return fractal($serviceCopy, new ServiceTransformer())->respond();
     }
-
 }
