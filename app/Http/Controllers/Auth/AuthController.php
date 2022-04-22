@@ -22,6 +22,7 @@ use App\Models\Country;
 use App\Models\User;
 use App\Traits\hasMediaItems;
 use App\Transformers\UserTransformer;
+use App\Transformers\UserTimezoneTransformer;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -83,6 +84,11 @@ class AuthController extends Controller
     public function profile(Request $request)
     {
         return fractal($request->user(), new UserTransformer())->parseIncludes($request->getIncludes())->respond();
+    }
+
+    public function timezone(Request $request)
+    {
+        return fractal($request->user(), new UserTimezoneTransformer())->respond();
     }
 
     // update simple details
