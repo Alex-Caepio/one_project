@@ -18,7 +18,10 @@ class RescheduleRequestAccept
         $booking->datetime_from = $rescheduleRequest->new_start_date;
         $booking->datetime_to = $rescheduleRequest->new_end_date;
 
-        if ($booking->schedule->service->service_type_id !== Service::TYPE_BESPOKE) {
+        if (
+            $booking->schedule->service->service_type_id !== Service::TYPE_BESPOKE
+            && !empty($rescheduleRequest->new_price_id)
+        ) {
             // Change the relation, but don't change the paid cost
             $booking->price_id = $rescheduleRequest->new_price_id;
         }
