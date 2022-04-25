@@ -652,7 +652,7 @@ class EmailVariables
         return isset($this->event->reschedule)
         && $this->event->reschedule->new_start_date
             ? $this->convertToUserTimezone($this->event->reschedule->new_start_date)->format(self::DATE_FORMAT)
-            : '';
+            : $this->convertToUserTimezone($this->event->schedule->start_date)->format(self::DATE_FORMAT);
     }
 
     /**
@@ -663,7 +663,7 @@ class EmailVariables
         return isset($this->event->reschedule)
         && $this->event->reschedule->new_start_date
             ? $this->convertToUserTimezone($this->event->reschedule->new_start_date)->format(self::TIME_FORMAT)
-            : '';
+            : $this->convertToUserTimezone($this->event->schedule->start_date)->format(self::TIME_FORMAT);
     }
 
     /**
@@ -674,7 +674,7 @@ class EmailVariables
         return isset($this->event->reschedule)
         && $this->event->reschedule->new_end_date
             ? $this->convertToUserTimezone($this->event->reschedule->new_end_date)->format(self::DATE_FORMAT)
-            : '';
+            : $this->convertToUserTimezone($this->event->schedule->end_date)->format(self::DATE_FORMAT);
     }
 
     /**
@@ -685,7 +685,7 @@ class EmailVariables
         return isset($this->event->reschedule)
         && $this->event->reschedule->new_end_date
             ? $this->convertToUserTimezone($this->event->reschedule->new_end_date)->format(self::TIME_FORMAT)
-            : '';
+            : $this->convertToUserTimezone($this->event->schedule->end_date)->format(self::TIME_FORMAT);
     }
 
     /**
