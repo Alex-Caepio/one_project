@@ -693,7 +693,8 @@ class EmailVariables
      */
     public function getReschedule_venue_name(): ?string
     {
-        return isset($this->event->reschedule->new_schedule) ? $this->event->reschedule->new_schedule->venue_name : '';
+        return isset($this->event->reschedule->new_schedule) ?
+            $this->event->reschedule->new_schedule->venue_name : $this->event->schedule->venue_name;
     }
 
     /**
@@ -709,7 +710,8 @@ class EmailVariables
      */
     public function getReschedule_city(): ?string
     {
-        return isset($this->event->reschedule->new_schedule) ? $this->event->reschedule->new_schedule->city : '';
+        return isset($this->event->reschedule->new_schedule) ?
+            $this->event->reschedule->new_schedule->city : $this->event->schedule->city;
     }
 
     /**
@@ -717,7 +719,8 @@ class EmailVariables
      */
     public function getReschedule_country(): ?string
     {
-        return isset($this->event->reschedule->new_schedule->country) ? $this->event->reschedule->new_schedule->country->nicename : '';
+        return isset($this->event->reschedule->new_schedule->country) ?
+            $this->event->reschedule->new_schedule->country->nicename : $this->event->schedule->country->nicename;
     }
 
     /**
@@ -725,7 +728,8 @@ class EmailVariables
      */
     public function getReschedule_postcode(): ?string
     {
-        return isset($this->event->reschedule) ? $this->event->reschedule->new_schedule->post_code : '';
+        return isset($this->event->reschedule) ?
+            $this->event->reschedule->new_schedule->post_code : $this->event->schedule->post_code;
     }
 
     /**
@@ -733,7 +737,8 @@ class EmailVariables
      */
     public function getReschedule_hosting_url(): ?string
     {
-        return isset($this->event->reschedule) ? $this->event->reschedule->new_url : '';
+        return isset($this->event->reschedule) ?
+            $this->event->reschedule->new_url : $this->event->schedule->url;
     }
 
     /**
