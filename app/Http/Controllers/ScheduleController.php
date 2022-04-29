@@ -115,13 +115,6 @@ class ScheduleController extends Controller
         /** @var Collection $scheduleCollection */
         $scheduleCollection = $scheduleCollection->filter(fn (Schedule $item): bool => $item->prices->count());
 
-        if (
-            $schedule->service->service_type_id === Service::TYPE_APPOINTMENT
-            && $scheduleCollection->sum(fn (Schedule $item): int => $item->prices->count()) <= 1
-        ) {
-            $scheduleCollection = new Collection();
-        }
-
         return fractal($scheduleCollection, new ScheduleTransformer())->parseIncludes($requestIncludes)->toArray();
     }
 
