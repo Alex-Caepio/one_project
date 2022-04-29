@@ -214,7 +214,7 @@ class PurchaseController extends Controller
             $booking->installmentComplete();
         }
 
-        if ($schedule->service->service_type_id === Service::TYPE_BESPOKE) {
+        if (in_array($schedule->service->service_type_id, [Service::TYPE_BESPOKE, Service::TYPE_APPOINTMENT])) {
             BookingSnapshotService::create($booking);
         }
 

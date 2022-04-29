@@ -56,6 +56,8 @@ class BookingTransformer extends Transformer
             $result = array_merge($result, [
                 'id' => $booking->booking->id,
                 'schedule_id' => $booking->booking->schedule->id,
+                'datetime_from' => $booking->booking->datetime_from,
+                'datetime_to' => $booking->booking->datetime_to,
                 'purchase_id' => $booking->booking->purchase->id,
                 'cancelled_at' => $booking->booking->cancelled_at,
                 'status' => $booking->booking->status,
