@@ -107,7 +107,7 @@ class TransferFundsWithCommissions
         $transfer->stripe_account_id = $practitioner->stripe_account_id;
         $transfer->stripe_transfer_id = $stripeTransfer->id;
         $transfer->status = 'success';
-        $transfer->amount = $amount;
+        $transfer->amount = round($amount, 2, PHP_ROUND_HALF_DOWN);
         $transfer->amount_original = $purchase->price;
         $transfer->currency = config('app.platform_currency');
         $transfer->schedule_id = $schedule->id ?? null;
@@ -120,7 +120,7 @@ class TransferFundsWithCommissions
                 'user_id' => $practitioner->id,
                 'plan_id' => $practitioner->plan_id,
                 'stripe_account_id' => $practitioner->stripe_account_id,
-                'amount' => $amount,
+                'amount' => round($amount, 2, PHP_ROUND_HALF_DOWN),
                 'amount_original' => $cost,
                 'schedule_id' => $schedule->id ?? null,
             ]);
@@ -134,16 +134,14 @@ class TransferFundsWithCommissions
             ->where('practitioner_id', $practitioner->id)
             ->where(function (Builder $builder) {
                 return $builder
-                    ->whereRaw('(is_dateless = 0 AND date_from <= NOW() AND date_to >= NOW())')
+                    ->whereRaw('(is_dateless = 0 AND date_from <= DATE(NOW()) AND date_to >= DATE(NOW()))')
                     ->orWhere(function (Builder $builder) {
                         return $builder
-                            ->where('is_dateless', '=', 1)
-                            ->whereNull('date_from')
-                            ->whereNull('date_to');
+                            ->where('is_dateless', '=', 1);
                     });
             })
             ->min('rate');
 
-        return $rate->rate ?? $practitioner->plan->commission_on_sale;
+        return $rate ?? $practitioner->plan->commission_on_sale;
     }
 }
