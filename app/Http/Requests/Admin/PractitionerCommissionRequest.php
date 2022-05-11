@@ -27,8 +27,9 @@ class PractitionerCommissionRequest extends Request
         return [
             'practitioner_id'   => 'required|exists:users,id',
             'rate' => 'min:1|max:100',
-            'date_from' => 'required_if:is_dateless,false',
-            'date_to' => 'required_if:is_dateless,false',
+            'date_from' => 'required_if:is_dateless,false|prohibited_if:is_dateless,true',
+            'date_to' => 'required_if:is_dateless,false|prohibited_if:is_dateless,true',
+            'is_dateless' => 'boolean',
         ];
     }
 }

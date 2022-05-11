@@ -407,7 +407,7 @@ class PurchaseController extends Controller
                     ]]);
                 }
             } catch (ApiErrorException $e) {
-            Log::info('The invoices are not available', [
+                Log::info('The invoices are not available', [
                     'message' => $e->getMessage(),
                 ]);
             }

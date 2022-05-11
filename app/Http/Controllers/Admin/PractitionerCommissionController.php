@@ -47,7 +47,7 @@ class PractitionerCommissionController extends Controller
         return fractal($practitionerCommission, new PractitionerCommissionTransformer())->respond();
     }
 
-    public function update(Request $request,PractitionerCommission $practitionerCommission)
+    public function update(PractitionerCommissionRequest $request, PractitionerCommission $practitionerCommission)
     {
         $data = $request->all();
         $practitionerCommission->update($data);
