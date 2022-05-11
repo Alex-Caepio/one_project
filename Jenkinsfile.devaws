@@ -33,6 +33,9 @@ pipeline{
         }
 
         stage("Sonarqube"){
+            tools{
+                jdk 'JDK8-Oracle'
+            } 
             environment{
                 scannerHome = tool 'SonarQube'
             }
