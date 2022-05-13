@@ -32,7 +32,10 @@ pipeline{
             }
         }
 
-        stage("Sonarqube"){
+     /*   stage("Sonarqube"){
+            tools{
+                jdk 'JDK8-Oracle'
+            }
             environment{
                 scannerHome = tool 'SonarQube'
             }
@@ -46,7 +49,7 @@ pipeline{
                     sh "/var/lib/jenkins/workspace/waitForSonarQube.sh"
                 }
             }
-        }
+        } */
 
         stage("Build docker image"){
             steps{
