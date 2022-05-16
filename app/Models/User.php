@@ -115,6 +115,13 @@ class User extends Authenticatable implements MustVerifyEmail
         'is_published' => 'boolean',
     ];
 
+    /**
+     * @var array
+     */
+    protected $attributes = [
+        'timezone_id' => 16,// London +0
+    ];
+
     public function services(): HasMany
     {
         return $this->hasMany(Service::class);
