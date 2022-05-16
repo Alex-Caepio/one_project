@@ -82,6 +82,11 @@ class ScheduleSnapshot extends Schedule
         return $this->hasMany(PriceSnapshot::class);
     }
 
+    public function location()
+    {
+        return $this->belongsTo(LocationSnapshot::class, 'location_snapshot_id');
+    }
+
     public function schedule_availabilities()
     {
         return $this->schedule->schedule_availabilities();
