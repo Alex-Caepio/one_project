@@ -124,16 +124,16 @@ class AuthController extends Controller
                 $stripeAccount = $stripe->accounts
                     ->create([
                         'country' => $country->iso,
-                        'type' => Account::TYPE_CUSTOM,
-                        'capabilities' => [
-                            Account::CAPABILITY_CARD_PAYMENTS => [
-                                'requested' => true,
-                            ],
-                            Account::CAPABILITY_TRANSFERS => [
-                                'requested' => true,
-                            ]
-                        ],
-                        'email' => $user->email,
+                        'type' => Account::TYPE_STANDARD,
+//                        'capabilities' => [
+//                            Account::CAPABILITY_CARD_PAYMENTS => [
+//                                'requested' => true,
+//                            ],
+//                            Account::CAPABILITY_TRANSFERS => [
+//                                'requested' => true,
+//                            ]
+//                        ],
+//                        'email' => $user->email,
                     ]);
                 $user->stripe_account_id = $stripeAccount->id;
                 $user->business_published_at = now();
