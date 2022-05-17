@@ -290,7 +290,6 @@ class Schedule extends Model
         // The Following Data Fields are considered Contractual Terms [Start Date], [Start Time], [End Date], [End Time], [City] and [Country]
         unset(
             $changes['location_displayed'],
-            $changes['venue_address'],
             $changes['venue_name'],
             $changes['post_code'],
             $changes['appointment'],

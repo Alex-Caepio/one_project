@@ -720,7 +720,7 @@ class EmailVariables
     public function getReschedule_country(): ?string
     {
         return isset($this->event->reschedule->new_schedule->country) ?
-            $this->event->reschedule->new_schedule->country->nicename : $this->event->schedule->country->nicename;
+            $this->event->reschedule->new_schedule->country->nicename : ($this->event->schedule->country ? $this->event->schedule->country->nicename : '');
     }
 
     /**
