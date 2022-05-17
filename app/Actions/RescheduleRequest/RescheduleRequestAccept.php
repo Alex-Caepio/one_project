@@ -7,6 +7,7 @@ use App\Models\Booking;
 use App\Models\Notification;
 use App\Models\RescheduleRequest;
 use App\Models\Service;
+use App\Services\BookingSnapshotService;
 
 class RescheduleRequestAccept
 {
@@ -28,6 +29,14 @@ class RescheduleRequestAccept
 
         $booking->status = Booking::RESCHEDULED_STATUS;
         $booking->update();
+
+        if ($booking->schedule->service->service_type_id === Service::TYPE_APPOINTMENT) {
+            $booking->refresh();
+            if ($booking->snapshot && $booking->schedule->id !== $booking->snapshot->schedule->id) {
+                $booking->snapshot->forceDelete();
+            }
+            BookingSnapshotService::create($booking);
+        }
 
         if ($rescheduleRequest->requested_by === RescheduleRequest::REQUESTED_BY_PRACTITIONER) {
             $notificationType = Notification::RESCHEDULED_BY_PRACTITIONER;

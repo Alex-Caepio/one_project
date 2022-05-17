@@ -8,6 +8,7 @@ use App\Events\RescheduleRequestNoReplyFromClient;
 use App\Events\BookingCancelledToClient;
 use App\Models\Notification;
 use App\Models\RescheduleRequest;
+use App\Models\Service;
 use Illuminate\Support\Facades\Auth;
 
 class RescheduleRequestDecline
@@ -21,9 +22,12 @@ class RescheduleRequestDecline
             && $rescheduleRequest->user_id === Auth::id()
         ) {
             if (
-                (int)$rescheduleRequest->schedule_id === (int)$rescheduleRequest->new_schedule_id &&
-                $rescheduleRequest->old_start_date === $rescheduleRequest->new_start_date &&
-                $rescheduleRequest->old_end_date === $rescheduleRequest->new_end_date
+                in_array($rescheduleRequest->schedule->service->service_type_id, [
+                    Service::TYPE_EVENT,
+                    Service::TYPE_WORKSHOP,
+                    Service::TYPE_RETREAT,
+                    ]) &&
+                $rescheduleRequest->requested_by === RescheduleRequest::REQUESTED_BY_PRACTITIONER_IN_SCHEDULE
             ) {
                 run_action(
                     CancelBooking::class,

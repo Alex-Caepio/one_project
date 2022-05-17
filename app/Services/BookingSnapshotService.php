@@ -22,12 +22,12 @@ class BookingSnapshotService
         $serviceSnapshotArr['service_id'] = $purchase->service->id;
         $serviceSnapshot = ServiceSnapshot::create($serviceSnapshotArr);
 
-        $scheduleSnapshotArr = Arr::except($purchase->schedule->getAttributes(), 'id');
+        $scheduleSnapshotArr = Arr::except($booking->schedule->getAttributes(), 'id');
         $scheduleSnapshotArr['service_snapshot_id'] = $serviceSnapshot->id;
-        $scheduleSnapshotArr['schedule_id'] = $purchase->schedule->id;
+        $scheduleSnapshotArr['schedule_id'] = $booking->schedule->id;
         if (!empty($scheduleSnapshotArr['location'])) {
-            $locationSnapshotArr = Arr::except($purchase->schedule->location, 'id');
-            $locationSnapshotArr['location_id'] = $purchase->schedule->location->id;
+            $locationSnapshotArr = Arr::except($booking->schedule->location, 'id');
+            $locationSnapshotArr['location_id'] = $booking->schedule->location->id;
             $locationSnapshot = LocationSnapshot::create($locationSnapshotArr);
             $scheduleSnapshotArr['location_snapshot_id'] = $locationSnapshot->id;
         }
@@ -35,7 +35,7 @@ class BookingSnapshotService
 
         $price = $purchase->price()->get()->first();
         $priceSnapshotArr = Arr::except($price->getAttributes(), 'id');
-        $priceSnapshotArr['schedule_schedule_id'] = $scheduleSnapshot->id;
+        $priceSnapshotArr['schedule_snapshot_id'] = $scheduleSnapshot->id;
         $priceSnapshotArr['price_id'] = $price->id;
         $priceSnapshot = PriceSnapshot::create($priceSnapshotArr);
 
