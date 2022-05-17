@@ -53,13 +53,13 @@ class BookingSnapshotService
             $promotionCodeSnapshot = PromotionCodeSnapshot::firstOrCreate(['name' => $promotionCodeSnapshotArr['name']] ,$promotionCodeSnapshotArr);
         }
 
-        $purchaseSnapshotArr = Arr::except($purchase->getAttributes(), 'id');
+        $purchaseSnapshotArr = Arr::except($purchase->getAttributes(), ['id']);
         $purchaseSnapshotArr['price_snapshot_id'] = $priceSnapshot->id;
         $purchaseSnapshotArr['schedule_snapshot_id'] = $scheduleSnapshot->id;
         $purchaseSnapshotArr['promocode_snapshot_id'] = $promotionCodeSnapshot->id ?? null;
         $purchaseSnapshotArr['service_snapshot_id'] = $serviceSnapshot->id;
         $purchaseSnapshotArr['purchase_id'] = $purchase->id;
-        $purchaseSnapshot = PurchaseSnapshot::create($purchaseSnapshotArr);
+        $purchaseSnapshot = PurchaseSnapshot::firstOrCreate(['reference' => $purchase->reference], $purchaseSnapshotArr);
         $purchase->purchase_snapshot_id = $purchaseSnapshot->id;
         $purchase->save();
 
