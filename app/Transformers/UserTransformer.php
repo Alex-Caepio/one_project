@@ -95,8 +95,8 @@ class UserTransformer extends Transformer
             'business_published_at' => $user->business_published_at,
             'connected_at' => $user->connected_at,
             'timezone_id' => $user->timezone_id,
-            'timezone_code' => $user->user_timezone->label,
-            'timezone_value' => $user->user_timezone->value,
+            'timezone_code' => isset($user->user_timezone) ? $user->user_timezone->label : '',
+            'timezone_value' => isset($user->user_timezone) ? $user->user_timezone->value : '',
         ];
     }
 
