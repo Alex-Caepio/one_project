@@ -143,15 +143,15 @@ class PurchaseController extends Controller
                     $booking->discount = $discountPerAppointment;
                     $booking->is_installment = $isInstallment;
                     $booking->is_fully_paid = !$isInstallment;
+                    $booking->reference = BookingHelper::generateReference();
+                    $booking->save();
                 }
             } else {
                 $booking = new Booking();
                 $booking->user_id = $request->user()->id;
                 $booking->practitioner_id = $schedule->service->user_id;
-
                 $booking->datetime_from = $schedule->start_date ?: Carbon::now();
                 $booking->datetime_to = $schedule->end_date ?: Carbon::now();
-
                 $booking->price_id = $request->get('price_id');
                 $booking->schedule_id = $schedule->id;
                 $booking->cost = $cost;
@@ -160,9 +160,9 @@ class PurchaseController extends Controller
                 $booking->is_installment = $isInstallment;
                 $booking->is_fully_paid = !$isInstallment;
                 $booking->discount = $discount;
+                $booking->reference = BookingHelper::generateReference();
+                $booking->save();
             }
-
-            $booking->reference = BookingHelper::generateReference();
 
             if ($cost && !$price->is_free) {
                 $paymentIntentData = $isInstallment
@@ -176,8 +176,6 @@ class PurchaseController extends Controller
                     return $paymentIntentData->toArray();
                 }
             }
-
-
 
             ScheduleFreeze::where('schedule_id', $schedule->id)->where('user_id', $request->user()->id)->delete();
 
@@ -204,8 +202,6 @@ class PurchaseController extends Controller
             abort(Response::HTTP_INTERNAL_SERVER_ERROR, $e->getMessage());
         }
 
-        $booking->save();
-
         if ($schedule->service->service_type_id === Service::TYPE_APPOINTMENT) {
             event(new AppointmentBooked($booking));
         }
@@ -215,7 +211,9 @@ class PurchaseController extends Controller
         }
 
         if (in_array($schedule->service->service_type_id, [Service::TYPE_BESPOKE, Service::TYPE_APPOINTMENT])) {
-            BookingSnapshotService::create($booking);
+            foreach ($purchase->bookings as $book) {
+                BookingSnapshotService::create($book);
+            }
         }
 
         $this->connection->commit();
