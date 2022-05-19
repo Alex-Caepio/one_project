@@ -73,5 +73,16 @@ class BookingSnapshotService
 
         $booking->booking_snapshot_id = $bookingSnapshot->id;
         $booking->save();
+
+        // For multi appointment
+        $bookings = $purchase->bookings()
+            ->where('id', '!=', $booking->id)
+            ->has('snapshot')
+            ->get();
+        foreach ($bookings as $booking) {
+            $snapshot = $booking->snapshot;
+            $snapshot->purchase_snapshot_id = $purchaseSnapshot->id;
+            $snapshot->save();
+        }
     }
 }
