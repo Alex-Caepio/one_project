@@ -324,7 +324,7 @@ class CancelBooking
             'installmentRefund' => $booking->is_installment ? $installmentAmount - $installmentFeeAmount : 0,
         ];
 
-        if ($cancelledByPractitioner) {
+        if ($cancelledByPractitioner || $declineRescheduleRequest) {
             $result = $this->cancelledByPractitioner($result, $booking);
         } else { // cancelled by client
             $result = $this->cancelledByClient($result, $booking);
