@@ -124,9 +124,9 @@ class PurchaseController extends Controller
                 $availabilities = $request->get('availabilities');
 
                 if ($discount > 0) {
-                    $discountPerAppointment = round($discount / count($availabilities));
+                    $discountPerAppointment = round($discount / count($availabilities), 2, PHP_ROUND_HALF_DOWN);
                 }
-                $costPerAppointment = round($cost / count($availabilities));
+                $costPerAppointment = round($cost / count($availabilities), 2, PHP_ROUND_HALF_DOWN);
 
                 foreach ($availabilities as $availability) {
                     $booking = new Booking();
@@ -139,7 +139,7 @@ class PurchaseController extends Controller
                     $booking->datetime_to = $datetimeTo->format('Y-m-d H:i:s');
                     $booking->cost = $costPerAppointment;
                     $booking->purchase_id = $purchase->id;
-                    $booking->amount = $request->amount;
+                    $booking->amount = 1;
                     $booking->discount = $discountPerAppointment;
                     $booking->is_installment = $isInstallment;
                     $booking->is_fully_paid = !$isInstallment;

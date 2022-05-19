@@ -398,11 +398,20 @@ class CancelBooking
             return;
         }
 
+        // For multi appointment
+        if (count($booking->purchase->bookings)) {
+            $refundAmount = $refundData['practitionerCharge'];
+        } else {
+            $refundAmount = $transfer->amount;
+        }
+
+        $refundAmount = intval(round($refundAmount * 100, 0, PHP_ROUND_HALF_DOWN));
+
         try {
             $this->stripe->transfers->createReversal(
                 $transfer->stripe_transfer_id,
                 [
-                    'amount' => intval(round($transfer->amount * 100, 0, PHP_ROUND_HALF_DOWN)),
+                    'amount' => $refundAmount,
                     'description' => 'Booking cancelled',
                     'metadata' => [
                         'Currency' => config('app.platform_currency'),
