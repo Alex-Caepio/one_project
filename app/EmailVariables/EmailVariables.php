@@ -737,7 +737,7 @@ class EmailVariables
      */
     public function getReschedule_hosting_url(): ?string
     {
-        return isset($this->event->reschedule) ?
+        return isset($this->event->reschedule) && isset($this->event->reschedule->new_url) ?
             $this->event->reschedule->new_url : $this->event->schedule->url;
     }
 

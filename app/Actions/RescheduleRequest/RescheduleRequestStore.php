@@ -51,6 +51,11 @@ class RescheduleRequestStore
             $data['new_end_date'] = $newSchedule->end_date;
         }
 
+        if ($newSchedule->url !== $oldSchedule->url) {
+            $data['old_url'] = $oldSchedule->url;
+            $data['new_url'] = $newSchedule->url;
+        }
+
         if (
             $booking->schedule->service->service_type_id === Service::TYPE_APPOINTMENT
             && $request->has('availabilities.0.datetime_from')
