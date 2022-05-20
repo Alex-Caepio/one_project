@@ -84,6 +84,7 @@ class CreateRescheduleRequestsOnScheduleUpdate
     protected function locationHasChanged(): bool
     {
         return isset($this->changesList['venue'])
+            || isset($this->changesList['venue_address'])
             || isset($this->changesList['city'])
             || isset($this->changesList['url'])
             || isset($this->changesList['country_id'])

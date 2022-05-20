@@ -353,9 +353,9 @@ class CancelBooking
         $result['practitionerCharge'] = $result['bookingCost'] - $result['planRateAmount'];
 
         if ($booking->purchase->discount_applied === Promotion::APPLIED_HOST) {
-            $result['practitionerCharge'] = round(($result['bookingCost'] + $booking->purchase->discount) * (100 - $result['planRate']) / 100);
+            $result['practitionerCharge'] = round(($result['bookingCost'] + $booking->purchase->discount) * (100 - $result['planRate']) / 100, 2, PHP_ROUND_HALF_DOWN);
         } else if ($booking->purchase->discount_applied === Promotion::APPLIED_BOTH) {
-            $result['practitionerCharge'] = round(($result['bookingCost'] + $booking->purchase->discount / 2) * (100 - $result['planRate']) / 100);
+            $result['practitionerCharge'] = round($result['bookingCost'] * (100 - $result['planRate']) / 100, 2, PHP_ROUND_HALF_DOWN);
         }
 
         return $result;
