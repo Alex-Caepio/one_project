@@ -359,6 +359,10 @@ class PurchaseController extends Controller
                             'Practitioner business name' => $practitioner->business_name,
                             'Practitioner stripe id' => $practitioner->stripe_customer_id,
                             'Practitioner connected account id' => $practitioner->stripe_account_id,
+                            'Tom Commission' => $practitioner->getCommission() . '%',
+                            'Application Fee' =>
+                                round($purchase->price * $practitioner->getCommission() / 100, 2, PHP_ROUND_HALF_DOWN)
+                                . '(' . config('app.platform_currency') . ')',
                             'Client first name' => $client->first_name,
                             'Client last name' => $client->last_name,
                             'Client stripe id' => $client->stripe_customer_id,
@@ -389,26 +393,6 @@ class PurchaseController extends Controller
 
             $purchase->stripe_id = $paymentIntent->id;
             $purchase->save();
-
-            try {
-                foreach ($stripe->invoices->all() as $invoice) {
-                    $stripe->invoices->update($invoice['id'], ['metadata' => [
-                        'Practitioner business email' => $practitioner->business_email,
-                        'Practitioner business name' => $practitioner->business_name,
-                        'Practitioner stripe id' => $practitioner->stripe_customer_id,
-                        'Practitioner connected account id' => $practitioner->stripe_account_id,
-                        'Client first name' => $client->first_name,
-                        'Client last name' => $client->last_name,
-                        'Client stripe id' => $client->stripe_customer_id,
-                        'Booking reference' => $reference,
-                        'Promoted by' => $applied_to,
-                    ]]);
-                }
-            } catch (ApiErrorException $e) {
-                Log::info('The invoices are not available', [
-                    'message' => $e->getMessage(),
-                ]);
-            }
 
             $chargeId = $paymentIntent->charges->data ? $paymentIntent->charges->data[0]['id'] : null;
             if($chargeId === null) {

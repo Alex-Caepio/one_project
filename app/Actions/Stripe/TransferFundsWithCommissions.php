@@ -3,13 +3,9 @@
 namespace App\Actions\Stripe;
 
 use App\Models\Plan;
-use App\Models\PractitionerCommission;
 use App\Models\Promotion;
 use App\Models\Transfer;
-use App\Models\User;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Log;
-use Stripe\Exception\ApiErrorException;
 use Stripe\StripeClient;
 
 class TransferFundsWithCommissions
@@ -29,7 +25,7 @@ class TransferFundsWithCommissions
         $stripe = app()->make(StripeClient::class);
 
         // define if commission is overridden in admin panel
-        $practitionerCommissions = $this->getPractitionerRate($practitioner);
+        $practitionerCommissions = $practitioner->getCommission();
 
         $request['source_transaction'] = $chargeId;
 
@@ -71,6 +67,10 @@ class TransferFundsWithCommissions
                 'Practitioner business name' => $practitioner->business_name,
                 'Practitioner stripe id' => $practitioner->stripe_customer_id,
                 'Practitioner connected account id' => $practitioner->stripe_account_id,
+                'Tom Commission' => $practitioner->getCommission() . '%',
+                'Application Fee' =>
+                    round($purchase->price * $practitioner->getCommission() / 100, 2, PHP_ROUND_HALF_DOWN)
+                    . '(' . config('app.platform_currency') . ')',
                 'Client first name' => $client->first_name,
                 'Client last name' => $client->last_name,
                 'Client stripe id' => $client->stripe_customer_id,
@@ -79,26 +79,6 @@ class TransferFundsWithCommissions
                 'Charge id' => $chargeId,
             ]
         ]);
-
-        try {
-            foreach ($stripe->invoices->all() as $invoice) {
-                $stripe->invoices->update($invoice['id'], ['metadata' => [
-                    'Practitioner business email' => $practitioner->business_email,
-                    'Practitioner business name' => $practitioner->business_name,
-                    'Practitioner stripe id' => $practitioner->stripe_customer_id,
-                    'Practitioner connected account id' => $practitioner->stripe_account_id,
-                    'Client first name' => $client->first_name,
-                    'Client last name' => $client->last_name,
-                    'Client stripe id' => $client->stripe_customer_id,
-                    'Booking reference' => $reference,
-                    'Promoted by' => $applied_to,
-                ]]);
-            }
-        } catch (ApiErrorException $e) {
-            Log::info('The invoices are not available', [
-                'message' => $e->getMessage(),
-            ]);
-        }
 
         $stripeTransfer = $stripe->transfers->create($request);
 
@@ -126,22 +106,5 @@ class TransferFundsWithCommissions
             ]);
 
         return $transfer;
-    }
-
-    private function getPractitionerRate(User $practitioner)
-    {
-        $rate = PractitionerCommission::query()
-            ->where('practitioner_id', $practitioner->id)
-            ->where(function (Builder $builder) {
-                return $builder
-                    ->whereRaw('(is_dateless = 0 AND date_from <= DATE(NOW()) AND date_to >= DATE(NOW()))')
-                    ->orWhere(function (Builder $builder) {
-                        return $builder
-                            ->where('is_dateless', '=', 1);
-                    });
-            })
-            ->min('rate');
-
-        return $rate ?? $practitioner->plan->commission_on_sale;
     }
 }
