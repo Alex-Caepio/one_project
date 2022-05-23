@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Scopes\PublishedScope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Carbon\Carbon;
@@ -215,19 +216,19 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function getCommission()
     {
-        $customRate = $this
-            ->custom_rate()
-            ->where('date_from', '<', now()->toDateTimeString())
-            ->where('date_to', '>', now()->toDateTimeString())
-            ->orWhere('indefinite_period', '=', true)
-            ->first();
+        $rate = PractitionerCommission::query()
+            ->where('practitioner_id', $this->id)
+            ->where(function (Builder $builder) {
+                return $builder
+                    ->whereRaw('(is_dateless = 0 AND date_from <= DATE(NOW()) AND date_to >= DATE(NOW()))')
+                    ->orWhere(function (Builder $builder) {
+                        return $builder
+                            ->where('is_dateless', '=', 1);
+                    });
+            })
+            ->min('rate');
 
-        return $customRate->rate ?? $this->plan->commission_on_sale;
-    }
-
-    public function custom_rate(): HasMany
-    {
-        return $this->hasMany(CustomRate::class);
+        return $rate ?? $this->plan->commission_on_sale;
     }
 
     public function featured_focus_area(): BelongsToMany

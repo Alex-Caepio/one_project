@@ -7,15 +7,12 @@ use App\DTO\Schedule\PaymentIntentDto;
 use App\Http\Requests\Schedule\PurchaseScheduleRequest;
 use App\Models\Booking;
 use App\Models\Instalment;
-use App\Models\PractitionerCommission;
 use App\Models\Purchase;
 use App\Models\Schedule;
 use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Stripe\Exception\ApiErrorException;
 use Stripe\PaymentIntent;
 use Stripe\StripeClient;
 use Stripe\Subscription;
@@ -45,16 +42,6 @@ class PurchaseInstallment
             $stripe,
             $metadata
         );
-
-        try {
-            foreach ($stripe->invoices->all() as $invoice) {
-                $stripe->invoices->update($invoice['id'], $metadata);
-            }
-        } catch (ApiErrorException $e) {
-            Log::info('The invoices are not available', [
-                'message' => $e->getMessage(),
-            ]);
-        }
 
         $chargeId = $deposit->charges->data ? $deposit->charges->data[0]['id'] : null;
         if ($chargeId === null) {
@@ -169,7 +156,7 @@ class PurchaseInstallment
 
         // get practitioner commission for subscription
         $practitioner = $schedule->service->user;
-        $practitionerCommissions = $this->getPractitionerRate($practitioner);
+        $practitionerCommissions = $practitioner->getCommission();
         $toTransferPercent = 100 - $practitionerCommissions;
 
         // create subscription
@@ -232,6 +219,10 @@ class PurchaseInstallment
             'Practitioner business name' => $practitioner->business_name ?? "",
             'Practitioner stripe id' => $practitioner->stripe_customer_id ?? "",
             'Practitioner connected account id' => $practitioner->stripe_account_id ?? "",
+            'Tom Commission' => $practitioner->getCommission() . '%',
+            'Application Fee' =>
+                round($purchase->price * $practitioner->getCommission() / 100, 2, PHP_ROUND_HALF_DOWN)
+                . '(' . config('app.platform_currency') . ')',
             'Client first name' => $client->first_name ?? "",
             'Client last name' => $client->last_name ?? "",
             'Client stripe id' => $client->stripe_customer_id ?? "",
@@ -239,24 +230,5 @@ class PurchaseInstallment
             'Promoted by' => $purchase->promocode->promotion->applied_to ?? "",
             'Type' => 'Installment Purchase',
         ];
-    }
-
-    private function getPractitionerRate(User $practitioner)
-    {
-        $rate = PractitionerCommission::query()
-            ->where('practitioner_id', $practitioner->id)
-            ->where(function (Builder $builder) {
-                return $builder
-                    ->whereRaw('(is_dateless = 0 AND date_from <= NOW() AND date_to >= NOW())')
-                    ->orWhere(function (Builder $builder) {
-                        return $builder
-                            ->where('is_dateless', '=', 1)
-                            ->whereNull('date_from')
-                            ->whereNull('date_to');
-                    });
-            })
-            ->min('rate');
-
-        return $rate->rate ?? $practitioner->plan->commission_on_sale;
     }
 }
