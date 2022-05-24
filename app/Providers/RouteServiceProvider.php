@@ -40,7 +40,7 @@ class RouteServiceProvider extends ServiceProvider
     public function boot()
     {
         Route::bind('publicArticle', function ($value) {
-            $article = Article::published()->orWhere('slug', (string)$value);
+            $article = Article::published()->where('slug', (string)$value);
 
             if (strcmp(intval($value), $value) === 0) {
                 $article->orWhere('id', $value);
