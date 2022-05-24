@@ -814,7 +814,8 @@ class EmailVariables
      */
     public function getDeposit_paid(): string
     {
-        return config('app.platform_currency_sign')." ". ($this->event->purchase->deposit_amount ?? 0);
+        return config('app.platform_currency_sign') . " " .
+            (round($this->event->purchase->deposit_amount * $this->event->purchase->amount, 2, PHP_ROUND_HALF_DOWN) ?? 0);
     }
 
     /**
