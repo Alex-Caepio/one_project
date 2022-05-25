@@ -19,6 +19,7 @@ class RescheduleNoReplyCommand extends Command
     {
         $rescheduleRequests = RescheduleRequest::query()
             ->has('old_schedule')
+            ->whereNotIn('requested_by', [RescheduleRequest::REQUESTED_BY_PRACTITIONER_IN_SCHEDULE])
             ->whereRaw(
                 "DATE_FORMAT(`created_at`, '%Y-%m-%d') = ?",
                 Carbon::now()->subDays(2)->format('Y-m-d')
@@ -30,6 +31,7 @@ class RescheduleNoReplyCommand extends Command
                 );
             })
             ->get();
+
         foreach ($rescheduleRequests as $rr) {
             event(new RescheduleRequestNoReplyFromClient($rr));
         }
