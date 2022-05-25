@@ -89,32 +89,32 @@ class ScheduleSnapshot extends Schedule
 
     public function schedule_availabilities()
     {
-        return $this->schedule->schedule_availabilities();
+        return $this->schedule()->withTrashed()->first()->schedule_availabilities();
     }
 
     public function schedule_unavailabilities()
     {
-        return $this->schedule->schedule_unavailabilities();
+        return $this->schedule()->withTrashed()->first()->schedule_unavailabilities();
     }
 
     public function schedule_files()
     {
-        return $this->schedule->schedule_files();
+        return $this->schedule()->withTrashed()->first()->schedule_files();
     }
 
     public function schedule_hidden_files()
     {
-        return $this->schedule->schedule_hidden_files();
+        return $this->schedule()->withTrashed()->first()->schedule_hidden_files();
     }
 
     public function freezes(): HasMany
     {
-        return $this->schedule->freezes();
+        return $this->schedule()->withTrashed()->first()->freezes();
     }
 
     public function rescheduleRequests()
     {
-        return $this->schedule->rescheduleRequests();
+        return $this->schedule()->withTrashed()->first()->rescheduleRequests();
     }
 
 }
