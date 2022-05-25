@@ -123,22 +123,22 @@ class CancelBooking
                         'message' => $e->getMessage(),
                     ]);
             }
-        }
 
-        if ($refundData['practitionerCharge'] > 0 && $booking->practitioner->stripe_account_id) {
-            $this->reverseTransferToPractitioner($refundData, $booking);
-        }
+            if ($booking->is_installment) {
+                $this->refundInstallment($booking->purchase->subscription_id);
+                try {
+                    $this->stripe->subscriptions->cancel($booking->purchase->subscription_id);
+                } catch (Exception $e) {
+                    Log::channel('stripe_refund_fail')
+                        ->info('Subscription cancel fail: ', [
+                            'subscription_id' => $booking->purchase->subscription_id,
+                            'message' => $e->getMessage(),
+                        ]);
+                }
+            }
 
-        if ($booking->is_installment) {
-            $this->refundInstallment($booking->purchase->subscription_id);
-            try {
-                $this->stripe->subscriptions->cancel($booking->purchase->subscription_id);
-            } catch (Exception $e) {
-                Log::channel('stripe_refund_fail')
-                    ->info('Subscription cancel fail: ', [
-                        'subscription_id' => $booking->purchase->subscription_id,
-                        'message' => $e->getMessage(),
-                    ]);
+            if ($refundData['practitionerCharge'] > 0 && $booking->practitioner->stripe_account_id) {
+                $this->reverseTransferToPractitioner($refundData, $booking);
             }
         }
 
@@ -193,7 +193,7 @@ class CancelBooking
         $notification->datetime_from = $booking->datetime_from;
         $notification->datetime_to = $booking->datetime_to;
         $notification->price_id = $booking->price_id;
-        $notification->price_refunded = $booking->is_installment ? $refundData['installmentRefund'] : $refundData['refundTotal'];
+        $notification->price_refunded = $refundData['refundTotal'] > 0 && $booking->is_installment ? $refundData['installmentRefund'] : $refundData['refundTotal'];
         $notification->price_payed = $booking->cost;
 
         $notification->save();
@@ -381,6 +381,7 @@ class CancelBooking
             $result['practitionerCharge'] = $result['bookingCost'] - $result['planRateAmount'];
         } else {
             $result['refundTotal'] = 0;
+            $result['installmentRefund'] = 0;
             $result['practitionerCharge'] = 0;
         }
 
