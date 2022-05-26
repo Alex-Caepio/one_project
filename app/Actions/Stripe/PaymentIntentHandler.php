@@ -38,14 +38,6 @@ class PaymentIntentHandler
 
         $dataObject = $request->getObject();
 
-        // Filter payment intents. We need only subscription update
-        if (
-            (count($dataObject['metadata']) > 0 && $dataObject['description'] !== 'Subscription update') ||
-            empty($dataObject['transfer_data']['amount'])
-        ) {
-            return;
-        }
-
         $this->_requestPaymentIntentId = $dataObject['id'];
         $this->_requestPractitionerId = $dataObject['transfer_data']['destination'];
         $this->_requestAmountPaid = round($dataObject['amount'] / 100, 2);
@@ -56,72 +48,101 @@ class PaymentIntentHandler
         $this->_requestCurrency = $dataObject['currency'];
         $this->_requestMetadata = $dataObject['metadata'];
 
+        // Get subscription id for getting user purchase
+        $this->stripeClient = app()->make(StripeClient::class);
+        $invoice = $this->stripeClient->invoices->retrieve($this->_requestInvoiceId);
+        $this->_requestSubscriptionId = $invoice->subscription;
+        $this->retrievePractitioner();
+        $this->retrievePurchase();
+
+        // Filter payment intents. We need only subscription updates. They dont has transfer amount
         if (
-            empty($this->_requestInvoiceId) ||
-            empty($this->_requestPractitionerId) ||
-            empty($this->_requestInvoiceId) ||
-            empty($this->_requestTransferId)
+            empty($this->_requestPractitionerId) && empty($this->_requestTransferAmount) && !empty($this->_requestInvoiceId)
         ) {
+            // Update current payment intent metadata
+            if (empty($this->_requestMetadata) && !empty($this->practitioner)) {
+                $this->metadata = MetadataService::retrieveMetadataSubscription($this->practitioner);
+                try {
+                    $this->stripeClient->paymentIntents->update(
+                        $this->_requestPaymentIntentId,
+                        ['metadata' => $this->metadata]
+                    );
+                } catch (\Exception $e) {
+                    Log::channel('stripe_webhooks_error')->info('Payment intent update error: ', [
+                        'payment_intent_id' => $this->_requestPaymentIntentId,
+                        'invoice_id' => $this->_requestInvoiceId,
+                        'message' => $e->getMessage(),
+                    ]);
+                }
+            }
+        } else if (
+            !empty($this->_requestPractitionerId)
+            && !empty($this->_requestTransferAmount)
+            && !empty($this->_requestTransferId)
+        ) {
+            try {
+                // save transfer
+                Transfer::create([
+                    'user_id' => $this->practitioner->id,
+                    'stripe_account_id' => $this->practitioner->stripe_account_id,
+                    'stripe_transfer_id' => $this->_requestTransferId,
+                    'status' => $this->_requestStatus === "succeeded" ? 'success' : 'fail',
+                    'amount' => $this->_requestTransferAmount,
+                    'amount_original' => $this->_requestAmountPaid,
+                    'currency' => $this->_requestCurrency,
+                    'schedule_id' => $this->purchase->schedule->id,
+                    'description' => 'installment',
+                    'purchase_id' => $this->purchase->id,
+                    'is_installment' => true,
+                ]);
+
+                Log::channel('stripe_webhooks_info')->info(
+                    "Transfer registered",
+                    [
+                        'stripe_client_id' => $this->_requestPractitionerId,
+                        'stripe_subscription_id' => $this->_requestSubscriptionId,
+                        'user_id' => $this->practitioner->id,
+                    ],
+                );
+            } catch (\Exception $e) {
+                Log::channel('stripe_webhooks_error')->info(
+                    "Unpaid installment for subscription not found",
+                    ['subscription_id' => $this->_requestSubscriptionId, 'error' => $e],
+                );
+            }
+
+            // Add metadata to transfers to practitioners
+            if (empty($this->_requestMetadata) && !empty($this->purchase)) {
+                $this->metadata = MetadataService::retrieveMetadataPurchase($this->purchase, MetadataService::TYPE_INSTALLMENT);
+                try {
+                    $this->stripeClient->paymentIntents->update(
+                        $this->_requestPaymentIntentId,
+                        ['metadata' => $this->metadata]
+                    );
+
+                    $transfer = $this->stripeClient->transfers->update(
+                        $this->_requestTransferId,
+                        ['metadata' => $this->metadata]
+                    );
+
+                    $this->stripeClient->charges->update(
+                        $transfer->destination_payment,
+                        ['metadata' => $this->metadata],
+                        ['stripe_account' => $transfer->destination]
+                    );
+                } catch (\Exception $e) {
+                    Log::channel('stripe_webhooks_error')->info('Transfer metadata update error: ', [
+                        'payment_intent_id' => $this->_requestPaymentIntentId,
+                        'invoice_id' => $this->_requestInvoiceId,
+                        'message' => $e->getMessage(),
+                    ]);
+                }
+            }
+        } else {
             Log::channel('stripe_webhooks_error')->info('Not enough data to process payment intent: ', [
                 'invoice_id' => $this->_requestInvoiceId,
                 'customer_id' => $this->_requestPractitionerId,
             ]);
-            return;
-        }
-
-        try {
-            // Get subscription id for getting user purchase
-            $this->stripeClient = app()->make(StripeClient::class);
-            $invoice = $this->stripeClient->invoices->retrieve($this->_requestInvoiceId);
-            $this->_requestSubscriptionId = $invoice->subscription;
-            $this->retrievePractitioner();
-            $this->retrievePurchase();
-
-            // save transfer
-            Transfer::create([
-                'user_id' => $this->practitioner->id,
-                'stripe_account_id' => $this->practitioner->stripe_account_id,
-                'stripe_transfer_id' => $this->_requestTransferId,
-                'status' => $this->_requestStatus === "succeeded" ? 'success' : 'fail',
-                'amount' => $this->_requestTransferAmount,
-                'amount_original' => $this->_requestAmountPaid,
-                'currency' => $this->_requestCurrency,
-                'schedule_id' => $this->purchase->schedule->id,
-                'description' => 'installment',
-                'purchase_id' => $this->purchase->id,
-                'is_installment' => true,
-            ]);
-
-            Log::channel('stripe_webhooks_info')->info(
-                "Transfer registered",
-                [
-                    'stripe_client_id' => $this->_requestPractitionerId,
-                    'stripe_subscription_id' => $this->_requestSubscriptionId,
-                    'user_id' => $this->practitioner->id,
-                ],
-            );
-        } catch (\Exception $e) {
-            Log::channel('stripe_webhooks_error')->info(
-                "Unpaid instalment for subscription not found",
-                ['subscription_id' => $this->_requestSubscriptionId, 'error' => $e],
-            );
-        }
-
-        // Update current payment intent metadata
-        if (empty($this->_requestMetadata) && !empty($this->practitioner) && $dataObject['description'] === 'Subscription update') {
-            $this->metadata = MetadataService::retrieveMetadataSubscription($this->practitioner);
-            try {
-                $this->stripeClient->paymentIntents->update(
-                    $this->_requestPaymentIntentId,
-                    ['metadata' => $this->metadata]
-                );
-            } catch (\Exception $e) {
-                Log::channel('stripe_webhooks_error')->info('Payment intent update error: ', [
-                    'payment_intent_id' => $this->_requestPaymentIntentId,
-                    'invoice_id' => $this->_requestInvoiceId,
-                    'message' => $e->getMessage(),
-                ]);
-            }
         }
     }
 
