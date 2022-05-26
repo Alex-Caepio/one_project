@@ -5,6 +5,7 @@ namespace App\Actions\Stripe;
 use App\Models\Plan;
 use App\Models\Promotion;
 use App\Models\Transfer;
+use App\Services\MetadataService;
 use Illuminate\Support\Facades\Log;
 use Stripe\StripeClient;
 
@@ -37,18 +38,7 @@ class TransferFundsWithCommissions
 
         $amount = $cost - $cost * $practitionerCommissions / 100;
 
-        if (!empty($booking)) {
-            $reference = $booking->reference;
-        } else {
-            $reference = implode(', ', $purchase->bookings->pluck('reference')->toArray());
-        }
-
-        if (!empty($purchase->promocode)) {
-            $applied_to = $purchase->promocode->promotion->applied_to;
-        } else {
-            $applied_to = '';
-        }
-
+        $metadata = MetadataService::retrieveMetadataPurchase($purchase, MetadataService::TYPE_DEPOSIT, $chargeId);
         /*
          *      When we should transfer to practitioner less than was paid by client
          *   important to point SOURCE_TRANSACTION, because in case of negative balance
@@ -62,25 +52,16 @@ class TransferFundsWithCommissions
             'destination' => $practitioner->stripe_account_id,
             'description' => 'New booking transfer to practitioner',
             // https://stripe.com/docs/connect/charges-transfers#transfer-availability
-            'metadata' => [
-                'Practitioner business email' => $practitioner->business_email,
-                'Practitioner business name' => $practitioner->business_name,
-                'Practitioner stripe id' => $practitioner->stripe_customer_id,
-                'Practitioner connected account id' => $practitioner->stripe_account_id,
-                'Tom Commission' => $practitioner->getCommission() . '%',
-                'Application Fee' =>
-                    round($purchase->price * $practitioner->getCommission() / 100, 2, PHP_ROUND_HALF_DOWN)
-                    . '(' . config('app.platform_currency') . ')',
-                'Client first name' => $client->first_name,
-                'Client last name' => $client->last_name,
-                'Client stripe id' => $client->stripe_customer_id,
-                'Booking reference' => $reference,
-                'Promoted by' => $applied_to,
-                'Charge id' => $chargeId,
-            ]
+            'metadata' => $metadata,
         ]);
 
         $stripeTransfer = $stripe->transfers->create($request);
+
+        $stripe->charges->update(
+            $stripeTransfer->destination_payment,
+            ['metadata' => $metadata],
+            ['stripe_account' => $stripeTransfer->destination]
+        );
 
         $transfer = new Transfer();
         $transfer->user_id = $practitioner->id;
