@@ -39,16 +39,21 @@ class PaymentIntentHandler
         $dataObject = $request->getObject();
 
         $this->_requestPaymentIntentId = $dataObject['id'];
-        $this->_requestAmountPaid = round($dataObject['amount'] / 100, 2);
-        $this->_requestInvoiceId = $dataObject['invoice'];
-        $this->_requestStatus = $dataObject['status'];
-        $this->_requestCurrency = $dataObject['currency'];
-        $this->_requestMetadata = $dataObject['metadata'];
+        $this->_requestAmountPaid   = round($dataObject['amount'] / 100, 2);
+        $this->_requestInvoiceId    = $dataObject['invoice'] ?? '';
+        $this->_requestStatus       = $dataObject['status'] ?? '';
+        $this->_requestCurrency     = $dataObject['currency'] ?? '';
+        $this->_requestMetadata     = $dataObject['metadata'];
 
         if (isset($dataObject['transfer_data'])) {
             $this->_requestPractitionerId = $dataObject['transfer_data']['destination'];
             $this->_requestTransferAmount = round($dataObject['transfer_data']['amount'] / 100, 2);
             $this->_requestTransferId = (array_shift($dataObject['charges']['data']))['transfer'];
+        }
+
+        if (empty($this->_requestInvoiceId)) {
+            Log::channel('stripe_webhooks_error')->info('No invoice id: ', $dataObject);
+            return;
         }
 
         // Get subscription id for getting user purchase
