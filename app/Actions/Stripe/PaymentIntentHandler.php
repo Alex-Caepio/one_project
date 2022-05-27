@@ -52,6 +52,7 @@ class PaymentIntentHandler
         }
 
         if (empty($this->_requestInvoiceId)) {
+            Log::channel('stripe_webhooks_error')->info('No invoice id: ', $dataObject);
             return;
         }
 
