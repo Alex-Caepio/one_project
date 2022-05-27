@@ -10,6 +10,7 @@ use App\Models\Instalment;
 use App\Models\Purchase;
 use App\Models\Schedule;
 use App\Models\User;
+use App\Services\MetadataService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -27,7 +28,7 @@ class PurchaseInstallment
         Purchase $purchase,
         Booking $booking
     ): PaymentIntentDto {
-        $metadata = $this->collectMetadata($schedule, $booking, $purchase);
+        $metadata = MetadataService::retrieveMetadataPurchase($purchase, MetadataService::TYPE_DEPOSIT);
         /** @var User $customer */
         $customer = $request->user();
         $stripe = app()->make(StripeClient::class);
@@ -207,28 +208,5 @@ class PurchaseInstallment
             ]);
 
         return $subscription;
-    }
-
-    private function collectMetadata(Schedule $schedule, Booking $booking, Purchase $purchase): array
-    {
-        $practitioner = $schedule->service->practitioner;
-        $client = $booking->user;
-
-        return [
-            'Practitioner business email' => $practitioner->business_email ?? "",
-            'Practitioner business name' => $practitioner->business_name ?? "",
-            'Practitioner stripe id' => $practitioner->stripe_customer_id ?? "",
-            'Practitioner connected account id' => $practitioner->stripe_account_id ?? "",
-            'Tom Commission' => $practitioner->getCommission() . '%',
-            'Application Fee' =>
-                round($purchase->price * $practitioner->getCommission() / 100, 2, PHP_ROUND_HALF_DOWN)
-                . '(' . config('app.platform_currency') . ')',
-            'Client first name' => $client->first_name ?? "",
-            'Client last name' => $client->last_name ?? "",
-            'Client stripe id' => $client->stripe_customer_id ?? "",
-            'Booking reference' => $booking->reference ?? "",
-            'Promoted by' => $purchase->promocode->promotion->applied_to ?? "",
-            'Type' => 'Installment Purchase',
-        ];
     }
 }
