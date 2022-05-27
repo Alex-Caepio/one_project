@@ -39,14 +39,17 @@ class PaymentIntentHandler
         $dataObject = $request->getObject();
 
         $this->_requestPaymentIntentId = $dataObject['id'];
-        $this->_requestPractitionerId = isset($dataObject['transfer_data']['destination']) ? $dataObject['transfer_data']['destination'] : '';
         $this->_requestAmountPaid = round($dataObject['amount'] / 100, 2);
-        $this->_requestTransferId = (array_shift($dataObject['charges']['data']))['transfer'];
-        $this->_requestTransferAmount = isset($dataObject['transfer_data']['amount']) ? round($dataObject['transfer_data']['amount'] / 100, 2) : '';
         $this->_requestInvoiceId = $dataObject['invoice'];
         $this->_requestStatus = $dataObject['status'];
         $this->_requestCurrency = $dataObject['currency'];
         $this->_requestMetadata = $dataObject['metadata'];
+
+        if (isset($dataObject['transfer_data'])) {
+            $this->_requestPractitionerId = $dataObject['transfer_data']['destination'];
+            $this->_requestTransferAmount = round($dataObject['transfer_data']['amount'] / 100, 2);
+            $this->_requestTransferId = (array_shift($dataObject['charges']['data']))['transfer'];
+        }
 
         // Get subscription id for getting user purchase
         $this->stripeClient = app()->make(StripeClient::class);
