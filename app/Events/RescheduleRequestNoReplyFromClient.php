@@ -17,6 +17,7 @@ class RescheduleRequestNoReplyFromClient {
 
     public function __construct(RescheduleRequest $rescheduleRequest) {
         $this->rescheduleRequest = $rescheduleRequest;
+        $this->reschedule = $rescheduleRequest;
         $this->rescheduleRequest->load([
                                            'booking',
                                            'booking.schedule',
