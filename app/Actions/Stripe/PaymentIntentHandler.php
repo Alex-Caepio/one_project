@@ -45,9 +45,15 @@ class PaymentIntentHandler
         $this->_requestCurrency     = $dataObject['currency'] ?? '';
         $this->_requestMetadata     = $dataObject['metadata'];
 
-        if (isset($dataObject['transfer_data'])) {
+        if (!empty($dataObject['transfer_data'])) {
             $this->_requestPractitionerId = $dataObject['transfer_data']['destination'];
+        }
+
+        if (!empty($dataObject['transfer_data']['amount'])) {
             $this->_requestTransferAmount = round($dataObject['transfer_data']['amount'] / 100, 2);
+        }
+
+        if (!empty($dataObject['charges']['data'])) {
             $this->_requestTransferId = (array_shift($dataObject['charges']['data']))['transfer'];
         }
 
