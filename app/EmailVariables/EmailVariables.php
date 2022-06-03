@@ -827,8 +827,7 @@ class EmailVariables
      */
     private function convertToUserTimezone($datetime): Carbon
     {
-        return Carbon::parse($datetime)->setTimezone($this->event->user->user_timezone->value);
+        $timezone = isset($this->event->recipient) ? $this->event->recipient->user_timezone->value : $this->event->user->user_timezone->value;
+        return Carbon::parse($datetime)->setTimezone($timezone);
     }
-
-
 }
