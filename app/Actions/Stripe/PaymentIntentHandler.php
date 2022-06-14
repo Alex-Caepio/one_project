@@ -54,7 +54,10 @@ class PaymentIntentHandler
         }
 
         if (!empty($dataObject['charges']['data'])) {
-            $this->_requestTransferId = (array_shift($dataObject['charges']['data']))['transfer'];
+            $arr = array_shift($dataObject['charges']['data']);
+            if (isset($arr['transfer'])) {
+                $this->_requestTransferId = $arr['transfer'];
+            }
         }
 
         if (empty($this->_requestInvoiceId)) {

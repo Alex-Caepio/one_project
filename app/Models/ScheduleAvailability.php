@@ -43,7 +43,6 @@ class ScheduleAvailability extends Model
         }
 
         $datetime = new Carbon($datetime);
-        $datetime->setTimezone(Auth::user()->generalTimezone->value);
 
         if ($daysFormatted === 'weekdays' && $datetime->isWeekday()) {
             return true;
