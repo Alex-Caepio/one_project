@@ -1,0 +1,27 @@
+type: object
+properties:
+  id:
+    type: integer
+  name:
+    type: string
+  uses_per_client:
+    type: integer
+    nullable: true
+  uses_per_code:
+    type: integer
+    nullable: true
+  created_at:
+    type: string
+    nullable: true
+    format: date-time
+  updated_at:
+    type: string
+    nullable: true
+    format: date-time
+  deleted_at:
+    type: string
+    nullable: true
+    format: date-time
+  status:
+    type: string
+    nullable: false

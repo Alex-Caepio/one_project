@@ -1,0 +1,156 @@
+disciplines:
+  post:
+    tags:
+      - Discipline
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/forms/admin/Discipline.yaml'
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/Discipline.yaml'
+  get:
+    tags:
+      - Discipline
+    parameters:
+      - name: page
+        in: query
+        description: Pagination page results
+        required: false
+        schema:
+          type: integer
+          example: 2
+      - name: limit
+        in: query
+        description: Results per page
+        required: false
+        schema:
+          type: integer
+          example: 10
+      - name: x-page
+        in: header
+        description: Pagination page results
+        required: false
+        schema:
+          type: integer
+          example: 2
+      - name: x-limit
+        in: header
+        description: Results per page
+        required: false
+        schema:
+          type: integer
+          example: 10
+      - name: with
+        in: query
+        description: Include additional objects in response
+        required: false
+        schema:
+          type: string
+          example: featured_practitioners,featured_services,media_images,media_videos,media_files
+      - name: x-with
+        in: header
+        description: Include additional objects in response
+        required: false
+        schema:
+          type: string
+          example: featured_practitioners,featured_services,media_images,media_videos,media_files
+      - name: is_published
+        in: query
+        description: Published flag
+        required: false
+        schema:
+          type: boolean
+          example: false
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../schemas/Discipline.yaml'
+
+disciplines/{id}:
+  put:
+    tags:
+      - Discipline
+    parameters:
+      - $ref: "#/parameters/id"
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/forms/admin/Discipline.yaml'
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/Discipline.yaml'
+  get:
+    tags:
+      - Discipline
+    parameters:
+      - $ref: "#/parameters/id"
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/Discipline.yaml'
+  delete:
+    tags:
+      - Discipline
+    parameters:
+      - $ref: "#/parameters/id"
+    responses:
+      '204':
+        description: OK
+
+disciplines/{id}/publish:
+  post:
+    operationId: admin-publish-discipline
+    parameters:
+      - $ref: "#/parameters/id"
+    tags:
+      - Discipline
+    responses:
+      '422':
+        description: Validation errors
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/422/DisciplinePublish.yaml'
+      '204':
+        description: OK
+
+disciplines/{id}/unpublish:
+  post:
+    operationId: admin-unpublish-discipline
+    parameters:
+      - $ref: "#/parameters/id"
+    tags:
+      - Discipline
+    responses:
+      '204':
+        description: OK
+
+parameters:
+  id:
+    name: id
+    in: path
+    description: Discipline ID
+    required: true
+    schema:
+      type: integer

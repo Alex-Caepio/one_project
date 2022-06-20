@@ -1,0 +1,17 @@
+type: object
+properties:
+  id:
+    type: string
+  сlients:
+    type: array
+    items: {}
+  start_date:
+    type: string
+    format: date-time
+  end_date:
+    type: string
+    format: date-time
+  location:
+    type: string
+  summary:
+    type: string

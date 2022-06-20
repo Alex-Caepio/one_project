@@ -1,0 +1,36 @@
+AccessToken:
+  $ref: "./AccessToken.yaml"
+Article:
+  $ref: "./Article.yaml"
+Discipline:
+  $ref: "./Discipline.yaml"
+FocusArea:
+  $ref: "./FocusArea.yaml"
+Keyword:
+  $ref: "./Keyword.yaml"
+Location:
+  $ref: "./Location.yaml"
+Plan:
+  $ref: "./Plan.yaml"
+Promotion:
+  $ref: "./Promotion.yaml"
+PromotionCode:
+  $ref: "./PromotionCode.yaml"
+Schedule:
+  $ref: "./Schedule.yaml"
+ScheduleFreeze:
+  $ref: "./ScheduleFreeze.yaml"
+Service:
+  $ref: "./Service.yaml"
+ServiceType:
+  $ref: "./ServiceType.yaml"
+User:
+  $ref: "./User.yaml"
+Mainpage:
+  $ref: "./Mainpage.yaml"
+Country:
+  $ref: "./Country.yaml"
+Booking:
+  $ref: "./Booking.yaml"
+Cancellation:
+  $ref: "./Cancellation.yaml"

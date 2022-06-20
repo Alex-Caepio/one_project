@@ -1,0 +1,37 @@
+type: object
+properties:
+  id:
+    type: integer
+  schedule_id:
+    type: integer
+  price_id:
+    type: integer
+  user_id:
+    type: integer
+  promocode:
+    type: string
+    nullable: true
+  price_original:
+    type: number
+    format: double
+  price:
+    type: number
+    format: double
+  created_at:
+    type: string
+    nullable: true
+    format: date-time
+  updated_at:
+    type: string
+    nullable: true
+    format: date-time
+  deleted_at:
+    type: string
+    nullable: true
+    format: date-time
+  is_deposit:
+    type: boolean
+  deposit_amount:
+    type: number
+    format: double
+    nullable: true

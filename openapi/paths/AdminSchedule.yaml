@@ -1,0 +1,93 @@
+schedules:
+  get:
+    tags:
+      - Admin Schedules
+    parameters:
+      - name: page
+        in: query
+        description: Pagination page results
+        required: false
+        schema:
+          type: integer
+          example: 2
+      - name: limit
+        in: query
+        description: Results per page
+        required: false
+        schema:
+          type: integer
+          example: 10
+      - name: x-page
+        in: header
+        description: Pagination page results
+        required: false
+        schema:
+          type: integer
+          example: 2
+      - name: x-limit
+        in: header
+        description: Results per page
+        required: false
+        schema:
+          type: integer
+          example: 10
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "../schemas/Schedule.yaml"
+schedules/{id}:
+  get:
+    tags:
+      - Admin Schedules
+    parameters:
+      - $ref: "#/parameters/id"
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/Schedule.yaml"
+  delete:
+    tags:
+      - Admin Schedules
+    parameters:
+      - $ref: "#/parameters/id"
+    responses:
+      '204':
+        description: OK
+
+schedules/{id}/publish:
+  post:
+    tags:
+      - Admin Schedules
+    parameters:
+      - $ref: "#/parameters/id"
+    responses:
+      '204':
+        description: OK
+
+schedules/{id}/unpublish:
+  post:
+    tags:
+      - Admin Schedules
+    parameters:
+      - $ref: "#/parameters/id"
+    responses:
+      '204':
+        description: OK
+
+
+parameters:
+  id:
+    name: id
+    in: path
+    description: Schedule ID
+    required: true
+    schema:
+      type: integer

@@ -1,0 +1,149 @@
+focus-areas:
+  post:
+    tags:
+      - Focus Area
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/forms/admin/FocusArea.yaml'
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/FocusArea.yaml'
+  get:
+    tags:
+      - Focus Area
+    parameters:
+      - name: page
+        in: query
+        description: Pagination page results
+        required: false
+        schema:
+          type: integer
+          example: 2
+      - name: limit
+        in: query
+        description: Results per page
+        required: false
+        schema:
+          type: integer
+          example: 10
+      - name: x-page
+        in: header
+        description: Pagination page results
+        required: false
+        schema:
+          type: integer
+          example: 2
+      - name: x-limit
+        in: header
+        description: Results per page
+        required: false
+        schema:
+          type: integer
+          example: 10
+      - name: with
+        in: query
+        description: Include additional objects in response
+        required: false
+        schema:
+          type: string
+          example: featured_practitioners,featured_disciplines,featured_articles,featured_services,featured_focus_areas,media_images,media_videos,media_files
+      - name: x-with
+        in: header
+        description: Include additional objects in response
+        required: false
+        schema:
+          type: string
+          example: featured_practitioners,featured_disciplines,featured_articles,featured_services,featured_focus_areas,media_images,media_videos,media_files
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../schemas/FocusArea.yaml'
+
+focus-areas/{id}:
+  put:
+    tags:
+      - Focus Area
+    parameters:
+      - $ref: "#/parameters/id"
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/forms/admin/FocusArea.yaml'
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/FocusArea.yaml'
+  get:
+    tags:
+      - Focus Area
+    parameters:
+      - $ref: "#/parameters/id"
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/FocusArea.yaml'
+  delete:
+    tags:
+      - Focus Area
+    parameters:
+      - $ref: "#/parameters/id"
+    responses:
+      '204':
+        description: OK
+
+focus-areas/{id}/publish:
+  post:
+    operationId: admin-publish-focus-area
+    parameters:
+      - $ref: "#/parameters/id"
+    tags:
+      - Focus Area
+    responses:
+      '422':
+        description: Validation errors
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/422/FocusAreaPublish.yaml'
+      '204':
+        description: OK
+
+focus-areas/{id}/unpublish:
+  post:
+    operationId: admin-unpublish-focus-area
+    parameters:
+      - $ref: "#/parameters/id"
+    tags:
+      - Focus Area
+    responses:
+      '204':
+        description: OK
+
+parameters:
+  id:
+    name: id
+    in: path
+    description: Focus Area ID
+    required: true
+    schema:
+      type: integer

@@ -1,0 +1,103 @@
+pipeline{
+    environment{
+        projectName = "oneness-dev-back"
+        projectSonarName = "oneness_back"
+        projectKey = "oneness_back:1"
+        workingEnv = "dev"
+        registryName = "262543608829.dkr.ecr.eu-west-1.amazonaws.com"
+        registryURL = "https://262543608829.dkr.ecr.eu-west-1.amazonaws.com"
+        AWSregion = "eu-west-1"
+        registryCredentials = "oneness-dev-andersenaws"
+        jenkins_envfile = "oneness_envconfig_dev_aws"
+    }
+
+    agent{
+        label "master"
+    }
+
+    stages{
+        stage ('Git clone') {
+            steps {
+                checkout([
+                    $class: 'GitSCM',
+                    branches: [[name: "dev"]],
+                    extensions: [[$class: 'WipeWorkspace']],
+                    userRemoteConfigs: [
+                        [
+                            url: 'https://git.andersenlab.com/oneness/back.git',
+                            credentialsId: 'gitlab_andersen'
+                        ]
+                    ]
+                ])
+            }
+        }
+
+     /*   stage("Sonarqube"){
+            tools{
+                jdk 'JDK8-Oracle'
+            }
+            environment{
+                scannerHome = tool 'SonarQube'
+            }
+            steps{
+                withSonarQubeEnv('SonarQube_6.0'){
+                    sh "${scannerHome}/bin/sonar-scanner \
+                    -Dsonar.projectKey=${projectKey} \
+                    -Dsonar.projectName=${projectSonarName} \
+                    -Dsonar.projectVersion=1.0 \
+                    -Dsonar.sources=./"
+                    sh "/var/lib/jenkins/workspace/waitForSonarQube.sh"
+                }
+            }
+        } */
+
+        stage("Build docker image"){
+            steps{
+                configFileProvider([configFile(fileId: "$jenkins_envfile", targetLocation: '.env')]){
+                    script{
+                        dockerImage = docker.build("$registryName/$projectName:$workingEnv", "-f ./Dockerfile.aws ./")
+                    }
+                }
+            }
+        }
+
+        stage("Push docker image to AWS ECR"){
+            steps{
+                withAWS(credentials: "$registryCredentials", region: "$AWSregion") {
+                    sh 'aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 262543608829.dkr.ecr.eu-west-1.amazonaws.com'
+                    sh 'docker push "$registryName/$projectName:$workingEnv"'
+                }
+//                script{
+//                    docker.withRegistry("$registryURL","ecr:$AWSregion:$registryCredentials"){
+//                        dockerImage.push()
+//                    }
+//                }
+            }
+        }
+
+        stage('ECS Service update') {
+            steps {
+                withAWS(credentials: "$registryCredentials", region: "$AWSregion") {
+                     sh '''aws ecs update-service --cluster fargate-test --service back --task-definition fargate-back --force-new-deployment
+                     aws ecs update-service --cluster fargate-test --service back-cron --task-definition fargate-back-artisan:3 --force-new-deployment
+                     aws ecs run-task --cluster fargate-test --count 1 --launch-type FARGATE --task-definition fargate-back-artisan:2 --network-configuration "awsvpcConfiguration={subnets=[subnet-05c45b7a5c26118c5,subnet-0c8925d4d4c95bfb9],securityGroups=[sg-0df3e2cc47174798d],assignPublicIp=DISABLED}"'''
+                }
+            }
+        }
+
+        stage("Clean from docker images"){
+            steps{
+                sh '''docker rmi -f $(docker images --filter=reference="$registryName/$projectName" -q) >/dev/null 2>&1'''
+            }
+        }
+
+    }
+    post{
+        success{
+            cleanWs()
+        }
+        failure{
+            echo "========pipeline execution failed========"
+        }
+    }
+}

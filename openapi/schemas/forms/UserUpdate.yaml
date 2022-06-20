@@ -1,0 +1,36 @@
+type: object
+properties:
+  current_password:
+    type: string
+    example: Qwerty123
+    nullable: true
+  password:
+    type: string
+    example: Qwerty1234
+    nullable: true
+  date_of_birth:
+    type: string
+    nullable: true
+  first_name:
+    type: string
+    example: 'John'
+  last_name:
+    type: string
+    example: 'Doe'
+  mobile_country_code:
+    type: integer
+    nullable: true
+  mobile_number:
+    type: string
+    nullable: true
+  email:
+    type: string
+    nullable: false
+    example: 'test@test.com'
+  country_id:
+    type: integer
+    nullable: false
+  timezone_id:
+     type: integer
+     example: 16
+     nullable: false

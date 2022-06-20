@@ -1,0 +1,166 @@
+services/{serviceid}/schedules:
+  post:
+    tags:
+      - Schedules
+    parameters:
+      - $ref: "#/parameters/serviceid"
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../schemas/Schedule.yaml'
+  get:
+    tags:
+      - Schedules
+    parameters:
+      - $ref: "#/parameters/serviceid"
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../schemas/Schedule.yaml'
+schedules/{id}:
+  put:
+    tags:
+      - Schedules
+    parameters:
+      - $ref: "#/parameters/id"
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/forms/SchedulesUpdate.yaml'
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../schemas/Schedule.yaml'
+
+schedules/{id}/purchase:
+  post:
+    tags:
+      - Schedules
+    parameters:
+      - $ref: "#/parameters/id"
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../schemas/Schedule.yaml'
+
+schedules/{id}/promocode:
+  post:
+    tags:
+      - Schedules
+    parameters:
+      - $ref: "#/parameters/id"
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../schemas/Schedule.yaml'
+
+schedules/{id}/attendants:
+  get:
+    tags:
+      - Schedules
+    parameters:
+      - $ref: "#/parameters/id"
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../schemas/User.yaml'
+
+schedules/{id}/freeze:
+  post:
+    tags:
+      - Schedules
+    parameters:
+      - $ref: "#/parameters/id"
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../schemas/Schedule.yaml'
+
+schedules/{id}/availabilities:
+  get:
+    tags:
+      - Schedules
+    parameters:
+      - $ref: "#/parameters/id"
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                example:
+                - amount_total
+                - amount_left
+                - amount_bought
+                - amount_freezed
+
+schedules/{id}/reschedule-available:
+  get:
+    tags:
+      - Schedules
+    parameters:
+      - $ref: "#/parameters/id"
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../schemas/Schedule.yaml'
+
+parameters:
+  id:
+    name: id
+    in: path
+    description: Schedule ID
+    required: true
+    schema:
+      type: integer
+  serviceid:
+    name: serviceid
+    in: path
+    description: Service ID
+    required: true
+    schema:
+      type: integer

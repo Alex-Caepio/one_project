@@ -1,0 +1,149 @@
+type: object
+properties:
+  id:
+    type: integer
+    example: 6
+  about_me:
+    type: string
+    nullable: true
+  about_my_business:
+    type: string
+    nullable: true
+  account_type:
+    type: string
+    example: practitioner
+  avatar_url:
+    type: string
+    example: 'example.com/avatar.png'
+  background_url:
+    type: string
+    example: 'example.com/background.png'
+  business_address:
+    type: string
+    nullable: true
+  business_company_houses_id:
+    type: string
+    nullable: true
+  business_country_id:
+    type: integer
+    nullable: true
+  country_id:
+    type: integer
+    nullable: true
+  business_city:
+    type: string
+    nullable: true
+  business_email:
+    type: string
+    nullable: true
+  business_introduction:
+    type: string
+    nullable: true
+  business_name:
+    type: string
+    nullable: true
+  business_phone_number:
+    type: string
+    nullable: true
+  business_postal_code:
+    type: string
+    nullable: true
+  business_time_zone:
+    type: string
+    nullable: true
+  business_vat:
+    type: string
+    nullable: true
+  date_of_birth:
+    type: string
+    nullable: true
+  email:
+    type: string
+    example: mmorissette@example.net
+  email_forward_clients:
+    type: boolean
+    example: true
+  email_forward_practitioners:
+    type: boolean
+    example: true
+  email_forward_support:
+    type: boolean
+    example: true
+  email_verified_at:
+    type: string
+    format: date-time
+    nullable: true
+  emails_holistify_update:
+    type: boolean
+    example: true
+  emails_practitioner_offers:
+    type: boolean
+    example: true
+  first_name:
+    type: string
+    example: 'John'
+  gender:
+    type: string
+    example : female
+  last_name:
+    type: string
+    example: 'Doe'
+  is_published:
+    type: boolean
+    example: true
+  is_admin:
+    type: boolean
+    nullable: true
+    example: false
+  is_suspended:
+    type: boolean
+    example: true
+  mobile_number:
+    type: string
+    nullable: true
+  mobile_country_number_code:
+      type: string
+      nullable: true
+  plan_id:
+    type: integer
+    nullable: true
+  plan_until:
+    type: string
+    nullable: true
+    format: date-time
+  plan_from:
+    type: string
+    nullable: true
+    format: date-time
+  public_link:
+    type: string
+    nullable: true
+    example: 'example.com/users/johndoe'
+  stripe_customer_id:
+    type: string
+    example: 'cus_HpyQPawZU9Nw16'
+    nullable: true
+  stripe_account_id:
+      type: string
+      example: 'cus_HpyQPawZU9Nw16'
+      nullable: true
+  business_time_zone_id:
+    type: integer
+    nullable: true
+    example: 98
+  termination_message:
+    type: string
+    nullable: true
+    example: 'Termination reason'
+  status:
+    type: string
+    example: registered,active,suspended,closed
+
+  created_at:
+    type: string
+    nullable: true
+    format: date-time
+  updated_at:
+    type: string
+    nullable: true
+    format: date-time

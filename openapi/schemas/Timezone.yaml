@@ -1,0 +1,17 @@
+type: object
+properties:
+  id:
+    type: integer
+    example: 1
+  value:
+    type: string
+    example: -12:00
+  label:
+    type: string
+    example: (GMT -12:00) Eniwetok, Kwajalein
+  created_at:
+    type: string
+    format: date-time
+  updated_at:
+    type: string
+    format: date-time

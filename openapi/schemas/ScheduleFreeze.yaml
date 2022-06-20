@@ -1,0 +1,19 @@
+type: object
+properties:
+  id:
+    type: integer
+  schedule_id:
+    type: integer
+  user_id:
+    type: integer
+  freeze_at:
+    type: string
+    format: date-time
+  created_at:
+    type: string
+    format: date-time
+    nullable: true
+  updated_at:
+    type: string
+    format: date-time
+    nullable: true

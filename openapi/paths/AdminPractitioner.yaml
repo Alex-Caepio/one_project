@@ -1,0 +1,153 @@
+practitioners:
+  get:
+    tags:
+      - User as a Practitioner
+    parameters:
+      - name: page
+        in: query
+        description: Pagination page results
+        required: false
+        schema:
+          type: integer
+          example: 2
+      - name: limit
+        in: query
+        description: Results per page
+        required: false
+        schema:
+          type: integer
+          example: 10
+      - name: x-page
+        in: header
+        description: Pagination page results
+        required: false
+        schema:
+          type: integer
+          example: 2
+      - name: x-limit
+        in: header
+        description: Results per page
+        required: false
+        schema:
+          type: integer
+          example: 10
+      - name: with
+        in: query
+        description: Include additional objects in response
+        required: false
+        schema:
+          type: string
+          example: access_token, services, articles, schedules, disciplines, promotion_codes, favourite_services, favourite_articles, favourite_practitioners
+      - name: x-with
+        in: header
+        description: Include additional objects in response
+        required: false
+        schema:
+          type: integer
+          example: access_token, services, articles, schedules, disciplines, promotion_codes, favourite_services, favourite_articles, favourite_practitioners
+      - name: is_author
+        in: query
+        description: User has articles
+        required: false
+        schema:
+          type: boolean
+          example: true
+      - name: is_published
+        in: query
+        description: User has published business account
+        required: false
+        schema:
+          type: boolean
+          example: true
+      - name: search
+        in: query
+        description: User first name, last name, email or business name
+        required: false
+        schema:
+          type: string
+          example: test
+      - name: status
+        in: query
+        description: User statuses
+        required: false
+        schema:
+          type: string
+          example: registered,active,suspended,closed
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../schemas/User.yaml'
+
+practitioners/{id}/delete:
+  post:
+    parameters:
+      - $ref: "#/parameters/id"
+    tags:
+      - User as a Practitioner
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/forms/admin/PractitionerDelete.yaml'
+    responses:
+      '204':
+        description: OK
+      '422':
+        description: Validation error
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/422/PractitionerDelete.yaml'
+
+practitioners/{id}/publish:
+  post:
+    parameters:
+      - $ref: "#/parameters/id"
+    tags:
+      - User as a Practitioner
+    responses:
+      '422':
+        description: Validation errors
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/422/AuthProfilePublish.yaml'
+      '204':
+        description: OK
+
+practitioners/{id}/unpublish:
+  parameters:
+    - $ref: "#/parameters/id"
+  post:
+    tags:
+      - User as a Practitioner
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/forms/UnpublishPractitioner.yaml'
+    responses:
+      '422':
+        description: Validation errors
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/422/AuthProfileUnpublish.yaml'
+      '204':
+        description: OK
+
+parameters:
+  id:
+    name: id
+    in: path
+    description: Practitioner ID
+    required: true
+    schema:
+      type: integer

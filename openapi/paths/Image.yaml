@@ -1,0 +1,15 @@
+images:
+  post:
+    operationId: upload-image
+    tags:
+      - Image
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              properties:
+                url:
+                  type: string
+                  example: https://s3.amazonaws.com/bucketname/foldername/imagename.jpg

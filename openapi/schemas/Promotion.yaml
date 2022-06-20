@@ -1,0 +1,45 @@
+type: object
+properties:
+  id:
+    type: integer
+  name:
+    type: string
+  valid_from:
+    type: string
+    format: date-time
+    nullable: true
+  expiry_date:
+    type: string
+    format: date-time
+    nullable: true
+  spend_min:
+    type: number
+    format: double
+    nullable: true
+  spend_max:
+    type: number
+    format: double
+    nullable: true
+  discount_type:
+    type: string
+  discount_value:
+    type: number
+    format: integer
+  applied_to:
+    type: string
+    nullable: true
+  status:
+    type: string
+    nullable: false
+  created_at:
+    type: string
+    nullable: true
+    format: date-time
+  updated_at:
+    type: string
+    nullable: true
+    format: date-time
+  deleted_at:
+    type: string
+    nullable: true
+    format: date-time

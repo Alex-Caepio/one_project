@@ -1,0 +1,263 @@
+auth/register:
+  post:
+    operationId: register
+    tags:
+      - Auth
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/forms/UserRegister.yaml'
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/UserLogin.yaml'
+      '422':
+        description: Validation errors
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/422/UserRegister.yaml'
+auth/profile:
+  get:
+    operationId: get-current-user-info
+    tags:
+      - Auth
+    parameters:
+      - name: with
+        in: query
+        description: Include additional objects in response
+        required: false
+        schema:
+          type: string
+          example: calendar,plan,unavailabilities,country,business_country
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/UserLogin.yaml'
+  put:
+    operationId: update-current-user-info
+    tags:
+      - Auth
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/forms/UserUpdate.yaml'
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/User.yaml'
+
+auth/business-profile:
+  put:
+    operationId: update-current-user-businessinfo
+    tags:
+      - Auth
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/forms/UserBusinessUpdate.yaml'
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/User.yaml'
+
+auth/business-media:
+  put:
+    operationId: update-current-user-mediainfo
+    tags:
+      - Auth
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/forms/UserMediaUpdate.yaml'
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/User.yaml'
+
+
+auth/login:
+  post:
+    operationId: login
+    tags:
+      - Auth
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/forms/UserLogin.yaml'
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/UserLogin.yaml'
+
+auth/publish:
+  post:
+    operationId: practitioner-publish-profile
+    tags:
+      - Auth
+    responses:
+      '422':
+        description: Validation errors
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/422/AuthProfilePublish.yaml'
+      '204':
+        description: OK
+
+auth/unpublish:
+  post:
+    operationId: practitioner-unpublish-profile
+    tags:
+      - Auth
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/forms/UnpublishPractitioner.yaml'
+    responses:
+      '422':
+        description: Validation errors
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/422/AuthProfileUnpublish.yaml'
+      '204':
+        description: OK
+
+auth/forgot-password-ask:
+  post:
+    operationId: ask-for-password-reset
+    tags:
+      - Auth
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/forms/ForgotPasswordAsk.yaml'
+    responses:
+      '204':
+        description: OK
+
+auth/resend-verification:
+  post:
+    operationId: ask-for-password-resend
+    tags:
+      - Auth
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/forms/ResendVerification.yaml'
+    responses:
+      '204':
+        description: OK
+
+auth/forgot-password-claim:
+  post:
+    operationId: clain-password-reset
+    tags:
+      - Auth
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/forms/ForgotPasswordClaim.yaml'
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/UserLogin.yaml'
+
+auth/verify-forgot-password-token:
+  post:
+    operationId: verify-forgot-password-token
+    tags:
+      - Auth
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/forms/VerifyForgotPasswordToken.yaml'
+    responses:
+      '200':
+        description: OK
+      '422':
+        description: Token has expired
+
+auth/verify-email:
+  get:
+    operationId: verify-email
+    tags:
+      - Auth
+    parameters:
+      - name: email
+        in: query
+        description: Email of a user
+        required: true
+        schema:
+          type: string
+          example: eleanor.rigby@gmail.com
+      - name: expires
+        in: query
+        description: Timestamp of signature expiration (48 hours by default)
+        required: true
+        schema:
+          type: integer
+          example: 1603004168
+      - name: user
+        in: query
+        description: User ID
+        required: true
+        schema:
+          type: integer
+          example: 9
+      - name: signatire
+        in: query
+        description: Unique hash signature of a request
+        required: true
+        schema:
+          type: string
+          example: d521f3be510b5a8b77124ae82bf3123e528424174e9536ae759b26f88e673b5d
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/UserLogin.yaml'

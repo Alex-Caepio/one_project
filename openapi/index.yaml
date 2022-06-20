@@ -1,0 +1,6271 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: ""
+  description: ""
+servers:
+  - description: The oneness movement API
+    url: https://dev-oneness.andersenlab.dev/api/
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+schemas:
+  AccessToken:
+    type: object
+    properties:
+      abilities:
+        type: array
+        items:
+          type: string
+        example:
+          - "*"
+      name:
+        type: string
+        example: access-token
+      token:
+        type: string
+        example: 4|hKv4yyJYSZlBDuuZmOcy5AO2ZzPbRJCp6gfbRGvvponscCQzetB51kh1p1Hsis1R2FnKJ5z0gHN4mJll
+  Article:
+    type: object
+    properties:
+      id:
+        type: integer
+      title:
+        type: string
+        nullable: true
+      description:
+        type: string
+        nullable: true
+      user_id:
+        type: integer
+        nullable: true
+      is_published:
+        type: boolean
+        nullable: true
+      introduction:
+        type: string
+        nullable: true
+      url:
+        type: string
+        nullable: true
+      image_url:
+        type: string
+        nullable: true
+      created_at:
+        type: string
+        nullable: true
+        format: date-time
+      updated_at:
+        type: string
+        nullable: true
+        format: date-time
+      deleted_at:
+        type: string
+        nullable: true
+        format: date-time
+      published_at:
+        type: string
+        nullable: true
+        format: date-time
+      last_published:
+        type: string
+        nullable: true
+        format: date-time
+  Discipline:
+    type: object
+    properties:
+      id:
+        type: integer
+        example: 123
+      name:
+        type: string
+        example: Yoga practice
+      introduction:
+        type: string
+        nullable: true
+        example: Yoga desc
+      description:
+        type: string
+        nullable: true
+        example: Yoga loooooong description
+      url:
+        type: string
+        nullable: true
+        example: yoga-practice
+      icon_url:
+        type: string
+        nullable: true
+        example: http://cdn.com/yoga-practice.png
+      banner_url:
+        type: string
+        nullable: true
+        example: http://cdn.com/yoga-practice.png
+      is_published:
+        type: boolean
+        nullable: true
+        example: true
+      created_at:
+        type: string
+        nullable: true
+        format: date-time
+      updated_at:
+        type: string
+        nullable: true
+        format: date-time
+      section_2_h2:
+        nullable: true
+        type: string
+      section_2_h3:
+        nullable: true
+        type: string
+      section_2_background:
+        nullable: true
+        type: string
+      section_2_textarea:
+        nullable: true
+        type: string
+      section_3_h2:
+        nullable: true
+        type: string
+      section_3_h4:
+        nullable: true
+        type: string
+      section_4_h2:
+        nullable: true
+        type: string
+      section_4_h3:
+        nullable: true
+        type: string
+      section_4_background:
+        nullable: true
+        type: string
+      section_4_textarea:
+        nullable: true
+        type: string
+      section_5_header_h2:
+        nullable: true
+        type: string
+      section_6_h2:
+        nullable: true
+        type: string
+      section_6_h3:
+        nullable: true
+        type: string
+      section_6_background:
+        nullable: true
+        type: string
+      section_6_textarea:
+        nullable: true
+        type: string
+      section_7_media_url:
+        nullable: true
+        type: string
+      section_7_tag_line:
+        nullable: true
+        type: string
+      section_7_alt_text:
+        nullable: true
+        type: string
+      section_7_url:
+        nullable: true
+        type: string
+      section_7_target_blanc:
+        nullable: true
+        type: boolean
+      section_8_h2:
+        nullable: true
+        type: string
+      section_9_h2:
+        nullable: true
+        type: string
+      section_9_h3:
+        nullable: true
+        type: string
+      section_9_background:
+        nullable: true
+        type: string
+      section_9_textarea:
+        nullable: true
+        type: string
+      section_10_h2:
+        nullable: true
+        type: string
+      section_11_media_url:
+        nullable: true
+        type: string
+      section_11_tag_line:
+        nullable: true
+        type: string
+      section_11_alt_text:
+        nullable: true
+        type: string
+      section_11_url:
+        nullable: true
+        type: string
+      section_11_target_blanc:
+        nullable: true
+        type: boolean
+      section_12_h2:
+        nullable: true
+        type: string
+      section_13_media_url:
+        nullable: true
+        type: string
+      section_13_tag_line:
+        nullable: true
+        type: string
+      section_13_alt_text:
+        nullable: true
+        type: string
+      section_13_url:
+        nullable: true
+        type: string
+      section_13_target_blanc:
+        nullable: true
+        type: boolean
+      media_images:
+        type: array
+        items:
+          type: object
+          properties:
+            url:
+              type: string
+              example: http://cdn.com/yoga-practice.png
+      media_videos:
+        type: array
+        items:
+          type: object
+          properties:
+            url:
+              type: string
+              example: http://cdn.com/yoga-practice.mp4
+            preview:
+              type: string
+              example: http://cdn.com/yoga-practice.jpg
+      media_files:
+        type: array
+        items:
+          type: object
+          properties:
+            url:
+              type: string
+              example: http://cdn.com/yoga-practice.pdf
+      featured_services:
+        type: array
+        items:
+          $ref: "#/schemas/Service"
+      featured_focus_areas:
+        type: array
+        items:
+          $ref: "#/schemas/FocusArea"
+      featured_articles:
+        type: array
+        items:
+          $ref: "#/schemas/Article"
+      featured_practitioners:
+        type: array
+        items:
+          $ref: "#/schemas/User"
+  FocusArea:
+    type: object
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      url:
+        type: string
+        nullable: true
+      introduction:
+        nullable: true
+        type: string
+      description:
+        nullable: true
+        type: string
+      section_2_h2:
+        nullable: true
+        type: string
+      section_2_h3:
+        nullable: true
+        type: string
+      section_2_background:
+        nullable: true
+        type: string
+      section_2_textarea:
+        nullable: true
+        type: string
+      section_3_h2:
+        nullable: true
+        type: string
+      section_4_tag_line:
+        nullable: true
+        type: string
+      section_4_alt_text:
+        nullable: true
+        type: string
+      section_4_url:
+        nullable: true
+        type: string
+      section_4_target_blanc:
+        nullable: true
+        type: boolean
+      section_5_h2:
+        nullable: true
+        type: string
+      section_5_h3:
+        nullable: true
+        type: string
+      section_5_background:
+        nullable: true
+        type: string
+      section_5_textarea:
+        nullable: true
+        type: string
+      section_6_header_h2:
+        nullable: true
+        type: string
+      section_7_h2:
+        nullable: true
+        type: string
+      section_7_h3:
+        nullable: true
+        type: string
+      section_7_background:
+        nullable: true
+        type: string
+      section_7_text:
+        nullable: true
+        type: string
+      section_8_h2:
+        nullable: true
+        type: string
+      section_9_tag_line:
+        nullable: true
+        type: string
+      section_9_alt_text:
+        nullable: true
+        type: string
+      section_9_url:
+        nullable: true
+        type: string
+      section_9_target_blanc:
+        nullable: true
+        type: boolean
+      section_10_h2:
+        nullable: true
+        type: string
+      section_10_h3:
+        nullable: true
+        type: string
+      section_10_background:
+        nullable: true
+        type: string
+      section_10_textarea:
+        nullable: true
+        type: string
+      section_11_h2:
+        nullable: true
+        type: string
+      section_12_h2:
+        nullable: true
+        type: string
+      section_12_h4:
+        nullable: true
+        type: string
+      section_13_tag_line:
+        nullable: true
+        type: string
+      section_13_alt_text:
+        nullable: true
+        type: string
+      section_13_url:
+        nullable: true
+        type: string
+      section_13_target_blanc:
+        nullable: true
+        type: boolean
+      media_images:
+        type: array
+        items:
+          $ref: "#/schemas/Discipline/properties/media_images/items"
+      media_videos:
+        type: array
+        items:
+          $ref: "#/schemas/Discipline/properties/media_videos/items"
+      media_files:
+        type: array
+        items:
+          $ref: "#/schemas/Discipline/properties/media_files/items"
+      featured_services:
+        type: array
+        items:
+          $ref: "#/schemas/Service"
+      featured_disciplines:
+        type: array
+        items:
+          $ref: "#/schemas/Discipline"
+      featured_articles:
+        type: array
+        items:
+          $ref: "#/schemas/Article"
+      featured_practitioners:
+        type: array
+        items:
+          $ref: "#/schemas/User"
+  Keyword:
+    type: object
+    properties:
+      id:
+        type: integer
+      title:
+        type: string
+  Location:
+    type: object
+    properties:
+      id:
+        type: integer
+      title:
+        type: string
+  Plan:
+    type: object
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+        nullable: true
+      stripe_id:
+        type: integer
+        nullable: true
+      price:
+        type: number
+        format: double
+        nullable: true
+      service_types:
+        type: string
+      image_url:
+        type: string
+        nullable: true
+      description:
+        type: string
+        nullable: true
+      is_free:
+        type: boolean
+        nullable: true
+      unlimited_bookings:
+        type: boolean
+        nullable: true
+      amount_bookings:
+        type: integer
+        nullable: true
+      commission_on_sale:
+        type: number
+        format: double
+        nullable: true
+      schedules_per_service:
+        type: integer
+        nullable: true
+      schedules_per_service_unlimited:
+        type: boolean
+      pricing_options_per_service:
+        type: integer
+        nullable: true
+      pricing_options_per_service_unlimited:
+        type: boolean
+      list_paid_services:
+        type: boolean
+        nullable: true
+      list_free_services:
+        type: boolean
+        nullable: true
+      take_deposits_and_instalment:
+        type: boolean
+        nullable: true
+      contact_clients_with_booking:
+        type: boolean
+        nullable: true
+      market_to_clients:
+        type: string
+      client_reviews:
+        type: string
+      article_publishing:
+        type: integer
+        nullable: true
+      article_publishing_unlimited:
+        type: boolean
+        nullable: true
+      prioritised_business_profile_search:
+        type: boolean
+        nullable: true
+      prioritised_service_search:
+        type: boolean
+        nullable: true
+      busines_profile_page:
+        type: boolean
+        nullable: true
+      unique_web_address:
+        type: boolean
+        nullable: true
+      onboarding_support:
+        type: boolean
+        nullable: true
+      client_analytics:
+        type: boolean
+        nullable: true
+      service_analytics:
+        type: boolean
+        nullable: true
+      financial_analytics:
+        type: boolean
+        nullable: true
+      discount_codes:
+        type: boolean
+      trial_month:
+        type: integer
+        nullable: true
+      order:
+        type: integer
+      created_at:
+        type: string
+        nullable: true
+        format: date-time
+      updated_at:
+        type: string
+        nullable: true
+        format: date-time
+  Promotion:
+    type: object
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      valid_from:
+        type: string
+        format: date-time
+        nullable: true
+      expiry_date:
+        type: string
+        format: date-time
+        nullable: true
+      spend_min:
+        type: number
+        format: double
+        nullable: true
+      spend_max:
+        type: number
+        format: double
+        nullable: true
+      discount_type:
+        type: string
+      discount_value:
+        type: number
+        format: integer
+      applied_to:
+        type: string
+        nullable: true
+      status:
+        type: string
+        nullable: false
+      created_at:
+        type: string
+        nullable: true
+        format: date-time
+      updated_at:
+        type: string
+        nullable: true
+        format: date-time
+      deleted_at:
+        type: string
+        nullable: true
+        format: date-time
+  PromotionCode:
+    type: object
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      uses_per_client:
+        type: integer
+        nullable: true
+      uses_per_code:
+        type: integer
+        nullable: true
+      created_at:
+        type: string
+        nullable: true
+        format: date-time
+      updated_at:
+        type: string
+        nullable: true
+        format: date-time
+      deleted_at:
+        type: string
+        nullable: true
+        format: date-time
+      status:
+        type: string
+        nullable: false
+  Schedule:
+    type: object
+    properties:
+      id:
+        type: integer
+      title:
+        type: string
+      service_id:
+        type: integer
+        nullable: true
+      location_id:
+        type: integer
+        nullable: true
+      start_date:
+        type: string
+        format: date-time
+        nullable: true
+      end_date:
+        type: string
+        format: date-time
+        nullable: true
+      attendees:
+        type: integer
+        nullable: true
+      comments:
+        type: string
+        nullable: true
+      venue:
+        type: string
+        nullable: true
+      city:
+        type: string
+        nullable: true
+      country:
+        type: string
+        nullable: true
+      post_code:
+        type: string
+        nullable: true
+      location_displayed:
+        type: string
+        nullable: true
+      created_at:
+        type: string
+        nullable: true
+        format: date-time
+      updated_at:
+        type: string
+        nullable: true
+        format: date-time
+      meals_breakfast:
+        type: boolean
+      meals_lunch:
+        type: boolean
+      meals_dinner:
+        type: boolean
+      meals_alcoholic_beverages:
+        type: boolean
+      meals_dietry_accomodated:
+        type: boolean
+      refund_terms:
+        type: integer
+        nullable: true
+      booking_message:
+        type: string
+        nullable: true
+      is_virtual:
+        type: boolean
+        nullable: true
+      url:
+        type: string
+        nullable: true
+      book_full_series:
+        type: boolean
+        nullable: true
+      accomodation:
+        type: string
+        example:
+          - included
+          - optional
+          - no
+        nullable: true
+      accomodation_details:
+        type: string
+        nullable: true
+      travel:
+        type: string
+        example:
+          - included
+          - optional
+          - no
+        nullable: true
+      travel_details:
+        type: string
+        nullable: true
+      notice_min_time:
+        type: integer
+        nullable: true
+      notice_min_period:
+        type: string
+        example:
+          - mins
+          - hours
+          - days
+        nullable: true
+      buffer_time:
+        type: integer
+        nullable: true
+      buffer_period:
+        type: string
+        example:
+          - daily
+          - weekly
+          - monthly
+        nullable: true
+      repeat_every:
+        type: integer
+        nullable: true
+      repeat_period:
+        type: string
+        example:
+          - day
+          - week
+          - month
+        nullable: true
+  ScheduleFreeze:
+    type: object
+    properties:
+      id:
+        type: integer
+      schedule_id:
+        type: integer
+      user_id:
+        type: integer
+      freeze_at:
+        type: string
+        format: date-time
+      created_at:
+        type: string
+        format: date-time
+        nullable: true
+      updated_at:
+        type: string
+        format: date-time
+        nullable: true
+  Service:
+    type: object
+    properties:
+      id:
+        type: integer
+      title:
+        type: string
+        nullable: true
+      description:
+        type: string
+        nullable: true
+      user_id:
+        type: integer
+      is_published:
+        type: boolean
+        nullable: true
+      introduction:
+        type: string
+        nullable: true
+      url:
+        type: string
+        nullable: true
+      service_type_id:
+        type: string
+        nullable: true
+      image_url:
+        type: string
+        nullable: true
+      icon_url:
+        type: string
+        nullable: true
+      created_at:
+        type: string
+        nullable: true
+        format: date-time
+      updated_at:
+        type: string
+        nullable: true
+        format: date-time
+      deleted_at:
+        type: string
+        nullable: true
+        format: date-time
+      published_at:
+        type: string
+        nullable: true
+        format: date-time
+      last_published:
+        type: string
+        nullable: true
+        format: date-time
+  ServiceType:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      created_at:
+        type: string
+        nullable: true
+        format: date-time
+      updated_at:
+        type: string
+        nullable: true
+        format: date-time
+  User:
+    type: object
+    properties:
+      id:
+        type: integer
+        example: 6
+      about_me:
+        type: string
+        nullable: true
+      about_my_business:
+        type: string
+        nullable: true
+      account_type:
+        type: string
+        example: practitioner
+      avatar_url:
+        type: string
+        example: example.com/avatar.png
+      background_url:
+        type: string
+        example: example.com/background.png
+      business_address:
+        type: string
+        nullable: true
+      business_company_houses_id:
+        type: string
+        nullable: true
+      business_country_id:
+        type: integer
+        nullable: true
+      country_id:
+        type: integer
+        nullable: true
+      business_city:
+        type: string
+        nullable: true
+      business_email:
+        type: string
+        nullable: true
+      business_introduction:
+        type: string
+        nullable: true
+      business_name:
+        type: string
+        nullable: true
+      business_phone_number:
+        type: string
+        nullable: true
+      business_postal_code:
+        type: string
+        nullable: true
+      business_time_zone:
+        type: string
+        nullable: true
+      business_vat:
+        type: string
+        nullable: true
+      date_of_birth:
+        type: string
+        nullable: true
+      email:
+        type: string
+        example: mmorissette@example.net
+      email_forward_clients:
+        type: boolean
+        example: true
+      email_forward_practitioners:
+        type: boolean
+        example: true
+      email_forward_support:
+        type: boolean
+        example: true
+      email_verified_at:
+        type: string
+        format: date-time
+        nullable: true
+      emails_holistify_update:
+        type: boolean
+        example: true
+      emails_practitioner_offers:
+        type: boolean
+        example: true
+      first_name:
+        type: string
+        example: John
+      gender:
+        type: string
+        example: female
+      last_name:
+        type: string
+        example: Doe
+      is_published:
+        type: boolean
+        example: true
+      is_admin:
+        type: boolean
+        nullable: true
+        example: false
+      is_suspended:
+        type: boolean
+        example: true
+      mobile_number:
+        type: string
+        nullable: true
+      mobile_country_number_code:
+        type: string
+        nullable: true
+      plan_id:
+        type: integer
+        nullable: true
+      plan_until:
+        type: string
+        nullable: true
+        format: date-time
+      plan_from:
+        type: string
+        nullable: true
+        format: date-time
+      public_link:
+        type: string
+        nullable: true
+        example: example.com/users/johndoe
+      stripe_customer_id:
+        type: string
+        example: cus_HpyQPawZU9Nw16
+        nullable: true
+      stripe_account_id:
+        type: string
+        example: cus_HpyQPawZU9Nw16
+        nullable: true
+      business_time_zone_id:
+        type: integer
+        nullable: true
+        example: 98
+      termination_message:
+        type: string
+        nullable: true
+        example: Termination reason
+      status:
+        type: string
+        example: registered,active,suspended,closed
+      created_at:
+        type: string
+        nullable: true
+        format: date-time
+      updated_at:
+        type: string
+        nullable: true
+        format: date-time
+  Mainpage:
+    type: object
+    properties:
+      id:
+        type: string
+      section_1_image_url:
+        nullable: true
+        type: string
+      section_1_alt_text:
+        nullable: true
+        type: string
+      section_1_intro_text:
+        nullable: true
+        type: string
+      section_2_background:
+        nullable: true
+        type: string
+      section_3_h1:
+        nullable: true
+        type: string
+      section_3_h2:
+        nullable: true
+        type: string
+      section_3_background:
+        nullable: true
+        type: string
+      section_3_button_text:
+        nullable: true
+        type: string
+      section_3_button_color:
+        nullable: true
+        type: string
+      section_3_button_url:
+        nullable: true
+        type: string
+      section_3_text:
+        nullable: true
+        type: string
+      section_3_target_blanc:
+        nullable: true
+        type: boolean
+      section_4_h2:
+        nullable: true
+        type: string
+      section_5_h2:
+        nullable: true
+        type: string
+      section_5_h3:
+        nullable: true
+        type: string
+      section_5_background:
+        nullable: true
+        type: string
+      section_5_text:
+        nullable: true
+        type: string
+      section_6_h1:
+        nullable: true
+        type: string
+      section_6_h3:
+        nullable: true
+        type: string
+      section_6_button_text:
+        nullable: true
+        type: string
+      section_6_button_color:
+        nullable: true
+        type: string
+      section_6_button_url:
+        nullable: true
+        type: string
+      section_6_target_blanc:
+        nullable: true
+        type: boolean
+      section_6_text:
+        nullable: true
+        type: string
+      section_6_media_url:
+        nullable: true
+        type: string
+      section_6_alt_text:
+        nullable: true
+        type: string
+      section_7_h2:
+        nullable: true
+        type: string
+      section_8_h1:
+        nullable: true
+        type: string
+      section_8_h3:
+        nullable: true
+        type: string
+      section_8_background:
+        nullable: true
+        type: string
+      section_8_text:
+        nullable: true
+        type: string
+      section_9_h2:
+        nullable: true
+        type: string
+      section_10_h2:
+        nullable: true
+        type: string
+      section_10_h3:
+        nullable: true
+        type: string
+      section_10_text:
+        nullable: true
+        type: string
+      section_10_media_url:
+        nullable: true
+        type: string
+      section_10_alt_text:
+        nullable: true
+        type: string
+      section_11_h2:
+        nullable: true
+        type: string
+      section_11_h3:
+        nullable: true
+        type: string
+      section_11_text:
+        nullable: true
+        type: string
+      section_11_button_text:
+        nullable: true
+        type: string
+      section_11_button_url:
+        nullable: true
+        type: string
+      section_11_button_color:
+        nullable: true
+        type: string
+      section_11_target_blanc:
+        nullable: true
+        type: boolean
+      section_11_media_url:
+        nullable: true
+        type: string
+      section_11_alt_text:
+        nullable: true
+        type: string
+      section_12_h2:
+        nullable: true
+        type: string
+      section_12_h3:
+        nullable: true
+        type: string
+      section_12_media_1_media_url:
+        nullable: true
+        type: string
+      section_12_media_1_url:
+        nullable: true
+        type: string
+      section_12_media_1_traget_blanc:
+        nullable: true
+        type: string
+      section_12_media_2_media_url:
+        nullable: true
+        type: string
+      section_12_media_2_url:
+        nullable: true
+        type: string
+      section_12_media_2_traget_blanc:
+        nullable: true
+        type: boolean
+      section_12_media_3_media_url:
+        nullable: true
+        type: string
+      section_12_media_3_url:
+        nullable: true
+        type: string
+      section_12_media_3_traget_blanc:
+        nullable: true
+        type: boolean
+      section_12_media_4_media_url:
+        nullable: true
+        type: string
+      section_12_media_4_url:
+        nullable: true
+        type: string
+      section_12_media_4_traget_blanc:
+        nullable: true
+        type: boolean
+      section_12_media_5_media_url:
+        nullable: true
+        type: string
+      section_12_media_5_url:
+        nullable: true
+        type: string
+      section_12_media_5_traget_blanc:
+        nullable: true
+        type: boolean
+      section_12_media_6_media_url:
+        nullable: true
+        type: string
+      section_12_media_6_url:
+        nullable: true
+        type: string
+      section_12_media_6_traget_blanc:
+        nullable: true
+        type: boolean
+      featured_focus_areas:
+        type: array
+        items:
+          $ref: "#/schemas/FocusArea"
+      featured_disciplines:
+        type: array
+        items:
+          $ref: "#/schemas/Discipline"
+      featured_practitioners:
+        type: array
+        items:
+          $ref: "#/schemas/User"
+      featured_services:
+        type: array
+        items:
+          $ref: "#/schemas/Service"
+  Country:
+    type: object
+    properties:
+      id:
+        type: integer
+      iso:
+        type: string
+      iso3:
+        type: string
+        nullable: true
+      name:
+        type: string
+      nicename:
+        type: string
+      numcode:
+        type: string
+        nullable: true
+      phonecode:
+        type: string
+      created_at:
+        type: string
+        nullable: true
+        format: date-time
+      updated_at:
+        type: string
+        nullable: true
+        format: date-time
+  Booking:
+    type: object
+    properties:
+      id:
+        type: integer
+      user_id:
+        type: integer
+      practitioner_id:
+        type: integer
+      schedule_id:
+        type: integer
+      availability_id:
+        type: integer
+        nullable: true
+      datetime_from:
+        type: string
+        format: date-time
+        nullable: true
+      datetime_to:
+        type: string
+        format: date-time
+        nullable: true
+      quantity:
+        type: integer
+      created_at:
+        type: string
+        format: date-time
+      updated_at:
+        type: string
+        format: date-time
+      cost:
+        type: number
+        format: double
+      promocode_id:
+        type: integer
+      reference:
+        type: string
+      purchase_id:
+        type: integer
+      cancelled_at:
+        type: string
+        format: date-time
+  Cancellation:
+    type: object
+    properties:
+      id:
+        type: integer
+      user_id:
+        type: integer
+      booking_id:
+        type: integer
+      purchase_id:
+        type: integer
+      practitioner_id:
+        type: integer
+      amount:
+        type: number
+        format: double
+      fee:
+        type: number
+        format: double
+      stripe_id:
+        type: string
+      cancelled_by_client:
+        type: string
+      created_at:
+        type: string
+        format: date-time
+      updated_at:
+        type: string
+        format: date-time
+paths:
+  /api/auth/register:
+    post:
+      operationId: register
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  example: mmorissette@example.net
+                password:
+                  type: string
+                  example: qwerty
+                first_name:
+                  type: string
+                  example: qwerty
+                last_name:
+                  type: string
+                  example: qwerty
+                account_type:
+                  type: string
+                  enum:
+                    - client
+                    - practitioner
+                accepted_terms:
+                  type: boolean
+                  example: true
+                emails_holistify_update:
+                  type: boolean
+                  example: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 6
+                  about_me:
+                    type: string
+                    nullable: true
+                  about_my_business:
+                    type: string
+                    nullable: true
+                  account_type:
+                    type: string
+                    example: practitioner
+                  business_address:
+                    type: string
+                    nullable: true
+                  business_email:
+                    type: string
+                    nullable: true
+                  business_introduction:
+                    type: string
+                    nullable: true
+                  business_name:
+                    type: string
+                    nullable: true
+                  business_phone_number:
+                    type: string
+                    nullable: true
+                  date_of_birth:
+                    type: string
+                    nullable: true
+                  email:
+                    type: string
+                    example: mmorissette@example.net
+                  email_forward_clients:
+                    type: boolean
+                    example: true
+                  email_forward_practitioners:
+                    type: boolean
+                    example: true
+                  email_forward_support:
+                    type: boolean
+                    example: true
+                  email_verified_at:
+                    type: string
+                    format: date-time
+                    nullable: true
+                  emails_holistify_update:
+                    type: boolean
+                    example: true
+                  emails_practitioner_offers:
+                    type: boolean
+                    example: true
+                  first_name:
+                    type: string
+                    example: John
+                  last_name:
+                    type: string
+                    example: Doe
+                  is_published:
+                    type: boolean
+                    example: true
+                  mobile_number:
+                    type: string
+                    nullable: true
+                  public_link:
+                    type: string
+                    nullable: true
+                    example: example.com/users/johndoe
+                  stripe_customer_id:
+                    type: string
+                    example: cus_HpyQPawZU9Nw16
+                  stripe_account_id:
+                    type: string
+                    example: cus_HpyQPawZU9Nw16
+                  business_country_id:
+                    type: integer
+                    example: 98
+                  country_id:
+                    type: integer
+                    example: 97
+                  business_time_zone_id:
+                    type: integer
+                    example: 98
+                  access_token:
+                    $ref: "#/schemas/AccessToken"
+        "422":
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: The given data was invalid.
+                  errors:
+                    type: object
+                    example:
+                      password:
+                        - The password format is invalid.
+                      first_name:
+                        - The first name may not be greater than 30 characters.
+                      last_name:
+                        - The last name may not be greater than 30 characters.
+  /auth/verify-email:
+    get:
+      operationId: verify-email
+      tags:
+        - Auth
+      parameters:
+        - name: email
+          in: query
+          description: Email of a user
+          required: true
+          schema:
+            type: string
+            example: eleanor.rigby@gmail.com
+        - name: expires
+          in: query
+          description: Timestamp of signature expiration (48 hours by default)
+          required: true
+          schema:
+            type: integer
+            example: 1603004168
+        - name: user
+          in: query
+          description: User ID
+          required: true
+          schema:
+            type: integer
+            example: 9
+        - name: signatire
+          in: query
+          description: Unique hash signature of a request
+          required: true
+          schema:
+            type: string
+            example: d521f3be510b5a8b77124ae82bf3123e528424174e9536ae759b26f88e673b5d
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1api~1auth~1register/post/responses/200/content/application~1js\
+                  on/schema"
+  /api/auth/profile:
+    get:
+      operationId: get-current-user-info
+      tags:
+        - Auth
+      parameters:
+        - name: with
+          in: query
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: calendar,plan,unavailabilities,country,business_country
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1api~1auth~1register/post/responses/200/content/application~1js\
+                  on/schema"
+    put:
+      operationId: update-current-user-info
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                current_password:
+                  type: string
+                  example: Qwerty123
+                  nullable: true
+                password:
+                  type: string
+                  example: Qwerty1234
+                  nullable: true
+                date_of_birth:
+                  type: string
+                  nullable: true
+                first_name:
+                  type: string
+                  example: John
+                last_name:
+                  type: string
+                  example: Doe
+                mobile_country_code:
+                  type: integer
+                  nullable: true
+                mobile_number:
+                  type: string
+                  nullable: true
+                email:
+                  type: string
+                  nullable: false
+                  example: test@test.com
+                country_id:
+                  type: integer
+                  nullable: false
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/schemas/User"
+  /api/auth/business-media:
+    put:
+      operationId: update-current-user-mediainfo
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                is_published:
+                  type: boolean
+                  nullable: false
+                about_my_business:
+                  type: string
+                  nullable: true
+                avatar_url:
+                  type: string
+                  nullable: true
+                background_url:
+                  type: string
+                  nullable: true
+                business_city:
+                  type: string
+                  nullable: false
+                business_country_id:
+                  type: integer
+                  nullable: false
+                business_name:
+                  type: string
+                  nullable: false
+                business_introduction:
+                  type: string
+                  nullable: false
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/schemas/User"
+  /api/auth/business-profile:
+    put:
+      operationId: update-current-user-businessinfo
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                is_published:
+                  type: boolean
+                  nullable: false
+                business_name:
+                  type: string
+                  nullable: false
+                business_address:
+                  type: string
+                  nullable: false
+                business_email:
+                  type: string
+                  nullable: false
+                business_introduction:
+                  type: string
+                  nullable: false
+                business_vat:
+                  type: string
+                  nullable: true
+                business_postal_code:
+                  type: string
+                  nullable: true
+                business_city:
+                  type: string
+                  nullable: true
+                business_phone_number:
+                  type: string
+                  nullable: true
+                business_phone_country_code:
+                  type: integer
+                  nullable: true
+                business_country_id:
+                  type: integer
+                  nullable: false
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/schemas/User"
+  /api/auth/login:
+    post:
+      operationId: login
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  example: mmorissette@example.net
+                password:
+                  type: string
+                  example: qwerty
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1api~1auth~1register/post/responses/200/content/application~1js\
+                  on/schema"
+  /api/auth/publish:
+    post:
+      operationId: practitioner-publish-profile
+      tags:
+        - Auth
+      responses:
+        "204":
+          description: OK
+        "422":
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: The given data was invalid.
+                  errors:
+                    type: object
+                    example:
+                      business_name:
+                        - You have not filled in the field "Business name"
+                      business_address:
+                        - You have not filled in the field "Business address"
+                      business_email:
+                        - You have not filled in the field "Business email"
+                      business_introduction:
+                        - You have not filled in the field "Business
+                          introduction"
+  /api/auth/unpublish:
+    post:
+      operationId: practitioner-unpublish-profile
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - cancel_bookings
+              properties:
+                cancel_bookings:
+                  type: boolean
+                  nullable: false
+                  example: true
+      responses:
+        "204":
+          description: OK
+        "422":
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: The given data was invalid.
+                  errors:
+                    type: object
+                    example:
+                      cancel_bookings:
+                        - Choose Cancel Booking option
+  /api/auth/forgot-password-ask:
+    post:
+      operationId: ask-for-password-reset
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  example: mmorissette@example.net
+      responses:
+        "204":
+          description: OK
+  /api/auth/forgot-password-claim:
+    post:
+      operationId: clain-password-reset
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - token
+                - password
+              properties:
+                token:
+                  type: string
+                  example: qd723bxqwp0qam2ey37cvbwasu
+                password:
+                  type: string
+                  example: Qwer1234!
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1api~1auth~1register/post/responses/200/content/application~1js\
+                  on/schema"
+  /api/auth/verify-forgot-password-token:
+    post:
+      operationId: verify-forgot-password-token
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - token
+              properties:
+                token:
+                  type: string
+                  example: qd723bxqwp0qam2ey37cvbwasu
+      responses:
+        "200":
+          description: OK
+        "422":
+          description: Token has expired
+  /api/auth/resend-verification:
+    post:
+      operationId: ask-for-password-resend
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  example: mmorissette@example.net
+      responses:
+        "204":
+          description: OK
+  /articles:
+    post:
+      tags:
+        - Article
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+                - description
+                - url
+                - introduction
+              properties:
+                title:
+                  type: string
+                  example: Yoga practice
+                introduction:
+                  type: string
+                  nullable: true
+                  example: Yoga desc
+                description:
+                  type: string
+                  nullable: true
+                  example: Yoga loooooong description
+                url:
+                  type: string
+                  nullable: true
+                  example: yoga-practice
+                image_url:
+                  type: string
+                  nullable: true
+                  example: http://cdn.com/yoga-practice.png
+                is_published:
+                  type: boolean
+                  nullable: false
+                  example: true
+                focus_areas:
+                  type: array
+                  items:
+                    type: integer
+                  example:
+                    - 123
+                    - 231
+                    - 312
+                disciplines:
+                  type: array
+                  items:
+                    type: integer
+                  example:
+                    - 123
+                    - 231
+                    - 312
+                keywords:
+                  type: array
+                  items:
+                    type: string
+                  example:
+                    - test1
+                    - test2
+                    - test3
+                services:
+                  type: array
+                  items:
+                    type: integer
+                  example:
+                    - 123
+                    - 231
+                    - 312
+                media_images:
+                  type: array
+                  items:
+                    type: string
+                  example:
+                    - http://cdn.com/yoga-practice.png
+                    - http://cdn.com/another-picture.png
+                media_videos:
+                  type: array
+                  items:
+                    type: object
+                  example:
+                    - url: http://cdn.com/yoga-practice.mov
+                      preview: http://cdn.com/yoga-picture.jpeg
+                    - url: http://cdn.com/aroma-practice.mov
+                      preview: http://cdn.com/aroma-picture.jpeg
+                media_files:
+                  type: array
+                  items:
+                    type: object
+                  example:
+                    - url: http://cdn.com/yoga-practice.pdf
+                    - url: http://cdn.com/another-picture.docx
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/schemas/Article"
+        "422":
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: The given data was invalid.
+                  errors:
+                    type: object
+                    example:
+                      title:
+                        - You have not filled in the field "Article title"
+                      url:
+                        - You have not filled in the field "Article url"
+                        - The url has already been taken.
+                      description:
+                        - You have not filled in the field "Article description"
+                      introduction:
+                        - You have not filled in the field "Article introduction"
+    get:
+      tags:
+        - Article
+      parameters:
+        - name: page
+          in: query
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: limit
+          in: query
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: x-page
+          in: header
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: x-limit
+          in: header
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: with
+          in: query
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: user,disciplines,favourite_articles,media_images,media_videos,media_files,focus_areas,keywords,services,last_published
+        - name: x-with
+          in: header
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: user,disciplines,favourite_articles,media_images,media_videos,media_files,focus_areas,keywords,services,last_published
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/schemas/Article"
+  /articles/practitioner: {}
+  "/articles/{id}":
+    get:
+      tags:
+        - Article
+      parameters:
+        - name: id
+          in: path
+          description: Article ID
+          required: true
+          schema:
+            type: integer
+        - name: with
+          in: query
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: user,disciplines,favourite_articles,media_images,media_videos,media_files,focus_areas,keywords,services,last_published
+        - name: x-with
+          in: header
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: user,disciplines,favourite_articles,media_images,media_videos,media_files,focus_areas,keywords,services,last_published
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/schemas/Article"
+    put:
+      tags:
+        - Article
+      parameters:
+        - $ref: "#/paths/~1articles~1%7Bid%7D/get/parameters/0"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/paths/~1articles/post/requestBody/content/application~1json/schema"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/schemas/Article"
+        "422":
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1articles/post/responses/422/content/application~1json/schema"
+    delete:
+      tags:
+        - Article
+      parameters:
+        - $ref: "#/paths/~1articles~1%7Bid%7D/get/parameters/0"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/schemas/Article"
+  "/articles/practitioner/{id}": {}
+  /focus-areas:
+    get:
+      parameters:
+        - name: page
+          in: query
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: limit
+          in: query
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: x-page
+          in: header
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: x-limit
+          in: header
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: with
+          in: query
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: featured_practitioners,featured_disciplines,featured_articles,featured_services,featured_focus_areas,media_images,media_videos,media_files
+        - name: x-with
+          in: header
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: featured_practitioners,featured_disciplines,featured_articles,featured_services,featured_focus_areas,media_images,media_videos,media_files
+      tags:
+        - Focus Area
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/schemas/FocusArea"
+  "/focus-areas/{id}":
+    get:
+      tags:
+        - Focus Area
+      parameters:
+        - name: id
+          in: path
+          description: Focus Area ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/schemas/FocusArea"
+  /disciplines:
+    get:
+      tags:
+        - Discipline
+      parameters:
+        - name: page
+          in: query
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: limit
+          in: query
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: x-page
+          in: header
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: x-limit
+          in: header
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/schemas/Discipline"
+  "/diciplines/{id}":
+    get:
+      tags:
+        - Discipline
+      parameters:
+        - name: id
+          in: path
+          description: Discipline ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/schemas/Discipline"
+  /services:
+    post:
+      tags:
+        - Service
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+                - url
+                - introduction
+                - service_type_id
+              properties:
+                service_type_id:
+                  type: string
+                  nullable: false
+                  example: events
+                title:
+                  type: string
+                  example: Yoga practice
+                introduction:
+                  type: string
+                  nullable: true
+                  example: Yoga desc
+                description:
+                  type: string
+                  nullable: true
+                  example: Yoga loooooong description
+                url:
+                  type: string
+                  nullable: true
+                  example: yoga-practice
+                image_url:
+                  type: string
+                  nullable: true
+                  example: http://cdn.com/yoga-practice.png
+                icon_url:
+                  type: string
+                  nullable: true
+                  example: http://cdn.com/yoga-practice.png
+                is_published:
+                  type: boolean
+                  nullable: false
+                  example: true
+                focus_areas:
+                  type: array
+                  items:
+                    type: integer
+                  example:
+                    - 123
+                    - 231
+                    - 312
+                disciplines:
+                  type: array
+                  items:
+                    type: integer
+                  example:
+                    - 123
+                    - 231
+                    - 312
+                keywords:
+                  type: array
+                  items:
+                    type: string
+                  example:
+                    - test1
+                    - test2
+                    - test3
+                media_images:
+                  type: array
+                  items:
+                    type: string
+                  example:
+                    - http://cdn.com/yoga-practice.png
+                    - http://cdn.com/another-picture.png
+                media_videos:
+                  type: array
+                  items:
+                    type: object
+                  example:
+                    - url: http://cdn.com/yoga-practice.mov
+                      preview: http://cdn.com/yoga-picture.jpeg
+                    - url: http://cdn.com/aroma-practice.mov
+                      preview: http://cdn.com/aroma-picture.jpeg
+                media_files:
+                  type: array
+                  items:
+                    type: object
+                  example:
+                    - url: http://cdn.com/yoga-practice.pdf
+                    - url: http://cdn.com/another-picture.docx
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/schemas/Service"
+        "422":
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: The given data was invalid.
+                  errors:
+                    type: object
+                    example:
+                      title:
+                        - You have not filled in the field "Service title"
+                      url:
+                        - You have not filled in the field "Service url"
+                        - The url has already been taken.
+                      description:
+                        - You have not filled in the field "Service description"
+                      introduction:
+                        - You have not filled in the field "Service introduction"
+                      service_type_id:
+                        - You have not filled in the field "Service Type"
+    get:
+      tags:
+        - Service
+      parameters:
+        - name: page
+          in: query
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: limit
+          in: query
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: x-page
+          in: header
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: x-limit
+          in: header
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: with
+          in: query
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles,media_images,media_videos,media_files
+        - name: x-with
+          in: header
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles,media_images,media_videos,media_files
+        - name: service_type
+          in: query
+          description: Include service types
+          required: false
+          schema:
+            type: string
+            example: workshop,events,retreat,appointment,cources
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/schemas/Service"
+  "/services/{id}":
+    get:
+      tags:
+        - Service
+      parameters:
+        - name: id
+          in: path
+          description: Service ID
+          required: true
+          schema:
+            type: integer
+        - name: with
+          in: query
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles,media_images,media_videos,media_files,last_published
+        - name: x-with
+          in: header
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles,media_images,media_videos,media_files,last_published
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/schemas/Service"
+    put:
+      tags:
+        - Service
+      parameters:
+        - $ref: "#/paths/~1services~1%7Bid%7D/get/parameters/0"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/paths/~1services/post/requestBody/content/application~1json/schema"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/schemas/Service"
+        "422":
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1services/post/responses/422/content/application~1json/schema"
+    delete:
+      tags:
+        - Service
+      parameters:
+        - $ref: "#/paths/~1services~1%7Bid%7D/get/parameters/0"
+      responses:
+        "204":
+          description: OK
+  "/services/{id}/publish":
+    post:
+      tags:
+        - Service
+      parameters:
+        - name: id
+          in: path
+          description: Service ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: OK
+  "/services/{id}/unpublish":
+    post:
+      tags:
+        - Service
+      parameters:
+        - name: id
+          in: path
+          description: Service ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: OK
+  /services/practitioner: {}
+  "/services/practitioner/{id}": {}
+  "/services/{id}/practitioner-schedules":
+    get:
+      tags:
+        - Service
+      parameters:
+        - name: id
+          in: path
+          description: Service ID
+          required: true
+          schema:
+            type: integer
+        - name: with
+          in: query
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles,media_images,media_videos,media_files,last_published
+        - name: x-with
+          in: header
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles,media_images,media_videos,media_files,last_published
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/schemas/Service"
+  /service-types:
+    get:
+      tags:
+        - Service Type
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/schemas/ServiceType"
+  /schedule-freezes:
+    get:
+      tags:
+        - Schedule Freezes
+      parameters:
+        - name: page
+          in: query
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: limit
+          in: query
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: x-page
+          in: header
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: x-limit
+          in: header
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: with
+          in: query
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: schedule,user
+        - name: x-with
+          in: header
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: schedule,user
+        - name: schedule_id
+          in: query
+          description: Schedule ID
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: user_id
+          in: query
+          description: Owner ID
+          required: false
+          schema:
+            type: integer
+            example: 10
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/schemas/ScheduleFreeze"
+  /practitoners: {}
+  /plans:
+    get:
+      operationId: get-plans
+      tags:
+        - Plan
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/schemas/Plan"
+  "/plans/{id}/purchase":
+    post:
+      operationId: purchase-plan
+      tags:
+        - Plan
+      parameters:
+        - name: id
+          in: path
+          description: Plan ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/schemas/Plan"
+  /users:
+    get:
+      tags:
+        - User
+      parameters:
+        - name: page
+          in: query
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: limit
+          in: query
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: x-page
+          in: header
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: x-limit
+          in: header
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: with
+          in: query
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: access_token,services,articles,schedules,disciplines,promotion_codes,favourite_services,favourite_articles,favourite_practitioners,calendar,country,business_country
+        - name: x-with
+          in: header
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: integer
+            example: access_token,services,articles,schedules,disciplines,promotion_codes,favourite_services,favourite_articles,favourite_practitioners,calendar,country,business_country
+        - name: is_author
+          in: query
+          description: User has articles
+          required: false
+          schema:
+            type: boolean
+            example: true
+        - name: is_published
+          in: query
+          description: User has published business account
+          required: false
+          schema:
+            type: boolean
+            example: true
+        - name: search
+          in: query
+          description: User first name, last name, email or business name
+          required: false
+          schema:
+            type: string
+            example: test
+        - name: status
+          in: query
+          description: User statuses
+          required: false
+          schema:
+            type: string
+            example: registered,active,suspended,closed
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/schemas/User"
+  /mainpage:
+    get:
+      tags:
+        - Main Page
+      parameters:
+        - name: with
+          in: query
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: featured_focus_areas,featured_disciplines,featured_practitioners,featured_services
+        - name: x-with
+          in: header
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: integer
+            example: featured_focus_areas,featured_disciplines,featured_practitioners,featured_services
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/schemas/Mainpage"
+  /stripe/link:
+    get:
+      operationId: get-stripe-link
+      tags:
+        - Stripe
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    object:
+                      type: string
+                      example: account_link
+                    created:
+                      type: integer
+                      example: 1606234817
+                    expires_at:
+                      type: integer
+                      example: 1606235117
+                    url:
+                      type: string
+                      example: https://connect.stripe.com/setup/s/TwTLWBLYqawZ
+  /stripe/account:
+    get:
+      operationId: get-stripe-account
+      tags:
+        - Stripe
+      responses:
+        "200":
+          description: OK
+          content:
+            ? application/json
+  /timezones:
+    get:
+      operationId: get-timezones
+      tags:
+        - Timezone
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    value:
+                      type: string
+                      example: -12:00
+                    label:
+                      type: string
+                      example: (GMT -12:00) Eniwetok, Kwajalein
+                    created_at:
+                      type: string
+                      format: date-time
+                    updated_at:
+                      type: string
+                      format: date-time
+  /countries:
+    get:
+      tags:
+        - Country
+      parameters:
+        - name: page
+          in: query
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: limit
+          in: query
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: x-page
+          in: header
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: x-limit
+          in: header
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: search
+          in: query
+          description: Search by code
+          required: false
+          schema:
+            type: string
+            example: Russia
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/schemas/Country"
+  /bookings:
+    get:
+      tags:
+        - Booking
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/schemas/Booking"
+  "/bookings/{id}/reschedule":
+    post:
+      tags:
+        - Booking
+      parameters:
+        - name: id
+          in: path
+          description: Booking ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: OK
+  /bookings/reschedule:
+    post:
+      tags:
+        - Booking
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/schemas/Booking"
+  "/bookings/schedule/{schedule}/reschedule":
+    post:
+      tags:
+        - Booking
+      parameters:
+        - in: path
+          name: schedule
+          required: true
+          schema:
+            type: integer
+          description: Schedule ID
+      responses:
+        "204":
+          description: OK
+  /keywords:
+    get:
+      tags:
+        - Keyword
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/schemas/Keyword"
+  /keywords/list:
+    get:
+      tags:
+        - Keyword
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/schemas/Keyword"
+  /keywords/filter:
+    get:
+      tags:
+        - Keyword
+      parameters:
+        - name: page
+          in: query
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: limit
+          in: query
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: x-page
+          in: header
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: x-limit
+          in: header
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: search
+          in: query
+          description: Search by title
+          required: false
+          schema:
+            type: string
+            example: Yoga
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/schemas/Keyword"
+  /locations:
+    get:
+      tags:
+        - Location
+      parameters:
+        - name: page
+          in: query
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: limit
+          in: query
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: x-page
+          in: header
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: x-limit
+          in: header
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: search
+          in: query
+          description: Search by title
+          required: false
+          schema:
+            type: string
+            example: TimeSquare
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/schemas/Location"
+  /locations/list:
+    get:
+      tags:
+        - Location
+      parameters:
+        - name: page
+          in: query
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: limit
+          in: query
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: x-page
+          in: header
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: x-limit
+          in: header
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: search
+          in: query
+          description: Search by title
+          required: false
+          schema:
+            type: string
+            example: TimeSquare
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties:
+                    id:
+                      type: integer
+                    title:
+                      type: string
+  "/services/{serviceid}/schedules":
+    post:
+      tags:
+        - Schedules
+      parameters:
+        - name: serviceid
+          in: path
+          description: Service ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/schemas/Schedule"
+    get:
+      tags:
+        - Schedules
+      parameters:
+        - $ref: "#/paths/~1services~1%7Bserviceid%7D~1schedules/post/parameters/0"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/schemas/Schedule"
+  "/schedules/{id}":
+    put:
+      tags:
+        - Schedules
+      parameters:
+        - name: id
+          in: path
+          description: Schedule ID
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                title:
+                  type: string
+                service_id:
+                  type: integer
+                start_date:
+                  type: string
+                  format: date-time
+                  nullable: true
+                end_date:
+                  type: string
+                  format: date-time
+                  nullable: true
+                attendees:
+                  type: integer
+                  nullable: true
+                comments:
+                  type: string
+                  nullable: true
+                venue:
+                  type: string
+                  nullable: true
+                city:
+                  type: string
+                  nullable: true
+                country:
+                  type: string
+                  nullable: true
+                post_code:
+                  type: string
+                  nullable: true
+                location_displayed:
+                  type: string
+                  nullable: true
+                created_at:
+                  type: string
+                  nullable: true
+                  format: date-time
+                updated_at:
+                  type: string
+                  nullable: true
+                  format: date-time
+                meals_breakfast:
+                  type: boolean
+                meals_lunch:
+                  type: boolean
+                meals_dinner:
+                  type: boolean
+                meals_alcoholic_beverages:
+                  type: boolean
+                meals_dietry_accomodated:
+                  type: boolean
+                refund_terms:
+                  type: integer
+                  nullable: true
+                booking_message:
+                  type: string
+                  nullable: true
+                is_virtual:
+                  type: boolean
+                  nullable: true
+                url:
+                  type: string
+                  nullable: true
+                book_full_series:
+                  type: boolean
+                  nullable: true
+                accomodation:
+                  type: string
+                  example:
+                    - included
+                    - optional
+                    - no
+                  nullable: true
+                accomodation_details:
+                  type: string
+                  nullable: true
+                travel:
+                  type: string
+                  example:
+                    - included
+                    - optional
+                    - no
+                  nullable: true
+                travel_details:
+                  type: string
+                  nullable: true
+                notice_min_time:
+                  type: integer
+                  nullable: true
+                notice_min_period:
+                  type: string
+                  example:
+                    - mins
+                    - hours
+                    - days
+                  nullable: true
+                buffer_time:
+                  type: integer
+                  nullable: true
+                buffer_period:
+                  type: string
+                  example:
+                    - daily
+                    - weekly
+                    - monthly
+                  nullable: true
+                repeat_every:
+                  type: integer
+                  nullable: true
+                repeat_period:
+                  type: string
+                  example:
+                    - day
+                    - week
+                    - month
+                  nullable: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/schemas/Schedule"
+  "/schedules/{id}/purchase":
+    post:
+      tags:
+        - Schedules
+      parameters:
+        - name: id
+          in: path
+          description: Schedule ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/schemas/Schedule"
+  "/schedules/{id}/attendants":
+    get:
+      tags:
+        - Schedules
+      parameters:
+        - name: id
+          in: path
+          description: Schedule ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/schemas/User"
+  "/schedules/{id}/freeze":
+    post:
+      tags:
+        - Schedules
+      parameters:
+        - name: id
+          in: path
+          description: Schedule ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/schemas/Schedule"
+  "/schedules/{id}/availabilities":
+    get:
+      tags:
+        - Schedules
+      parameters:
+        - name: id
+          in: path
+          description: Schedule ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  example:
+                    - amount_total
+                    - amount_left
+                    - amount_bought
+                    - amount_freezed
+  "/schedules/{id}/reschedule-available":
+    get:
+      tags:
+        - Schedules
+      parameters:
+        - name: id
+          in: path
+          description: Schedule ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/schemas/Schedule"
+  /purchases:
+    get:
+      tags:
+        - Purchase
+      parameters:
+        - name: page
+          in: query
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: limit
+          in: query
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: x-page
+          in: header
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: x-limit
+          in: header
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: with
+          in: query
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: user,schedule,price
+        - name: x-with
+          in: header
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: user,schedule,price
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    schedule_id:
+                      type: integer
+                    price_id:
+                      type: integer
+                    user_id:
+                      type: integer
+                    promocode:
+                      type: string
+                      nullable: true
+                    price_original:
+                      type: number
+                      format: double
+                    price:
+                      type: number
+                      format: double
+                    created_at:
+                      type: string
+                      nullable: true
+                      format: date-time
+                    updated_at:
+                      type: string
+                      nullable: true
+                      format: date-time
+                    deleted_at:
+                      type: string
+                      nullable: true
+                      format: date-time
+                    is_deposit:
+                      type: boolean
+                    deposit_amount:
+                      type: number
+                      format: double
+                      nullable: true
+  /images:
+    post:
+      operationId: upload-image
+      tags:
+        - Image
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  url:
+                    type: string
+                    example: https://s3.amazonaws.com/bucketname/foldername/imagename.jpg
+  /cancellations:
+    get:
+      tags:
+        - Cancellation
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/schemas/Cancellation"
+  "/cancellations/schedule/{schedule}":
+    post:
+      tags:
+        - Cancellation
+      parameters:
+        - in: path
+          name: schedule
+          required: true
+          schema:
+            type: integer
+          description: Schedule ID
+      responses:
+        "204":
+          description: OK
+  "/cancellations/{booking}":
+    post:
+      tags:
+        - Cancellation
+      parameters:
+        - name: booking
+          in: path
+          description: Booking ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: OK
+  /gcal/auth:
+    post:
+      tags:
+        - Calendar
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - code
+              properties:
+                code:
+                  type: string
+                  example: asd7887a9sad
+      responses:
+        "204":
+          description: OK
+  /gcal/events:
+    get:
+      tags:
+        - Calendar
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    сlients:
+                      type: array
+                      items: {}
+                    start_date:
+                      type: string
+                      format: date-time
+                    end_date:
+                      type: string
+                      format: date-time
+                    location:
+                      type: string
+                    summary:
+                      type: string
+  /gcal/settings:
+    get:
+      tags:
+        - Calendar
+      parameters:
+        - name: with
+          in: query
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: unavailabilities
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    user_id:
+                      type: integer
+                    calendar_id:
+                      type: string
+                    timezone_id:
+                      type: integer
+                    is_connected:
+                      type: boolean
+                    created_at:
+                      type: string
+                      format: date-time
+                    unavailabilities:
+                      type: array
+                      items: {}
+                    updated_at:
+                      type: string
+                      format: date-time
+    post:
+      tags:
+        - Calendar
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - timezone_id
+              properties:
+                timezone_id:
+                  type: string
+                  example: Yoga practice
+                unavailabilities:
+                  type: array
+                  items:
+                    type: object
+                  example:
+                    - start_date: Y-m-d H:i:s
+                      end_date: Y-m-d H:i:s
+                    - start_date: Y-m-d H:i:s
+                      end_date: Y-m-d H:i:s
+                  nullable: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1gcal~1settings/get/responses/200/content/application~1json/sch\
+                  ema/items"
+        "422":
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: The given data was invalid.
+                  errors:
+                    type: object
+                    example:
+                      timezone:
+                        - The timezone id field is required.
+  /admin/profile:
+    get:
+      operationId: get-profile
+      summary: get profile for currently logged in admin
+      tags:
+        - Admin Profile
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/schemas/User"
+    put:
+      operationId: update-profile
+      summary: Update profile for currently logged in admin
+      tags:
+        - Admin Profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: mmorissette@example.net
+                first_name:
+                  type: string
+                  example: John
+                last_name:
+                  type: string
+                  example: Doe
+                current_password:
+                  type: string
+                  example: qwerty
+                password:
+                  type: string
+                  example: qwerty1
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/schemas/User"
+  /admin/articles:
+    get:
+      tags:
+        - Article
+      parameters:
+        - name: page
+          in: query
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: limit
+          in: query
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: x-page
+          in: header
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: x-limit
+          in: header
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: with
+          in: query
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: user,disciplines,favourite_articles,media_images,media_videos,media_files,focus_areas,keywords,services,last_published
+        - name: x-with
+          in: header
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: user,disciplines,favourite_articles,media_images,media_videos,media_files,focus_areas,keywords,services,last_published
+        - name: search
+          in: query
+          description: Article title or author name
+          required: false
+          schema:
+            type: string
+            example: title
+        - name: published_from
+          in: query
+          description: Article created date
+          required: false
+          schema:
+            type: string
+            example: 2020-01-01
+        - name: published_to
+          in: query
+          description: Article created date
+          required: false
+          schema:
+            type: string
+            example: 2020-01-01
+        - name: is_deleted
+          in: query
+          description: Deleted or not
+          required: false
+          schema:
+            type: boolean
+            example: false
+        - name: is_published
+          in: query
+          description: Published or not
+          required: false
+          schema:
+            type: string
+            example: false,true
+        - name: practitioner
+          in: query
+          description: article owner
+          required: false
+          schema:
+            type: string
+            example: 2,3,1
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/schemas/Article"
+  "/admin/articles/{id}":
+    delete:
+      tags:
+        - Article
+      parameters:
+        - name: id
+          in: path
+          description: Article ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: OK
+  "/admin/articles/{id}/publish":
+    post:
+      operationId: admin-publish-article
+      parameters:
+        - name: id
+          in: path
+          description: Article ID
+          required: true
+          schema:
+            type: integer
+      tags:
+        - Article
+      responses:
+        "204":
+          description: OK
+  "/admin/articles/{id}/unpublish":
+    post:
+      operationId: admin-unpublish-article
+      parameters:
+        - name: id
+          in: path
+          description: Article ID
+          required: true
+          schema:
+            type: integer
+      tags:
+        - Article
+      responses:
+        "204":
+          description: OK
+  /admin/focus-areas:
+    post:
+      tags:
+        - Focus Area
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                url:
+                  type: string
+                  nullable: true
+                introduction:
+                  nullable: true
+                  type: string
+                description:
+                  nullable: true
+                  type: string
+                section_2_h2:
+                  nullable: true
+                  type: string
+                section_2_h3:
+                  nullable: true
+                  type: string
+                section_2_background:
+                  nullable: true
+                  type: string
+                section_2_textarea:
+                  nullable: true
+                  type: string
+                section_3_h2:
+                  nullable: true
+                  type: string
+                section_4_tag_line:
+                  nullable: true
+                  type: string
+                section_4_alt_text:
+                  nullable: true
+                  type: string
+                section_4_url:
+                  nullable: true
+                  type: string
+                section_4_target_blanc:
+                  nullable: true
+                  type: boolean
+                section_5_h2:
+                  nullable: true
+                  type: string
+                section_5_h3:
+                  nullable: true
+                  type: string
+                section_5_background:
+                  nullable: true
+                  type: string
+                section_5_textarea:
+                  nullable: true
+                  type: string
+                section_6_header_h2:
+                  nullable: true
+                  type: string
+                section_7_h2:
+                  nullable: true
+                  type: string
+                section_7_h3:
+                  nullable: true
+                  type: string
+                section_7_background:
+                  nullable: true
+                  type: string
+                section_7_text:
+                  nullable: true
+                  type: string
+                section_8_h2:
+                  nullable: true
+                  type: string
+                section_9_tag_line:
+                  nullable: true
+                  type: string
+                section_9_alt_text:
+                  nullable: true
+                  type: string
+                section_9_url:
+                  nullable: true
+                  type: string
+                section_9_target_blanc:
+                  nullable: true
+                  type: boolean
+                section_10_h2:
+                  nullable: true
+                  type: string
+                section_10_h3:
+                  nullable: true
+                  type: string
+                section_10_background:
+                  nullable: true
+                  type: string
+                section_10_textarea:
+                  nullable: true
+                  type: string
+                section_11_h2:
+                  nullable: true
+                  type: string
+                section_12_h2:
+                  nullable: true
+                  type: string
+                section_12_h4:
+                  nullable: true
+                  type: string
+                section_13_tag_line:
+                  nullable: true
+                  type: string
+                section_13_alt_text:
+                  nullable: true
+                  type: string
+                section_13_url:
+                  nullable: true
+                  type: string
+                section_13_target_blanc:
+                  nullable: true
+                  type: boolean
+                featured_services:
+                  type: array
+                  items:
+                    type: integer
+                  example:
+                    - 123
+                    - 231
+                    - 312
+                featured_disciplines:
+                  type: array
+                  items:
+                    type: integer
+                  example:
+                    - 123
+                    - 231
+                    - 312
+                featured_articles:
+                  type: array
+                  items:
+                    type: integer
+                  example:
+                    - 123
+                    - 231
+                    - 312
+                featured_practitioners:
+                  type: array
+                  items:
+                    type: integer
+                  example:
+                    - 123
+                    - 231
+                    - 312
+                media_images:
+                  type: array
+                  items:
+                    type: string
+                  example:
+                    - http://cdn.com/yoga-practice.png
+                    - http://cdn.com/another-picture.png
+                media_videos:
+                  type: array
+                  items:
+                    type: object
+                  example:
+                    - url: http://cdn.com/yoga-practice.mov
+                      preview: http://cdn.com/yoga-picture.jpeg
+                    - url: http://cdn.com/aroma-practice.mov
+                      preview: http://cdn.com/aroma-picture.jpeg
+                media_files:
+                  type: array
+                  items:
+                    type: object
+                  example:
+                    - url: http://cdn.com/yoga-practice.pdf
+                    - url: http://cdn.com/another-picture.docx
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/schemas/FocusArea"
+    get:
+      tags:
+        - Focus Area
+      parameters:
+        - name: page
+          in: query
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: limit
+          in: query
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: x-page
+          in: header
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: x-limit
+          in: header
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: with
+          in: query
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: featured_practitioners,featured_disciplines,featured_articles,featured_services,featured_focus_areas,media_images,media_videos,media_files
+        - name: x-with
+          in: header
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: featured_practitioners,featured_disciplines,featured_articles,featured_services,featured_focus_areas,media_images,media_videos,media_files
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/schemas/FocusArea"
+  "/admin/focus-areas/{id}":
+    put:
+      tags:
+        - Focus Area
+      parameters:
+        - name: id
+          in: path
+          description: Focus Area ID
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/paths/~1admin~1focus-areas/post/requestBody/content/application~1json/\
+                schema"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/schemas/FocusArea"
+    get:
+      tags:
+        - Focus Area
+      parameters:
+        - $ref: "#/paths/~1admin~1focus-areas~1%7Bid%7D/put/parameters/0"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/schemas/FocusArea"
+    delete:
+      tags:
+        - Focus Area
+      parameters:
+        - $ref: "#/paths/~1admin~1focus-areas~1%7Bid%7D/put/parameters/0"
+      responses:
+        "204":
+          description: OK
+  "/admin/focus-areas/{id}/publish":
+    post:
+      operationId: admin-publish-focus-area
+      parameters:
+        - name: id
+          in: path
+          description: Focus Area ID
+          required: true
+          schema:
+            type: integer
+      tags:
+        - Focus Area
+      responses:
+        "204":
+          description: OK
+        "422":
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: The given data was invalid.
+                  errors:
+                    type: object
+                    example:
+                      name:
+                        - You have not filled in the field "Discipline name"
+                      url:
+                        - You have not filled in the field "Discipline url"
+                      icon_url:
+                        - You have not filled in the field "Icon url"
+                      description:
+                        - You have not filled in the field "Description"
+                      introduction:
+                        - You have not filled in the field "Introduction"
+  "/admin/focus-areas/{id}/unpublish":
+    post:
+      operationId: admin-unpublish-focus-area
+      parameters:
+        - name: id
+          in: path
+          description: Focus Area ID
+          required: true
+          schema:
+            type: integer
+      tags:
+        - Focus Area
+      responses:
+        "204":
+          description: OK
+  /admin/disciplines:
+    post:
+      tags:
+        - Discipline
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  example: Yoga practice
+                introduction:
+                  type: string
+                  nullable: true
+                  example: Yoga desc
+                description:
+                  type: string
+                  nullable: true
+                  example: Yoga loooooong description
+                url:
+                  type: string
+                  nullable: true
+                  example: yoga-practice
+                icon_url:
+                  type: string
+                  nullable: true
+                  example: http://cdn.com/yoga-practice.png
+                banner_url:
+                  type: string
+                  nullable: true
+                  example: http://cdn.com/yoga-practice.png
+                section_2_h2:
+                  nullable: true
+                  type: string
+                section_2_h3:
+                  nullable: true
+                  type: string
+                section_2_background:
+                  nullable: true
+                  type: string
+                section_2_textarea:
+                  nullable: true
+                  type: string
+                section_3_h2:
+                  nullable: true
+                  type: string
+                section_3_h4:
+                  nullable: true
+                  type: string
+                section_4_h2:
+                  nullable: true
+                  type: string
+                section_4_h3:
+                  nullable: true
+                  type: string
+                section_4_background:
+                  nullable: true
+                  type: string
+                section_4_textarea:
+                  nullable: true
+                  type: string
+                section_5_header_h2:
+                  nullable: true
+                  type: string
+                section_6_h2:
+                  nullable: true
+                  type: string
+                section_6_h3:
+                  nullable: true
+                  type: string
+                section_6_background:
+                  nullable: true
+                  type: string
+                section_6_textarea:
+                  nullable: true
+                  type: string
+                section_7_media_url:
+                  nullable: true
+                  type: string
+                section_7_tag_line:
+                  nullable: true
+                  type: string
+                section_7_alt_text:
+                  nullable: true
+                  type: string
+                section_7_url:
+                  nullable: true
+                  type: string
+                section_7_target_blanc:
+                  nullable: true
+                  type: boolean
+                section_8_h2:
+                  nullable: true
+                  type: string
+                section_9_h2:
+                  nullable: true
+                  type: string
+                section_9_h3:
+                  nullable: true
+                  type: string
+                section_9_background:
+                  nullable: true
+                  type: string
+                section_9_textarea:
+                  nullable: true
+                  type: string
+                section_10_h2:
+                  nullable: true
+                  type: string
+                section_11_media_url:
+                  nullable: true
+                  type: string
+                section_11_tag_line:
+                  nullable: true
+                  type: string
+                section_11_alt_text:
+                  nullable: true
+                  type: string
+                section_11_url:
+                  nullable: true
+                  type: string
+                section_11_target_blanc:
+                  nullable: true
+                  type: boolean
+                section_12_h2:
+                  nullable: true
+                  type: string
+                section_13_media_url:
+                  nullable: true
+                  type: string
+                section_13_tag_line:
+                  nullable: true
+                  type: string
+                section_13_alt_text:
+                  nullable: true
+                  type: string
+                section_13_url:
+                  nullable: true
+                  type: string
+                section_13_target_blanc:
+                  nullable: true
+                  type: boolean
+                featured_practitioners:
+                  type: array
+                  items:
+                    type: integer
+                  example:
+                    - 123
+                    - 231
+                    - 312
+                featured_services:
+                  type: array
+                  items:
+                    type: integer
+                  example:
+                    - 123
+                    - 231
+                    - 312
+                focus_areas:
+                  type: array
+                  items:
+                    type: integer
+                  example:
+                    - 123
+                    - 231
+                    - 312
+                related_disciplines:
+                  type: array
+                  items:
+                    type: integer
+                  example:
+                    - 123
+                    - 231
+                    - 312
+                media_images:
+                  type: array
+                  items:
+                    type: string
+                  example:
+                    - http://cdn.com/yoga-practice.png
+                    - http://cdn.com/another-picture.png
+                media_videos:
+                  type: array
+                  items:
+                    type: object
+                  example:
+                    - url: http://cdn.com/yoga-practice.mov
+                      preview: http://cdn.com/yoga-picture.jpeg
+                    - url: http://cdn.com/aroma-practice.mov
+                      preview: http://cdn.com/aroma-picture.jpeg
+                media_files:
+                  type: array
+                  items:
+                    type: object
+                  example:
+                    - url: http://cdn.com/yoga-practice.pdf
+                    - url: http://cdn.com/another-picture.docx
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/schemas/Discipline"
+    get:
+      tags:
+        - Discipline
+      parameters:
+        - name: page
+          in: query
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: limit
+          in: query
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: x-page
+          in: header
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: x-limit
+          in: header
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: with
+          in: query
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: featured_practitioners,featured_services,media_images,media_videos,media_files
+        - name: x-with
+          in: header
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: featured_practitioners,featured_services,media_images,media_videos,media_files
+        - name: is_published
+          in: query
+          description: Published flag
+          required: false
+          schema:
+            type: boolean
+            example: false
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/schemas/Discipline"
+  "/admin/disciplines/{id}":
+    put:
+      tags:
+        - Discipline
+      parameters:
+        - name: id
+          in: path
+          description: Discipline ID
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/paths/~1admin~1disciplines/post/requestBody/content/application~1json/\
+                schema"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/schemas/Discipline"
+    get:
+      tags:
+        - Discipline
+      parameters:
+        - $ref: "#/paths/~1admin~1disciplines~1%7Bid%7D/put/parameters/0"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/schemas/Discipline"
+    delete:
+      tags:
+        - Discipline
+      parameters:
+        - $ref: "#/paths/~1admin~1disciplines~1%7Bid%7D/put/parameters/0"
+      responses:
+        "204":
+          description: OK
+  "/admin/disciplines/{id}/publish":
+    post:
+      operationId: admin-publish-discipline
+      parameters:
+        - name: id
+          in: path
+          description: Discipline ID
+          required: true
+          schema:
+            type: integer
+      tags:
+        - Discipline
+      responses:
+        "204":
+          description: OK
+        "422":
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: The given data was invalid.
+                  errors:
+                    type: object
+                    example:
+                      name:
+                        - You have not filled in the field "Discipline name"
+                      url:
+                        - You have not filled in the field "Discipline url"
+                      icon_url:
+                        - You have not filled in the field "Icon url"
+  "/admin/disciplines/{id}/unpublish":
+    post:
+      operationId: admin-unpublish-discipline
+      parameters:
+        - name: id
+          in: path
+          description: Discipline ID
+          required: true
+          schema:
+            type: integer
+      tags:
+        - Discipline
+      responses:
+        "204":
+          description: OK
+  /admin/mainpage:
+    get:
+      tags:
+        - Main Page
+      parameters:
+        - name: with
+          in: query
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: featured_focus_areas,featured_disciplines,featured_practitioners,featured_services
+        - name: x-with
+          in: header
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: integer
+            example: featured_focus_areas,featured_disciplines,featured_practitioners,featured_services
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/schemas/Mainpage"
+    put:
+      tags:
+        - Main Page
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                section_1_image_url:
+                  nullable: true
+                  type: string
+                section_1_alt_text:
+                  nullable: true
+                  type: string
+                section_1_intro_text:
+                  nullable: true
+                  type: string
+                section_2_background:
+                  nullable: true
+                  type: string
+                section_3_h1:
+                  nullable: true
+                  type: string
+                section_3_h2:
+                  nullable: true
+                  type: string
+                section_3_background:
+                  nullable: true
+                  type: string
+                section_3_button_text:
+                  nullable: true
+                  type: string
+                section_3_button_color:
+                  nullable: true
+                  type: string
+                section_3_button_url:
+                  nullable: true
+                  type: string
+                section_3_text:
+                  nullable: true
+                  type: string
+                section_3_target_blanc:
+                  nullable: true
+                  type: boolean
+                section_4_h2:
+                  nullable: true
+                  type: string
+                section_5_h2:
+                  nullable: true
+                  type: string
+                section_5_h3:
+                  nullable: true
+                  type: string
+                section_5_background:
+                  nullable: true
+                  type: string
+                section_5_text:
+                  nullable: true
+                  type: string
+                section_6_h1:
+                  nullable: true
+                  type: string
+                section_6_h3:
+                  nullable: true
+                  type: string
+                section_6_button_text:
+                  nullable: true
+                  type: string
+                section_6_button_color:
+                  nullable: true
+                  type: string
+                section_6_button_url:
+                  nullable: true
+                  type: string
+                section_6_target_blanc:
+                  nullable: true
+                  type: boolean
+                section_6_text:
+                  nullable: true
+                  type: string
+                section_6_media_url:
+                  nullable: true
+                  type: string
+                section_6_alt_text:
+                  nullable: true
+                  type: string
+                section_7_h2:
+                  nullable: true
+                  type: string
+                section_8_h1:
+                  nullable: true
+                  type: string
+                section_8_h3:
+                  nullable: true
+                  type: string
+                section_8_background:
+                  nullable: true
+                  type: string
+                section_8_text:
+                  nullable: true
+                  type: string
+                section_9_h2:
+                  nullable: true
+                  type: string
+                section_10_h2:
+                  nullable: true
+                  type: string
+                section_10_h3:
+                  nullable: true
+                  type: string
+                section_10_text:
+                  nullable: true
+                  type: string
+                section_10_media_url:
+                  nullable: true
+                  type: string
+                section_10_alt_text:
+                  nullable: true
+                  type: string
+                section_11_h2:
+                  nullable: true
+                  type: string
+                section_11_h3:
+                  nullable: true
+                  type: string
+                section_11_text:
+                  nullable: true
+                  type: string
+                section_11_button_text:
+                  nullable: true
+                  type: string
+                section_11_button_url:
+                  nullable: true
+                  type: string
+                section_11_button_color:
+                  nullable: true
+                  type: string
+                section_11_target_blanc:
+                  nullable: true
+                  type: boolean
+                section_11_media_url:
+                  nullable: true
+                  type: string
+                section_11_alt_text:
+                  nullable: true
+                  type: string
+                section_12_h2:
+                  nullable: true
+                  type: string
+                section_12_h3:
+                  nullable: true
+                  type: string
+                section_12_media_1_media_url:
+                  nullable: true
+                  type: string
+                section_12_media_1_url:
+                  nullable: true
+                  type: string
+                section_12_media_1_traget_blanc:
+                  nullable: true
+                  type: string
+                section_12_media_2_media_url:
+                  nullable: true
+                  type: string
+                section_12_media_2_url:
+                  nullable: true
+                  type: string
+                section_12_media_2_traget_blanc:
+                  nullable: true
+                  type: boolean
+                section_12_media_3_media_url:
+                  nullable: true
+                  type: string
+                section_12_media_3_url:
+                  nullable: true
+                  type: string
+                section_12_media_3_traget_blanc:
+                  nullable: true
+                  type: boolean
+                section_12_media_4_media_url:
+                  nullable: true
+                  type: string
+                section_12_media_4_url:
+                  nullable: true
+                  type: string
+                section_12_media_4_traget_blanc:
+                  nullable: true
+                  type: boolean
+                section_12_media_5_media_url:
+                  nullable: true
+                  type: string
+                section_12_media_5_url:
+                  nullable: true
+                  type: string
+                section_12_media_5_traget_blanc:
+                  nullable: true
+                  type: boolean
+                section_12_media_6_media_url:
+                  nullable: true
+                  type: string
+                section_12_media_6_url:
+                  nullable: true
+                  type: string
+                section_12_media_6_traget_blanc:
+                  nullable: true
+                  type: boolean
+                featured_focus_areas:
+                  type: array
+                  items:
+                    type: integer
+                  example:
+                    - 123
+                    - 231
+                    - 312
+                featured_disciplines:
+                  type: array
+                  items:
+                    type: integer
+                  example:
+                    - 123
+                    - 231
+                    - 312
+                featured_practitioners:
+                  type: array
+                  items:
+                    type: integer
+                  example:
+                    - 123
+                    - 231
+                    - 312
+                featured_services:
+                  type: array
+                  items:
+                    type: integer
+                  example:
+                    - 123
+                    - 231
+                    - 312
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/schemas/Mainpage"
+  /admin/clients:
+    get:
+      tags:
+        - User as a Client
+      parameters:
+        - name: page
+          in: query
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: limit
+          in: query
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: x-page
+          in: header
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: x-limit
+          in: header
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: with
+          in: query
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: access_token, services, articles, schedules, disciplines,
+              promotion_codes, favourite_services, favourite_articles,
+              favourite_practitioners
+        - name: x-with
+          in: header
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: integer
+            example: access_token, services, articles, schedules, disciplines,
+              promotion_codes, favourite_services, favourite_articles,
+              favourite_practitioners
+        - name: is_author
+          in: query
+          description: User has articles
+          required: false
+          schema:
+            type: boolean
+            example: true
+        - name: is_published
+          in: query
+          description: User has published business account
+          required: false
+          schema:
+            type: boolean
+            example: true
+        - name: search
+          in: query
+          description: User first name, last name, email or business name
+          required: false
+          schema:
+            type: string
+            example: test
+        - name: status
+          in: query
+          description: User statuses
+          required: false
+          schema:
+            type: string
+            example: registered,active,suspended,closed
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/schemas/User"
+  "/admin/clients/{id}/delete":
+    post:
+      parameters:
+        - name: id
+          in: path
+          description: Client ID
+          required: true
+          schema:
+            type: integer
+      tags:
+        - User as a Client
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - message
+              properties:
+                message:
+                  type: string
+                  example: Termination message
+      responses:
+        "204":
+          description: OK
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: The given data was invalid.
+                  errors:
+                    type: object
+                    example:
+                      message:
+                        - Message field may not be greater than 1000 characters.
+                        - Message field may not be less than 10 characters.
+                        - Message field may is required.
+  /admin/practitioners:
+    get:
+      tags:
+        - User as a Practitioner
+      parameters:
+        - name: page
+          in: query
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: limit
+          in: query
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: x-page
+          in: header
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: x-limit
+          in: header
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: with
+          in: query
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: access_token, services, articles, schedules, disciplines,
+              promotion_codes, favourite_services, favourite_articles,
+              favourite_practitioners
+        - name: x-with
+          in: header
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: integer
+            example: access_token, services, articles, schedules, disciplines,
+              promotion_codes, favourite_services, favourite_articles,
+              favourite_practitioners
+        - name: is_author
+          in: query
+          description: User has articles
+          required: false
+          schema:
+            type: boolean
+            example: true
+        - name: is_published
+          in: query
+          description: User has published business account
+          required: false
+          schema:
+            type: boolean
+            example: true
+        - name: search
+          in: query
+          description: User first name, last name, email or business name
+          required: false
+          schema:
+            type: string
+            example: test
+        - name: status
+          in: query
+          description: User statuses
+          required: false
+          schema:
+            type: string
+            example: registered,active,suspended,closed
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/schemas/User"
+  "/admin/practitioners/{id}/delete":
+    post:
+      parameters:
+        - name: id
+          in: path
+          description: Practitioner ID
+          required: true
+          schema:
+            type: integer
+      tags:
+        - User as a Practitioner
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - message
+              properties:
+                message:
+                  type: string
+                  example: Termination message
+      responses:
+        "204":
+          description: OK
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: The given data was invalid.
+                  errors:
+                    type: object
+                    example:
+                      message:
+                        - Message field may not be greater than 1000 characters.
+                        - Message field may not be less than 10 characters.
+                        - Message field may is required.
+  "/admin/practitioners/{id}/publish":
+    post:
+      parameters:
+        - name: id
+          in: path
+          description: Practitioner ID
+          required: true
+          schema:
+            type: integer
+      tags:
+        - User as a Practitioner
+      responses:
+        "204":
+          description: OK
+        "422":
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1api~1auth~1publish/post/responses/422/content/application~1jso\
+                  n/schema"
+  "/admin/practitioners/{id}/unpublish":
+    parameters:
+      - name: id
+        in: path
+        description: Practitioner ID
+        required: true
+        schema:
+          type: integer
+    post:
+      tags:
+        - User as a Practitioner
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/paths/~1api~1auth~1unpublish/post/requestBody/content/application~1jso\
+                n/schema"
+      responses:
+        "204":
+          description: OK
+        "422":
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1api~1auth~1unpublish/post/responses/422/content/application~1j\
+                  son/schema"
+  /admin/promotions:
+    get:
+      tags:
+        - Promotion
+      parameters:
+        - name: page
+          in: query
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: limit
+          in: query
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: x-page
+          in: header
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: x-limit
+          in: header
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: with
+          in: query
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: promotion_codes,disciplines,focus_areas,service_type,practitioners
+        - name: x-with
+          in: header
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: promotion_codes,disciplines,focus_areas,service_type,practitioners
+        - name: search
+          in: query
+          description: Promotion name, practitioner email, promocode, service type,
+            discipline name, focus_area
+          required: false
+          schema:
+            type: string
+            example: title
+        - name: valid_from
+          in: query
+          description: Promotion Valid From
+          required: false
+          schema:
+            type: string
+            example: 2020-01-01
+        - name: expiry_date
+          in: query
+          description: Promotion expiry_date
+          required: false
+          schema:
+            type: string
+            example: 2020-01-01
+        - name: discount_type
+          in: query
+          description: Discount Type(percentage or monetary)
+          required: false
+          schema:
+            type: string
+            example: percentage
+        - name: discount_value
+          in: query
+          description: Discount value range
+          required: false
+          schema:
+            type: string
+            example: 0:100
+        - name: status
+          in: query
+          description: Status
+          required: false
+          schema:
+            type: string
+            example: active,disabled,complete,deleted
+        - name: applied_to
+          in: query
+          description: Applied To (host Or both)
+          required: false
+          schema:
+            type: string
+            example: host
+        - name: spend_min
+          in: query
+          description: Min spend to apply
+          required: false
+          schema:
+            type: string
+            example: 10.05
+        - name: spend_max
+          in: query
+          description: Max spend to apply
+          required: false
+          schema:
+            type: string
+            example: 1000.05
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/schemas/Promotion"
+    post:
+      tags:
+        - Promotion
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - discount_type
+                - discount_value
+                - applied_to
+                - total_codes
+              properties:
+                name:
+                  type: string
+                  nullable: false
+                  example: Promotion Name Test
+                valid_from:
+                  type: string
+                  nullable: true
+                  example: 2020-10-10
+                expiry_date:
+                  type: string
+                  nullable: true
+                  example: 2020-10-10
+                discount_type:
+                  nullable: false
+                  type: string
+                  example: percentage || monetary
+                discount_value:
+                  nullable: false
+                  type: number
+                  format: double
+                spend_min:
+                  nullable: true
+                  type: number
+                  format: double
+                spend_max:
+                  nullable: true
+                  type: number
+                  format: double
+                applied_to:
+                  type: string
+                  nullable: false
+                  example: host || both
+                uses_per_client:
+                  nullable: true
+                  type: number
+                  format: integer
+                uses_per_code:
+                  nullable: true
+                  type: number
+                  format: integer
+                total_codes:
+                  nullable: false
+                  type: number
+                  format: integer
+                promocode_names:
+                  type: array
+                  items:
+                    type: integer
+                  example:
+                    - code1
+                    - code2
+                    - code3
+                practitioners:
+                  type: array
+                  items:
+                    type: integer
+                  example:
+                    - 123
+                    - 231
+                    - 312
+                disciplines:
+                  type: array
+                  items:
+                    type: integer
+                  example:
+                    - 123
+                    - 231
+                    - 312
+                focus_areas:
+                  type: array
+                  items:
+                    type: integer
+                  example:
+                    - 123
+                    - 231
+                    - 312
+                service_types:
+                  type: array
+                  items:
+                    type: string
+                  example:
+                    - events
+                    - workshop
+                    - whatever
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/schemas/Promotion"
+        "422":
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: The given data was invalid.
+                  errors:
+                    type: object
+                    example:
+                      name:
+                        - You have not filled in the field "Promotion name"
+                      discount_type:
+                        - You have not filled in the field "Promotion discount
+                          type"
+                      discount_value:
+                        - You have not filled in the field "Promotion discount
+                          value"
+                      applied_to:
+                        - You have not filled in the field "Promotion applied to"
+                      total_codes:
+                        - You have not filled in the field "Promotion requested
+                          codes count"
+  "/admin/promotions/{id}":
+    get:
+      tags:
+        - Promotion
+      parameters:
+        - name: id
+          in: path
+          description: Promotion ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/schemas/Promotion"
+    delete:
+      tags:
+        - Promotion
+      parameters:
+        - $ref: "#/paths/~1admin~1promotions~1%7Bid%7D/get/parameters/0"
+      responses:
+        "204":
+          description: OK
+    put:
+      tags:
+        - Promotion
+      parameters:
+        - $ref: "#/paths/~1admin~1promotions~1%7Bid%7D/get/parameters/0"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/paths/~1admin~1promotions/post/requestBody/content/application~1json/s\
+                chema"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/schemas/Promotion"
+        "422":
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1admin~1promotions/post/responses/422/content/application~1json\
+                  /schema"
+  "/admin/promotions/{id}/enable":
+    post:
+      tags:
+        - Promotion
+      parameters:
+        - name: id
+          in: path
+          description: Promotion ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/schemas/Promotion"
+        "422":
+          description: Validation failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: The given data was invalid.
+                  errors:
+                    type: object
+                    example:
+                      status:
+                        - Promotion is expired and cannot be enabled
+  "/admin/promotions/{id}/disable":
+    post:
+      tags:
+        - Promotion
+      parameters:
+        - name: id
+          in: path
+          description: Promotion ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/schemas/Promotion"
+  /admin/promotion-codes:
+    get:
+      tags:
+        - Promotion Codes
+      parameters:
+        - name: page
+          in: query
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: limit
+          in: query
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: x-page
+          in: header
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: x-limit
+          in: header
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: with
+          in: query
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: promotion,users
+        - name: x-with
+          in: header
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: promotion,users
+        - name: status
+          in: query
+          description: Status
+          required: false
+          schema:
+            type: string
+            example: active,disabled,complete,deleted
+        - name: promotion_id
+          in: query
+          description: The list of promotions ID
+          required: false
+          schema:
+            type: string
+            example: 1,2,3
+        - name: search
+          in: query
+          description: Search by Promo Name
+          required: false
+          schema:
+            type: string
+            example: ABCDG
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/schemas/PromotionCode"
+  /admin/promotion-codes/export:
+    get:
+      tags:
+        - Promotion Codes
+      parameters:
+        - name: status
+          in: query
+          description: Status
+          required: false
+          schema:
+            type: string
+            example: active,disabled,complete,deleted
+        - name: promotion_id
+          in: query
+          description: The list of promotions ID
+          required: false
+          schema:
+            type: string
+            example: 1,2,3
+        - name: search
+          in: query
+          description: Search by Promo Name
+          required: false
+          schema:
+            type: string
+            example: ABCDG
+        - name: type
+          in: query
+          description: File Type (csv or xls)
+          required: true
+          schema:
+            type: string
+            example: csv
+      responses:
+        "200":
+          description: File successfully generated
+          content:
+            application/vnd.ms-excel:
+              schema:
+                type: string
+                format: binary
+  "/admin/promotion-codes/{id}/destroy":
+    delete:
+      tags:
+        - Promotion Codes
+      parameters:
+        - name: id
+          in: path
+          description: Promotion Code ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: OK
+  "/admin/promotion-codes/{id}/enable":
+    post:
+      tags:
+        - Promotion Codes
+      parameters:
+        - name: id
+          in: path
+          description: Promotion Code ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/schemas/PromotionCode"
+  "/admin/promotion-codes/{id}/disable":
+    post:
+      tags:
+        - Promotion Codes
+      parameters:
+        - name: id
+          in: path
+          description: Promotion Code ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/schemas/PromotionCode"
+  /admin/plans:
+    post:
+      operationId: admin-create-plan
+      tags:
+        - Plan
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+                stripe_id:
+                  type: integer
+                price:
+                  type: number
+                  format: double
+                service_types:
+                  type: string
+                image_url:
+                  type: string
+                description:
+                  type: string
+                is_free:
+                  type: boolean
+                unlimited_bookings:
+                  type: boolean
+                commission_on_sale:
+                  type: number
+                  format: double
+                schedules_per_service:
+                  type: string
+                  enum:
+                    - One
+                    - Unlimited
+                pricing_options_per_service:
+                  type: string
+                  enum:
+                    - One
+                    - Unlimited
+                list_paid_services:
+                  type: boolean
+                list_free_services:
+                  type: boolean
+                take_deposits_and_instalment:
+                  type: boolean
+                contact_clients_with_booking:
+                  type: boolean
+                market_to_clients:
+                  type: string
+                client_reviews:
+                  type: string
+                article_publishing:
+                  type: integer
+                article_publishing_unlimited:
+                  type: boolean
+                prioritised_business_profile_search:
+                  type: boolean
+                prioritised_serivce_search:
+                  type: boolean
+                busines_profile_page:
+                  type: boolean
+                unique_web_address:
+                  type: boolean
+                onboarding_support:
+                  type: boolean
+                client_analytics:
+                  type: boolean
+                service_analytics:
+                  type: boolean
+                financial_analytics:
+                  type: boolean
+                created_at:
+                  type: string
+                  nullable: true
+                  format: date-time
+                updated_at:
+                  type: string
+                  nullable: true
+                  format: date-time
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/schemas/Plan"
+    get:
+      operationId: admin-get-plans
+      tags:
+        - Plan
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/schemas/Plan"
+  "/admin/plans/{id}/":
+    put:
+      operationId: admin-edit-plans
+      tags:
+        - Plan
+      parameters:
+        - name: id
+          in: path
+          description: Plan ID
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/paths/~1admin~1plans/post/requestBody/content/application~1json/schema"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/schemas/Plan"
+    get:
+      operationId: admin-show-plans
+      tags:
+        - Plan
+      parameters:
+        - $ref: "#/paths/~1admin~1plans~1%7Bid%7D~1/put/parameters/0"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/schemas/Plan"
+    delete:
+      operationId: admin-delete-plans
+      tags:
+        - Plan
+      parameters:
+        - $ref: "#/paths/~1admin~1plans~1%7Bid%7D~1/put/parameters/0"
+      responses:
+        "204":
+          description: OK
+  /admin/transactional-emails:
+    post:
+      operationId: admin-create-email
+      tags:
+        - Email
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_type:
+                  type: string
+                  example: all, client, practitioner
+                from_email:
+                  type: string
+                  example: test@test.com
+                from_title:
+                  type: string
+                  example: Name
+                subject:
+                  type: string
+                  example: Email Subject
+                logo:
+                  type: string
+                  format: binary
+                logo_filename:
+                  type: string
+                  example: test.jpg
+                text:
+                  type: string
+                delay:
+                  type: integer
+                  example: 5
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  user_type:
+                    type: string
+                  from_email:
+                    type: string
+                  from_title:
+                    type: string
+                  subject:
+                    type: string
+                  logo:
+                    type: string
+                    format: binary
+                  logo_filename:
+                    type: string
+                  text:
+                    type: string
+                  delay:
+                    type: integer
+                  created_at:
+                    type: string
+                    nullable: true
+                    format: date-time
+                  updated_at:
+                    type: string
+                    nullable: true
+                    format: date-time
+    get:
+      tags:
+        - Email
+      parameters:
+        - name: page
+          in: query
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: limit
+          in: query
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: x-page
+          in: header
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: x-limit
+          in: header
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: search
+          in: query
+          description: Email template name
+          required: false
+          schema:
+            type: string
+            example: Welcome
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/paths/~1admin~1transactional-emails/post/responses/200/content/applica\
+                    tion~1json/schema"
+  /admin/transactional-emails/footer:
+    get:
+      tags:
+        - EmailFooter
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    footer:
+                      type: string
+    post:
+      tags:
+        - EmailFooter
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                footer:
+                  type: string
+                  example: Custom text
+      responses:
+        "204":
+          description: OK
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: The given data was invalid.
+  "/admin/transactional-emails/{id}":
+    put:
+      parameters:
+        - name: id
+          in: path
+          description: Email ID
+          required: true
+          schema:
+            type: integer
+      tags:
+        - Email
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/paths/~1admin~1transactional-emails/post/requestBody/content/applicati\
+                on~1json/schema"
+      responses:
+        "204":
+          description: OK
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: The given data was invalid.
+    delete:
+      parameters:
+        - $ref: "#/paths/~1admin~1transactional-emails~1%7Bid%7D/put/parameters/0"
+      tags:
+        - Email
+      responses:
+        "204":
+          description: OK
+    get:
+      tags:
+        - Email
+      parameters:
+        - $ref: "#/paths/~1admin~1transactional-emails~1%7Bid%7D/put/parameters/0"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/paths/~1admin~1transactional-emails/post/responses/200/content/applica\
+                    tion~1json/schema"
+  /admin/services:
+    get:
+      tags:
+        - Admin Services
+      parameters:
+        - name: page
+          in: query
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: limit
+          in: query
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: x-page
+          in: header
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: x-limit
+          in: header
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: with
+          in: query
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles,media_images,media_videos,media_files
+        - name: x-with
+          in: header
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles,media_images,media_videos,media_files
+        - name: service_type
+          in: query
+          description: Include service types
+          required: false
+          schema:
+            type: string
+            example: workshop,events,retreat,appointment,cources
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/schemas/Service"
+  "/admin/services/{id}":
+    get:
+      tags:
+        - Admin Services
+      parameters:
+        - name: id
+          in: path
+          description: Service ID
+          required: true
+          schema:
+            type: integer
+        - name: with
+          in: query
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles,media_images,media_videos,media_files,last_published
+        - name: x-with
+          in: header
+          description: Include additional objects in response
+          required: false
+          schema:
+            type: string
+            example: user,keywords,disciplines,focus_areas,location,schedules,favourite_services,service_type,articles,media_images,media_videos,media_files,last_published
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/schemas/Service"
+    delete:
+      tags:
+        - Admin Services
+      parameters:
+        - $ref: "#/paths/~1admin~1services~1%7Bid%7D/get/parameters/0"
+      responses:
+        "204":
+          description: OK
+  "/admin/services/{id}/publish":
+    post:
+      tags:
+        - Admin Services
+      parameters:
+        - name: id
+          in: path
+          description: Service ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: OK
+  "/admin/services/{id}/unpublish":
+    post:
+      tags:
+        - Admin Services
+      parameters:
+        - name: id
+          in: path
+          description: Service ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: OK
+  /admin/schedules:
+    get:
+      tags:
+        - Admin Schedules
+      parameters:
+        - name: page
+          in: query
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: limit
+          in: query
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: x-page
+          in: header
+          description: Pagination page results
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: x-limit
+          in: header
+          description: Results per page
+          required: false
+          schema:
+            type: integer
+            example: 10
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/schemas/Schedule"
+  "/admin/schedules/{id}":
+    get:
+      tags:
+        - Admin Schedules
+      parameters:
+        - name: id
+          in: path
+          description: Schedule ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/schemas/Schedule"
+    delete:
+      tags:
+        - Admin Schedules
+      parameters:
+        - $ref: "#/paths/~1admin~1schedules~1%7Bid%7D/get/parameters/0"
+      responses:
+        "204":
+          description: OK
+  "/admin/schedules/{id}/publish":
+    post:
+      tags:
+        - Admin Schedules
+      parameters:
+        - name: id
+          in: path
+          description: Schedule ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: OK
+  "/admin/schedules/{id}/unpublish":
+    post:
+      tags:
+        - Admin Schedules
+      parameters:
+        - name: id
+          in: path
+          description: Schedule ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: OK

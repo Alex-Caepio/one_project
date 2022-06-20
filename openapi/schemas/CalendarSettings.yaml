@@ -1,0 +1,21 @@
+type: object
+properties:
+  id:
+    type: integer
+  user_id:
+    type: integer
+  calendar_id:
+    type: string
+  timezone_id:
+    type: integer
+  is_connected:
+    type: boolean
+  created_at:
+    type: string
+    format: date-time
+  unavailabilities:
+    type: array
+    items: {}
+  updated_at:
+    type: string
+    format: date-time

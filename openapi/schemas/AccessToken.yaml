@@ -1,0 +1,14 @@
+type: object
+properties:
+  abilities:
+    type: array
+    items:
+      type: string
+    example:
+      - "*"
+  name:
+    type: string
+    example: access-token
+  token:
+    type: string
+    example: 4|hKv4yyJYSZlBDuuZmOcy5AO2ZzPbRJCp6gfbRGvvponscCQzetB51kh1p1Hsis1R2FnKJ5z0gHN4mJll

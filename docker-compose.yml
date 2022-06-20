@@ -1,0 +1,18 @@
+version: '3.4'
+
+services:
+  oneness_back:
+    container_name: $projectName
+    image: $registryName/$projectName:$workingEnv
+    ports:
+      - 8090:80
+    environment:
+      - APACHE_DOCUMENT_ROOT=/var/www/html/public
+    restart: always
+    volumes:
+      - /opt/oneness/storage:/var/www/html/storage
+    networks:
+      - oneness
+
+networks:
+  oneness:

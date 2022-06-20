@@ -1,0 +1,70 @@
+schedule-freezes:
+  get:
+    tags:
+      - Schedule Freezes
+    parameters:
+      - name: page
+        in: query
+        description: Pagination page results
+        required: false
+        schema:
+          type: integer
+          example: 2
+      - name: limit
+        in: query
+        description: Results per page
+        required: false
+        schema:
+          type: integer
+          example: 10
+      - name: x-page
+        in: header
+        description: Pagination page results
+        required: false
+        schema:
+          type: integer
+          example: 2
+      - name: x-limit
+        in: header
+        description: Results per page
+        required: false
+        schema:
+          type: integer
+          example: 10
+      - name: with
+        in: query
+        description: Include additional objects in response
+        required: false
+        schema:
+          type: string
+          example: schedule,user
+      - name: x-with
+        in: header
+        description: Include additional objects in response
+        required: false
+        schema:
+          type: string
+          example: schedule,user
+      - name: schedule_id
+        in: query
+        description: Schedule ID
+        required: false
+        schema:
+          type: integer
+          example: 10
+      - name: user_id
+        in: query
+        description: Owner ID
+        required: false
+        schema:
+          type: integer
+          example: 10
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "../schemas/ScheduleFreeze.yaml"
