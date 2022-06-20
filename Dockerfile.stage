@@ -5,8 +5,10 @@ ENV SUPERCRONIC_URL=https://github.com/aptible/supercronic/releases/download/v0.
     SUPERCRONIC_SHA1SUM=9c40fcff02fa4e153d2f55826e1fa362cd0e448e
 
 COPY ./config/vhost.conf /etc/apache2/sites-enabled/000-default.conf
+
 RUN apt-get update && apt-get install -y git libzip-dev unzip libpng-dev mysql-common default-mysql-client\
 && docker-php-ext-install zip pdo_mysql gd && a2enmod rewrite headers
+
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 RUN curl -fsSLO "$SUPERCRONIC_URL" && echo "${SUPERCRONIC_SHA1SUM} ${SUPERCRONIC}" | sha1sum -c - && chmod +x "$SUPERCRONIC"\
