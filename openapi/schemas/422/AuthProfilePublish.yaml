@@ -1,0 +1,16 @@
+type: object
+properties:
+  message:
+    type: string
+    example: The given data was invalid.
+  errors:
+    type: object
+    example:
+      business_name:
+        - You have not filled in the field "Business name"
+      business_address:
+        - You have not filled in the field "Business address"
+      business_email:
+        - You have not filled in the field "Business email"
+      business_introduction:
+        - You have not filled in the field "Business introduction"

@@ -1,0 +1,62 @@
+bookings:
+  get:
+      tags:
+       - Booking
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '../schemas/Booking.yaml'
+
+bookings/{id}/reschedule:
+  post:
+    tags:
+      - Booking
+    parameters:
+      - $ref: "#/parameters/id"
+    responses:
+      '204':
+        description: OK
+
+bookings/reschedule:
+  post:
+      tags:
+        - Booking
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                  $ref: '../schemas/Booking.yaml'
+
+bookings/schedule/{schedule}/reschedule:
+  post:
+    tags:
+      - Booking
+    parameters:
+      - in: path
+        name: schedule
+        required: true
+        schema:
+          type: integer
+        description: Schedule ID
+    responses:
+      '204':
+        description: OK
+
+parameters:
+  id:
+    name: id
+    in: path
+    description: Booking ID
+    required: true
+    schema:
+      type: integer
+
+
+

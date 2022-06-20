@@ -1,0 +1,31 @@
+type: object
+properties:
+  id:
+    type: integer
+  name:
+    type: string
+  user_type:
+    type: string
+  from_email:
+    type: string
+  from_title:
+    type: string
+  subject:
+    type: string
+  logo:
+    type: string
+    format: binary
+  logo_filename:
+    type: string
+  text:
+    type: string
+  delay:
+    type: integer
+  created_at:
+    type: string
+    nullable: true
+    format: date-time
+  updated_at:
+    type: string
+    nullable: true
+    format: date-time

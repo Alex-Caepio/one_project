@@ -1,0 +1,35 @@
+type: object
+properties:
+  is_published:
+    type: boolean
+    nullable: false
+  business_name:
+    type: string
+    nullable: false
+  business_address:
+    type: string
+    nullable: false
+  business_email:
+    type: string
+    nullable: false
+  business_introduction:
+    type: string
+    nullable: false
+  business_vat:
+    type: string
+    nullable: true
+  business_postal_code:
+    type: string
+    nullable: true
+  business_city:
+    type: string
+    nullable: true
+  business_phone_number:
+    type: string
+    nullable: true
+  business_phone_country_code:
+    type: integer
+    nullable: true
+  business_country_id:
+    type: integer
+    nullable: false

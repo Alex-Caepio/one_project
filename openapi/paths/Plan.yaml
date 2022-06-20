@@ -1,0 +1,38 @@
+plans:
+  get:
+    operationId: get-plans
+    tags:
+      - Plan
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../schemas/Plan.yaml'
+
+plans/{plan}/purchase:
+  post:
+    operationId: purchase-plan
+    tags:
+      - Plan
+    parameters:
+      - $ref: "#/parameters/id"
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/Plan.yaml'
+
+parameters:
+  id:
+    name: id
+    in: path
+    description: Plan ID
+    required: true
+    schema:
+      type: integer

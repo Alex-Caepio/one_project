@@ -1,0 +1,124 @@
+type: object
+properties:
+  id:
+    type: integer
+  title:
+    type: string
+  service_id:
+    type: integer
+    nullable: true
+  location_id:
+    type: integer
+    nullable: true
+  start_date:
+    type: string
+    format: date-time
+    nullable: true
+  end_date:
+    type: string
+    format: date-time
+    nullable: true
+  attendees:
+    type: integer
+    nullable: true
+  comments:
+    type: string
+    nullable: true
+  venue:
+    type: string
+    nullable: true
+  city:
+    type: string
+    nullable: true
+  country:
+    type: string
+    nullable: true
+  post_code:
+    type: string
+    nullable: true
+  location_displayed:
+    type: string
+    nullable: true
+  created_at:
+    type: string
+    nullable: true
+    format: date-time
+  updated_at:
+    type: string
+    nullable: true
+    format: date-time
+  meals_breakfast:
+    type: boolean
+  meals_lunch:
+    type: boolean
+  meals_dinner:
+    type: boolean
+  meals_alcoholic_beverages:
+    type: boolean
+  meals_dietry_accomodated:
+    type: boolean
+  refund_terms:
+    type: integer
+    nullable: true
+  booking_message:
+    type: string
+    nullable: true
+  is_virtual:
+    type: boolean
+    nullable: true
+  url:
+    type: string
+    nullable: true
+  book_full_series:
+    type: boolean
+    nullable: true
+  accomodation:
+    type: string
+    example:
+      - included
+      - optional
+      - no
+    nullable: true
+  accomodation_details:
+    type: string
+    nullable: true
+  travel:
+    type: string
+    example:
+      - included
+      - optional
+      - no
+    nullable: true
+  travel_details:
+    type: string
+    nullable: true
+  notice_min_time:
+    type: integer
+    nullable: true
+  notice_min_period:
+    type: string
+    example:
+      - mins
+      - hours
+      - days
+    nullable: true
+  buffer_time:
+    type: integer
+    nullable: true
+  buffer_period:
+    type: string
+    example:
+      - daily
+      - weekly
+      - monthly
+    nullable: true
+  repeat_every:
+    type: integer
+    nullable: true
+  repeat_period:
+    type: string
+    example:
+      - day
+      - week
+      - month
+    nullable: true

@@ -1,0 +1,18 @@
+type: object
+properties:
+  message:
+    type: string
+    example: The given data was invalid.
+  errors:
+    type: object
+    example:
+      name:
+        - You have not filled in the field "Promotion name"
+      discount_type:
+        - You have not filled in the field "Promotion discount type"
+      discount_value:
+        - You have not filled in the field "Promotion discount value"
+      applied_to:
+        - You have not filled in the field "Promotion applied to"
+      total_codes:
+        - You have not filled in the field "Promotion requested codes count"

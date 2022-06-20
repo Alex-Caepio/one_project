@@ -1,0 +1,87 @@
+type: object
+properties:
+  id:
+    type: integer
+    example: 6
+  about_me:
+    type: string
+    nullable: true
+  about_my_business:
+    type: string
+    nullable: true
+  account_type:
+    type: string
+    example: practitioner
+  business_address:
+    type: string
+    nullable: true
+  business_email:
+    type: string
+    nullable: true
+  business_introduction:
+    type: string
+    nullable: true
+  business_name:
+    type: string
+    nullable: true
+  business_phone_number:
+    type: string
+    nullable: true
+  date_of_birth:
+    type: string
+    nullable: true
+  email:
+    type: string
+    example: mmorissette@example.net
+  email_forward_clients:
+    type: boolean
+    example: true
+  email_forward_practitioners:
+    type: boolean
+    example: true
+  email_forward_support:
+    type: boolean
+    example: true
+  email_verified_at:
+    type: string
+    format: date-time
+    nullable: true
+  emails_holistify_update:
+    type: boolean
+    example: true
+  emails_practitioner_offers:
+    type: boolean
+    example: true
+  first_name:
+    type: string
+    example: 'John'
+  last_name:
+    type: string
+    example: 'Doe'
+  is_published:
+    type: boolean
+    example: true
+  mobile_number:
+    type: string
+    nullable: true
+  public_link:
+    type: string
+    nullable: true
+    example: 'example.com/users/johndoe'
+  stripe_customer_id:
+    type: string
+    example: 'cus_HpyQPawZU9Nw16'
+  stripe_account_id:
+    type: string
+    example: 'cus_HpyQPawZU9Nw16'
+  business_country_id:
+    type: integer
+    example: 98
+  country_id:
+    type: integer
+    example: 97
+  business_time_zone_id:
+    type: integer
+    example: 98
+  access_token:
+    $ref: './AccessToken.yaml'

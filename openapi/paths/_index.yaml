@@ -1,0 +1,260 @@
+#auth
+/api/auth/register:
+  $ref: "./Auth.yaml#/auth~1register"
+/auth/verify-email:
+  $ref: "./Auth.yaml#/auth~1verify-email"
+/api/auth/profile:
+  $ref: "./Auth.yaml#/auth~1profile"
+/api/auth/business-media:
+  $ref: "./Auth.yaml#/auth~1business-media"
+/api/auth/business-profile:
+  $ref: "./Auth.yaml#/auth~1business-profile"
+/api/auth/login:
+  $ref: "./Auth.yaml#/auth~1login"
+/api/auth/publish:
+  $ref: "./Auth.yaml#/auth~1publish"
+/api/auth/unpublish:
+  $ref: "./Auth.yaml#/auth~1unpublish"
+/api/auth/forgot-password-ask:
+  $ref: "./Auth.yaml#/auth~1forgot-password-ask"
+/api/auth/forgot-password-claim:
+  $ref: "./Auth.yaml#/auth~1forgot-password-claim"
+/api/auth/verify-forgot-password-token:
+  $ref: "./Auth.yaml#/auth~1verify-forgot-password-token"
+/api/auth/resend-verification:
+  $ref: "./Auth.yaml#/auth~1resend-verification"
+
+#articels
+/articles:
+  $ref: "./Article.yaml#/articles"
+/articles/practitioner:
+  $ref: "./Article.yaml#/articles~1practitioner"
+/articles/{id}:
+  $ref: "./Article.yaml#/articles~1{id}"
+/articles/practitioner/{id}:
+  $ref: "./Article.yaml#/articles~1practitioner~1{id}"
+
+#disciplines
+/focus-areas:
+  $ref: "./FocusArea.yaml#/focus-areas"
+/focus-areas/{id}:
+  $ref: "./FocusArea.yaml#/focus-areas~1{id}"
+
+#disciplines
+/disciplines:
+  $ref: "./Discipline.yaml#/disciplines"
+/diciplines/{id}:
+  $ref: "./Discipline.yaml#/disciplines~1{id}"
+
+#services
+/services:
+  $ref: "./Service.yaml#/services"
+/services/{id}:
+  $ref: "./Service.yaml#/services~1{id}"
+/services/{id}/publish:
+  $ref: "./Service.yaml#/services~1{id}~1publish"
+/services/{id}/unpublish:
+  $ref: "./Service.yaml#/services~1{id}~1unpublish"
+/services/practitioner:
+  $ref: "./Service.yaml#/services~1practitioner"
+/services/practitioner/{id}:
+  $ref: "./Service.yaml#/services~1practitioner~1{id}"
+/services/{id}/practitioner-schedules:
+  $ref: "./Service.yaml#/services~1{id}~1practitioner-schedules"
+
+#service types
+/service-types:
+  $ref: "./ServiceType.yaml#/service-types"
+
+#schedule freezes
+/schedule-freezes:
+  $ref: "./ScheduleFreeze.yaml#/schedule-freezes"
+
+
+#practitioners
+/practitoners:
+  $ref: "./Practitioner.yaml#/practitoners"
+#/practitoners/{id}:
+#  $ref: "./Practitioner.yaml#/practitoners~1{id}"
+
+#plans
+/plans:
+  $ref: "./Plan.yaml#/plans"
+/plans/{id}/purchase:
+  $ref: "./Plan.yaml#/plans~1{plan}~1purchase"
+
+#users
+/users:
+  $ref: "./User.yaml#/users"
+
+/mainpage:
+  $ref: "./Mainpage.yaml#/mainpage"
+
+#stripe
+/stripe/link:
+  $ref: "./Stripe.yaml#/stripe~1link"
+/stripe/account:
+  $ref: "./Stripe.yaml#/stripe~1account"
+
+/timezones:
+  $ref: "./Timezone.yaml#/timezones"
+
+#countries
+/countries:
+  $ref: "./Country.yaml#/countries"
+
+#bookings
+/bookings:
+  $ref: "./Booking.yaml#/bookings"
+/bookings/{id}/reschedule:
+  $ref: "./Booking.yaml#/bookings~1{id}~1reschedule"
+/bookings/reschedule:
+  $ref: "./Booking.yaml#/bookings~1reschedule"
+/bookings/schedule/{schedule}/reschedule:
+  $ref: "./Booking.yaml#/bookings~1schedule~1{schedule}~1reschedule"
+
+#keywords
+/keywords:
+  $ref: "./Keyword.yaml#/keywords"
+/keywords/list:
+  $ref: "./Keyword.yaml#/keywords~1list"
+/keywords/filter:
+  $ref: "./Keyword.yaml#/keywords~1filter"
+#locations
+/locations:
+  $ref: "./Location.yaml#/locations"
+/locations/list:
+  $ref: "./Location.yaml#/locations~1list"
+
+#schedules
+/services/{serviceid}/schedules:
+  $ref: "./Schedules.yaml#/services~1{serviceid}~1schedules"
+/schedules/{id}:
+  $ref: "./Schedules.yaml#/schedules~1{id}"
+/schedules/{id}/purchase:
+  $ref: "./Schedules.yaml#/schedules~1{id}~1purchase"
+/schedules/{id}/attendants:
+  $ref: "./Schedules.yaml#/schedules~1{id}~1attendants"
+/schedules/{id}/freeze:
+  $ref: "./Schedules.yaml#/schedules~1{id}~1freeze"
+/schedules/{id}/availabilities:
+  $ref: "./Schedules.yaml#/schedules~1{id}~1availabilities"
+/schedules/{id}/reschedule-available:
+  $ref: "./Schedules.yaml#/schedules~1{id}~1reschedule-available"
+
+#purchases
+/purchases:
+  $ref: "./Purchase.yaml#/purchases"
+#images
+/images:
+  $ref: "./Image.yaml#/images"
+# Cancellation
+/cancellations:
+  $ref: "./Cancellation.yaml#/cancellations"
+/cancellations/schedule/{schedule}:
+  $ref: "./Cancellation.yaml#/cancellations~1schedule~1{schedule}"
+/cancellations/{booking}:
+  $ref: "./Cancellation.yaml#/cancellations~1{booking}"
+# Calendar
+/gcal/auth:
+  $ref: "./Calendar.yaml#/gcal~1auth"
+/gcal/events:
+  $ref: "./Calendar.yaml#/gcal~1events"
+/gcal/settings:
+  $ref: "./Calendar.yaml#/gcal~1settings"
+
+
+
+## ADMIN ENDPOINTS
+/admin/profile:
+  $ref: "./AdminProfile.yaml#/profile"
+/admin/articles:
+  $ref: "./AdminArticle.yaml#/articles"
+/admin/articles/{id}:
+  $ref: "./AdminArticle.yaml#/articles~1{id}"
+/admin/articles/{id}/publish:
+  $ref: "./AdminArticle.yaml#/articles~1{id}~1publish"
+/admin/articles/{id}/unpublish:
+  $ref: "./AdminArticle.yaml#/articles~1{id}~1unpublish"
+/admin/focus-areas:
+  $ref: "./AdminFocusArea.yaml#/focus-areas"
+/admin/focus-areas/{id}:
+  $ref: "./AdminFocusArea.yaml#/focus-areas~1{id}"
+/admin/focus-areas/{id}/publish:
+  $ref: "./AdminFocusArea.yaml#/focus-areas~1{id}~1publish"
+/admin/focus-areas/{id}/unpublish:
+  $ref: "./AdminFocusArea.yaml#/focus-areas~1{id}~1unpublish"
+/admin/disciplines:
+  $ref: "./AdminDiscipline.yaml#/disciplines"
+/admin/disciplines/{id}:
+  $ref: "./AdminDiscipline.yaml#/disciplines~1{id}"
+/admin/disciplines/{id}/publish:
+  $ref: "./AdminDiscipline.yaml#/disciplines~1{id}~1publish"
+/admin/disciplines/{id}/unpublish:
+  $ref: "./AdminDiscipline.yaml#/disciplines~1{id}~1unpublish"
+/admin/mainpage:
+  $ref: "./AdminMainpage.yaml#/mainpage"
+/admin/clients:
+  $ref: "./AdminClient.yaml#/clients"
+/admin/clients/{id}/delete:
+  $ref: "./AdminClient.yaml#/clients~1{id}~1delete"
+/admin/practitioners:
+  $ref: "./AdminPractitioner.yaml#/practitioners"
+/admin/practitioners/{id}/delete:
+  $ref: "./AdminPractitioner.yaml#/practitioners~1{id}~1delete"
+/admin/practitioners/{id}/publish:
+  $ref: "./AdminPractitioner.yaml#/practitioners~1{id}~1publish"
+/admin/practitioners/{id}/unpublish:
+  $ref: "./AdminPractitioner.yaml#/practitioners~1{id}~1unpublish"
+
+# Promotions
+/admin/promotions:
+  $ref: "./AdminPromotion.yaml#/promotions"
+/admin/promotions/{id}:
+  $ref: "./AdminPromotion.yaml#/promotions~1{id}"
+/admin/promotions/{id}/enable:
+  $ref: "./AdminPromotion.yaml#/promotions~1{id}~1enable"
+/admin/promotions/{id}/disable:
+  $ref: "./AdminPromotion.yaml#/promotions~1{id}~1disable"
+# PromotionsCodes
+/admin/promotion-codes:
+  $ref: "./AdminPromotionCode.yaml#/promotion-codes"
+/admin/promotion-codes/export:
+  $ref: "./AdminPromotionCode.yaml#/promotion-codes~1export"
+/admin/promotion-codes/{id}/destroy:
+  $ref: "./AdminPromotionCode.yaml#/promotion-codes~1{id}~1destroy"
+/admin/promotion-codes/{id}/enable:
+  $ref: "./AdminPromotionCode.yaml#/promotion-codes~1{id}~1enable"
+/admin/promotion-codes/{id}/disable:
+  $ref: "./AdminPromotionCode.yaml#/promotion-codes~1{id}~1disable"
+/admin/plans:
+  $ref: "./AdminPlan.yaml#/plans"
+/admin/plans/{id}/:
+  $ref: "./AdminPlan.yaml#/plans~1{id}"
+# Emails
+/admin/transactional-emails:
+  $ref: "./AdminCustomEmail.yaml#/transactional-emails"
+/admin/transactional-emails/footer:
+  $ref: "./AdminCustomEmail.yaml#/transactional-emails~1footer"
+/admin/transactional-emails/{id}:
+  $ref: "./AdminCustomEmail.yaml#/transactional-emails~1{id}"
+
+# Services
+/admin/services:
+  $ref: "./AdminService.yaml#/services"
+/admin/services/{id}:
+  $ref: "./AdminService.yaml#/services~1{id}"
+/admin/services/{id}/publish:
+  $ref: "./AdminService.yaml#/services~1{id}~1publish"
+/admin/services/{id}/unpublish:
+  $ref: "./AdminService.yaml#/services~1{id}~1unpublish"
+
+# Schedules
+/admin/schedules:
+  $ref: "./AdminSchedule.yaml#/schedules"
+/admin/schedules/{id}:
+  $ref: "./AdminSchedule.yaml#/schedules~1{id}"
+/admin/schedules/{id}/publish:
+  $ref: "./AdminSchedule.yaml#/schedules~1{id}~1publish"
+/admin/schedules/{id}/unpublish:
+  $ref: "./AdminSchedule.yaml#/schedules~1{id}~1unpublish"

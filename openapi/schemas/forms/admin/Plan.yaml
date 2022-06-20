@@ -1,0 +1,70 @@
+type: object
+properties:
+  id:
+    type: integer
+  name:
+    type: string
+  stripe_id:
+    type: integer
+  price:
+    type: number
+    format: double
+  service_types:
+    type: string
+  image_url:
+    type: string
+  description:
+    type: string
+  is_free:
+    type: boolean
+  unlimited_bookings:
+    type: boolean
+  commission_on_sale:
+    type: number
+    format: double
+  schedules_per_service:
+    type: string
+    enum: ['One','Unlimited']
+  pricing_options_per_service:
+    type: string
+    enum: ['One','Unlimited']
+  list_paid_services:
+    type: boolean
+  list_free_services:
+    type: boolean
+  take_deposits_and_instalment:
+    type: boolean
+  contact_clients_with_booking:
+    type: boolean
+  market_to_clients:
+    type: string
+  client_reviews:
+    type: string
+  article_publishing:
+    type: integer
+  article_publishing_unlimited:
+    type: boolean
+  prioritised_business_profile_search:
+    type: boolean
+  prioritised_serivce_search:
+    type: boolean
+  busines_profile_page:
+    type: boolean
+  unique_web_address:
+    type: boolean
+  onboarding_support:
+    type: boolean
+  client_analytics:
+    type: boolean
+  service_analytics:
+    type: boolean
+  financial_analytics:
+    type: boolean
+  created_at:
+    type: string
+    nullable: true
+    format: date-time
+  updated_at:
+    type: string
+    nullable: true
+    format: date-time

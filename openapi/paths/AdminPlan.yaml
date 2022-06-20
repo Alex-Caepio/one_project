@@ -1,0 +1,83 @@
+plans:
+  post:
+    operationId: admin-create-plan
+    tags:
+      - Plan
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/forms/admin/Plan.yaml'
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/Plan.yaml'
+  get:
+    operationId: admin-get-plans
+    tags:
+      - Plan
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../schemas/Plan.yaml'
+
+plans/{id}:
+  put:
+    operationId: admin-edit-plans
+    tags:
+      - Plan
+    parameters:
+      - $ref: "#/parameters/id"
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/forms/admin/Plan.yaml'
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/Plan.yaml'
+  get:
+    operationId: admin-show-plans
+    tags:
+      - Plan
+    parameters:
+      - $ref: "#/parameters/id"
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/Plan.yaml'
+  delete:
+    operationId: admin-delete-plans
+    tags:
+      - Plan
+    parameters:
+      - $ref: "#/parameters/id"
+    responses:
+      '204':
+        description: OK
+
+parameters:
+  id:
+    name: id
+    in: path
+    description: Plan ID
+    required: true
+    schema:
+      type: integer

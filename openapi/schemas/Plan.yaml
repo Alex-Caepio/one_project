@@ -1,0 +1,106 @@
+type: object
+properties:
+  id:
+    type: integer
+  name:
+    type: string
+    nullable : true
+  stripe_id:
+    type: integer
+    nullable : true
+  price:
+    type: number
+    format: double
+    nullable : true
+  service_types:
+    type: string
+  image_url:
+    type: string
+    nullable : true
+  description:
+    type: string
+    nullable : true
+  is_free:
+    type: boolean
+    nullable : true
+  unlimited_bookings:
+    type: boolean
+    nullable : true
+  amount_bookings:
+    type: integer
+    nullable : true
+  commission_on_sale:
+    type: number
+    format: double
+    nullable : true
+  schedules_per_service:
+    type: integer
+    nullable : true
+  schedules_per_service_unlimited:
+    type: boolean
+  pricing_options_per_service:
+    type: integer
+    nullable : true
+  pricing_options_per_service_unlimited:
+    type: boolean
+  list_paid_services:
+    type: boolean
+    nullable : true
+  list_free_services:
+    type: boolean
+    nullable : true
+  take_deposits_and_instalment:
+    type: boolean
+    nullable : true
+  contact_clients_with_booking:
+    type: boolean
+    nullable : true
+  market_to_clients:
+    type: string
+  client_reviews:
+    type: string
+  article_publishing:
+    type: integer
+    nullable : true
+  article_publishing_unlimited:
+    type: boolean
+    nullable : true
+  prioritised_business_profile_search:
+    type: boolean
+    nullable : true
+  prioritised_service_search:
+    type: boolean
+    nullable : true
+  busines_profile_page:
+    type: boolean
+    nullable : true
+  unique_web_address:
+    type: boolean
+    nullable : true
+  onboarding_support:
+    type: boolean
+    nullable : true
+  client_analytics:
+    type: boolean
+    nullable : true
+  service_analytics:
+    type: boolean
+    nullable : true
+  financial_analytics:
+    type: boolean
+    nullable : true
+  discount_codes:
+    type: boolean
+  trial_month:
+    type: integer
+    nullable : true
+  order:
+    type: integer
+  created_at:
+    type: string
+    nullable: true
+    format: date-time
+  updated_at:
+    type: string
+    nullable: true
+    format: date-time

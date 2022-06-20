@@ -1,0 +1,13 @@
+type: object
+required:
+  - timezone_id
+properties:
+  timezone_id:
+    type: string
+    example: 'Yoga practice'
+  unavailabilities:
+    type: array
+    items:
+      type: object
+    example: [{'start_date': 'Y-m-d H:i:s', 'end_date': "Y-m-d H:i:s"}, {'start_date': "Y-m-d H:i:s", 'end_date': "Y-m-d H:i:s"}]
+    nullable: true

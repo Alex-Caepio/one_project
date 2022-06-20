@@ -1,0 +1,18 @@
+type: object
+properties:
+  email:
+    type: string
+    example: mmorissette@example.net
+  first_name:
+    type: string
+    example: 'John'
+  last_name:
+    type: string
+    example: 'Doe'
+  current_password:
+    type: string
+    example: 'qwerty'
+  password:
+    type: string
+    example: 'qwerty1'
+

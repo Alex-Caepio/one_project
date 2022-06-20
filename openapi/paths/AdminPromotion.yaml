@@ -1,0 +1,230 @@
+promotions:
+  get:
+    tags:
+      - Promotion
+    parameters:
+      - name: page
+        in: query
+        description: Pagination page results
+        required: false
+        schema:
+          type: integer
+          example: 2
+      - name: limit
+        in: query
+        description: Results per page
+        required: false
+        schema:
+          type: integer
+          example: 10
+      - name: x-page
+        in: header
+        description: Pagination page results
+        required: false
+        schema:
+          type: integer
+          example: 2
+      - name: x-limit
+        in: header
+        description: Results per page
+        required: false
+        schema:
+          type: integer
+          example: 10
+      - name: with
+        in: query
+        description: Include additional objects in response
+        required: false
+        schema:
+          type: string
+          example: promotion_codes,disciplines,focus_areas,service_type,practitioners
+      - name: x-with
+        in: header
+        description: Include additional objects in response
+        required: false
+        schema:
+          type: string
+          example: promotion_codes,disciplines,focus_areas,service_type,practitioners
+      - name: search
+        in: query
+        description: Promotion name, practitioner email, promocode, service type, discipline name, focus_area
+        required: false
+        schema:
+          type: string
+          example: title
+      - name: valid_from
+        in: query
+        description: Promotion Valid From
+        required: false
+        schema:
+          type: string
+          example: 2020-01-01
+      - name: expiry_date
+        in: query
+        description: Promotion expiry_date
+        required: false
+        schema:
+          type: string
+          example: 2020-01-01
+      - name: discount_type
+        in: query
+        description: Discount Type(percentage or monetary)
+        required: false
+        schema:
+          type: string
+          example: percentage
+      - name: discount_value
+        in: query
+        description: Discount value range
+        required: false
+        schema:
+          type: string
+          example: 0:100
+      - name: status
+        in: query
+        description: Status
+        required: false
+        schema:
+          type: string
+          example: active,disabled,complete,deleted
+      - name: applied_to
+        in: query
+        description: Applied To (host Or both)
+        required: false
+        schema:
+          type: string
+          example: host
+      - name: spend_min
+        in: query
+        description: Min spend to apply
+        required: false
+        schema:
+          type: string
+          example: 10.05
+      - name: spend_max
+        in: query
+        description: Max spend to apply
+        required: false
+        schema:
+          type: string
+          example: 1000.05
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../schemas/Promotion.yaml'
+  post:
+    tags:
+      - Promotion
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/forms/admin/Promotion.yaml'
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/Promotion.yaml'
+      '422':
+        description: Validation errors
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/422/PromotionSave.yaml'
+
+promotions/{id}:
+  get:
+    tags:
+      - Promotion
+    parameters:
+      - $ref: "#/parameters/id"
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/Promotion.yaml'
+  delete:
+    tags:
+      - Promotion
+    parameters:
+      - $ref: "#/parameters/id"
+    responses:
+      '204':
+        description: OK
+  put:
+    tags:
+      - Promotion
+    parameters:
+      - $ref: "#/parameters/id"
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/forms/admin/Promotion.yaml'
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/Promotion.yaml'
+      '422':
+        description: Validation errors
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/422/PromotionSave.yaml'
+
+promotions/{id}/enable:
+  post:
+    tags:
+      - Promotion
+    parameters:
+      - $ref: "#/parameters/id"
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/Promotion.yaml'
+      '422':
+        description: Validation failed
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/422/PromotionStatus.yaml'
+
+promotions/{id}/disable:
+  post:
+    tags:
+      - Promotion
+    parameters:
+      - $ref: "#/parameters/id"
+    responses:
+      '200':
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/Promotion.yaml'
+
+parameters:
+  id:
+    name: id
+    in: path
+    description: Promotion ID
+    required: true
+    schema:
+      type: integer

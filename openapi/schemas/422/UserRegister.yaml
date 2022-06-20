@@ -1,0 +1,15 @@
+type: object
+properties:
+  message:
+    type: string
+    example: The given data was invalid.
+  errors:
+    type: object
+    example:
+      password:
+        - The password format is invalid.
+      first_name:
+        - The first name may not be greater than 30 characters.
+      last_name:
+        - The last name may not be greater than 30 characters.
+
