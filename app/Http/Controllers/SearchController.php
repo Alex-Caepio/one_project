@@ -17,6 +17,8 @@ class SearchController extends Controller
 {
     public function index(Request $request)
     {
+        $includes = $request->getIncludes();
+
         $articles = Article::query()->where('articles.is_published', true)->orderBy('articles.id', 'desc');
         $services = Service::query()->where('services.is_published', true)->orderBy('services.id', 'desc');
         $practitioners = User::where('account_type', User::ACCOUNT_PRACTITIONER)->where('users.is_published', true)->orderBy('id', 'desc');
@@ -32,7 +34,10 @@ class SearchController extends Controller
 
         return [
             'articles' => fractal($articles->limit(10)->get(), new ArticleTransformer())->toArray(),
-            'practitioners' => fractal($practitioners->limit(10)->get(), new UserTransformer())->toArray(),
+            'practitioners' => fractal(
+                $practitioners->limit(10)->get(),
+                new UserTransformer()
+            )->parseIncludes($includes)->toArray(),
             'services' => fractal($services->limit(10)->get(), new ServiceTransformer())->toArray(),
         ];
     }
