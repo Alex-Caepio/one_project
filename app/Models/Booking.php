@@ -21,8 +21,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int $practitioner_id
  * @property int $price_id
  * @property int $schedule_id
- * @property Carbon|string $datetime_from
- * @property Carbon|string $datetime_to
+ * @property Carbon $datetime_from
+ * @property Carbon $datetime_to
  *
  * @property-read Price $price
  * @property-read Purchase $purchase
@@ -66,6 +66,16 @@ class Booking extends Model
         'is_fully_paid',
         'is_installment',
         'booking_snapshot_id',
+    ];
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'datetime_from' => 'datetime',
+        'datetime_to' => 'datetime',
     ];
 
     /**
