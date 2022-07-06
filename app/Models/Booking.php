@@ -38,6 +38,7 @@ class Booking extends Model
 {
     use HasFactory, SoftDeletes;
 
+    public const UPCOMING_STATUS = 'upcoming';
     public const CANCELED_STATUS = 'canceled';
     public const COMPLETED_STATUS = 'completed';
     public const RESCHEDULED_STATUS = 'rescheduled';
@@ -181,6 +182,15 @@ class Booking extends Model
     {
         return [
             self::CANCELED_STATUS,
+            self::COMPLETED_STATUS,
+        ];
+    }
+
+    public static function getActualStatuses(): array
+    {
+        return [
+            self::UPCOMING_STATUS,
+            self::RESCHEDULED_STATUS,
             self::COMPLETED_STATUS,
         ];
     }
