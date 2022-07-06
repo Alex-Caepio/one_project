@@ -6,6 +6,7 @@ use App\Models\Booking;
 use App\Models\Price;
 use App\Models\Schedule;
 use App\Models\ScheduleAvailability;
+use App\Models\ScheduleUnavailability;
 use App\Models\UserUnavailabilities;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
@@ -13,31 +14,57 @@ use Illuminate\Database\Eloquent\Collection;
 
 class GetAvailableAppointmentTimeOnDate
 {
-    public const STEP = '15 minutes';
-    public const STEP_VALUE = '15';
+    private const STEP_VALUE = 15;
+    private const STEP_IN_MINUTS = self::STEP_VALUE.' minutes';
+
+    private Price $price;
+
+    private string $date;
+
+    private string $timezone;
 
     public function execute(Price $price, string $date, string $timezone): array
     {
-        $schedule = $price->schedule;
+        $this->price = $price;
+        $this->date = $date;
+        $this->timezone = $timezone;
 
         /** @var Collection|ScheduleAvailability[] $availabilities */
-        $availabilities = $this->getAvailabilitiesMatchingDate($date, $schedule, $timezone);
-        $periods = $this->availabilitiesToCarbonPeriod($date, $price, $availabilities, $timezone);
-        $excludedTimes = $this->getExcludedTimes(
-            $schedule,
-            $date,
-            $this->getTodayBuffer($schedule),
-            $price->duration ?? 0,
-            $timezone
-        );
+        $availabilities = $this->getAvailabilitiesMatchingDate();
+        $periods = $this->availabilitiesToCarbonPeriod($availabilities);
+        $excludedTimes = $this->getExcludedTimes();
 
         $this->excludeTimes($periods, $excludedTimes);
-        $flatTimes = $this->toTimes($periods, $timezone);
 
-        return array_unique($flatTimes);
+        return $this->toTimes($periods, $timezone);
     }
 
-    protected function getMatchingDays($day)
+    private function getSchedule(): Schedule
+    {
+        return $this->price->schedule;
+    }
+
+    private function getDuration(): int
+    {
+        return $this->price->duration;
+    }
+
+    private function getDate(): Carbon
+    {
+        return Carbon::createFromFormat('Y-m-d', $this->date, $this->timezone);
+    }
+
+    private function getStartOfDay(): Carbon
+    {
+        return $this->getDate()->startOfDay()->setTimezone('UTC');
+    }
+
+    private function getEndOfDay(): Carbon
+    {
+        return $this->getDate()->endOfDay()->setTimezone('UTC');
+    }
+
+    private function getMatchingDays($day): array
     {
         $weekdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday',];
         $weekends = ['saturday', 'sunday',];
@@ -53,44 +80,42 @@ class GetAvailableAppointmentTimeOnDate
         return [$day, 'everyday'];
     }
 
-    protected function getAvailabilitiesMatchingDate($date, $schedule, $timezone)
+    /**
+     * @return Collection|ScheduleAvailability[]
+     */
+    private function getAvailabilitiesMatchingDate(): Collection
     {
-        $startDate = mb_strtolower(Carbon::createFromFormat('Y-m-d', $date, $timezone)
-            ->startOfDay()
-            ->setTimezone('UTC')
-            ->isoFormat('dddd'));
-
-        $endDate = mb_strtolower(Carbon::createFromFormat('Y-m-d', $date, $timezone)
-            ->endOfDay()
-            ->setTimezone('UTC')
-            ->isoFormat('dddd'));
+        $startDate = mb_strtolower($this->getStartOfDay()->isoFormat('dddd'));
+        $endDate = mb_strtolower($this->getEndOfDay()->isoFormat('dddd'));
 
         $days = array_unique(array_merge($this->getMatchingDays($startDate), $this->getMatchingDays($endDate)));
 
-        $availabilities = $schedule->schedule_availabilities()->whereIn('days', $days)->get();
+        $availabilities = $this->getSchedule()->schedule_availabilities()->whereIn('days', $days)->get();
 
         return $availabilities;
     }
 
     /**
-     * @param string $date
      * @param Collection|ScheduleAvailability[] $availabilities
      *
      * @return CarbonPeriod[]
      */
-    protected function availabilitiesToCarbonPeriod(string $date, Price $price, Collection $availabilities, $timezone): array
+    private function availabilitiesToCarbonPeriod(Collection $availabilities): array
     {
         $periods = [];
-        $reqPeriodStart = Carbon::createFromFormat('Y-m-d', $date, $timezone)->startOfDay()->setTimezone('UTC');
-        $reqPeriodEnd = Carbon::createFromFormat('Y-m-d', $date, $timezone)->endOfDay()->setTimezone('UTC');
-        $nowDatetime = Carbon::now();
+        $reqPeriodStart = $this->getStartOfDay();
+        $reqPeriodEnd = $this->getEndOfDay();
+        $nowDatetime = $this->getNearestTime();
 
         foreach ($availabilities as $availability) {
-            $baseDate = mb_strtolower($reqPeriodStart->isoFormat('dddd')) == $availability->days ? $reqPeriodStart : $reqPeriodEnd;
+            $baseDate = mb_strtolower($reqPeriodStart->isoFormat('dddd')) == $availability->days
+                ? $reqPeriodStart
+                : $reqPeriodEnd
+            ;
 
             // Parse availabilities
-            $availabilityStart = $this->roundMinutes(Carbon::createFromFormat('Y-m-d H:i:s' , "{$baseDate->format('Y-m-d')} {$availability->start_time}", 'UTC'));
-            $availabilityEnd = $this->roundMinutes(Carbon::createFromFormat('Y-m-d H:i:s' , "{$baseDate->format('Y-m-d')} {$availability->end_time}", 'UTC'));
+            $availabilityStart = $this->createRoundedTime($baseDate, $availability->start_time);
+            $availabilityEnd = $this->createRoundedTime($baseDate, $availability->end_time);
 
             if ($availabilityStart->greaterThanOrEqualTo($availabilityEnd)) {
                 $availabilityEnd->addDay();
@@ -113,72 +138,101 @@ class GetAvailableAppointmentTimeOnDate
                 continue;
             }
 
-            $periods[] = new CarbonPeriod($availabilityStart, self::STEP, $availabilityEnd);
+            $periods[] = new CarbonPeriod($availabilityStart, self::STEP_IN_MINUTS, $availabilityEnd);
         }
 
         return $periods;
     }
 
-    protected function excludeTimes($periods, array $excludedHours)
+    private function getNearestTime(): Carbon
+    {
+        return Carbon::now()
+            ->addMinutes($this->getSchedule()->getNoticeTime())
+            ->roundMinutes(self::STEP_VALUE, 'ceil')
+        ;
+    }
+
+    private function createRoundedTime(Carbon $baseDate, string $time): Carbon
+    {
+        return Carbon::createFromFormat('Y-m-d H:i:s' , "{$baseDate->format('Y-m-d')} $time", 'UTC')
+            ->roundMinutes(self::STEP_VALUE, 'ceil')
+        ;
+    }
+
+    /**
+     * @param CarbonPeriod[] $periods
+     */
+    private function excludeTimes($periods, array $excludedHours): void
     {
         foreach ($periods as $period) {
+            /** @var Carbon[] $excludedHour */
             foreach ($excludedHours as $excludedHour) {
-                $period->filter(function ($date) use ($excludedHour) {
-                    return !$date->between($excludedHour['from'], $excludedHour['to']);
-                });
+                $period->filter(fn (Carbon $date): bool => !$date->between($excludedHour['from'], $excludedHour['to']));
             }
         }
     }
 
-    protected function getExcludedTimes(Schedule $schedule, $date, $buffer, $duration, $timezone)
+    private function getExcludedTimes(): array
     {
-        $scheduleIds = Schedule::where('service_id', $schedule->service_id)->pluck('id');
+        $scheduleIds = Schedule::where('service_id', $this->getSchedule()->service_id)->pluck('id');
 
-        $startDate = Carbon::createFromFormat('Y-m-d', $date, $timezone)->startOfDay()->setTimezone('UTC');
-        $endDate = Carbon::createFromFormat('Y-m-d', $date, $timezone)->endOfDay()->setTimezone('UTC');
+        $startDate = $this->getStartOfDay();
+        $endDate = $this->getEndOfDay();
 
         $excludedTimes = [];
 
+        /** @var Booking[] $bookings */
         $bookings = Booking::whereIn('schedule_id', $scheduleIds)
             ->where('datetime_from', '>=', $startDate->toDateTimeString())
             ->where('datetime_from', '<=', $endDate->toDateTimeString())
             ->where('status', '!=', 'canceled')
             ->get();
 
-        $unavailabilities = $schedule->schedule_unavailabilities()
+        /** @var ScheduleUnavailability[] $unavailabilities */
+        $unavailabilities = $this->getSchedule()->schedule_unavailabilities()
             ->where('start_date', '>=', $startDate->toDateTimeString())
             ->where('end_date', '<=', $endDate->toDateTimeString())
             ->get();
 
-        $frozenBookings = $schedule->freezes()
+        /** @var ScheduleFreeze[] $frozenBookings */
+        $frozenBookings = $this->getSchedule()->freezes()
             ->where('freeze_at', '>', Carbon::now()->subMinutes(15)->toDateTimeString())
             ->get();
 
         foreach ($bookings as $booking) {
             $excludedTimes[] = [
-                'from' => Carbon::parse($booking->datetime_from)->subMinutes($schedule->buffer_time + $duration)->addSecond(),
-                'to' => Carbon::parse($booking->datetime_to)->addMinutes($schedule->buffer_time)->subSecond()
+                'from' => Carbon::parse($booking->datetime_from)
+                    ->subMinutes($this->getSchedule()->getBufferTime() + $this->getDuration())
+                    ->addSecond(),
+                'to' => Carbon::parse($booking->datetime_to)
+                    ->addMinutes($this->getSchedule()->getBufferTime())
+                    ->subSecond()
             ];
         }
 
         foreach ($unavailabilities as $unavailability) {
             $excludedTimes[] = [
-                'from' => Carbon::parse($unavailability->start_date)->subMinutes($duration)->addSecond(),
+                'from' => Carbon::parse($unavailability->start_date)->subMinutes($this->getDuration())->addSecond(),
                 'to' => Carbon::parse($unavailability->end_date)->subSecond()
             ];
         }
 
-        $globalUnavailabilities = UserUnavailabilities::where('practitioner_id', $schedule->service->user_id)->get();
+        /** @var UserUnavailabilities[] $globalUnavailabilities */
+        $globalUnavailabilities = UserUnavailabilities::query()
+            ->where('practitioner_id', $this->getSchedule()->service->user_id)
+            ->get()
+        ;
+
         foreach ($globalUnavailabilities as $unavailability) {
             $excludedTimes[] = [
-                'from' => Carbon::parse($unavailability->start_date)->subMinutes($duration)->addSecond(),
+                'from' => Carbon::parse($unavailability->start_date)->subMinutes($this->getDuration())->addSecond(),
                 'to' => Carbon::parse($unavailability->end_date)->subSecond()
             ];
         }
 
         foreach ($frozenBookings as $frozenBooking) {
             $excludedTimes[] = [
-                'from' => Carbon::parse($frozenBooking->freeze_at)->subMinutes($duration)->addSecond(),
+                'from' => Carbon::parse($frozenBooking->freeze_at)->subMinutes($this->getDuration())->addSecond(),
                 'to' => Carbon::parse($frozenBooking->freeze_at)->addMinutes(15)->subSecond()
             ];
         }
@@ -186,49 +240,25 @@ class GetAvailableAppointmentTimeOnDate
         return $excludedTimes;
     }
 
-    protected function toTimes(array $periods, string $timezone): array
+    /**
+     * Converts periods to times with user's timezone.
+     *
+     * @param CarbonPeriod[] $periods
+     *
+     * @return string[]
+     */
+    private function toTimes(array $periods, string $timezone): array
     {
         $flatTimes = [];
+
         foreach ($periods as $period) {
             foreach ($period as $time) {
-                /** @var Carbon $time */
-                $time->setTimezone($timezone);
-                $flatTimes[] = $time->format('H:i');
+                $flatTimes[] = $time->setTimezone($timezone)->format('H:i');
             }
         }
+
         sort($flatTimes, SORT_NATURAL);
-        return $flatTimes;
-    }
 
-
-    protected function roundMinutes(Carbon $date)
-    {
-        $s = self::STEP_VALUE * 60;
-        $date->setTimestamp($s * ceil($date->getTimestamp() / $s));
-
-        return $date;
-    }
-
-    /**
-     * Returns delay between now and first available appointment booking in minutes
-     *
-     * @param Schedule $schedule
-     * @return int
-     */
-    private function getTodayBuffer(Schedule $schedule): int
-    {
-        switch ($schedule->notice_min_period) {
-            case "hours":
-                $multiplier = 60;
-                break;
-            case "days":
-                $multiplier = 60 * 24;
-                break;
-            default:
-                $multiplier = 1;
-                break;
-        }
-
-        return $schedule->notice_min_time * $multiplier;
+        return array_unique($flatTimes);
     }
 }
