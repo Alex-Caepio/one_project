@@ -16,8 +16,11 @@ use Illuminate\Support\Facades\Log;
 
 /**
  * @property int $id
+ * @property int $service_id
  * @property int $buffer_time
  * @property string $buffer_period
+ * @property int $notice_min_time
+ * @property string $notice_min_period
  * @property int $deposit_instalments
  * @property int $deposit_instalment_frequency
  * @property bool $deposit_accepted
@@ -540,5 +543,43 @@ class Schedule extends Model
         }
 
         return $calendar;
+    }
+
+    /**
+     * Returns a notice time in minutes.
+     *
+     * @return int
+     */
+    public function getNoticeTime(): int
+    {
+        return $this->timeToMinutes($this->notice_min_period, $this->notice_min_time);
+    }
+
+    /**
+     * Returns a buffer time in minutes.
+     *
+     * @return int
+     */
+    public function getBufferTime(): int
+    {
+        return $this->timeToMinutes($this->buffer_perio ?? 'mins', $this->buffer_time);
+    }
+
+    private function timeToMinutes(string $type, int $time): int
+    {
+        switch ($type) {
+            case 'hours':
+                $multiplier = 60;
+                break;
+            case 'days':
+                $multiplier = 60 * 24;
+                break;
+            case 'mins':
+            default:
+                $multiplier = 1;
+                break;
+        }
+
+        return $time * $multiplier;
     }
 }
