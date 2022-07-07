@@ -17,6 +17,14 @@ class Plan extends Model
 {
     use HasFactory;
 
+    public const ORDER_OF_PLANS = [
+        1 => 'Events',
+        2 => 'Workshop',
+        3 => 'Appointment',
+        4 => 'Retreat',
+        5 => 'Bespoke'
+    ];
+
     protected $fillable = [
         'name',
         'description',
