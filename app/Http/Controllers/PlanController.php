@@ -41,7 +41,16 @@ class PlanController extends Controller
                 ServiceType::query()
                     ->join('plan_service_type', 'plan_service_type.service_type_id', '=', 'service_types.id')
                     ->where('plan_service_type.plan_id', '=', $plan->id)
-                    ->orderBy('plan_service_type.id', 'ASC')
+                    ->orderByRaw("
+                        CASE
+                            WHEN plan_service_type.service_type_id = '{$plan::ORDER_OF_PLANS[1]}' THEN 1
+                            WHEN plan_service_type.service_type_id = '{$plan::ORDER_OF_PLANS[2]}' THEN 2
+                            WHEN plan_service_type.service_type_id = '{$plan::ORDER_OF_PLANS[3]}' THEN 3
+                            WHEN plan_service_type.service_type_id = '{$plan::ORDER_OF_PLANS[4]}' THEN 4
+                            WHEN plan_service_type.service_type_id = '{$plan::ORDER_OF_PLANS[5]}' THEN 5
+                        END
+                        ASC
+                    ")
                     ->select('service_types.*')
                     ->get();
             $plan->setRelation('service_types', $serviceTypes);
