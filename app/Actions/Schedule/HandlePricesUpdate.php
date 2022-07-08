@@ -115,7 +115,7 @@ class HandlePricesUpdate
     {
         $pricesToCreate = $prices->map(function ($price) {
             $stripePrice = $this->stripe->prices->create([
-                'unit_amount' => $price['cost'] ?? 0,
+                'unit_amount' => intval($price['cost'] * 100) ?? 0,
                 'currency' => config('app.platform_currency'),
                 'product' => $this->service->stripe_id,
             ]);
