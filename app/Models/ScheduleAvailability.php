@@ -6,7 +6,6 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Facades\Auth;
 
 /**
  * @property string days
@@ -34,8 +33,8 @@ class ScheduleAvailability extends Model
         return $this->fitsDay($datetime) && $this->fitsTime($datetime);
     }
 
-    public function fitsDay(string $datetime): bool {
-
+    public function fitsDay(string $datetime): bool
+    {
         $daysFormatted = strtolower($this->days);
 
         if ($daysFormatted === 'everyday') {
@@ -47,6 +46,7 @@ class ScheduleAvailability extends Model
         if ($daysFormatted === 'weekdays' && $datetime->isWeekday()) {
             return true;
         }
+
         if ($daysFormatted === 'weekends' && $datetime->isWeekend()) {
             return true;
         }
@@ -54,7 +54,8 @@ class ScheduleAvailability extends Model
         return strtolower($datetime->dayName) === $daysFormatted;
     }
 
-    public function fitsTime(string $datetime): bool {
+    public function fitsTime(string $datetime): bool
+    {
         if ($this->start_time === $this->end_time) {
             return true;
         }
@@ -70,4 +71,3 @@ class ScheduleAvailability extends Model
         return Carbon::createFromTimeString($time)->between($timeStart, $timeEnd);
     }
 }
-

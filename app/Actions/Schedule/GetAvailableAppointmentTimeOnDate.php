@@ -2,10 +2,13 @@
 
 namespace App\Actions\Schedule;
 
+use App\Actions\Schedule\TimeAvailability\AvailablePeriodCollection;
+use App\Actions\Schedule\TimeAvailability\BusyPeriodCollection;
 use App\Models\Booking;
 use App\Models\Price;
 use App\Models\Schedule;
 use App\Models\ScheduleAvailability;
+use App\Models\ScheduleFreeze;
 use App\Models\ScheduleUnavailability;
 use App\Models\UserUnavailabilities;
 use Carbon\Carbon;
@@ -31,12 +34,16 @@ class GetAvailableAppointmentTimeOnDate
 
         /** @var Collection|ScheduleAvailability[] $availabilities */
         $availabilities = $this->getAvailabilitiesMatchingDate();
+
         $periods = $this->availabilitiesToCarbonPeriod($availabilities);
-        $excludedTimes = $this->getExcludedTimes();
+        $busyPeriods = $this->getBusyPeriods();
 
-        $this->excludeTimes($periods, $excludedTimes);
+        $this->addBusyPeriodByEndOfWorkingDay($busyPeriods, $availabilities);
 
-        return $this->toTimes($periods, $timezone);
+        return $periods
+            ->excludeBusyPeriods($busyPeriods)
+            ->toTimes($timezone)
+        ;
     }
 
     private function getSchedule(): Schedule
@@ -62,6 +69,36 @@ class GetAvailableAppointmentTimeOnDate
     private function getEndOfDay(): Carbon
     {
         return $this->getDate()->endOfDay()->setTimezone('UTC');
+    }
+
+    /**
+     * @param Collection|ScheduleAvailability[] $availabilities
+     *
+     * @return Carbon
+     */
+    private function detectEndOfWorkingDay(Collection $availabilities)
+    {
+        $startDate = mb_strtolower($this->getStartOfDay()->isoFormat('dddd'));
+        $endDate = mb_strtolower($this->getEndOfDay()->isoFormat('dddd'));
+
+        $ranges = $availabilities->filter(fn (ScheduleAvailability $item): bool => $item->days === $endDate);
+
+        if ($ranges->isEmpty()) {
+            $ranges = $availabilities->filter(fn (ScheduleAvailability $item): bool => $item->days === $startDate);
+        }
+
+        /** @var Collection|Carbon[] $times */
+        $times = $ranges->map(function (ScheduleAvailability $item): Carbon {
+            return $this->createTime($this->getDate(), $item->end_time);
+        });
+
+        $max = $times->first();
+
+        foreach ($times as $value) {
+            $max = $value->greaterThanOrEqualTo($max) ? $value : $max;
+        }
+
+        return $max;
     }
 
     private function getMatchingDays($day): array
@@ -98,11 +135,11 @@ class GetAvailableAppointmentTimeOnDate
     /**
      * @param Collection|ScheduleAvailability[] $availabilities
      *
-     * @return CarbonPeriod[]
+     * @return AvailablePeriodCollection
      */
-    private function availabilitiesToCarbonPeriod(Collection $availabilities): array
+    private function availabilitiesToCarbonPeriod(Collection $availabilities): AvailablePeriodCollection
     {
-        $periods = [];
+        $periods = new AvailablePeriodCollection();
         $reqPeriodStart = $this->getStartOfDay();
         $reqPeriodEnd = $this->getEndOfDay();
         $nowDatetime = $this->getNearestTime();
@@ -138,7 +175,7 @@ class GetAvailableAppointmentTimeOnDate
                 continue;
             }
 
-            $periods[] = new CarbonPeriod($availabilityStart, self::STEP_IN_MINUTS, $availabilityEnd);
+            $periods->push(new CarbonPeriod($availabilityStart, self::STEP_IN_MINUTS, $availabilityEnd));
         }
 
         return $periods;
@@ -152,113 +189,128 @@ class GetAvailableAppointmentTimeOnDate
         ;
     }
 
-    private function createRoundedTime(Carbon $baseDate, string $time): Carbon
+    private function createTime(Carbon $date, string $time): Carbon
     {
-        return Carbon::createFromFormat('Y-m-d H:i:s' , "{$baseDate->format('Y-m-d')} $time", 'UTC')
-            ->roundMinutes(self::STEP_VALUE, 'ceil')
+        return Carbon::createFromFormat('Y-m-d H:i:s' , "{$date->format('Y-m-d')} $time", 'UTC');
+    }
+
+    private function createRoundedTime(Carbon $date, string $time): Carbon
+    {
+        return $this->createTime($date, $time)->roundMinutes(self::STEP_VALUE, 'ceil');
+    }
+
+    private function getBusyPeriods(): BusyPeriodCollection
+    {
+        return $this->getBusyPeriodsByBookings()
+            ->merge($this->getBusyPeriodsByScheduleUnavailabilities())
+            ->merge($this->getBusyPeriodsByScheduleFreezes())
+            ->merge($this->getBusyPeriodsByUserUnavailabilities())
         ;
     }
 
-    /**
-     * @param CarbonPeriod[] $periods
-     */
-    private function excludeTimes($periods, array $excludedHours): void
+    private function getBusyPeriodsByBookings(): BusyPeriodCollection
     {
-        foreach ($periods as $period) {
-            /** @var Carbon[] $excludedHour */
-            foreach ($excludedHours as $excludedHour) {
-                $period->filter(fn (Carbon $date): bool => !$date->between($excludedHour['from'], $excludedHour['to']));
-            }
-        }
-    }
+        $busyPeriods = new BusyPeriodCollection();
 
-    private function getExcludedTimes(): array
-    {
         $scheduleIds = Schedule::where('service_id', $this->getSchedule()->service_id)->pluck('id');
-
-        $startDate = $this->getStartOfDay();
-        $endDate = $this->getEndOfDay();
-
-        $excludedTimes = [];
 
         /** @var Booking[] $bookings */
         $bookings = Booking::whereIn('schedule_id', $scheduleIds)
-            ->where('datetime_from', '>=', $startDate->toDateTimeString())
-            ->where('datetime_from', '<=', $endDate->toDateTimeString())
+            ->where('datetime_from', '>=', $this->getStartOfDay()->toDateTimeString())
+            ->where('datetime_from', '<=', $this->getEndOfDay()->toDateTimeString())
             ->where('status', '!=', 'canceled')
-            ->get();
-
-        /** @var ScheduleUnavailability[] $unavailabilities */
-        $unavailabilities = $this->getSchedule()->schedule_unavailabilities()
-            ->where('start_date', '>=', $startDate->toDateTimeString())
-            ->where('end_date', '<=', $endDate->toDateTimeString())
-            ->get();
-
-        /** @var ScheduleFreeze[] $frozenBookings */
-        $frozenBookings = $this->getSchedule()->freezes()
-            ->where('freeze_at', '>', Carbon::now()->subMinutes(15)->toDateTimeString())
-            ->get();
+            ->get()
+        ;
 
         foreach ($bookings as $booking) {
-            $excludedTimes[] = [
-                'from' => Carbon::parse($booking->datetime_from)
+            $busyPeriods->addFromTimes(
+                $booking->datetime_from
                     ->subMinutes($this->getSchedule()->getBufferTime() + $this->getDuration())
                     ->addSecond(),
-                'to' => Carbon::parse($booking->datetime_to)
+                $booking->datetime_to
                     ->addMinutes($this->getSchedule()->getBufferTime())
                     ->subSecond()
-            ];
+            );
         }
+
+        return $busyPeriods;
+    }
+
+    private function getBusyPeriodsByScheduleUnavailabilities(): BusyPeriodCollection
+    {
+        $busyPeriods = new BusyPeriodCollection();
+
+        /** @var ScheduleUnavailability[] $unavailabilities */
+        $unavailabilities = $this->getSchedule()
+            ->schedule_unavailabilities()
+            ->where('start_date', '>=', $this->getStartOfDay()->toDateTimeString())
+            ->where('end_date', '<=', $this->getEndOfDay()->toDateTimeString())
+            ->get()
+        ;
 
         foreach ($unavailabilities as $unavailability) {
-            $excludedTimes[] = [
-                'from' => Carbon::parse($unavailability->start_date)->subMinutes($this->getDuration())->addSecond(),
-                'to' => Carbon::parse($unavailability->end_date)->subSecond()
-            ];
+            $busyPeriods->addFromTimes(
+                $unavailability->start_date->subMinutes($this->getDuration())->addSecond(),
+                $unavailability->end_date->subSecond()
+            );
         }
 
-        /** @var UserUnavailabilities[] $globalUnavailabilities */
-        $globalUnavailabilities = UserUnavailabilities::query()
+        return $busyPeriods;
+    }
+
+    private function getBusyPeriodsByScheduleFreezes(): BusyPeriodCollection
+    {
+        $busyPeriods = new BusyPeriodCollection();
+
+        /** @var ScheduleFreeze[] $frozenBookings */
+        $frozenBookings = $this->getSchedule()
+            ->freezes()
+            ->where('freeze_at', '>', Carbon::now()->subMinutes(15)->toDateTimeString())
+            ->get()
+        ;
+
+        foreach ($frozenBookings as $frozenBooking) {
+            $busyPeriods->addFromTimes(
+                $frozenBooking->freeze_at->subMinutes($this->getDuration())->addSecond(),
+                $frozenBooking->freeze_at->addMinutes(15)->subSecond()
+            );
+        }
+
+        return $busyPeriods;
+    }
+
+    private function getBusyPeriodsByUserUnavailabilities(): BusyPeriodCollection
+    {
+        $busyPeriods = new BusyPeriodCollection();
+
+        /** @var UserUnavailabilities[] $unavailabilities */
+        $unavailabilities = UserUnavailabilities::query()
             ->where('practitioner_id', $this->getSchedule()->service->user_id)
             ->get()
         ;
 
-        foreach ($globalUnavailabilities as $unavailability) {
-            $excludedTimes[] = [
-                'from' => Carbon::parse($unavailability->start_date)->subMinutes($this->getDuration())->addSecond(),
-                'to' => Carbon::parse($unavailability->end_date)->subSecond()
-            ];
+        foreach ($unavailabilities as $unavailability) {
+            $busyPeriods->addFromTimes(
+                $unavailability->start_date->subMinutes($this->getDuration())->addSecond(),
+                $unavailability->end_date->subSecond()
+            );
         }
 
-        foreach ($frozenBookings as $frozenBooking) {
-            $excludedTimes[] = [
-                'from' => Carbon::parse($frozenBooking->freeze_at)->subMinutes($this->getDuration())->addSecond(),
-                'to' => Carbon::parse($frozenBooking->freeze_at)->addMinutes(15)->subSecond()
-            ];
-        }
-
-        return $excludedTimes;
+        return $busyPeriods;
     }
 
     /**
-     * Converts periods to times with user's timezone.
-     *
-     * @param CarbonPeriod[] $periods
-     *
-     * @return string[]
+     * @param Collection|ScheduleAvailability[] $availabilities
      */
-    private function toTimes(array $periods, string $timezone): array
-    {
-        $flatTimes = [];
+    private function addBusyPeriodByEndOfWorkingDay(
+        BusyPeriodCollection $busyPeriods,
+        Collection $availabilities
+    ): BusyPeriodCollection {
+        $endOfWorkingDay = $this->detectEndOfWorkingDay($availabilities);
 
-        foreach ($periods as $period) {
-            foreach ($period as $time) {
-                $flatTimes[] = $time->setTimezone($timezone)->format('H:i');
-            }
-        }
-
-        sort($flatTimes, SORT_NATURAL);
-
-        return array_unique($flatTimes);
+        return $busyPeriods->addFromTimes(
+            $endOfWorkingDay->clone()->subMinutes($this->getDuration())->addSecond(),
+            $endOfWorkingDay
+        );
     }
 }
