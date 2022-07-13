@@ -57,7 +57,7 @@ class MessageRequest extends Request
                         ->errors()
                         ->add(
                             'text',
-                            'You are not allowed to send message to this practitioner'
+                            'The practitioner is currently not available for messaging'
                         );
                 }
             }
