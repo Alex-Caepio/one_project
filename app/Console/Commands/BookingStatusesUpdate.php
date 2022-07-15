@@ -30,6 +30,22 @@ class BookingStatusesUpdate extends Command
      */
     public function handle(): void
     {
+        $current = Carbon::now();
+        $ids = $this->getUncomplitedBookingIds($current);
+        $this->completeBookings($current, $ids);
+
+        Log::channel('console_commands_handler')
+            ->info('Mark bookings as completed. Done...', [
+                'bookings_count' => $ids,
+            ])
+        ;
+    }
+
+    /**
+     * @return int[]
+     */
+    public function getUncomplitedBookingIds(Carbon $current): array
+    {
         /** @var Booking[] $bookings */
         $bookings = Booking::query()
             ->whereNotNull('datetime_from')
@@ -42,15 +58,19 @@ class BookingStatusesUpdate extends Command
         $bookingIds = [];
 
         foreach ($bookings as $booking) {
-            if ($booking->datetime_from->lessThan(Carbon::now('UTC'))) {
+            if ($booking->datetime_from->lessThan($current)) {
                 $bookingIds[] = $booking->id;
             }
         }
 
-        Booking::whereIn('id', $bookingIds)->update(['status' => Booking::COMPLETED_STATUS]);
+        return $bookingIds;
+    }
 
-        Log::channel('console_commands_handler')
-            ->info('Mark bookings as completed. Done...',
-                ['bookings_count' => $bookingIds]);
+    private function completeBookings(Carbon $completedAt, array $ids): void
+    {
+        Booking::whereIn('id', $ids)->update([
+            'status' => Booking::COMPLETED_STATUS,
+            'completed_at' => $completedAt,
+        ]);
     }
 }
