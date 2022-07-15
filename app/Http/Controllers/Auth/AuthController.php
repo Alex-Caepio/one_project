@@ -108,6 +108,7 @@ class AuthController extends Controller
     //update practitioner business details
     public function updateBusiness(UpdateBusinessRequest $request, StripeClient $stripe)
     {
+        /** @var User $user */
         $user = $request->user();
 
         $requestData = $request->all($request->getValidatorKeys());
