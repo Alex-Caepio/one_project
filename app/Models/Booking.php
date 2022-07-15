@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
+ * @property int $id
  * @property float $commission_on_sale
  * @property int $is_installment
  * @property int $is_fully_paid
@@ -77,6 +78,8 @@ class Booking extends Model
     protected $casts = [
         'datetime_from' => 'datetime',
         'datetime_to' => 'datetime',
+        'cancelled_at' => 'datetime',
+        'completed_at' => 'datetime',
     ];
 
     /**

@@ -24,6 +24,8 @@ use Laravel\Sanctum\HasApiTokens;
  * @property string $last_name
  * @property string $first_name
  * @property string $account_type
+ * @property int $timezone_id
+ * @property int $business_time_zone_id
  * @property string $stripe_account_id
  * @property string $stripe_customer_id
  * @property string $default_payment_method
@@ -33,6 +35,8 @@ use Laravel\Sanctum\HasApiTokens;
  * @property-read Collection $latest_services
  * @property-read Collection $latest_articles
  * @property-read PractitionerSubscriptionDiscount|null $practitionerSubscriptionDiscount
+ * @property-read Timezone $timezone Business'es timezone.
+ * @property-read Timezone $user_timezone User's timezone.
  */
 class User extends Authenticatable implements MustVerifyEmail
 {
