@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int $is_installment
  * @property int $is_fully_paid
  * @property string $status
+ * @property int $refund_terms
  * @property int $user_id
  * @property int $practitioner_id
  * @property int $price_id
@@ -63,6 +64,7 @@ class Booking extends Model
         'cancelled_at',
         'purchase_id',
         'status',
+        'refund_terms',
         'amount',
         'discount',
         'is_fully_paid',

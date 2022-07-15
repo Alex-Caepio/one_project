@@ -144,6 +144,7 @@ class PurchaseController extends Controller
                     $booking->is_installment = $isInstallment;
                     $booking->is_fully_paid = !$isInstallment;
                     $booking->reference = BookingHelper::generateReference();
+                    $booking->refund_terms = $schedule->refund_terms;
                     $booking->save();
                 }
             } else {
@@ -161,6 +162,7 @@ class PurchaseController extends Controller
                 $booking->is_fully_paid = !$isInstallment;
                 $booking->discount = $discount;
                 $booking->reference = BookingHelper::generateReference();
+                $booking->refund_terms = $schedule->refund_terms;
                 $booking->save();
             }
 
