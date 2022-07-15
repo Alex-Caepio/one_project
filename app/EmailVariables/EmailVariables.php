@@ -754,6 +754,15 @@ class EmailVariables
     /**
      * @return string
      */
+    public function getClient_reschedule_message(): ?string
+    {
+        $comment = $this->event->reschedule->comment ?? '';
+        return str_replace("\n", '<br>', $comment);
+    }
+
+    /**
+     * @return string
+     */
     public function getPractitioner_message(): ?string
     {
         return $this->event instanceof BookingConfirmation ? $this->event->schedule->booking_message : '';
