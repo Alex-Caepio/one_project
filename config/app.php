@@ -219,6 +219,7 @@ return [
         App\Providers\ResponseServiceProvider::class,
         FilesystemNoLockFixServiceProvider::class,
         App\Providers\BookingServiceProvider::class,
+        App\Providers\PaymentSystemServiceProvider::class,
     ],
 
     /*
