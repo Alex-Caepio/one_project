@@ -25,7 +25,6 @@ class InstalmentsNotifier extends Command
      */
     protected $description = 'Payment notification for installments';
 
-
     /**
      * Execute the console command.
      *
@@ -34,6 +33,7 @@ class InstalmentsNotifier extends Command
     public function handle(): void
     {
         $paymentDate = Carbon::now()->addDays(7);
+        /** @var Purchase[] $purchases */
         $purchases = Purchase::query()
             ->whereHas(
                 'instalments',
@@ -65,7 +65,7 @@ class InstalmentsNotifier extends Command
                 ->first();
             if ($userPaymentSchedule) {
                 Log::channel('console_commands_handler')
-                    ->info(
+                    ->error(
                         'Next installment for purchase: ',
                         [
                             'purchase_id' => $purchase->id,

@@ -47,6 +47,7 @@ class Kernel extends ConsoleKernel {
         $schedule->command('schedule-freezes:cleanup')->everyFifteenMinutes();
         $schedule->command('mark-expired-promo')->everyFifteenMinutes();
         $schedule->command('bookings:status-update')->everyFifteenMinutes();
+        $schedule->command('instalments:update-payments')->hourly();
 
         $schedule->command('bookings:notifier-week')->daily();
         $schedule->command('bookings:notifier-twoweek')->daily();

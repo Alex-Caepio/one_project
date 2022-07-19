@@ -191,7 +191,7 @@ class PurchaseController extends Controller
             }
         } catch (Exception $e) {
             Log::channel('stripe_purchase_schedule_error')
-                ->info("Common Purchase Error", [
+                ->error("Common Purchase Error", [
                     'user_id' => $request->user()->id,
                     'price_id' => $price->id,
                     'service_id' => $schedule->service->id,
@@ -268,7 +268,7 @@ class PurchaseController extends Controller
             );
         } catch (ApiErrorException $e) {
             Log::channel('stripe_installment_fail')
-                ->info('The client could not purchase installment', [
+                ->error('The client could not purchase installment', [
                     'user_id' => $request->user()->id,
                     'price_id' => $price->id,
                     'service_id' => $schedule->service->id,
@@ -305,7 +305,7 @@ class PurchaseController extends Controller
                 ]);
         } catch (ApiErrorException $e) {
             Log::channel('stripe_transfer_fail')
-                ->info("The practitioner could not received transfer", [
+                ->error("The practitioner could not received transfer", [
                     'user_id' => $request->user()->id,
                     'practitioner' => $practitioner->id,
                     'price_id' => $price->id,
@@ -402,7 +402,7 @@ class PurchaseController extends Controller
             }
         } catch (ApiErrorException $e) {
             Log::channel('stripe_purchase_schedule_error')
-                ->info("Client could not purchase schedule", [
+                ->error("Client could not purchase schedule", [
                     'user_id' => $request->user()->id,
                     'price_id' => $price->id,
                     'service_id' => $schedule->service->id,
@@ -465,7 +465,7 @@ class PurchaseController extends Controller
                 ]);
         } catch (ApiErrorException $e) {
             Log::channel('stripe_transfer_fail')
-                ->info("The practitioner could not received transfer", [
+                ->error("The practitioner could not received transfer", [
                     'user_id' => $request->user()->id,
                     'practitioner' => $practitioner->id,
                     'price_id' => $price->id,
@@ -518,7 +518,7 @@ class PurchaseController extends Controller
             Log::channel('stripe_purchase_finalize_success')
                 ->info("Client purchased finalized", $logData);
         } catch (ApiErrorException $e) {
-            Log::channel('stripe_purchase_finalize_failure')->info(
+            Log::channel('stripe_purchase_finalize_failure')->warning(
                 "Client purchase finalize failed",
                 array_merge(['message' => $e->getMessage()], $logData)
             );
@@ -539,5 +539,4 @@ class PurchaseController extends Controller
 
         return array_merge($purchaseData, $paymentIntentData->toArray());
     }
-
 }

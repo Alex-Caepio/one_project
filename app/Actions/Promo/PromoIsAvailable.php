@@ -22,7 +22,7 @@ class PromoIsAvailable
             $balance = (app()->make(StripeClient::class))->balance->retrieve();
         } catch (ApiErrorException $e) {
             Log::channel('stripe_get_balance_error')
-                ->info("Could not get holistify balance", [
+                ->error("Could not get holistify balance", [
                     'need_to_transfer' => $needToTransfer,
                     'message' => $e->getMessage(),
                 ]);

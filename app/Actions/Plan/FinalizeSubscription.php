@@ -16,7 +16,6 @@ use Stripe\StripeClient;
 
 class FinalizeSubscription
 {
-
     public function execute(
         User $user,
         StripeClient $stripeClient,
@@ -107,7 +106,7 @@ class FinalizeSubscription
             }
         } catch (Exception $e) {
             Log::channel('stripe_plans_errors')
-                ->info('Error purchasing a plan', [
+                ->error('Error purchasing a plan', [
                     'user_id' => $user->id ?? null,
                     'plan_id' => $plan->id ?? null,
                     'customer' => $user->stripe_customer_id ?? null,
@@ -135,5 +134,4 @@ class FinalizeSubscription
 
         return true;
     }
-
 }

@@ -81,7 +81,7 @@ class PaymentMethodController extends Controller
                 ))
             );
         } catch (\Stripe\Exception\ApiErrorException $e) {
-            Log::channel('stripe_payment_method_update_error')->info("Client could not update payment method", [
+            Log::channel('stripe_payment_method_update_error')->error("Client could not update payment method", [
                 'user_id' => $request->user()->id,
                 'payload' => $request->except('payment_method_id'),
                 'message' => $e->getMessage(),

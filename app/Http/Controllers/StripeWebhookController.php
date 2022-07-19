@@ -6,13 +6,14 @@ use App\Http\Requests\Request;
 use App\Http\Requests\StripeRequest;
 use Illuminate\Support\Facades\Log;
 
-class StripeWebhookController extends Controller {
-
-    public function handler(Request $request) {
+class StripeWebhookController extends Controller
+{
+    public function handler(Request $request)
+    {
         $stripeRequest = new StripeRequest($request);
 
-        Log::channel('stripe_webhooks_info')->info('Stripe WebHook Payload('.$stripeRequest->getType()
-                                                   .') : ', $stripeRequest->getObject());
+        Log::channel('stripe_webhooks_info')
+            ->info('Stripe WebHook Payload(' . $stripeRequest->getType(). ') : ', $stripeRequest->getObject());
 
         $actionClass = $stripeRequest->getRequestHandler();
         if ($actionClass !== null) {
@@ -21,13 +22,11 @@ class StripeWebhookController extends Controller {
                 'action' => $actionClass
             ]);
         } else {
-            Log::channel('stripe_webhooks_error')->info('Webhook is unhandled: ', [
+            Log::channel('stripe_webhooks_error')->warning('Webhook is unhandled: ', [
                 'action'   => 'Undefined',
                 'hookType' => $stripeRequest->getType()
             ]);
         }
         return response('', 200);
     }
-
-
 }

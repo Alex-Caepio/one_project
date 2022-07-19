@@ -2,9 +2,7 @@
 
 namespace App\Actions\Stripe;
 
-use App\Http\Requests\Request;
 use App\Http\Requests\StripeRequest;
-use App\Models\Plan;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
 
@@ -24,8 +22,8 @@ use Illuminate\Support\Facades\Log;
  *
  * @package App\Actions\Stripe
  */
-class SubscriptionHandler {
-
+class SubscriptionHandler
+{
     private string $_requestSubscriptionId;
     private string $_requestCustomerId;
 
@@ -34,7 +32,8 @@ class SubscriptionHandler {
     /**
      * @param \App\Http\Requests\StripeRequest $request
      */
-    public function execute(StripeRequest $request): void {
+    public function execute(StripeRequest $request): void
+    {
         Log::info('[[' . __METHOD__ . ']]: start handle Subscription Event: ' . $request->getSubEventName());
 
         $dataObject = $request->getObject();
@@ -57,7 +56,7 @@ class SubscriptionHandler {
                         break;
                 }
             } else {
-                Log::channel('stripe_webhooks_error')->info('User was not found: ', [
+                Log::channel('stripe_webhooks_error')->warning('User was not found: ', [
                     'customer_id'     => $this->_requestCustomerId,
                     'subscription_id' => $this->_requestSubscriptionId
                 ]);
@@ -65,17 +64,17 @@ class SubscriptionHandler {
         }
     }
 
-
     /**
      * @return void
      */
-    private function retrieveCustomer(): void {
+    private function retrieveCustomer(): void
+    {
         $this->customer = User::where('stripe_customer_id', $this->_requestCustomerId)
-                              ->where('account_type', User::ACCOUNT_PRACTITIONER)->with('plan')->first();
+            ->where('account_type', User::ACCOUNT_PRACTITIONER)->with('plan')->first();
     }
 
-
-    private function handleDelete(): void {
+    private function handleDelete(): void
+    {
         $logContent = [
             'user_id'           => $this->_requestCustomerId,
             'stripe_plan_id'    => $this->customer->stripe_plan_id,
@@ -90,8 +89,7 @@ class SubscriptionHandler {
             $this->customer->save();
             Log::channel('stripe_plans_success')->info('Plan successfully cancelled', $logContent);
         } else {
-            Log::channel('stripe_webhooks_error')->info('Cancelled plan does not match existing plan: ', $logContent);
+            Log::channel('stripe_webhooks_error')->warning('Cancelled plan does not match existing plan: ', $logContent);
         }
     }
-
 }
