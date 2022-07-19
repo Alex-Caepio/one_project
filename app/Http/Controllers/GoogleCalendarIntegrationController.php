@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Http\Controllers;
 
 use App\Helpers\GoogleCalendarHelper;
@@ -20,10 +19,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
-
 class GoogleCalendarIntegrationController extends Controller
 {
-
     public function updateSettings(SettingsRequest $request)
     {
         $user = Auth::user();
@@ -54,7 +51,7 @@ class GoogleCalendarIntegrationController extends Controller
                 $gcHelper->updateTimezone();
             } catch (Exception $e) {
                 Log::channel('google_authorisation_failed')
-                    ->info('Unable to update timezone in calendar:', [
+                    ->error('Unable to update timezone in calendar:', [
                         'calendar_id' => $calendar->calendar_id,
                         'user_id' => $user->id,
                         'message' => $e->getMessage()
@@ -127,5 +124,4 @@ class GoogleCalendarIntegrationController extends Controller
                 ->parseIncludes($request->getIncludes())->toArray()
         );
     }
-
 }

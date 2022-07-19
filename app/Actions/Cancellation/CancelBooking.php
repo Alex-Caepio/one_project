@@ -115,7 +115,7 @@ class CancelBooking
                     ]);
             } catch (ApiErrorException $e) {
                 Log::channel('stripe_refund_fail')
-                    ->info('Stripe refund error: ', [
+                    ->error('Stripe refund error: ', [
                         'user_id' => $booking->user_id ?? null,
                         'practitioner_id' => $booking->practitioner_id ?? null,
                         'booking_id' => $booking->id ?? null,
@@ -130,7 +130,7 @@ class CancelBooking
                     $this->stripe->subscriptions->cancel($booking->purchase->subscription_id);
                 } catch (Exception $e) {
                     Log::channel('stripe_refund_fail')
-                        ->info('Subscription cancel fail: ', [
+                        ->error('Subscription cancel fail: ', [
                             'subscription_id' => $booking->purchase->subscription_id,
                             'message' => $e->getMessage(),
                         ]);
@@ -234,7 +234,7 @@ class CancelBooking
             }
         } catch (Exception $e) {
             Log::channel('stripe_refund_fail')
-                ->info('Reversal transfer failed: ', [
+                ->error('Reversal transfer failed: ', [
                     'source_transfer_id' => $transfer->stripe_transfer_id,
                     'message' => $e->getMessage(),
                 ]);
@@ -264,7 +264,7 @@ class CancelBooking
                             ]);
                     } catch (Exception $e) {
                         Log::channel('stripe_refund_fail')
-                            ->info('Stripe get subscription invoices error: ', [
+                            ->error('Stripe get subscription invoices error: ', [
                                 'payment_intent' => $invoice['payment_intent'],
                                 'message' => $e->getMessage(),
                             ]);
@@ -278,7 +278,7 @@ class CancelBooking
             }
         } catch (Exception $e) {
             Log::channel('stripe_refund_fail')
-                ->info('Stripe get subscription invoices error: ', [
+                ->error('Stripe get subscription invoices error: ', [
                     'subscription' => $subscription_id,
                     'message' => $e->getMessage(),
                 ]);
@@ -424,7 +424,7 @@ class CancelBooking
             );
         } catch (Exception $e) {
             Log::channel('stripe_refund_fail')
-                ->info('Stripe refund error: ', [
+                ->error('Stripe refund error: ', [
                     'user_id' => $booking->user_id ?? null,
                     'practitioner_id' => $booking->practitioner_id ?? null,
                     'charge' => $refundData['practitionerCharge'],

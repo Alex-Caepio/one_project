@@ -12,10 +12,8 @@ use App\Models\User;
 use Illuminate\Support\Facades\Log;
 use App\Services\MetadataService;
 
-
 class InvoiceHandler
 {
-
     private string $_requestInvoiceId;
     private string $_requestSubscriptionId;
     private string $_requestCustomerId;
@@ -63,7 +61,7 @@ class InvoiceHandler
                         break;
                 }
             } else {
-                Log::channel('stripe_webhooks_error')->info('User was not found: ', [
+                Log::channel('stripe_webhooks_error')->warning('User was not found: ', [
                     'invoice_id' => $this->_requestInvoiceId,
                     'customer_id' => $this->_requestCustomerId,
                     'subscription_id' => $this->_requestSubscriptionId
@@ -78,14 +76,13 @@ class InvoiceHandler
                         ['metadata' => $this->metadata]
                     );
                 } catch (ApiErrorException $e) {
-                    Log::channel('stripe_webhooks_error')->info('Invoice update error: ', [
+                    Log::channel('stripe_webhooks_error')->error('Invoice update error: ', [
                         'invoice_id' => $this->_requestInvoiceId,
                         'customer_id' => $this->_requestCustomerId,
                         'subscription_id' => $this->_requestSubscriptionId,
                         'message' => $e->getMessage(),
                     ]);
                 }
-
             }
         }
     }
@@ -135,7 +132,7 @@ class InvoiceHandler
             return;
         }
 
-        Log::channel('stripe_webhooks_error')->info(
+        Log::channel('stripe_webhooks_error')->warning(
             "Unpaid instalment for subscription not found",
             ['subscription_id' => $this->_requestSubscriptionId],
         );

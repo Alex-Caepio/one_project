@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Helpers;
 
 use App\Actions\Cancellation\CancelBooking;
@@ -17,8 +16,6 @@ use Illuminate\Support\Facades\Log;
 
 class UserRightsHelper
 {
-
-
     /**
      * @param User $user
      * @return bool
@@ -167,13 +164,13 @@ class UserRightsHelper
                 ->where('status', 'upcoming')
                 ->whereHas('schedule', function (Builder $query) {
                     $query->whereHas('service', function (Builder $query) {
-                        $query->whereIn('services.service_type_id',[
+                        $query->whereIn('services.service_type_id', [
                             Service::TYPE_EVENT,
                             Service::TYPE_WORKSHOP,
                             Service::TYPE_RETREAT,
                             Service::TYPE_BESPOKE,
                         ]);
-                        $query->orWhere(function(Builder $query) {
+                        $query->orWhere(function (Builder $query) {
                             $query->where([
                                 ['services.service_type_id', '=', Service::TYPE_APPOINTMENT],
                                 ['bookings.datetime_from', '>', date('Y-m-d H:i:s')],
@@ -187,7 +184,7 @@ class UserRightsHelper
                 try {
                     run_action(CancelBooking::class, $booking, false, User::ACCOUNT_PRACTITIONER);
                 } catch (Exception $e) {
-                    Log::channel('practitioner_cancel_error')->info('[[Cancellation on unpublish failed]]: ', [
+                    Log::channel('practitioner_cancel_error')->error('[[Cancellation on unpublish failed]]: ', [
                         'user_id' => $booking->user_id ?? null,
                         'practitioner_id' => $booking->practitioner_id ?? null,
                         'booking_id' => $booking->id ?? null,
@@ -197,7 +194,6 @@ class UserRightsHelper
             }
         }
     }
-
 
     public static function downgradePractitioner(User $user, Plan $plan, ?Plan $previousPlan = null): void
     {
@@ -297,8 +293,10 @@ class UserRightsHelper
                     $schedule->prices()->where('is_free', false)->delete();
                 }
                 $pricesCnt = $schedule->prices()->count();
-                if (!$user->plan->pricing_options_per_service_unlimited &&
-                    $pricesCnt > (int)$user->plan->pricing_options_per_service) {
+                if (
+                    !$user->plan->pricing_options_per_service_unlimited
+                    && $pricesCnt > (int) $user->plan->pricing_options_per_service
+                ) {
                     $limit = $pricesCnt - (int)$user->plan->pricing_options_per_service;
                     $schedule->prices()->orderBy('cost', 'asc')->limit($limit)->delete();
                 }
@@ -326,5 +324,4 @@ class UserRightsHelper
         ScheduleFreeze::whereIn('schedule_id', $ids)->delete();
         $serviceQuery->update(['is_published' => false]);
     }
-
 }

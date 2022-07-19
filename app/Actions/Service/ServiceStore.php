@@ -8,26 +8,27 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Stripe\StripeClient;
 
-class ServiceStore extends ServiceAction {
-
+class ServiceStore extends ServiceAction
+{
     /**
      * @param \App\Http\Requests\Services\StoreServiceRequest $request
      * @param \Stripe\StripeClient $stripeClient
      * @return \App\Models\Service
      */
-    public function execute(StoreServiceRequest $request, StripeClient  $stripeClient): ?Service {
+    public function execute(StoreServiceRequest $request, StripeClient  $stripeClient): ?Service
+    {
         try {
             $stripeProduct = $stripeClient->products->create(['name' => $request->title]);
             $service = new Service();
             $service->stripe_id = $stripeProduct->id;
             $service->user_id = Auth::id();
-            if($request->is_published) {
+            if ($request->is_published) {
                 $service->published_at = now();
             }
 
             $this->saveService($service, $request);
         } catch (\Stripe\Exception\ApiErrorException $e) {
-            Log::channel('stripe_product_errors')->info("Client could not create product", [
+            Log::channel('stripe_product_errors')->error("Client could not create product", [
                 'user_id' => $request->user_id,
                 'stripe_product'  => $stripeProduct->id ?? null,
                 'name' => $request->title,

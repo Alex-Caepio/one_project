@@ -7,7 +7,6 @@ use App\Http\Requests\Admin\PlanStoreRequest;
 use App\Http\Requests\Admin\PlanUpdateRequest;
 use App\Models\Plan;
 use App\Transformers\PlanAdminTransformer;
-use App\Transformers\PlanTransformer;
 use App\Http\Requests\Request;
 use Illuminate\Support\Facades\Log;
 use Stripe\Exception\ApiErrorException;
@@ -70,7 +69,7 @@ class PlanController extends Controller
             $plan->service_types()->sync($request->get('service_types'));
         } catch (ApiErrorException $e) {
             Log::channel('stripe_price_error')
-                ->info("Client could not purchase plan", [
+                ->warning("Client could not purchase plan", [
                 'plan_id' => $plan->id,
                 'stripe_id' => $planStripe->id,
                 'product' => $product->id,

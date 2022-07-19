@@ -79,7 +79,7 @@ class MarkExpiredPromocodes extends Command
                 $promo->status = Promotion::STATUS_EXPIRED;
                 $promo->save();
                 Log::channel('promotion_status_update')
-                    ->info('Mark promotion expired:', [
+                    ->warning('Mark promotion expired:', [
                         'promotion_id' => $promo->id,
                         'status' => $promo->status,
                         'reason' => 'By Expiry Date',
@@ -87,7 +87,6 @@ class MarkExpiredPromocodes extends Command
             }
         }
     }
-
 
     private function updatePromotionCodes(int $promoId): void
     {
@@ -98,7 +97,8 @@ class MarkExpiredPromocodes extends Command
         $promotionCodes->map(static function ($promocode) {
             $cntPurchases = Purchase::where('promocode_id', $promocode->id)->count();
             if ($cntPurchases > 0 && $cntPurchases >= (int)$promocode->uses_per_code) {
-                Log::channel('promotion_status_update')->info('Update promotion status to Complete: ',
+                Log::channel('promotion_status_update')->info(
+                    'Update promotion status to Complete: ',
                     ['promocode' => $promocode->name, 'purchases_cnt' => $cntPurchases]
                 );
                 $promocode->status = PromotionCode::STATUS_COMPLETE;
@@ -108,6 +108,4 @@ class MarkExpiredPromocodes extends Command
             return $promocode;
         });
     }
-
-
 }

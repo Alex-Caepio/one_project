@@ -2,14 +2,14 @@
 
 namespace App\Actions\Plan;
 
-use App\Http\Requests\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
 use Stripe\StripeClient;
 
-class CancelSubscription {
-
-    public function execute(User $user, StripeClient $stripeClient): void {
+class CancelSubscription
+{
+    public function execute(User $user, StripeClient $stripeClient): void
+    {
         if (!empty($user->stripe_plan_id)) {
             $logData = [
                 'user_id'                => $user->id,
@@ -22,7 +22,7 @@ class CancelSubscription {
                 Log::channel('stripe_plans_success')->info('Plan successfully cancelled', $logData);
             } catch (\Exception $e) {
                 $logData['error'] = $e->getMessage();
-                Log::channel('stripe_plans_success')->info('Plan cancellation error purchased', $logData);
+                Log::channel('stripe_plans_success')->error('Plan cancellation error purchased', $logData);
             } finally {
                 $user->stripe_plan_id = null;
             }
@@ -33,5 +33,4 @@ class CancelSubscription {
         $user->plan_from = null;
         $user->saveQuietly();
     }
-
 }

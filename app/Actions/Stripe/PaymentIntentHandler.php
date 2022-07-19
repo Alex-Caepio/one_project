@@ -61,7 +61,7 @@ class PaymentIntentHandler
         }
 
         if (empty($this->_requestInvoiceId)) {
-            Log::channel('stripe_webhooks_error')->info('No invoice id: ', $dataObject);
+            Log::channel('stripe_webhooks_error')->warning('No invoice id: ', $dataObject);
             return;
         }
 
@@ -85,7 +85,7 @@ class PaymentIntentHandler
                         ['metadata' => $this->metadata]
                     );
                 } catch (\Exception $e) {
-                    Log::channel('stripe_webhooks_error')->info('Payment intent update error: ', [
+                    Log::channel('stripe_webhooks_error')->error('Payment intent update error: ', [
                         'payment_intent_id' => $this->_requestPaymentIntentId,
                         'invoice_id' => $this->_requestInvoiceId,
                         'message' => $e->getMessage(),
@@ -122,7 +122,7 @@ class PaymentIntentHandler
                     ],
                 );
             } catch (\Exception $e) {
-                Log::channel('stripe_webhooks_error')->info(
+                Log::channel('stripe_webhooks_error')->error(
                     "Unpaid installment for subscription not found",
                     ['subscription_id' => $this->_requestSubscriptionId, 'error' => $e],
                 );
@@ -148,7 +148,7 @@ class PaymentIntentHandler
                         ['stripe_account' => $transfer->destination]
                     );
                 } catch (\Exception $e) {
-                    Log::channel('stripe_webhooks_error')->info('Transfer metadata update error: ', [
+                    Log::channel('stripe_webhooks_error')->error('Transfer metadata update error: ', [
                         'payment_intent_id' => $this->_requestPaymentIntentId,
                         'invoice_id' => $this->_requestInvoiceId,
                         'message' => $e->getMessage(),
@@ -156,7 +156,7 @@ class PaymentIntentHandler
                 }
             }
         } else {
-            Log::channel('stripe_webhooks_error')->info('Not enough data to process payment intent: ', [
+            Log::channel('stripe_webhooks_error')->warning('Not enough data to process payment intent: ', [
                 'invoice_id' => $this->_requestInvoiceId,
                 'customer_id' => $this->_requestPractitionerId,
             ]);

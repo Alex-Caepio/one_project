@@ -20,7 +20,6 @@ use Illuminate\Support\Facades\URL;
 
 class GoogleCalendarHelper
 {
-
     private Google_Client $_client;
     private ?Google_Service_Calendar $_service = null;
     private ?GoogleCalendar $_calendar = null;
@@ -78,7 +77,7 @@ class GoogleCalendarHelper
                     // revoke token if refresh failed
                     $this->revokeAccess();
                     Log::channel('google_authorisation_failed')
-                        ->info('Cannot fetch access token with refresh:', $newCredentials);
+                        ->warning('Cannot fetch access token with refresh:', $newCredentials);
                 }
             }
             throw new Exception('Google Calendar Integration in not valid');
@@ -99,10 +98,9 @@ class GoogleCalendarHelper
             Log::channel('google_authorisation_success')->info('Authorisation Token Success:', $logData);
             return true;
         }
-        Log::channel('google_authorisation_failed')->info('Unable to update access token:', $logData);
+        Log::channel('google_authorisation_failed')->warning('Unable to update access token:', $logData);
         return false;
     }
-
 
     public function storeNewUserTokens(array $accessToken): bool
     {
@@ -128,7 +126,7 @@ class GoogleCalendarHelper
             Log::channel('google_authorisation_success')->info('Authorisation Token Success:', $logData);
             return true;
         }
-        Log::channel('google_authorisation_failed')->info('Unable to store new tokens:', $logData);
+        Log::channel('google_authorisation_failed')->warning('Unable to store new tokens:', $logData);
         return false;
     }
 
@@ -213,7 +211,7 @@ class GoogleCalendarHelper
     public function updateTimezone(): bool
     {
         if (!$this->_calendar->calendar_id) {
-            Log::channel('google_calendar_failed')->info('Unable to update timezone. Calendar not linked:', [
+            Log::channel('google_calendar_failed')->warning('Unable to update timezone. Calendar not linked:', [
                 'user_id' => $this->_calendar->user_id,
                 'id' => $this->_calendar->id,
                 'timezone_id' => $this->_calendar->timezone_id
@@ -247,7 +245,7 @@ class GoogleCalendarHelper
         $gEvent->setSummary($event->service->title . ' - ' . $event->schedule->title);
         $gEvent->setLocation(
             $event->schedule->venue_address . ', ' . $event->schedule->city . ', ' .
-            $event->schedule->country . ', ' . $event->schedule->post_code
+                $event->schedule->country . ', ' . $event->schedule->post_code
         );
 
         $attendee = new Google_Service_Calendar_EventAttendee();
@@ -264,7 +262,7 @@ class GoogleCalendarHelper
                 'event_id' => $createdEvent->id
             ]);
         } else {
-            Log::channel('google_calendar_failed')->info('Unable to сreate event', [
+            Log::channel('google_calendar_failed')->warning('Unable to сreate event', [
                 'booking_id' => $booking->id,
                 'calendar_id' => $this->_calendar->id,
                 'message' => 'Empty response'
@@ -272,15 +270,13 @@ class GoogleCalendarHelper
         }
     }
 
-
     private function revokeAccess(): void
     {
         if (!$this->_calendar || !$this->_calendar->access_token) {
-            Log::channel('google_calendar_failed')->info('Unable to revoke token', []);
+            Log::channel('google_calendar_failed')->warning('Unable to revoke token', []);
             return;
         }
         $this->_client->revokeToken();
         $this->_calendar->cleanupState();
     }
-
 }

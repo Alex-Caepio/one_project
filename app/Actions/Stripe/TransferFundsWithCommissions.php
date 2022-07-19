@@ -15,7 +15,7 @@ class TransferFundsWithCommissions
     {
         if (!$practitioner->plan instanceof Plan) {
             Log::channel('practitioner_commissions_error')
-                ->info('Unable to transfer funds to the practitioner. Empty Plan:', [
+                ->warning('Unable to transfer funds to the practitioner. Empty Plan:', [
                     'user_id' => $practitioner->id,
                     'plan_id' => $practitioner->plan_id,
                     'stripe_account_id' => $practitioner->stripe_account_id,

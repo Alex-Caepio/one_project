@@ -30,7 +30,6 @@ use Illuminate\Validation\ValidationException;
 use Stripe\Account;
 use Stripe\StripeClient;
 
-
 class AuthController extends Controller
 {
     use hasMediaItems;
@@ -44,7 +43,7 @@ class AuthController extends Controller
                 'stripe_customer_id' => $stripeCustomer->id
             ]);
         } catch (Exception $e) {
-            Log::channel('stripe_client_error')->info("Client could not registered in stripe", [
+            Log::channel('stripe_client_error')->error("Client could not registered in stripe", [
                 'first_name' => $request->first_name,
                 'last_name' => $request->last_name,
                 'business_email' => $request->business_email,
@@ -144,7 +143,7 @@ class AuthController extends Controller
                     'stripe_account_id' => $user->stripe_account_id,
                 ]);
             } catch (Exception $e) {
-                Log::channel('stripe_client_error')->info("New Account could not registered in stripe", [
+                Log::channel('stripe_client_error')->error("New Account could not registered in stripe", [
                     'user_id' => $user->id,
                     'email' => $user->email,
                     'message' => $e->getMessage(),
@@ -236,5 +235,4 @@ class AuthController extends Controller
         run_action(UnpublishPractitioner::class, Auth::user(), $request);
         return response(null, 204);
     }
-
 }

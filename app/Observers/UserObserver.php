@@ -18,11 +18,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Stripe\StripeClient;
 
-
-
 class UserObserver
 {
-
     /**
      * Mark all of the articles and services
      *
@@ -52,7 +49,6 @@ class UserObserver
             }
         }
     }
-
 
     /**
      * Delete all user articles and services
@@ -86,7 +82,7 @@ class UserObserver
             try {
                 run_action(CancelBooking::class, $booking, false, User::ACCOUNT_CLIENT);
             } catch (\Exception $e) {
-                Log::channel('practitioner_cancel_error')->info('[[Cancellation on unpublish failed]]: ', [
+                Log::channel('practitioner_cancel_error')->warning('[[Cancellation on unpublish failed]]: ', [
                     'user_id' => $booking->user_id ?? null,
                     'practitioner_id' => $booking->practitioner_id ?? null,
                     'booking_id' => $booking->id ?? null,
