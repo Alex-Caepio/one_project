@@ -2,14 +2,23 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
+ * @property int $id
  * @property int is_paid
  * @property int is_deposit
+ * @property string $payment_amount
+ * @property string|null $reference
+ * @property string|null $subscription_id
+ * @property-read Purchase $purchase
+ *
+ * @method static self|Builder query()
+ * @method self|Builder unpaid() `scopeUnpaid()` Returns unpaid instalments.
  */
 class Instalment extends Model
 {
@@ -28,6 +37,10 @@ class Instalment extends Model
         'is_deposit',
     ];
 
+    protected $casts = [
+        'payment_date' => 'datetime',
+    ];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -36,5 +49,10 @@ class Instalment extends Model
     public function purchase(): BelongsTo
     {
         return $this->belongsTo(Purchase::class);
+    }
+
+    public function scopeUnpaid(Builder $query): Builder
+    {
+        return $query->where('is_paid', 0);
     }
 }

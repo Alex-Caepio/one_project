@@ -15,22 +15,22 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * Class Service
- *
- * @property int id
- * @property int user_id
- * @property int is_published
- * @property string service_type_id
- * @property string url
- * @property string title
- * @property string string
- * @property string stripe_id
- * @property string description
- * @property string introduction
- * @property Carbon created_at
- * @property Carbon updated_at
- * @property Carbon deleted_at
- * @property ServiceType service_type
+ * @property int $id
+ * @property int $user_id
+ * @property int $is_published
+ * @property string $service_type_id
+ * @property string $url
+ * @property string $title
+ * @property string $string
+ * @property string $stripe_id
+ * @property string $description
+ * @property string $introduction
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ * @property Carbon $deleted_at
+ * @property ServiceType $service_type
+ * @property-read User $user
+ * @property-read User $practitioner Alias for `$user`.
  */
 class Service extends Model
 {

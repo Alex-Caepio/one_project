@@ -11,11 +11,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * @property mixed id
- * @property mixed stripe_id
- * @property mixed subscription_id
- * @property mixed deposit_amount
- * @property mixed reference
+ * @property int $id
+ * @property string $stripe_id
+ * @property string $subscription_id
+ * @property float $deposit_amount
+ * @property string $reference
+ * @property float $price
+ * @property-read Service $service
+ * @property-read Schedule $schedule
  */
 class Purchase extends Model
 {
@@ -50,9 +53,9 @@ class Purchase extends Model
      * @var array
      */
     protected $casts = [
-        'created_at'                => 'datetime',
-        'updated_at'                => 'datetime',
-        'deleted_at'                => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
         'cancelled_at_subscription' => 'datetime',
     ];
 
