@@ -39,9 +39,9 @@ class CancelBooking
 
     public function execute(
         Booking $booking,
-        bool    $declineRescheduleRequest = false,
+        bool $declineRescheduleRequest = false,
         ?string $roleFromRequest = null,
-        ?bool   $cancelledByPractitioner = false
+        ?bool $cancelledByPractitioner = false
     ) {
         if (!$booking->isActive()) {
             return;
@@ -126,20 +126,14 @@ class CancelBooking
 
             if ($booking->is_installment) {
                 $this->refundInstallment($booking->purchase->subscription_id);
-                try {
-                    $this->stripe->subscriptions->cancel($booking->purchase->subscription_id);
-                } catch (Exception $e) {
-                    Log::channel('stripe_refund_fail')
-                        ->error('Subscription cancel fail: ', [
-                            'subscription_id' => $booking->purchase->subscription_id,
-                            'message' => $e->getMessage(),
-                        ]);
-                }
+                $this->cancelSubscription($booking->purchase->subscription_id);
             }
 
             if ($refundData['practitionerCharge'] > 0 && $booking->practitioner->stripe_account_id) {
                 $this->reverseTransferToPractitioner($refundData, $booking);
             }
+        } elseif ($booking->is_installment) {
+            $this->cancelSubscription($booking->purchase->subscription_id);
         }
 
         $booking->cancelled_at = Carbon::now();
@@ -294,9 +288,12 @@ class CancelBooking
         bool    $declineRescheduleRequest,
         bool    $cancelledByPractitioner
     ): array {
-        $stripeFee = (int)config('app.platform_cancellation_fee'); // 3%
+        $stripeFee = (int) config('app.platform_cancellation_fee'); // 3%
         $planRate = $booking->practitioner->getCommission();
-        $paid = $booking->is_installment ? $booking->purchase->amount * $booking->purchase->deposit_amount : $booking->cost;
+        $paid = $booking->is_installment
+            ? $booking->purchase->amount * $booking->purchase->deposit_amount
+            : $booking->cost
+        ;
 
         $stripeFeeAmount = round($paid * $stripeFee / 100, 2);
         $planRateAmount = round($paid * $planRate / 100, 2);
@@ -307,7 +304,6 @@ class CancelBooking
                 ->sum('payment_amount');
             $installmentFeeAmount = round($installmentAmount * $stripeFee / 100, 2);
         }
-
 
         $result = [
             'isFullRefund' => false,
@@ -329,7 +325,6 @@ class CancelBooking
         } else { // cancelled by client
             $result = $this->cancelledByClient($result, $booking);
         }
-
 
         $result['refundSmallestUnit'] = intval(sprintf("%.0f", $result['refundTotal'] * 100));
 
@@ -433,6 +428,20 @@ class CancelBooking
                     'transfer_stripe' => $transfer->stripe_transfer_id ?? null,
                     'message' => $e->getMessage(),
                 ]);
+        }
+    }
+
+    private function cancelSubscription(string $subscriptionId): void
+    {
+        try {
+            $this->stripe->subscriptions->cancel($subscriptionId);
+        } catch (Exception $e) {
+            Log::channel('stripe_refund_fail')
+                ->error('Subscription cancel fail: ', [
+                    'subscription_id' => $subscriptionId,
+                    'message' => $e->getMessage(),
+                ])
+            ;
         }
     }
 }
