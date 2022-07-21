@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Plan\ChangeSubscriptionPaymentMethod;
 use App\Http\Requests\PaymentMethod\UpdatePaymentMethodRequest;
 use App\Http\Requests\Request;
 use App\Models\User;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 use Stripe\StripeClient;
 use Illuminate\Support\Facades\Auth;
@@ -94,7 +96,7 @@ class PaymentMethodController extends Controller
     /**
      * Sets default payment method
      */
-    public function default(StripeClient $stripe, Request $request)
+    public function default(Request $request): Response
     {
         /** @var User $user */
         $user = Auth::user();
@@ -108,14 +110,13 @@ class PaymentMethodController extends Controller
     /**
      * Sets default payment method for fees only
      */
-    public function defaultFee(Request $request)
+    public function defaultFee(Request $request): Response
     {
-        /** @var User $user */
-        $user = Auth::user();
+        $success = run_action(ChangeSubscriptionPaymentMethod::class, Auth::user(), $request->payment_method_id);
 
-        $user->default_fee_payment_method = $request->payment_method_id;
-        $user->save();
-
-        return response(null, 204);
+        return $success
+            ? response(null, 204)
+            : abort(503, 'Payment method has not been updated. Please, try again.')
+        ;
     }
 }
