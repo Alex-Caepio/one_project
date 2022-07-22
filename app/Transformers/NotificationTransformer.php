@@ -1,13 +1,11 @@
 <?php
 
-
 namespace App\Transformers;
 
 use App\Models\Notification;
 
 class NotificationTransformer extends Transformer
 {
-
     protected $availableIncludes = [
         'client',
         'practitioner',
@@ -68,6 +66,4 @@ class NotificationTransformer extends Transformer
     {
         return $this->itemOrNull($notification->booking, new BookingTransformer());
     }
-
-
 }

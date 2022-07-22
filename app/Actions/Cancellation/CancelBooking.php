@@ -8,12 +8,8 @@ use App\Events\ContractualServiceUpdateDeclinedBookingCancelled;
 use App\Models\Booking;
 use App\Models\Cancellation;
 use App\Models\Instalment;
-use App\Models\Notification;
 use App\Models\Promotion;
-use App\Models\Purchase;
-use App\Models\RescheduleRequest;
 use App\Models\Service;
-use App\Models\Transfer;
 use App\Models\User;
 use Carbon\Carbon;
 use Exception;
@@ -23,10 +19,7 @@ use Stripe\Exception\ApiErrorException;
 use Stripe\StripeClient;
 
 /**
- * Class CancelBooking
  * https://stripe.com/docs/connect/account-debits#charging-a-connected-account
- *
- * @package App\Actions\Cancellation
  */
 class CancelBooking
 {
@@ -47,6 +40,8 @@ class CancelBooking
             return;
         }
 
+        $actionRole = $this->getActionRole($roleFromRequest, $booking, Auth::id());
+
         $booking->load(['user', 'practitioner', 'purchase', 'schedule', 'schedule.service']);
         if (!$booking->purchase || !$booking->practitioner || !$booking->user) {
             throw new Exception('Incorrect model relation in booking #' . $booking->id);
@@ -54,21 +49,10 @@ class CancelBooking
 
         $stripeRefund = null;
 
-        if ($roleFromRequest !== null) {
-            $actionRole = $roleFromRequest;
-        } else {
-            $actionRole = Auth::id() === $booking->user_id ? User::ACCOUNT_CLIENT : User::ACCOUNT_PRACTITIONER;
-        }
-
-        if ($actionRole === User::ACCOUNT_PRACTITIONER) {
-            $cancelledByPractitioner = true;
-        }
-
         $refundData = $this->calculateRefundValue(
-            $actionRole,
+            $cancelledByPractitioner ? User::ACCOUNT_PRACTITIONER : $actionRole,
             $booking,
-            $declineRescheduleRequest,
-            $cancelledByPractitioner
+            $declineRescheduleRequest
         );
 
         Log::channel('stripe_refund_info')
@@ -84,15 +68,6 @@ class CancelBooking
                 'action_role' => $actionRole,
                 'is_decline' => $declineRescheduleRequest,
             ]);
-
-        $rescheduleRequest = RescheduleRequest::where('booking_id', $booking->id)->first();
-
-        if ($rescheduleRequest) {
-            $isAmendment = $rescheduleRequest->isAmendment();
-            $rescheduleRequest->delete();
-        } else {
-            $isAmendment = false;
-        }
 
         if ($refundData['refundTotal'] > 0) {
             try {
@@ -125,15 +100,15 @@ class CancelBooking
             }
 
             if ($booking->is_installment) {
-                $this->refundInstallment($booking->purchase->subscription_id);
-                $this->cancelSubscription($booking->purchase->subscription_id);
+                run_action(RefundInstalments::class, $booking->purchase->subscription_id);
+                run_action(CancelSubscription::class, $booking->purchase->subscription_id);
             }
 
             if ($refundData['practitionerCharge'] > 0 && $booking->practitioner->stripe_account_id) {
-                $this->reverseTransferToPractitioner($refundData, $booking);
+                run_action(ReverseTransferToPractitioner::class, $refundData, $booking);
             }
         } elseif ($booking->is_installment) {
-            $this->cancelSubscription($booking->purchase->subscription_id);
+            run_action(CancelSubscription::class, $booking->purchase->subscription_id);
         }
 
         $booking->cancelled_at = Carbon::now();
@@ -153,141 +128,33 @@ class CancelBooking
         ]);
         $cancellation->save();
 
-        $notification = new Notification();
+        run_action(NotifyUser::class, $actionRole, $booking, $refundData);
 
-        if ($cancelledByPractitioner) {
-            $notificationType = Notification::BOOKING_CANCELED_BY_PRACTITIONER;
-            $notification->receiver_id = $booking->user_id;
-        } else {
-            if ($actionRole === User::ACCOUNT_CLIENT) {
-                $notificationType = $isAmendment
-                    ? Notification::AMENDMENT_CANCELED_BY_PRACTITIONER
-                    : Notification::BOOKING_CANCELED_BY_CLIENT;
-                $notification->receiver_id = $booking->practitioner_id;
-            } else {
-                $notificationType = Notification::BOOKING_CANCELED_BY_PRACTITIONER;
-                $notification->receiver_id = $booking->user_id;
-            }
-        }
-
-        $notification->type = $notificationType;
-        $notification->client_id = $booking->user_id;
-        $notification->practitioner_id = $booking->practitioner_id;
-        $notification->booking_id = $booking->id;
-        $notification->title = $booking->schedule->service->title . ' ' . $booking->schedule->title;
-
-        if ($rescheduleRequest) {
-            $notification->old_address = $rescheduleRequest->old_location_displayed;
-            $notification->new_address = $rescheduleRequest->new_location_displayed;
-            $notification->old_datetime = $rescheduleRequest->old_start_date;
-            $notification->new_datetime = $rescheduleRequest->new_start_date;
-        }
-
-        $notification->service_id = $booking->schedule->service_id;
-        $notification->datetime_from = $booking->datetime_from;
-        $notification->datetime_to = $booking->datetime_to;
-        $notification->price_id = $booking->price_id;
-        $notification->price_refunded = $refundData['refundTotal'] > 0 && $booking->is_installment ? $refundData['installmentRefund'] : $refundData['refundTotal'];
-        $notification->price_payed = $booking->cost;
-
-        $notification->save();
-
-        if ($cancelledByPractitioner) {
+        if ($actionRole === User::ACCOUNT_PRACTITIONER) {
             event(new BookingCancelledByPractitioner($booking));
+        } elseif ($declineRescheduleRequest) {
+            event(new ContractualServiceUpdateDeclinedBookingCancelled($booking));
+        } elseif ($actionRole === User::ACCOUNT_CLIENT) {
+            event(new BookingCancelledByClient($booking, $cancellation));
         } else {
-            if ($declineRescheduleRequest) {
-                event(new ContractualServiceUpdateDeclinedBookingCancelled($booking));
-            } else {
-                if ($actionRole === User::ACCOUNT_CLIENT) {
-                    event(new BookingCancelledByClient($booking, $cancellation));
-                } else {
-                    event(new BookingCancelledByPractitioner($booking));
-                }
-            }
+            event(new BookingCancelledByPractitioner($booking));
         }
 
         return response(null, 204);
     }
 
-    private function refundInstallment($subscription_id): void
+    private function getActionRole(?string $requestRole, Booking $booking, int $currentUserId): string
     {
-        // refund to holistify stripe account
-        $purchase = Purchase::where('subscription_id', $subscription_id)->first();
-        $transfers = $purchase->transfer()->where('is_installment', true)->whereNull('stripe_transfer_reversal_id')->get();
-
-        try {
-            foreach ($transfers as $transfer) {
-                $result = $this->stripe->transfers->createReversal($transfer->stripe_transfer_id);
-                $transfer->stripe_transfer_reversal_id = $result->id;
-                $transfer->save();
-
-                Log::channel('stripe_refund_success')
-                    ->info('Reversal transfer success: ', [
-                        'Parent transfer id' => $transfer->stripe_transfer_id,
-                    ]);
-            }
-        } catch (Exception $e) {
-            Log::channel('stripe_refund_fail')
-                ->error('Reversal transfer failed: ', [
-                    'source_transfer_id' => $transfer->stripe_transfer_id,
-                    'message' => $e->getMessage(),
-                ]);
-            return;
+        if ($requestRole && in_array($requestRole, User::getAccountTypes(), true)) {
+            return $requestRole;
         }
 
-        try {
-            $stripeFee = (int)config('app.platform_cancellation_fee'); // 3%
-            // then refund to user
-            $invoices = $this->stripe->invoices->all([
-                'subscription' => $subscription_id,
-                'status' => 'paid',
-            ]);
-
-            foreach ($invoices as $invoice) {
-                if (!is_null($invoice['payment_intent'])) {
-                    try {
-                        $result = $this->stripe->refunds->create([
-                            'payment_intent' => $invoice['payment_intent'],
-                            'amount' => intval($invoice['amount_paid'] - round($invoice['amount_paid'] / 100 * $stripeFee, 0, PHP_ROUND_HALF_DOWN)),
-                            'reverse_transfer' => false,
-                        ]);
-
-                        Log::channel('stripe_refund_success')
-                            ->info('Payment intent refund result: ', [
-                                'refund' => $result,
-                            ]);
-                    } catch (Exception $e) {
-                        Log::channel('stripe_refund_fail')
-                            ->error('Stripe get subscription invoices error: ', [
-                                'payment_intent' => $invoice['payment_intent'],
-                                'message' => $e->getMessage(),
-                            ]);
-                    }
-                } else {
-                    Log::channel('stripe_refund_fail')
-                        ->info('Invoice has no payment intent: ', [
-                            'invoice' => $invoice,
-                        ]);
-                }
-            }
-        } catch (Exception $e) {
-            Log::channel('stripe_refund_fail')
-                ->error('Stripe get subscription invoices error: ', [
-                    'subscription' => $subscription_id,
-                    'message' => $e->getMessage(),
-                ]);
-        }
-
-        $purchase->cancelled_at_subscription = Carbon::now();
-        $purchase->save();
+        return $currentUserId === $booking->user_id ? User::ACCOUNT_CLIENT : User::ACCOUNT_PRACTITIONER;
     }
 
-    private function calculateRefundValue(
-        string  $actionRole,
-        Booking $booking,
-        bool    $declineRescheduleRequest,
-        bool    $cancelledByPractitioner
-    ): array {
+    private function calculateRefundValue(string  $actionRole, Booking $booking, bool $declineRescheduleRequest): array
+    {
+        $cancelledByPractitioner = $actionRole === User::ACCOUNT_PRACTITIONER;
         $stripeFee = (int) config('app.platform_cancellation_fee'); // 3%
         $planRate = $booking->practitioner->getCommission();
         $paid = $booking->is_installment
@@ -381,67 +248,5 @@ class CancelBooking
         }
 
         return $result;
-    }
-
-    private function reverseTransferToPractitioner(array $refundData, Booking $booking)
-    {
-        $transfer = Transfer::where('purchase_id', $booking->purchase->id)
-            ->where('is_installment', 0)
-            ->whereNull('stripe_transfer_reversal_id')
-            ->first();
-
-        if (empty($transfer)) {
-            return;
-        }
-
-        // For multi appointment
-        if (count($booking->purchase->bookings)) {
-            $refundAmount = $refundData['practitionerCharge'];
-        } else {
-            $refundAmount = $transfer->amount;
-        }
-
-        $refundAmount = intval(round($refundAmount * 100, 0, PHP_ROUND_HALF_DOWN));
-
-        try {
-            $this->stripe->transfers->createReversal(
-                $transfer->stripe_transfer_id,
-                [
-                    'amount' => $refundAmount,
-                    'description' => 'Booking cancelled',
-                    'metadata' => [
-                        'Currency' => config('app.platform_currency'),
-                        'Practitioner connected account id' => $booking->practitioner->stripe_account_id,
-                        'Transfer id' => $transfer->stripe_transfer_id,
-                        'Booking reference' => $booking->reference,
-                    ]
-                ],
-            );
-        } catch (Exception $e) {
-            Log::channel('stripe_refund_fail')
-                ->error('Stripe refund error: ', [
-                    'user_id' => $booking->user_id ?? null,
-                    'practitioner_id' => $booking->practitioner_id ?? null,
-                    'charge' => $refundData['practitionerCharge'],
-                    'booking_id' => $booking->id ?? null,
-                    'payment_stripe' => $booking->purchase->stripe_id ?? null,
-                    'transfer_stripe' => $transfer->stripe_transfer_id ?? null,
-                    'message' => $e->getMessage(),
-                ]);
-        }
-    }
-
-    private function cancelSubscription(string $subscriptionId): void
-    {
-        try {
-            $this->stripe->subscriptions->cancel($subscriptionId);
-        } catch (Exception $e) {
-            Log::channel('stripe_refund_fail')
-                ->error('Subscription cancel fail: ', [
-                    'subscription_id' => $subscriptionId,
-                    'message' => $e->getMessage(),
-                ])
-            ;
-        }
     }
 }
