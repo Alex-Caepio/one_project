@@ -279,20 +279,22 @@ class User extends Authenticatable implements MustVerifyEmail
             );
     }
 
-    /**
-     * @return bool
-     */
     public function isPractitioner(): bool
     {
         return $this->account_type === self::ACCOUNT_PRACTITIONER;
     }
 
-    /**
-     * @return bool
-     */
     public function isClient(): bool
     {
         return $this->account_type === self::ACCOUNT_CLIENT;
+    }
+
+    public static function getAccountTypes(): array
+    {
+        return [
+            self::ACCOUNT_CLIENT,
+            self::ACCOUNT_PRACTITIONER,
+        ];
     }
 
     public function promotions(): BelongsToMany

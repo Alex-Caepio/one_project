@@ -2,59 +2,79 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Notification\MarkAsReadRequest;
 use App\Http\Requests\Request;
 use App\Models\Notification;
 use App\Transformers\NotificationTransformer;
+use Illuminate\Http\Response;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
-
 
 class NotificationController extends Controller
 {
-    public function index(Request $request)
+    private NotificationTransformer $transformer;
+
+    public function __construct(NotificationTransformer $transformer)
     {
-        $query = Notification::query()
-            ->where('practitioner_id', Auth::id())
-            ->where('receiver_id', Auth::id())
-            ->where('read_at', null)
-            ->orderBy('id', 'DESC')
-            ->with($request->getIncludes());
-
-        $paginator = $query->paginate($request->getLimit());
-        $notification = $paginator->getCollection();
-
-        return response(
-            fractal($notification, new NotificationTransformer())
-                ->parseIncludes($request->getIncludes())
-        )
-            ->withPaginationHeaders($paginator);
+        $this->transformer = $transformer;
     }
 
-
-    public function clientNotifications(Request $request)
+    public function index(Request $request): Response
     {
-        $query = Notification::query()
-            ->where('client_id', Auth::id())
-            ->where('receiver_id', Auth::id())
-            ->where('read_at', null)
-            ->orderBy('id', 'DESC')
-            ->with($request->getIncludes());
+        $paginator = $this->getPractitionerNotifications(Auth::id(), $request->getIncludes(), $request->getLimit());
 
-        $paginator = $query->paginate($request->getLimit());
-        $notification = $paginator->getCollection();
-
-        return response(
-            fractal($notification, new NotificationTransformer())
-                ->parseIncludes($request->getIncludes())
-        )->withPaginationHeaders($paginator);
+        return $this->buildResponseByNotifications($paginator, $request);
     }
 
+    private function getPractitionerNotifications(
+        int $userId,
+        array $relations,
+        ?int $limit = null
+    ): LengthAwarePaginator {
+        return $this->getNotifications('practitioner_id', $userId, $relations, $limit);
+    }
 
-    public function markAsRead(MarkAsReadRequest $request, Notification $notification)
+    public function clientNotifications(Request $request): Response
+    {
+        $paginator = $this->getClientNotifications(Auth::id(), $request->getIncludes(), $request->getLimit());
+
+        return $this->buildResponseByNotifications($paginator, $request);
+    }
+
+    private function getClientNotifications(int $userId, array $relations, ?int $limit = null): LengthAwarePaginator
+    {
+        return $this->getNotifications('client_id', $userId, $relations, $limit);
+    }
+
+    public function markAsRead(Notification $notification): Response
     {
         $notification->read_at = now();
         $notification->save();
 
         return response(null, 204);
+    }
+
+    private function getNotifications(
+        string $keyColumn,
+        int $userId,
+        array $relations,
+        ?int $limit = null
+    ): LengthAwarePaginator {
+        return Notification::query()
+            ->where($keyColumn, $userId)
+            ->where('receiver_id', $userId)
+            ->whereNull('read_at')
+            ->orderByDesc('id')
+            ->with($relations)
+            ->paginate($limit)
+        ;
+    }
+
+    private function buildResponseByNotifications(LengthAwarePaginator $paginator, Request $request): Response
+    {
+        $notification = $paginator->getCollection();
+
+        return response(fractal($notification, $this->transformer)->parseIncludes($request->getIncludes()))
+            ->withPaginationHeaders($paginator)
+        ;
     }
 }

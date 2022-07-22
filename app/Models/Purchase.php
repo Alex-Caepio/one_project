@@ -19,6 +19,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property float $price
  * @property-read Service $service
  * @property-read Schedule $schedule
+ *
+ * @method static static|Builder where()
  */
 class Purchase extends Model
 {

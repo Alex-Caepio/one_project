@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -11,6 +12,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property int $new_price_id
  * @property string $new_start_date
  * @property string $new_end_date
+ *
+ * @method static static|Builder where()
+ * @method static self|null first()
  */
 class RescheduleRequest extends Model
 {
