@@ -3,6 +3,7 @@
 namespace App\Actions\Plan;
 
 use App\Models\User;
+use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Stripe\StripeClient;
@@ -21,15 +22,19 @@ class ChangeSubscriptionPaymentMethod
         try {
             DB::beginTransaction();
 
+            // Do delay to wait for adding the payment method to the user in Stripe.
+            // Otherwise, it throws the exception that the user doesn't have the payment method.
+            sleep(1);
+
             $this->updateUserPaymentMethod($user, $paymentMethod);
             $this->updateStripePaymentMethod($user->stripe_plan_id, $paymentMethod);
 
             DB::commit();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
 
             Log::channel('stripe_plans_errors')
-                ->error('Error purchasing a plan', [
+                ->error('Change subscription payment method', [
                     'user_id' => $user->id,
                     'stripe_plan_id' => $user->stripe_plan_id,
                     'stripe_payment_method_id' => $paymentMethod,
