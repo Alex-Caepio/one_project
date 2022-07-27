@@ -27,7 +27,7 @@ class PublishPractitionerRequest extends Request {
 
     public function withValidator($validator) {
         $practitioner =
-            $this->route()->getName() === UpdateMediaRequest::ADMIN_ROUTE_NAME ? $this->practitioner : Auth::user();
+            $this->is(UpdateMediaRequest::ADMIN_ROUTE_NAME) ? $this->practitioner : Auth::user();
         if ($practitioner instanceof User) {
             $validator->setRules([
                                      'business_name'               => 'required|max:255|min:2',

@@ -9,7 +9,7 @@ use Illuminate\Validation\Rule;
 
 class UpdateMediaRequest extends Request {
 
-    public const ADMIN_ROUTE_NAME = 'admin-practitioner-publish';
+    public const ADMIN_ROUTE_NAME = 'api/admin/*';
 
     /**
      * Authorization rules
@@ -67,7 +67,7 @@ class UpdateMediaRequest extends Request {
 
 
     private function getPractitioner() {
-        if ($this->route()->getName() === self::ADMIN_ROUTE_NAME) {
+        if ($this->is(self::ADMIN_ROUTE_NAME)) {
             return $this->practitioner;
         }
         return Auth::user();
