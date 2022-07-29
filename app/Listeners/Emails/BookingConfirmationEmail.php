@@ -7,6 +7,8 @@ use App\Models\User;
 
 class BookingConfirmationEmail extends SendEmailHandler
 {
+    public $afterCommit = true;
+
     /**
      * @param \App\Events\BookingConfirmation $event
      */
