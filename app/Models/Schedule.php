@@ -294,7 +294,6 @@ class Schedule extends Model
         unset(
             $changes['location_displayed'],
             $changes['venue_name'],
-            $changes['post_code'],
             $changes['appointment'],
             $changes['comments'],
             $changes['title'],
@@ -326,6 +325,7 @@ class Schedule extends Model
                     $changes['location_id'],
                     $changes['venue'],
                     $changes['city'],
+                    $changes['post_code'],
                     $changes['country_id'],
                 );
                 $result = count($changes) > 0;
