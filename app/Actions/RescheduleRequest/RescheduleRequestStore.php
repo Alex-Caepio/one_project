@@ -37,8 +37,8 @@ class RescheduleRequestStore
         ];
 
         if ($newSchedule->location_displayed !== $oldSchedule->location_displayed) {
-            $data['old_location_displayed'] = $oldSchedule->location_dislpayed;
-            $data['new_location_displayed'] = $newSchedule->location_dislpayed;
+            $data['old_location_displayed'] = $oldSchedule->location_displayed;
+            $data['new_location_displayed'] = $newSchedule->location_displayed;
         }
 
         if ($newSchedule->start_date !== $oldSchedule->start_date) {
