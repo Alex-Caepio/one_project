@@ -589,6 +589,12 @@ class EmailVariables
             $this->generatePersonalAccessToken($this->event->client);
     }
 
+    public function getAccept_amend(): string
+    {
+        return config('app.frontend_url') . config('app.frontend_accept_amend') . '/' . $this->event->reschedule->id . '?token=' .
+            $this->generatePersonalAccessToken($this->event->client);
+    }
+
     /**
      * @return string
      */
@@ -598,6 +604,15 @@ class EmailVariables
             $this->generatePersonalAccessToken($this->event->client, 'decline');
     }
 
+    /**
+     * @return string
+     */
+    public function getDecline_amend(): string
+    {
+        return config('app.frontend_url') . config('app.frontend_decline_amend') . '/' . $this->event->reschedule->id . '?token=' .
+            $this->generatePersonalAccessToken($this->event->client, 'decline');
+    }
+    
     /**
      * @return string
      */
