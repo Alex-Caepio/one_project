@@ -233,7 +233,7 @@ class ScheduleController extends Controller
             }
         } else {
             return response(
-                ['message' => 'Sorry, you have reached the maximum allowed schedules for your subscription plan'],
+                ['message' => "Sorry, you've reached the maximum schedules for your subscription plan"],
                 422
             );
         }
