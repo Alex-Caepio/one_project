@@ -32,7 +32,7 @@ class ReverseTransferToPractitioner
         }
 
         // For multi appointment
-        if (count($booking->purchase->bookings)) {
+        if (count($booking->purchase->bookings) && !$booking->purchase->discount) {
             $refundAmount = $refundData['practitionerCharge'];
         } else {
             $refundAmount = $transfer->amount;
