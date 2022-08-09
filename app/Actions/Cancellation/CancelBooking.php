@@ -108,6 +108,7 @@ class CancelBooking
                 run_action(ReverseTransferToPractitioner::class, $refundData, $booking);
             }
         } elseif ($booking->is_installment) {
+            // Cancels the subscription without any paids.
             run_action(CancelSubscription::class, $booking->purchase->subscription_id);
         }
 

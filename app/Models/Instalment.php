@@ -39,6 +39,8 @@ class Instalment extends Model
 
     protected $casts = [
         'payment_date' => 'datetime',
+        'is_deposit' => 'boolean',
+        'is_paid' => 'boolean',
     ];
 
     public function user(): BelongsTo

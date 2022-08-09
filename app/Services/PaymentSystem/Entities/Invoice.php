@@ -6,6 +6,9 @@ use Carbon\Carbon;
 
 class Invoice
 {
+    /**
+     * An invoice ID: in_N.
+     */
     public ?string $id = null;
 
     public ?float $amountDue = null;

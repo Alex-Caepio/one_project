@@ -9,10 +9,27 @@ use App\Services\MetadataService;
 use Illuminate\Support\Facades\Log;
 use Stripe\StripeClient;
 
+/**
+ * Transfers a part of paid to a practitioner of the service.
+ */
 class TransferFundsWithCommissions
 {
-    public function execute($cost, $practitioner, $schedule, $client, $purchase, $chargeId = null, $booking = null): ?Transfer
+    private StripeClient $stripe;
+
+    public function __construct(StripeClient $stripe)
     {
+        $this->stripe = $stripe;
+    }
+
+    public function execute(
+        $cost,
+        $practitioner,
+        $schedule,
+        $client,
+        $purchase,
+        $chargeId = null,
+        $booking = null
+    ): ?Transfer {
         if (!$practitioner->plan instanceof Plan) {
             Log::channel('practitioner_commissions_error')
                 ->warning('Unable to transfer funds to the practitioner. Empty Plan:', [
@@ -23,7 +40,6 @@ class TransferFundsWithCommissions
 
             return null;
         }
-        $stripe = app()->make(StripeClient::class);
 
         // define if commission is overridden in admin panel
         $practitionerCommissions = $practitioner->getCommission();
@@ -55,9 +71,9 @@ class TransferFundsWithCommissions
             'metadata' => $metadata,
         ]);
 
-        $stripeTransfer = $stripe->transfers->create($request);
+        $stripeTransfer = $this->stripe->transfers->create($request);
 
-        $stripe->charges->update(
+        $this->stripe->charges->update(
             $stripeTransfer->destination_payment,
             ['metadata' => $metadata],
             ['stripe_account' => $stripeTransfer->destination]

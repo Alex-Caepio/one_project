@@ -8,6 +8,9 @@ use Exception;
 use Illuminate\Support\Facades\Log;
 use Stripe\StripeClient;
 
+/**
+ * Refunds transfers of a practitioner to a client of the booking.
+ */
 class ReverseTransferToPractitioner
 {
     private StripeClient $stripe;
@@ -20,8 +23,7 @@ class ReverseTransferToPractitioner
     public function execute(array $refundData, Booking $booking): void
     {
         /** @var Transfer|null $transfer */
-        $transfer = Transfer::query()
-            ->where('purchase_id', $booking->purchase->id)
+        $transfer = $booking->purchase->transfer()
             ->where('is_installment', 0)
             ->whereNull('stripe_transfer_reversal_id')
             ->first()
