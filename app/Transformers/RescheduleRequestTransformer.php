@@ -23,6 +23,7 @@ class RescheduleRequestTransformer extends Transformer
             'comment'                => $rescheduleRequest->comment,
             'old_location_displayed' => $rescheduleRequest->old_location_displayed,
             'new_location_displayed' => $rescheduleRequest->new_location_displayed,
+            'old_location'           => $rescheduleRequest->old_location,
             'old_start_date'         => $rescheduleRequest->old_start_date,
             'new_start_date'         => $rescheduleRequest->new_start_date,
             'old_end_date'           => $rescheduleRequest->old_end_date,
