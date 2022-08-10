@@ -30,6 +30,7 @@ use App\Events\PurchaseCancelledByPractitioner;
 use App\Events\RescheduleRequestDeclinedByClient;
 use App\Events\RescheduleRequestNoReplyFromClient;
 use App\Events\ServiceListingLive;
+use App\Events\ServicePurchased;
 use App\Events\ServiceScheduleCancelled;
 use App\Events\ServiceScheduleLive;
 use App\Events\ServiceUnpublished;
@@ -197,6 +198,10 @@ class EventServiceProvider extends ServiceProvider {
 
         AppointmentBooked::class => [
             AppointmentBookedEventHandler::class
+        ],
+
+        ServicePurchased::class => [
+            ServicePurchasedEventHandler::class
         ]
     ];
 

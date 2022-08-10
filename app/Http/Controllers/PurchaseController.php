@@ -8,6 +8,7 @@ use App\Actions\Stripe\GetViablePaymentMethod;
 use App\Actions\Stripe\TransferFundsWithCommissions;
 use App\DTO\Schedule\PaymentIntentDto;
 use App\Events\AppointmentBooked;
+use App\Events\ServicePurchased;
 use App\Filters\PurchaseFilters;
 use App\Helpers\BookingHelper;
 use App\Http\Requests\PromotionCode\ValidatePromocodeRequest;
@@ -219,6 +220,8 @@ class PurchaseController extends Controller
         }
 
         $this->connection->commit();
+
+        event(new ServicePurchased($booking));
 
         $purchaseData = fractal($purchase, new PurchaseTransformer())
             ->parseIncludes($request->getIncludes())
