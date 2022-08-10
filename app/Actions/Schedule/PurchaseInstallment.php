@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Actions\Schedule;
 
 use App\DTO\Schedule\PaymentIntentDto;
@@ -173,6 +172,7 @@ class PurchaseInstallment
                         'metadata' => $metadata
                     ],
                 ],
+                // Transfers a part of the payment for the practitioner
                 'transfer_data' => [
                     'destination' => $practitioner->stripe_account_id,
                     'amount_percent' => $toTransferPercent,

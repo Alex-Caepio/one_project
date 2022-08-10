@@ -53,7 +53,7 @@ class RefundInstalments
 
         try {
             $stripeFee = (int) config('app.platform_cancellation_fee'); // 3%
-            // then refund to user
+            // then refund to user through invoices of the subscription and their payment intents.
             $invoices = $this->stripe->invoices->all([
                 'subscription' => $subscriptionId,
                 'status' => 'paid',

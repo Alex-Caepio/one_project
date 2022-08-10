@@ -9,9 +9,9 @@ use Illuminate\Support\Facades\Log;
 use Stripe\StripeClient;
 
 /**
- * Refunds transfers of a practitioner to a client of the booking.
+ * Refunds transfers of a practitioner to the system (Holistify) in order to return the money to his client.
  */
-class ReverseTransferToPractitioner
+class ReverseTransferOfPractitioner
 {
     private StripeClient $stripe;
 
