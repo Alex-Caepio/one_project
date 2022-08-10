@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * the system to save the system money. Otherwise, refund will be done from
  * the system money instead of practitioners.
  *
+ * @property int $id
  * @property int $amount
  * @property int $user_id
  * @property int $schedule_id
@@ -26,6 +27,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $stripe_transfer_id
  * @property mixed|null $purchase_id
  * @property bool $is_installment
+ * @property-read Instalment|null $instalment A related instalment. Not each transfer is related with an instalment.
  */
 class Transfer extends Model
 {
@@ -40,5 +42,10 @@ class Transfer extends Model
     public function purchase(): BelongsTo
     {
         return $this->belongsTo(Purchase::class);
+    }
+
+    public function instalment(): BelongsTo
+    {
+        return $this->belongsTo(Instalment::class);
     }
 }

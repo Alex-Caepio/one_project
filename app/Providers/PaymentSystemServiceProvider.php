@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Services\PaymentSystem\StripeSubscriptionService;
+use App\Services\PaymentSystem\StripeSubscriptionTransferDecorator;
 use App\Services\PaymentSystem\SubscriptionServiceInterface;
 use Illuminate\Support\ServiceProvider;
 
@@ -15,7 +16,11 @@ class PaymentSystemServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind(SubscriptionServiceInterface::class, StripeSubscriptionService::class);
+        $this->app->bind(SubscriptionServiceInterface::class, function ($app) {
+            return $app->makeWith(StripeSubscriptionTransferDecorator::class, [
+                'service' => $app->make(StripeSubscriptionService::class),
+            ]);
+        });
     }
 
     /**

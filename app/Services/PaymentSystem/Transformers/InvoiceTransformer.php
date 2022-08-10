@@ -34,6 +34,8 @@ class InvoiceTransformer
         $invoice->total = $this->convertMoney($data['total']);
         $invoice->paidAt = Carbon::parse($data['created']);
         $invoice->subscriptionId = $data['subscription'];
+        $invoice->chargeId = $data['charge'];
+        $invoice->paymentIntentId = $data['payment_intent'];
 
         return $invoice;
     }

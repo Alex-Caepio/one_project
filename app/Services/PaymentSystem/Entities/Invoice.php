@@ -30,4 +30,10 @@ class Invoice
     public ?string $number = null;
 
     public ?string $subscriptionId = null;
+
+    public ?string $chargeId = null;
+
+    public ?string $paymentIntentId = null;
+
+    public ?Transfer $transfer = null;
 }
