@@ -3,6 +3,7 @@
 namespace App\Actions\Schedule;
 
 use App\Events\ServiceUpdatedByPractitionerContractual;
+use App\Models\Country;
 use Illuminate\Database\Eloquent\Collection;
 use App\Models\Booking;
 use App\Models\RescheduleRequest;
@@ -35,6 +36,26 @@ class CreateRescheduleRequestsOnScheduleUpdate
 
             $rescheduleRequests = [];
             foreach ($bookings as $booking) {
+                // If edit schedule locations and in the 'reschedule_requests' table
+                // columns 'new_schedule_id' and 'schedule_id' have the same 'id' -
+                // we can't get the old data from schedule,
+                // but we need to display the old location of edited schedule
+                if ($this->schedule->getOriginal('id') == $this->schedule->id) {
+                    $oldLocationParams = ['venue_name', 'venue_address', 'city', 'country_id', 'post_code'];
+                    $oldLocation = [];
+                    foreach ($oldLocationParams as $param) {
+                        if (!empty($this->schedule->getOriginal($param))) {
+                            if ($param !== 'country_id') {
+                                $oldLocation[] = $this->schedule->getOriginal($param);
+                            } else {
+                                $oldLocation[] = Country::find($this->schedule->getOriginal($param))->nicename;
+                            }
+                        }
+                    }
+
+                    $oldLocation = implode(", ", $oldLocation);
+                }
+
                 $rescheduleRequests[] = [
                     'user_id' => $booking->user_id,
                     'booking_id' => $booking->id,
@@ -44,6 +65,7 @@ class CreateRescheduleRequestsOnScheduleUpdate
                     'requested_by' => RescheduleRequest::REQUESTED_BY_PRACTITIONER_IN_SCHEDULE,
                     'old_location_displayed' => $this->schedule->getOriginal('location_displayed'),
                     'new_location_displayed' => $this->changesList['location_displayed'] ?? null,
+                    'old_location' => $oldLocation ?? null,
                     'old_start_date' => $this->schedule->getOriginal('start_date'),
                     'new_start_date' => $this->schedule->start_date,
                     'old_end_date' => $this->schedule->getOriginal('end_date'),

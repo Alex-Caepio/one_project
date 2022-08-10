@@ -33,6 +33,7 @@ class RescheduleRequest extends Model
         'comment',
         'old_location_displayed',
         'new_location_displayed',
+        'old_location',
         'old_url',
         'new_url',
         'old_start_date',
