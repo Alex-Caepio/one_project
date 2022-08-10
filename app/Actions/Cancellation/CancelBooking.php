@@ -105,9 +105,10 @@ class CancelBooking
             }
 
             if ($refundData['practitionerCharge'] > 0 && $booking->practitioner->stripe_account_id) {
-                run_action(ReverseTransferToPractitioner::class, $refundData, $booking);
+                run_action(ReverseTransferOfPractitioner::class, $refundData, $booking);
             }
         } elseif ($booking->is_installment) {
+            // Cancels the subscription without any paids.
             run_action(CancelSubscription::class, $booking->purchase->subscription_id);
         }
 

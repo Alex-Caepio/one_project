@@ -2,11 +2,14 @@
 
 namespace App\Actions\Cancellation;
 
+use App\Models\Instalment;
 use App\Models\Purchase;
 use App\Models\Transfer;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
+use Stripe\Refund;
 use Stripe\StripeClient;
 
 class RefundInstalments
@@ -22,12 +25,7 @@ class RefundInstalments
     {
         // refund to holistify stripe account
         $purchase = Purchase::where('subscription_id', $subscriptionId)->first();
-        /** @var Transfer[] $transfers */
-        $transfers = $purchase->transfer()
-            ->where('is_installment', true)
-            ->whereNull('stripe_transfer_reversal_id')
-            ->get()
-        ;
+        $transfers = $this->getTransfersOfInstalmentsByPurchase($purchase);
 
         try {
             foreach ($transfers as $transfer) {
@@ -53,12 +51,11 @@ class RefundInstalments
 
         try {
             $stripeFee = (int) config('app.platform_cancellation_fee'); // 3%
-            // then refund to user
+            // then refund to user through invoices of the subscription and their payment intents.
             $invoices = $this->stripe->invoices->all([
                 'subscription' => $subscriptionId,
                 'status' => 'paid',
             ]);
-
             foreach ($invoices as $invoice) {
                 if (!is_null($invoice['payment_intent'])) {
                     try {
@@ -67,6 +64,8 @@ class RefundInstalments
                             'amount' => intval($invoice['amount_paid'] - round($invoice['amount_paid'] / 100 * $stripeFee, 0, PHP_ROUND_HALF_DOWN)),
                             'reverse_transfer' => false,
                         ]);
+
+                        $this->updateInstalmentStatus($invoice['payment_intent'], $result);
 
                         Log::channel('stripe_refund_success')
                             ->info('Payment intent refund result: ', [
@@ -100,5 +99,40 @@ class RefundInstalments
 
         $purchase->cancelled_at_subscription = Carbon::now();
         $purchase->save();
+    }
+
+    /**
+     * @return Collection|Transfer[]
+     */
+    private function getTransfersOfInstalmentsByPurchase(Purchase $purchase): Collection
+    {
+        return $purchase->transfer()
+            ->where('is_installment', true)
+            ->whereNull('stripe_transfer_reversal_id')
+            ->with('instalment')
+            ->get()
+        ;
+    }
+
+    /**
+     * Saves data that instalment has been refunded.
+     */
+    private function updateInstalmentStatus(string $paymentIndentId, Refund $refund): ?Instalment
+    {
+        /** @var Instalment|null $instalment */
+        $instalment = Instalment::query()
+            ->where('stripe_payment_id', $paymentIndentId)
+            ->first()
+        ;
+
+        if (!$instalment) {
+            return null;
+        }
+
+        $instalment->stripe_refund_id = $refund->id;
+        $instalment->refunded_at = Carbon::parse($refund->created);
+        $instalment->save();
+
+        return $instalment;
     }
 }

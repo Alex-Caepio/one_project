@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Actions\Schedule;
 
 use App\DTO\Schedule\PaymentIntentDto;
@@ -173,6 +172,7 @@ class PurchaseInstallment
                         'metadata' => $metadata
                     ],
                 ],
+                // Transfers a part of the payment for the practitioner
                 'transfer_data' => [
                     'destination' => $practitioner->stripe_account_id,
                     'amount_percent' => $toTransferPercent,
@@ -185,16 +185,7 @@ class PurchaseInstallment
             return null;
         }
 
-        foreach ($calendarInstallments as $date => $value) {
-            $installment = new Instalment();
-            $installment->user_id = $customer->id;
-            $installment->purchase_id = $purchase->id;
-            $installment->payment_date = Carbon::parse($date);
-            $installment->payment_amount = $value;
-            $installment->reference = $reference;
-            $installment->subscription_id = $subscription->id;
-            $installment->save();
-        }
+        $this->createFutureInstallments($calendarInstallments, $customer, $purchase, $reference, $subscription);
 
         Log::channel('stripe_installment_success')
             ->info('Create installments: ', [
@@ -208,5 +199,29 @@ class PurchaseInstallment
             ]);
 
         return $subscription;
+    }
+
+    /**
+     * Creates installments for the future payments of the subscription.
+     *
+     * @param array<string, float> $calendarInstallments Dates as keys and amounts as values.
+     */
+    private function createFutureInstallments(
+        array $calendarInstallments,
+        User $customer,
+        Purchase $purchase,
+        string $reference,
+        Subscription $subscription
+    ): void {
+        foreach ($calendarInstallments as $date => $value) {
+            $installment = new Instalment();
+            $installment->user_id = $customer->id;
+            $installment->purchase_id = $purchase->id;
+            $installment->payment_date = Carbon::parse($date);
+            $installment->payment_amount = $value;
+            $installment->reference = $reference;
+            $installment->subscription_id = $subscription->id;
+            $installment->save();
+        }
     }
 }

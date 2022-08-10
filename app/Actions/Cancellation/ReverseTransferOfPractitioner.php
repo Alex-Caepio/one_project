@@ -8,7 +8,10 @@ use Exception;
 use Illuminate\Support\Facades\Log;
 use Stripe\StripeClient;
 
-class ReverseTransferToPractitioner
+/**
+ * Refunds transfers of a practitioner to the system (Holistify) in order to return the money to his client.
+ */
+class ReverseTransferOfPractitioner
 {
     private StripeClient $stripe;
 
@@ -20,8 +23,7 @@ class ReverseTransferToPractitioner
     public function execute(array $refundData, Booking $booking): void
     {
         /** @var Transfer|null $transfer */
-        $transfer = Transfer::query()
-            ->where('purchase_id', $booking->purchase->id)
+        $transfer = $booking->purchase->transfer()
             ->where('is_installment', 0)
             ->whereNull('stripe_transfer_reversal_id')
             ->first()
