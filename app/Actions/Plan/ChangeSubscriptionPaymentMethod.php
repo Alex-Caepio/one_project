@@ -24,7 +24,7 @@ class ChangeSubscriptionPaymentMethod
 
             // Do delay to wait for adding the payment method to the user in Stripe.
             // Otherwise, it throws the exception that the user doesn't have the payment method.
-            sleep(1);
+            sleep(2);
 
             $this->updateUserPaymentMethod($user, $paymentMethod);
             $this->updateStripePaymentMethod($user->stripe_plan_id, $paymentMethod);
