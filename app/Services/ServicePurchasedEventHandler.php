@@ -6,6 +6,7 @@ use App\EmailVariables\EmailVariables;
 use App\Events\ServicePurchased;
 use App\Models\CustomEmail;
 use Illuminate\Support\Facades\Mail;
+use Swift_SwiftException;
 
 class ServicePurchasedEventHandler
 {
@@ -17,8 +18,12 @@ class ServicePurchasedEventHandler
         $emailVariables = new EmailVariables($event);
         $bodyReplaced = $emailVariables->replace($body);
 
-        Mail::raw($bodyReplaced, function ($message) use ($user){
-            $message->to($user->email);
-        });
+        try {
+            Mail::raw($bodyReplaced, function ($message) use ($user) {
+                $message->to($user->email);
+            });
+        } catch (Swift_SwiftException $e) {
+            // do nothing if mail fails to be sent
+        }
     }
 }
