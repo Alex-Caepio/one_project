@@ -7,12 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
- * Class MediaImage
- *
- * @property int    id
- * @property string url
- * @property Carbon created_at
- * @property Carbon updated_at
+ * @property int $id
+ * @property string $url
+ * @property string $name
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
  */
 class MediaVideo extends Model
 {
