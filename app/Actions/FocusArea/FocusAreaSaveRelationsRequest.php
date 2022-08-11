@@ -1,16 +1,14 @@
 <?php
 
-
 namespace App\Actions\FocusArea;
-
 
 use App\Http\Requests\Request;
 use App\Models\FocusArea;
-use App\Traits\hasMediaItems;
+use App\Traits\HasMediaItems;
 
 class FocusAreaSaveRelationsRequest
 {
-    use hasMediaItems;
+    use HasMediaItems;
 
     public function execute(FocusArea $focusArea, Request $request): void
     {

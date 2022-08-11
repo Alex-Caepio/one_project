@@ -20,7 +20,7 @@ use App\Http\Requests\Auth\VerificationRequest;
 use App\Http\Requests\Request;
 use App\Models\Country;
 use App\Models\User;
-use App\Traits\hasMediaItems;
+use App\Traits\HasMediaItems;
 use App\Transformers\UserTransformer;
 use Exception;
 use Illuminate\Support\Facades\Auth;
@@ -32,7 +32,7 @@ use Stripe\StripeClient;
 
 class AuthController extends Controller
 {
-    use hasMediaItems;
+    use HasMediaItems;
 
     public function register(RegisterRequest $request, StripeClient $stripe)
     {

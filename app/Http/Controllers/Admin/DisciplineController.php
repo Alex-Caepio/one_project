@@ -8,16 +8,15 @@ use App\Http\Requests\Admin\DisciplineUpdateRequest;
 use App\Models\Discipline;
 use App\Http\Requests\Request;
 use App\Http\Controllers\Controller;
-use App\Traits\hasMediaItems;
+use App\Traits\HasMediaItems;
 use App\Transformers\DisciplineTransformer;
 use App\Http\Requests\Admin\DisciplineStoreRequest;
 use App\Http\Requests\Admin\DisciplinePublishRequest;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 
 class DisciplineController extends Controller
 {
-    use hasMediaItems;
+    use HasMediaItems;
     public function index(Request $request)
     {
         $query = Discipline::query();

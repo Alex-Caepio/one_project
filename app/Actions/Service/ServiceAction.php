@@ -4,13 +4,13 @@ namespace App\Actions\Service;
 
 use App\Models\Service;
 use App\Http\Requests\Request;
-use App\Traits\hasMediaItems;
+use App\Traits\HasMediaItems;
 use App\Traits\KeywordCollection;
 use Illuminate\Support\Facades\DB;
 
 abstract class ServiceAction
 {
-    use hasMediaItems, KeywordCollection;
+    use HasMediaItems, KeywordCollection;
 
     protected function saveService(Service $service, Request $request)
     {

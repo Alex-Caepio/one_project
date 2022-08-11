@@ -1,19 +1,18 @@
 <?php
 
-
 namespace App\Actions\Practitioners;
 
 use App\Http\Requests\Request;
 use App\Models\User;
-use App\Traits\hasMediaItems;
+use App\Traits\HasMediaItems;
 use App\Traits\KeywordCollection;
 
+class UpdateMediaPractitioner
+{
+    use HasMediaItems, KeywordCollection;
 
-class UpdateMediaPractitioner {
-    use hasMediaItems, KeywordCollection;
-
-    public function execute(User $user, Request $request): void {
-
+    public function execute(User $user, Request $request): void
+    {
         $user->forceFill($request->all($request->getValidatorKeys()));
         $user->save();
 

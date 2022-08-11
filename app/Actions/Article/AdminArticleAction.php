@@ -1,63 +1,48 @@
 <?php
 
-
 namespace App\Actions\Article;
 
 use App\Http\Requests\Admin\ArticleUpdateRequest;
-use App\Http\Requests\Request;
 use App\Models\Article;
-use App\Models\Keyword;
-use App\Traits\hasMediaItems;
+use App\Traits\HasMediaItems;
 use App\Traits\KeywordCollection;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-abstract class AdminArticleAction {
+abstract class AdminArticleAction
+{
+    use HasMediaItems, KeywordCollection;
 
-    use hasMediaItems, KeywordCollection;
-
-    /**
-     * @param \App\Models\Article $article
-     * @param \App\Http\Requests\Admin\ArticleUpdateRequest $request
-     */
-    protected function updateArticle(Article $article, ArticleUpdateRequest $request) {
-        DB::transaction(function() use ($article, $request) {
+    protected function updateArticle(Article $article, ArticleUpdateRequest $request)
+    {
+        DB::transaction(function () use ($article, $request) {
             $this->fillArticle($article, $request);
             $this->fillRelations($article, $request);
         });
     }
 
-
-    /**
-     * @param \App\Models\Article $article
-     * @param \App\Http\Requests\Admin\ArticleUpdateRequest $request
-     * @return \App\Models\Article
-     */
-    protected function fillArticle(Article $article, ArticleUpdateRequest $request): Article {
+    protected function fillArticle(Article $article, ArticleUpdateRequest $request): Article
+    {
         $article->forceFill([
-                                'title'        => $request->get('title'),
-                                'description'  => $request->get('description'),
-                                'is_published' => $request->getBoolFromRequest('is_published'),
-                                'introduction' => $request->get('introduction'),
-                                'slug'         => $request->get('slug'),
-                                'image_url'    => $request->get('image_url')
-                            ]);
+            'title'        => $request->get('title'),
+            'description'  => $request->get('description'),
+            'is_published' => $request->getBoolFromRequest('is_published'),
+            'introduction' => $request->get('introduction'),
+            'slug'         => $request->get('slug'),
+            'image_url'    => $request->get('image_url')
+        ]);
         $article->save();
         return $article;
     }
 
-    /**
-     * @param \App\Models\Article $article
-     * @param \App\Http\Requests\Admin\ArticleUpdateRequest $request
-     */
-    protected function fillRelations(Article $article, ArticleUpdateRequest $request): void {
+    protected function fillRelations(Article $article, ArticleUpdateRequest $request): void
+    {
 
         if ($request->filled('media_images')) {
-            $this->syncImages($request->media_images,$article);
+            $this->syncImages($request->media_images, $article);
         }
 
         if ($request->filled('media_videos')) {
-            $this->syncVideos($request->media_videos,$article);
+            $this->syncVideos($request->media_videos, $article);
         }
 
         if ($request->has('media_files')) {
@@ -83,5 +68,4 @@ abstract class AdminArticleAction {
             $article->services()->sync($request->get('services'));
         }
     }
-
 }
