@@ -75,6 +75,7 @@ use App\Listeners\Emails\ServiceUpdatedByPractitionerNonContractualEmail;
 use App\Listeners\Emails\ServiceUpdatedNonContractualEmail;
 use App\Listeners\Emails\SubscriptionConfirmationEmail;
 use App\Listeners\Emails\WelcomeVerification;
+use App\Services\ServicePurchasedEventHandler;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
