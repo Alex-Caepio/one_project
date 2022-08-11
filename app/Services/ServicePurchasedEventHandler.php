@@ -5,6 +5,7 @@ namespace App\Services;
 use App\EmailVariables\EmailVariables;
 use App\Events\ServicePurchased;
 use App\Models\CustomEmail;
+use Illuminate\Mail\Message;
 use Illuminate\Support\Facades\Mail;
 use Swift_SwiftException;
 
@@ -19,8 +20,9 @@ class ServicePurchasedEventHandler
         $bodyReplaced = $emailVariables->replace($body);
 
         try {
-            Mail::html($bodyReplaced, function ($message) use ($user) {
+            Mail::html($bodyReplaced, function (Message $message) use ($user, $emailVerification) {
                 $message->to($user->email);
+                $message->subject($emailVerification->subject);
             });
         } catch (Swift_SwiftException $e) {
             // do nothing if mail fails to be sent
