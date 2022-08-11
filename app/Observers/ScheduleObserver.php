@@ -12,12 +12,6 @@ use App\Models\Service;
 
 class ScheduleObserver
 {
-    /**
-     * Handle the article "updated" event.
-     *
-     * @param Schedule $schedule
-     * @return void
-     */
     public function saved(Schedule $schedule): void
     {
         if ($schedule->isDirty('is_published')) {
@@ -44,18 +38,21 @@ class ScheduleObserver
     public function updated(Schedule $schedule)
     {
         $hasContractualChanges = $schedule->hasContractualChanges();
+
         if (
             in_array($schedule->service->service_type_id, [Service::TYPE_WORKSHOP, Service::TYPE_EVENT, Service::TYPE_RETREAT])
             && $hasContractualChanges
         ) {
-            $schedule->isScheduleFilesUpdated = false;
+            $schedule->resetUpdateStatuses();
             run_action(CreateRescheduleRequestsOnScheduleUpdate::class, $schedule);
         }
-        if ($schedule->hasNonContractualChanges()
+
+        if (
+            $schedule->hasNonContractualChanges()
             && !$hasContractualChanges
             && !in_array($schedule->service->service_type->id, [Service::TYPE_BESPOKE])
         ) {
-            $schedule->isScheduleFilesUpdated = false;
+            $schedule->resetUpdateStatuses();
             event(new ServiceUpdatedByPractitionerNonContractual($schedule));
         }
     }

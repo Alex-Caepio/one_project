@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Actions\Schedule;
 
 use App\Http\Requests\Schedule\CreateScheduleInterface;
@@ -10,7 +9,6 @@ use Stripe\StripeClient;
 
 class ScheduleStore extends ScheduleSave
 {
-
     public function execute(CreateScheduleInterface $request, Service $service): Schedule
     {
         $data = $this->collectRequest($request, $service);
@@ -36,7 +34,8 @@ class ScheduleStore extends ScheduleSave
 
                 $prices[$key]['stripe_id'] = $stripePrice->id;
                 if ((!isset($prices[$key]['number_available']) || !$prices[$key]['number_available']) &&
-                    $schedule->attendees !== null && $schedule->attendees > 0) {
+                    $schedule->attendees !== null && $schedule->attendees > 0
+                ) {
                     $prices[$key]['number_available'] = $schedule->attendees;
                 }
                 $prices[$key]['stripe_id'] = $stripePrice->id;
@@ -44,6 +43,4 @@ class ScheduleStore extends ScheduleSave
             $schedule->prices()->createMany($prices);
         }
     }
-
-
 }

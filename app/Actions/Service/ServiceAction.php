@@ -2,37 +2,26 @@
 
 namespace App\Actions\Service;
 
-use App\Models\Keyword;
 use App\Models\Service;
 use App\Http\Requests\Request;
-use App\Traits\hasMediaItems;
+use App\Traits\HasMediaItems;
 use App\Traits\KeywordCollection;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 
-abstract class ServiceAction {
+abstract class ServiceAction
+{
+    use HasMediaItems, KeywordCollection;
 
-    use hasMediaItems, KeywordCollection;
-
-    /**
-     * @param \App\Models\Service $service
-     * @param \App\Http\Requests\Request $request
-     */
-    protected function saveService(Service $service, Request $request) {
-        DB::transaction(function() use ($service, $request) {
+    protected function saveService(Service $service, Request $request)
+    {
+        DB::transaction(function () use ($service, $request) {
             $this->fillService($service, $request);
             $this->fillRelations($service, $request);
         });
     }
 
-
-    /**
-     * @param \App\Models\Service $service
-     * @param \App\Http\Requests\Request $request
-     * @return \App\Models\Service
-     */
-    protected function fillService(Service $service, Request $request): Service {
+    protected function fillService(Service $service, Request $request): Service
+    {
         $slug = $this->getSlug($request);
         $params = [
             'title'           => $request->get('title'),
@@ -47,26 +36,22 @@ abstract class ServiceAction {
 
         $service->forceFill($params);
         $service->save();
+
         return $service;
     }
 
-    /**
-     * @param \App\Models\Service $service
-     * @param \App\Http\Requests\Request $request
-     */
-    protected function fillRelations(Service $service, Request $request): void {
+    protected function fillRelations(Service $service, Request $request): void
+    {
         if ($request->filled('media_images')) {
             $this->syncImages($request->media_images, $service);
         }
-
 
         if ($request->filled('media_videos')) {
             $this->syncVideos($request->media_videos, $service);
         }
 
         if ($request->has('media_files')) {
-            $service->media_files()->delete();
-            $service->media_files()->createMany($request->get('media_files'));
+            $service->updateMediaFiles($request->get('media_files'));
         }
 
         if ($request->filled('focus_areas')) {
@@ -79,14 +64,16 @@ abstract class ServiceAction {
 
         $keywords = $this->collectKeywordModelsFromRequest($request);
         $service->keywords()->detach();
+
         if ($request->filled('keywords')) {
             $service->keywords()->sync($keywords);
         }
-
     }
 
-    protected function getSlug($request): string {
+    protected function getSlug($request): string
+    {
         $titleSlug = $request->get('title') ?? '';
+
         return $request->get('slug') ?? to_url($titleSlug);
     }
 }

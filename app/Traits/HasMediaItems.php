@@ -5,7 +5,7 @@ namespace App\Traits;
 
 use Illuminate\Database\Eloquent\Model;
 
-trait hasMediaItems
+trait HasMediaItems
 {
     public function links(array $links, Model $model, bool $flag): array
     {
@@ -69,6 +69,4 @@ trait hasMediaItems
         $model->documents()->whereNotIn('url', $links)->delete();
         $model->documents()->createMany($links);
     }
-
-
 }

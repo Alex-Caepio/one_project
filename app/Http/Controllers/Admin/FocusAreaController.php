@@ -14,14 +14,16 @@ use App\Http\Requests\Request;
 use App\Models\FocusArea;
 use App\Models\FocusAreaImage;
 use App\Models\FocusAreaVideo;
-use App\Traits\hasMediaItems;
+use App\Traits\HasMediaItems;
 use App\Transformers\FocusAreaTransformer;
 use Illuminate\Support\Facades\DB;
 
-class FocusAreaController extends Controller {
-    use hasMediaItems;
+class FocusAreaController extends Controller
+{
+    use HasMediaItems;
 
-    public function index(Request $request) {
+    public function index(Request $request)
+    {
         $query = FocusArea::query();
 
         if ($request->hasOrderBy()) {
@@ -32,14 +34,14 @@ class FocusAreaController extends Controller {
         if ($request->hasSearch()) {
             $search = $request->search();
 
-            $query->where(function($query) use ($search) {
+            $query->where(function ($query) use ($search) {
                 $searchString = "%{$search}%";
                 $query->where('name', 'like', $searchString)
-                      ->orWhere('introduction', 'like', $searchString)
-                      ->orWhere('description', 'like', $searchString)
-                      ->orWhereHas('users', static function($queryHas) use ($searchString) {
-                    $queryHas->where('email', 'LIKE', $searchString);
-                });
+                    ->orWhere('introduction', 'like', $searchString)
+                    ->orWhere('description', 'like', $searchString)
+                    ->orWhereHas('users', static function ($queryHas) use ($searchString) {
+                        $queryHas->where('email', 'LIKE', $searchString);
+                    });
             });
         }
 
@@ -49,12 +51,11 @@ class FocusAreaController extends Controller {
         $focus = $paginator->getCollection();
 
         return response(fractal($focus, new FocusAreaTransformer())->parseIncludes($includes)
-                                                                   ->toArray())->withPaginationHeaders($paginator);
-
-
+            ->toArray())->withPaginationHeaders($paginator);
     }
 
-    public function store(FocusAreaStoreRequest $request) {
+    public function store(FocusAreaStoreRequest $request)
+    {
         $data = run_action(FocusAreaCleanupRequest::class, $request);
         $focusArea = FocusArea::create($data);
 
@@ -62,11 +63,13 @@ class FocusAreaController extends Controller {
         return fractal($focusArea, new FocusAreaTransformer())->parseIncludes($request->getIncludes())->respond();
     }
 
-    public function show(FocusArea $focusArea, Request $request) {
+    public function show(FocusArea $focusArea, Request $request)
+    {
         return fractal($focusArea, new FocusAreaTransformer())->parseIncludes($request->getIncludes())->respond();
     }
 
-    public function update(FocusAreaUpdateRequest $request, FocusArea $focusArea) {
+    public function update(FocusAreaUpdateRequest $request, FocusArea $focusArea)
+    {
         $focusArea->update(run_action(FocusAreaCleanupRequest::class, $request));
 
         run_action(FocusAreaSaveRelationsRequest::class, $focusArea, $request);
@@ -74,7 +77,8 @@ class FocusAreaController extends Controller {
         return fractal($focusArea, new FocusAreaTransformer())->parseIncludes($request->getIncludes())->respond();
     }
 
-    public function destroy(FocusArea $focusArea) {
+    public function destroy(FocusArea $focusArea)
+    {
         DB::beginTransaction();
         $focusArea->practitioners()->detach();
         $focusArea->services()->detach();
@@ -85,53 +89,59 @@ class FocusAreaController extends Controller {
         return response(null, 204);
     }
 
-    public function storeImages(ImageRequests $request, FocusArea $focusArea) {
+    public function storeImages(ImageRequests $request, FocusArea $focusArea)
+    {
         $path = public_path('\img\focus-areas\images\\' . $focusArea->id . '\\');
         $fileName = $request->file('images')->getClientOriginalName();
         $request->file('images')->move($path, $fileName);
         $imageFocus = new FocusAreaImage();
         $imageFocus->forceFill([
-                                   'focus_area_id' => $focusArea->id,
-                                   'path'          => $path . $fileName,
-                               ]);
+            'focus_area_id' => $focusArea->id,
+            'path'          => $path . $fileName,
+        ]);
         $imageFocus->save();
     }
 
-    public function storeVideos(Request $request, FocusArea $focusArea) {
+    public function storeVideos(Request $request, FocusArea $focusArea)
+    {
         $videoFocus = new FocusAreaVideo();
         $videoFocus->forceFill([
-                                   'focus_area_id' => $focusArea->id,
-                                   'link'          => $request->get('link'),
-                               ]);
+            'focus_area_id' => $focusArea->id,
+            'link'          => $request->get('link'),
+        ]);
         $videoFocus->save();
     }
 
-    public function image(ImageRequests $request, FocusArea $focusArea) {
+    public function image(ImageRequests $request, FocusArea $focusArea)
+    {
         $path = public_path('\img\focus-areas\\' . $focusArea->id . '\\');
         $fileName = $request->file('image')->getClientOriginalName();
         $request->file('image')->move($path, $fileName);
     }
 
-    public function icon(IconRequests $request, FocusArea $focusArea) {
+    public function icon(IconRequests $request, FocusArea $focusArea)
+    {
         $path = public_path('\icon\focus-areas\\' . $focusArea->id . '\\');
         $fileName = $request->file('icon')->getClientOriginalName();
         $request->file('icon')->move($path, $fileName);
     }
 
-    public function unpublish(FocusArea $focusArea) {
+    public function unpublish(FocusArea $focusArea)
+    {
         $focusArea->forceFill([
 
-                                  'is_published' => false,
-                              ]);
+            'is_published' => false,
+        ]);
         $focusArea->update();
 
         return response(null, 204);
     }
 
-    public function publish(FocusArea $focusArea, FocusAreaPublishRequest $request) {
+    public function publish(FocusArea $focusArea, FocusAreaPublishRequest $request)
+    {
         $focusArea->forceFill([
-                                  'is_published' => true,
-                              ]);
+            'is_published' => true,
+        ]);
         $focusArea->update();
 
         return response(null, 204);

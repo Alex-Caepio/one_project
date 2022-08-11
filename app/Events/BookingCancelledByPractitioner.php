@@ -13,7 +13,6 @@ class BookingCancelledByPractitioner
 
     public function __construct(Booking $booking)
     {
-        $this->booking = $booking;
-        $this->fillEvent();
+        $this->setBooking($booking);
     }
 }

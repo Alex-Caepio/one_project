@@ -65,6 +65,8 @@ class Service extends Model
         'is_published' => 'boolean',
     ];
 
+    private array $relatedChanges = [];
+
     public function scopeFilter(Builder $builder, QueryFilter $filters)
     {
         return $filters->apply($builder);
@@ -197,20 +199,57 @@ class Service extends Model
     public function hasUpdates(): bool
     {
         $changes = $this->getChanges();
+
         unset($changes['updated_at']);
         unset($changes['published_at']);
-        if (count($changes) !== 0) {
-            return true;
-        }
-        return false;
+
+        return count($changes) || $this->hasRelatedChanges();
     }
 
     public function visibilityChanged(): bool
     {
         $changes = $this->syncChanges()->getChanges();
-        if (isset($changes['is_published'])) {
-            return true;
+
+        return isset($changes['is_published']);
+    }
+
+    public function hasRelatedChanges(): bool
+    {
+        return count($this->relatedChanges);
+    }
+
+    /**
+     * Resets statuses of the related changes.
+     *
+     * @return void
+     */
+    public function resetUpdateStatuses(): void
+    {
+        $this->relatedChanges = [];
+    }
+
+    /**
+     * Checks the given files are different with the current service files.
+     *
+     * @param array $files Files with URLs.
+     */
+    public function areDifferentFiles(array $files): bool
+    {
+        $newFiles = array_column($files, 'url');
+        $oldFiles = $this->media_files->pluck('url')->toArray();
+
+        return count(array_diff($newFiles, $oldFiles)) || count(array_diff($oldFiles, $newFiles));
+    }
+
+    public function updateMediaFiles(array $files): self
+    {
+        if ($this->areDifferentFiles($files)) {
+            $this->media_files()->delete();
+            $this->media_files()->createMany($files);
+
+            $this->relatedChanges['media_files'] = true;
         }
-        return false;
+
+        return $this;
     }
 }
