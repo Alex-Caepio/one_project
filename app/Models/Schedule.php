@@ -31,6 +31,7 @@ use Illuminate\Support\Facades\Log;
  * @property-read Collection|ScheduleAvailability[] $schedule_availabilities
  * @property-read Collection|ScheduleUnavailability[] $schedule_unavailabilities
  * @property-read Collection|Price[] $prices
+ * @property-read Collection|ScheduleFile[] $schedule_files
  *
  * @method static Collection|self[]|self|null find(int|array $ids)
  */
@@ -93,7 +94,7 @@ class Schedule extends Model
         'is_published'
     ];
 
-    public $isScheduleFilesUpdated = false;
+    private array $relatedChanges = [];
 
     protected $casts = [
         'is_published' => 'boolean',
@@ -306,33 +307,33 @@ class Schedule extends Model
             $changes['is_schedule_files_updated'],
         );
 
-        return count($changes) > 0;
+        return count($changes);
     }
 
     public function hasNonContractualChanges(): bool
     {
         $changes = $this->getRealChangesList();
 
-        $result = false;
-        if (count($changes)) {
-            if ($this->service->service_type_id === Service::TYPE_BESPOKE) {
-                $result = true;
-            } else {
-                // Unset, because another event will be fired for Reschedule Request
-                unset(
-                    $changes['end_date'],
-                    $changes['start_date'],
-                    $changes['location_id'],
-                    $changes['venue'],
-                    $changes['city'],
-                    $changes['post_code'],
-                    $changes['country_id'],
-                );
-                $result = count($changes) > 0;
-            }
+        if (empty($changes)) {
+            return false;
         }
 
-        return $result;
+        if ($this->service->service_type_id === Service::TYPE_BESPOKE) {
+            return true;
+        }
+
+        // Unset, because another event will be fired for Reschedule Request
+        unset(
+            $changes['end_date'],
+            $changes['start_date'],
+            $changes['location_id'],
+            $changes['venue'],
+            $changes['city'],
+            $changes['post_code'],
+            $changes['country_id'],
+        );
+
+        return count($changes) || $this->hasRelatedChanges();
     }
 
     public function getRealChangesList(): array
@@ -581,5 +582,50 @@ class Schedule extends Model
         }
 
         return $time * $multiplier;
+    }
+
+    public function hasRelatedChanges(): bool
+    {
+        return count($this->relatedChanges);
+    }
+
+    /**
+     * Resets statuses of the related changes.
+     *
+     * @return void
+     */
+    public function resetUpdateStatuses(): void
+    {
+        $this->relatedChanges = [];
+    }
+
+    /**
+     * Checks the given files are different with the current schedule files.
+     *
+     * @param array $files Files with URLs.
+     */
+    public function areDifferentFiles(array $files): bool
+    {
+        $newFiles = array_column($files, 'url');
+        $oldFiles = $this->schedule_files->pluck('url')->toArray();
+
+        return count(array_diff($newFiles, $oldFiles)) || count(array_diff($oldFiles, $newFiles));
+    }
+
+    /**
+     * Updates schedule files if it is necessary.
+     *
+     * @param array $files Files with URLs.
+     */
+    public function updateScheduleFiles(array $files): self
+    {
+        if ($this->areDifferentFiles($files)) {
+            $this->schedule_files()->delete();
+            $this->schedule_files()->createMany($files);
+
+            $this->relatedChanges['schedule_files'] = true;
+        }
+
+        return $this;
     }
 }

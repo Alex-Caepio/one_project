@@ -5,6 +5,9 @@ namespace App\Listeners\Emails;
 use App\Events\ServiceUpdatedByPractitionerNonContractual;
 use App\Models\Booking;
 
+/**
+ * Template Email - TE#99.
+ */
 class ServiceUpdatedByPractitionerNonContractualEmail extends SendEmailHandler
 {
     public function handle(ServiceUpdatedByPractitionerNonContractual $event): void
@@ -13,8 +16,7 @@ class ServiceUpdatedByPractitionerNonContractualEmail extends SendEmailHandler
         $this->event = $event;
 
         /** @var Booking $upcomingBookings */
-        $upcomingBookings = Booking::query()
-            ->where('schedule_id', $this->event->schedule->id)
+        $upcomingBookings = $this->event->schedule->bookings()
             ->active()
             ->with($this->event->getBookingDependencies())
             ->get()
