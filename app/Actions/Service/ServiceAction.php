@@ -51,8 +51,7 @@ abstract class ServiceAction
         }
 
         if ($request->has('media_files')) {
-            $service->media_files()->delete();
-            $service->media_files()->createMany($request->get('media_files'));
+            $service->updateMediaFiles($request->get('media_files'));
         }
 
         if ($request->filled('focus_areas')) {
