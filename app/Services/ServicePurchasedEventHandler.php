@@ -13,7 +13,6 @@ class ServicePurchasedEventHandler
     {
         $user = $event->user;
         $emailVerification = CustomEmail::query()->find(96);
-        $emailVerification->
         $body = $emailVerification->text;
         $emailVariables = new EmailVariables($event);
         $bodyReplaced = $emailVariables->replace($body);
