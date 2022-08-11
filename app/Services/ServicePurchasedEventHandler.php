@@ -19,7 +19,7 @@ class ServicePurchasedEventHandler
         $bodyReplaced = $emailVariables->replace($body);
 
         try {
-            Mail::raw($bodyReplaced, function ($message) use ($user) {
+            Mail::html($bodyReplaced, function ($message) use ($user) {
                 $message->to($user->email);
             });
         } catch (Swift_SwiftException $e) {
