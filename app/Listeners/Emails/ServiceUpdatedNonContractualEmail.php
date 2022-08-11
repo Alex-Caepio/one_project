@@ -13,18 +13,19 @@ class ServiceUpdatedNonContractualEmail extends SendEmailHandler
         $this->templateName = 'Service Updated by Practitioner (Non-Contractual)';
         $this->event = $event;
 
+        /** @var Booking[] $upcomingBookings */
         $upcomingBookings = Booking::query()
-            ->whereIn('schedule_id', Schedule::query()->select('id')->where('schedules.service_id', $this->event->service->id))
+            ->whereIn(
+                'schedule_id',
+                Schedule::query()->select('id')->where('schedules.service_id', $this->event->service->id)
+            )
             ->active()
-            ->with([
-                'user',
-                'practitioner',
-                'schedule',
-            ])->get();
+            ->with($this->event->getBookingDependencies())
+            ->get()
+        ;
 
         foreach ($upcomingBookings as $booking) {
-            $this->event->booking = $booking;
-            $this->event->fillEvent();
+            $this->event->setBooking($booking);
             $this->toEmail = $this->event->user->email;
             $this->sendCustomEmail();
         }

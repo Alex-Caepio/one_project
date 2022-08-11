@@ -29,10 +29,9 @@ class BookingRescheduleAcceptedByClient
             'user_id' => $booking->user_id
         ])->firstOrFail();
 
-        $this->booking = $booking;
+        $this->setBooking($booking);
         $this->informPractitioner = $informPractitioner;
         $this->notificationType = $notificationType;
-        $this->fillEvent();
         $this->reschedule = $rescheduleRequest;
 
         $notification = new Notification();

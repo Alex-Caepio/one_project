@@ -14,7 +14,9 @@ class RescheduleRequestDeclinedByClient
     use Dispatchable, InteractsWithSockets, SerializesModels, EventFillableFromBooking;
 
     public RescheduleRequest $reschedule;
+
     public User $recipient;
+
     public Schedule $reschedule_schedule;
 
     public function __construct(RescheduleRequest $reschedule)
@@ -23,14 +25,10 @@ class RescheduleRequestDeclinedByClient
         $this->reschedule->load([
             'user',
             'booking',
-            'booking.practitioner',
-            'booking.schedule',
-            'booking.schedule.service',
-            'new_schedule'
+            'new_schedule',
         ]);
-        $this->booking = $this->reschedule->booking;
         $this->reschedule_schedule = $this->reschedule->new_schedule;
-        $this->fillEvent();
+        $this->setBooking($this->reschedule->booking);
         $this->recipient = $this->practitioner;
     }
 }

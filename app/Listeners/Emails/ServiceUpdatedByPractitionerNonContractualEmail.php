@@ -12,23 +12,16 @@ class ServiceUpdatedByPractitionerNonContractualEmail extends SendEmailHandler
         $this->templateName = 'Service Updated by Practitioner (Non-Contractual)';
         $this->event = $event;
 
+        /** @var Booking $upcomingBookings */
         $upcomingBookings = Booking::query()
-            ->where(
-                'schedule_id',
-                $this->event->schedule->id
-            )
+            ->where('schedule_id', $this->event->schedule->id)
             ->active()
-            ->with([
-                'user',
-                'practitioner',
-                'schedule',
-                'schedule.service'
-            ])
-            ->get();
+            ->with($this->event->getBookingDependencies())
+            ->get()
+        ;
 
         foreach ($upcomingBookings as $booking) {
-            $this->event->booking = $booking;
-            $this->event->fillEvent();
+            $this->event->setBooking($booking);
             $this->toEmail = $this->event->user->email;
             $this->sendCustomEmail();
         }

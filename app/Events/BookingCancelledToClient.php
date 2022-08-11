@@ -14,17 +14,19 @@ class BookingCancelledToClient
     use Dispatchable, InteractsWithSockets, SerializesModels, EventFillableFromBooking;
 
     public Cancellation $cancellation;
+
     public User $recipient;
 
     public string $template;
 
     public function __construct(Booking $booking, Cancellation $cancellation)
     {
-        $this->booking = $booking;
-        $this->fillEvent();
+        $this->setBooking($booking);
         $this->cancellation = $cancellation;
 
-        $this->template = $cancellation->amount >
-            0 ? 'Booking Cancelled by Client with Refund' : 'Booking Cancelled by Client NO Refund';
+        $this->template = $cancellation->amount > 0
+            ? 'Booking Cancelled by Client with Refund'
+            : 'Booking Cancelled by Client NO Refund'
+        ;
     }
 }

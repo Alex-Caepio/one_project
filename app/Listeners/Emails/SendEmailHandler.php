@@ -5,26 +5,37 @@ namespace App\Listeners\Emails;
 use App\EmailVariables\EmailVariables;
 use App\Mail\TransactionalEmail;
 use App\Models\CustomEmail;
-use App\Models\Schedule;
+use Exception;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
-abstract class SendEmailHandler {
-
+abstract class SendEmailHandler
+{
     protected ?string $templateName;
+
     protected string $toEmail;
+
     protected object $event;
+
+    /**
+     * A user type.
+     *
+     * @var string|null
+     */
     protected ?string $type = null;
 
-    protected function sendCustomEmail(): void {
+    protected function sendCustomEmail(): void
+    {
         $attachmentName = null;
+
         try {
             $emailDataQuery = CustomEmail::where('name', $this->templateName);
+
             if ($this->type !== null) {
                 $emailDataQuery->where('user_type', $this->type);
             }
+
             $emailData = $emailDataQuery->first();
 
             if ($emailData) {
@@ -36,14 +47,14 @@ abstract class SendEmailHandler {
                     'message'    => 'Sent',
                 ]);
             } else {
-                throw new \Exception('Email template #' . $this->templateName . ' was not found');
+                throw new Exception('Email template #' . $this->templateName . ' was not found');
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::channel('emails')->error('Email error: ', [
                 'template'   => $this->templateName,
                 'event_name' => get_class($this->event),
                 'user_email' => $this->toEmail,
-                'message'    => $e->getMessage().':'.$e->getFile().':'.$e->getLine(),
+                'message'    => $e->getMessage() . ':' . $e->getFile() . ':' . $e->getLine(),
             ]);
         } finally {
             if ($attachmentName !== null) {
@@ -51,5 +62,4 @@ abstract class SendEmailHandler {
             }
         }
     }
-
 }

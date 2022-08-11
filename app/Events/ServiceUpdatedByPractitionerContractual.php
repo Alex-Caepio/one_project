@@ -8,12 +8,14 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class ServiceUpdatedByPractitionerContractual {
+class ServiceUpdatedByPractitionerContractual
+{
     use Dispatchable, InteractsWithSockets, SerializesModels, EventFillableFromBooking;
 
     public RescheduleRequest $reschedule;
 
-    public function __construct(Schedule $schedule) {
+    public function __construct(Schedule $schedule)
+    {
         $this->schedule = $schedule;
     }
 }
