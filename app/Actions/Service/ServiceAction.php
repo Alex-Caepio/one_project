@@ -4,6 +4,7 @@ namespace App\Actions\Service;
 
 use App\Models\Service;
 use App\Http\Requests\Request;
+use App\Services\UrlGeneration\ServiceSlugGenerator;
 use App\Traits\HasMediaItems;
 use App\Traits\KeywordCollection;
 use Illuminate\Support\Facades\DB;
@@ -11,6 +12,13 @@ use Illuminate\Support\Facades\DB;
 abstract class ServiceAction
 {
     use HasMediaItems, KeywordCollection;
+
+    protected $slugGenerator;
+
+    public function __construct(ServiceSlugGenerator $slugGenerator)
+    {
+        $this->slugGenerator = $slugGenerator;
+    }
 
     protected function saveService(Service $service, Request $request)
     {
@@ -22,15 +30,14 @@ abstract class ServiceAction
 
     protected function fillService(Service $service, Request $request): Service
     {
-        $slug = $this->getSlug($request);
         $params = [
-            'title'           => $request->get('title'),
-            'description'     => $request->get('description'),
-            'is_published'    => $request->getBoolFromRequest('is_published'),
-            'introduction'    => $request->get('introduction'),
-            'slug'            => $slug,
-            'image_url'       => $request->get('image_url'),
-            'icon_url'        => $request->get('icon_url'),
+            'title' => $request->get('title'),
+            'description' => $request->get('description'),
+            'is_published' => $request->getBoolFromRequest('is_published'),
+            'introduction' => $request->get('introduction'),
+            'slug' => $this->slugGenerator->getOrCreateSlug($request->get('title'), $request->get('slug'), $service->id),
+            'image_url' => $request->get('image_url'),
+            'icon_url' => $request->get('icon_url'),
             'service_type_id' => $request->get('service_type_id'),
         ];
 
@@ -68,12 +75,5 @@ abstract class ServiceAction
         if ($request->filled('keywords')) {
             $service->keywords()->sync($keywords);
         }
-    }
-
-    protected function getSlug($request): string
-    {
-        $titleSlug = $request->get('title') ?? '';
-
-        return $request->get('slug') ?? to_url($titleSlug);
     }
 }

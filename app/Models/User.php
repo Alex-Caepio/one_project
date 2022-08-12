@@ -37,6 +37,7 @@ use Laravel\Sanctum\HasApiTokens;
  * @property-read PractitionerSubscriptionDiscount|null $practitionerSubscriptionDiscount
  * @property-read Timezone $timezone Business'es timezone.
  * @property-read Timezone $user_timezone User's timezone.
+ * @property-read string $full_name
  */
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -421,5 +422,10 @@ class User extends Authenticatable implements MustVerifyEmail
     public function practitionerSubscriptionDiscount(): HasOne
     {
         return $this->hasOne(PractitionerSubscriptionDiscount::class);
+    }
+
+    public function getFullNameAttribute(): string
+    {
+        return $this->first_name.' '.$this->last_name;
     }
 }

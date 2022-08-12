@@ -27,7 +27,7 @@ class StoreServiceRequest extends Request
     public function rules()
     {
         return [
-            'title'           => 'required|string|min:5|max:100|unique:services,title',
+            'title'           => 'required|string|min:5|max:100',
             'description'     => 'nullable|string|min:5|max:5000',
             'is_published'    => 'bool',
             'introduction'    => 'required|string|min:5|max:500',
@@ -46,10 +46,7 @@ class StoreServiceRequest extends Request
                 $validator->errors()->add('is_published', "Please upgrade subscription or publish profile to be able to publish service");
             }
 
-            if ($this->user()->services()->where('user_id', $this->user()->id)->where('title', $this->get('title'))->exists()) {
-                $validator->errors()->add('title', 'Service name should be unique!');
-            }
-
+            // It should be unique in order to open the link.
             if ($this->user()->services()->where('user_id', $this->user()->id)->where('slug', $this->slug)->exists()) {
                 $validator->errors()->add('slug', 'Service slug should be unique!');
             }

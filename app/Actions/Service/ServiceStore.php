@@ -4,24 +4,22 @@ namespace App\Actions\Service;
 
 use App\Http\Requests\Services\StoreServiceRequest;
 use App\Models\Service;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Stripe\StripeClient;
 
 class ServiceStore extends ServiceAction
 {
-    /**
-     * @param \App\Http\Requests\Services\StoreServiceRequest $request
-     * @param \Stripe\StripeClient $stripeClient
-     * @return \App\Models\Service
-     */
     public function execute(StoreServiceRequest $request, StripeClient  $stripeClient): ?Service
     {
         try {
-            $stripeProduct = $stripeClient->products->create(['name' => $request->title]);
+            $stripeProduct = $stripeClient->products->create(['name' => $this->createStripeServiceName($request->title)]);
+
             $service = new Service();
             $service->stripe_id = $stripeProduct->id;
             $service->user_id = Auth::id();
+
             if ($request->is_published) {
                 $service->published_at = now();
             }
@@ -44,5 +42,13 @@ class ServiceStore extends ServiceAction
         ]);
 
         return $service;
+    }
+
+    private function createStripeServiceName(string $title): string
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        return $user->full_name.' - '.$title;
     }
 }
