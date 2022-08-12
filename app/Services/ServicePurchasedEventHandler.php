@@ -20,9 +20,9 @@ class ServicePurchasedEventHandler
         $bodyReplaced = $emailVariables->replace($body);
 
         try {
-            Mail::html($bodyReplaced, function (Message $message) use ($user, $emailVerification) {
+            Mail::html($bodyReplaced, function (Message $message) use ($user, $emailVerification, $emailVariables) {
                 $message->to($user->email);
-                $message->subject($emailVerification->subject);
+                $message->subject($emailVariables->replace($emailVerification->subject));
             });
         } catch (Swift_SwiftException $e) {
             // do nothing if mail fails to be sent
