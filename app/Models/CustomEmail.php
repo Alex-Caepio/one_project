@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * @property string $subject
+ * @property string $from_title
+ * @property string $from_email
  */
 class CustomEmail extends Model
 {
