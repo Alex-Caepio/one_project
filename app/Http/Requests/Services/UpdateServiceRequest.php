@@ -58,17 +58,13 @@ class UpdateServiceRequest extends Request
                 $validator->errors()->add('is_published', "Please upgrade subscription or publish profile to be able to publish service");
             }
 
-            $titleNotUnique =
-                $this->service->user->services()->where('user_id', $this->service->user->id)->where('id', '!=', $this->service->id)
-                    ->where('title', $this->get('title'))->exists();
-
-            $slugNotUnique =
-                $this->service->user->services()->where('user_id', $this->service->user->id)->where('id', '!=', $this->service->id)
-                    ->where('slug', $this->slug)->exists();
-
-            if ($titleNotUnique) {
-                $validator->errors()->add('title', 'Service name should be unique!');
-            }
+            // It should be unique in order to open the link.
+            $slugNotUnique = $this->service->user->services()
+                    ->where('user_id', $this->service->user->id)
+                    ->where('id', '!=', $this->service->id)
+                    ->where('slug', $this->slug)
+                    ->exists()
+                ;
 
             if ($slugNotUnique) {
                 $validator->errors()->add('slug', 'Service slug should be unique!');
