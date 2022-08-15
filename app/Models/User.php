@@ -130,7 +130,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function services(): HasMany
     {
-        return $this->hasMany(Service::class);
+        return $this->hasMany(Service::class)->published();
     }
 
     public function user_timezone(): BelongsTo
