@@ -33,12 +33,18 @@ class SearchController extends Controller
         $userFiltrator->apply($practitioners, $request, true);
 
         return [
-            'articles' => fractal($articles->limit(10)->get(), new ArticleTransformer())->toArray(),
+            'articles' => fractal(
+                $articles->limit(10)->get(),
+                new ArticleTransformer()
+            )->parseIncludes($includes)->toArray(),
             'practitioners' => fractal(
                 $practitioners->limit(10)->get(),
                 new UserTransformer()
             )->parseIncludes($includes)->toArray(),
-            'services' => fractal($services->limit(10)->get(), new ServiceTransformer())->toArray(),
+            'services' => fractal(
+                $services->limit(10)->get(),
+                new ServiceTransformer()
+            )->parseIncludes($includes)->toArray(),
         ];
     }
 }
