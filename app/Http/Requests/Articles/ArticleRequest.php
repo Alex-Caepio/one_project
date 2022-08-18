@@ -4,6 +4,7 @@ namespace App\Http\Requests\Articles;
 
 use App\Helpers\UserRightsHelper;
 use App\Http\Requests\Request;
+use App\Rules\Slug;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Support\Facades\Auth;
 
@@ -29,7 +30,10 @@ class ArticleRequest extends Request {
             'is_published' => 'required|boolean',
             'introduction' => 'required_if:is_published,true|string|min:5|max:200',
             'image_url'    => 'nullable|url',
-            'slug'         => 'nullable|regex:#^[a-zA-Z0-9_-]*$#',
+            'slug'         => [
+                'nullable',
+                new Slug(),
+            ],
         ];
     }
 
