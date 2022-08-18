@@ -4,6 +4,7 @@ namespace App\Http\Requests\Auth;
 
 use App\Http\Requests\Request;
 use App\Models\User;
+use App\Rules\Slug;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
@@ -35,7 +36,7 @@ class UpdateMediaRequest extends Request {
             'business_country_id'   => 'nullable|required|exists:countries,id|integer',
             'slug'                  => [
                 Rule::unique('users', 'slug')->ignore($practitioner->id),
-                Rule::when(true, 'regex:#^[a-zA-Z0-9_-]*$#'),
+                new Slug(),
             ],
             'is_published'          => 'bool',
         ];

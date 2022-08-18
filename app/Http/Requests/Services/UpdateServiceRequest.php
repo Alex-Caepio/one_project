@@ -4,6 +4,7 @@ namespace App\Http\Requests\Services;
 
 use App\Helpers\UserRightsHelper;
 use App\Http\Requests\Request;
+use App\Rules\Slug;
 use Illuminate\Support\Facades\Auth;
 
 class UpdateServiceRequest extends Request
@@ -32,7 +33,10 @@ class UpdateServiceRequest extends Request
             'introduction' => 'string|min:5|max:500',
             'image_url'    => 'nullable|url',
             'icon_url'     => 'nullable|url',
-            'slug'         => 'nullable|regex:#^[a-zA-Z0-9_-]*$#',
+            'slug'         => [
+                'nullable',
+                new Slug(),
+            ],
         ];
     }
 
