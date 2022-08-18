@@ -118,6 +118,7 @@ class PurchaseController extends Controller
             $purchase->amount = $request->amount;
             $purchase->discount = $discount;
             $purchase->discount_applied = $promo instanceof PromotionCode ? $promo->promotion->applied_to : null;
+            $purchase->comment = $request->filled('comment') ? $request->comment : null;
             $purchase->save();
 
             if ($schedule->service->service_type_id === Service::TYPE_APPOINTMENT) {

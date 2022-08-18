@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property float $deposit_amount
  * @property string $reference
  * @property float $price
+ * @property string $comment
  * @property-read Service $service
  * @property-read Schedule $schedule
  *
@@ -47,6 +48,7 @@ class Purchase extends Model
         'discount',
         'discount_applied',
         'purchase_snapshot_id',
+        'comment',
     ];
 
     /**
