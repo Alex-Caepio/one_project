@@ -7,6 +7,7 @@ use App\Models\Article;
 use App\Traits\HasMediaItems;
 use App\Traits\KeywordCollection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 abstract class ArticleAction
 {
@@ -27,16 +28,16 @@ abstract class ArticleAction
             'description'  => $request->get('description'),
             'is_published' => $request->getBoolFromRequest('is_published'),
             'introduction' => $request->get('introduction'),
-            'slug'         => $request->get('slug'),
+            'slug'         => Str::slug($request->get('slug')),
             'image_url'    => $request->get('image_url')
         ]);
         $article->save();
+
         return $article;
     }
 
     protected function fillRelations(Article $article, ArticleRequest $request): void
     {
-
         if ($request->filled('media_images')) {
             $this->syncImages($request->media_images, $article);
         }
@@ -59,6 +60,7 @@ abstract class ArticleAction
 
         $keywords = $this->collectKeywordModelsFromRequest($request);
         $article->keywords()->detach();
+
         if (count($keywords)) {
             $article->keywords()->sync($keywords);
         }

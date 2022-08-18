@@ -8,13 +8,15 @@ use App\Rules\Slug;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Support\Facades\Auth;
 
-class ArticleRequest extends Request {
+class ArticleRequest extends Request
+{
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
-    public function authorize(): bool {
+    public function authorize(): bool
+    {
         return Auth::user()->onlyUnpublishedAllowed();
     }
 
@@ -23,9 +25,10 @@ class ArticleRequest extends Request {
      *
      * @return array
      */
-    public function rules(): array {
+    public function rules(): array
+    {
         return [
-            'title'        => 'required_if:is_published,true|string|min:5|max:120|regex:#^[ a-zA-Z0-9_\-]*$#',
+            'title'        => 'required_if:is_published,true|string|min:5|max:120|regex:#^([^[:cntrl:]/'.preg_quote("\\").']+)+$#ui',
             'description'  => 'required_if:is_published,true|string|min:5|max:15000',
             'is_published' => 'required|boolean',
             'introduction' => 'required_if:is_published,true|string|min:5|max:200',
@@ -37,21 +40,26 @@ class ArticleRequest extends Request {
         ];
     }
 
-
-    public function withValidator(Validator $validator) {
-        $validator->after(function($validator) {
+    public function withValidator(Validator $validator)
+    {
+        $validator->after(function ($validator) {
             $isPublished = $this->getBoolFromRequest('is_published');
             if ($isPublished) {
                 if (!Auth::user()->is_admin && !Auth::user()->is_published) {
                     $validator->errors()
-                              ->add('is_published', "Please publish your profile before you can publish an article.");
+                        ->add('is_published', "Please publish your profile before you can publish an article.");
                 } elseif (!UserRightsHelper::userAllowToPublishArticle(Auth::user())) {
                     $validator->errors()
-                              ->add('is_published', "Please upgrade subscription to be able to publish articles");
+                        ->add('is_published', "Please upgrade subscription to be able to publish articles");
                 }
             }
         });
     }
 
-
+    public function messages(): array
+    {
+        return [
+            'title.regex' => 'Article title must not include / or \ characters.',
+        ];
+    }
 }
