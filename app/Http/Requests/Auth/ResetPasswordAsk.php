@@ -13,7 +13,7 @@ class ResetPasswordAsk extends FormRequest {
                 $validator->errors()->add('email', 'The Email is not valid');
             } else if (!$result->email_verified_at) {
                 $validator->errors()->add('email', 'Please verify your email before continuing.
-An email has been sent to the email address you registered to verify');
+A verification email was previously sent to your registered email address');
             }
         });
     }

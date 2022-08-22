@@ -18,9 +18,18 @@ use App\Events\PasswordReset as ResetEvent;
 
 class ResetPasswordController extends Controller {
 
-    public function askForReset() {
+    public function askForReset(ResetPasswordAsk $request) {
+        $email = strtolower($request->email);
 
-        return response(null, 500);
+        $token = hash('md5', Str::random(60));
+
+        PasswordReset::where('email', $email)->delete();
+        $resetModel = PasswordReset::create(['email' => $email, 'token' => $token]);
+        $resetModel->load('user');
+
+        event(new ResetEvent($resetModel));
+
+        return response(null, 200);
     }
 
     /**
