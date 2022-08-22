@@ -196,10 +196,9 @@ class AuthController extends Controller
         return fractal($user, new UserTransformer())->parseIncludes('access_token')->respond();
     }
 
-    public function resendVerification(VerificationRequest $request)
+    public function resendVerification()
     {
-        event(new UserRegistered(User::where('email', $request->email)->first()));
-        return response(null, 204);
+        return response(null, 500);
     }
 
     protected function invalidate()
