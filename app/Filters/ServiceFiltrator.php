@@ -49,7 +49,7 @@ class ServiceFiltrator
         }
 
         $serviceTypes = $request->getArrayFromRequest('service_type');
-        if (!empty($serviceTypes)) {
+        if (!empty($serviceTypes) && !in_array('all', $serviceTypes)) {
             $queryBuilder->whereIn('services.service_type_id', array_values($serviceTypes));
         }
 
