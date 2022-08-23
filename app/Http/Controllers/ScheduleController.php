@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Promo\CalculatePromoPrice;
 use App\Actions\Schedule\GetAvailableAppointmentTimeOnDate;
 use App\Actions\Schedule\ScheduleStore;
 use App\Actions\Schedule\ScheduleUpdate;
@@ -11,6 +12,7 @@ use App\Http\Requests\Schedule\PurchaseScheduleRequest;
 use App\Http\Requests\Schedule\ScheduleOwnerRequest;
 use App\Models\Booking;
 use App\Models\Price;
+use App\Models\PromotionCode;
 use App\Models\Service;
 use App\Models\Schedule;
 use App\Models\ScheduleFreeze;
@@ -256,6 +258,13 @@ class ScheduleController extends Controller
                 abort(404, 'Price was not found');
             }
             $total = $price->cost * $request->amount;
+
+            if ($request->filled('promo_code')) {
+                $promo = PromotionCode::where('name', $request->get('promo_code'))->with('promotion')->first();
+                if ($promo instanceof PromotionCode) {
+                    $total = run_action(CalculatePromoPrice::class, $promo, $request->amount, $price->cost);
+                }
+            }
 
             return response($schedule->calculateInstallmentsCalendar($total, $request->amount, $targetPeriod));
         }

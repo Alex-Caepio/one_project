@@ -26,7 +26,8 @@ class InstallmentCalendar extends FormRequest
         return [
             'period'   => 'required|integer|min:1',
             'price_id' => 'required|exists:prices,id',
-            'amount'   => 'required|integer|min:1'
+            'amount'   => 'required|integer|min:1',
+            'promo_code' => 'nullable|string'
         ];
     }
 }
