@@ -35,7 +35,7 @@ class BookingConfirmation
         }
 
         if ($this->service->service_type_id === 'retreat') {
-            return 'Booking Confirmation - Retreat';
+            return 'Booking Confirmation - Date/Apt Physical';
         }
 
         if ($this->schedule->appointment === 'virtual' || !$this->schedule->appointment) {
