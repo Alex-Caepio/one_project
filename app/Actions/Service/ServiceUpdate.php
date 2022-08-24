@@ -2,6 +2,7 @@
 
 namespace App\Actions\Service;
 
+use App\Events\ServiceUpdated;
 use App\Http\Requests\Services\UpdateServiceRequest;
 use App\Models\Service;
 
@@ -16,6 +17,8 @@ class ServiceUpdate extends ServiceAction
         }
 
         $this->saveService($service, $request);
+
+        ServiceUpdated::dispatch($service);
 
         return $service;
     }

@@ -6,6 +6,7 @@ use App\Filters\QueryFilter;
 use App\Scopes\PublishedScope;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -31,6 +32,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property ServiceType $service_type
  * @property-read User $user
  * @property-read User $practitioner Alias for `$user`.
+ * @property-read Collection|MediaFile[] $media_files
  */
 class Service extends Model
 {

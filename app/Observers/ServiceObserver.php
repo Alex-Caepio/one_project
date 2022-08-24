@@ -4,7 +4,6 @@ namespace App\Observers;
 
 use App\Events\ServiceListingLive;
 use App\Events\ServiceUnpublished;
-use App\Events\ServiceUpdatedNonContractual;
 use App\Models\Service;
 use Carbon\Carbon;
 
@@ -83,16 +82,5 @@ class ServiceObserver
             ->each(static function ($schedule, $key) {
                 $schedule->delete();
             });
-    }
-
-    public function updated(Service $service): void
-    {
-        if (
-            $service->hasUpdates()
-            && !$service->visibilityChanged()
-            && !in_array($service->service_type->id, [Service::TYPE_BESPOKE])
-        ) {
-            event(new ServiceUpdatedNonContractual($service));
-        }
     }
 }
