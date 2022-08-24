@@ -34,6 +34,7 @@ use App\Events\ServicePurchased;
 use App\Events\ServiceScheduleCancelled;
 use App\Events\ServiceScheduleLive;
 use App\Events\ServiceUnpublished;
+use App\Events\ServiceUpdated;
 use App\Events\ServiceUpdatedByPractitionerContractual;
 use App\Events\ServiceUpdatedByPractitionerNonContractual;
 use App\Events\ServiceUpdatedNonContractual;
@@ -75,6 +76,7 @@ use App\Listeners\Emails\ServiceUpdatedByPractitionerNonContractualEmail;
 use App\Listeners\Emails\ServiceUpdatedNonContractualEmail;
 use App\Listeners\Emails\SubscriptionConfirmationEmail;
 use App\Listeners\Emails\WelcomeVerification;
+use App\Listeners\SendServiceNotification;
 use App\Services\ServicePurchasedEventHandler;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -182,6 +184,9 @@ class EventServiceProvider extends ServiceProvider {
         ],
         ServiceUnpublished::class                               => [
             ServiceUnpublishedEmail::class
+        ],
+        ServiceUpdated::class => [
+            SendServiceNotification::class,
         ],
         ServiceUpdatedNonContractual::class                     => [
             ServiceUpdatedNonContractualEmail::class
