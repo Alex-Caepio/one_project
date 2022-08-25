@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Actions\Admin\DeleteUser;
+use App\Actions\Client\DeleteClient;
 use App\Filters\UserFiltrator;
 use App\Models\User;
 use App\Mail\VerifyEmail;
@@ -68,7 +68,7 @@ class ClientController extends Controller
 
     public function destroy(User $client, ClientDestroyRequest $request)
     {
-        run_action(DeleteUser::class, $client, $request);
+        run_action(DeleteClient::class, $client, $request->message);
         return response(null, 204);
     }
 

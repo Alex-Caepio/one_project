@@ -35,6 +35,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property-read Collection|RescheduleRequest[] $reschedule_requests
  * @property-read RescheduleRequest|null $client_reschedule_request
  * @property-read RescheduleRequest|null $practitioner_reschedule_request
+ *
+ * @method static self|Builder query()
+ * @method self|Builder active() An alias of `scopeActive()`.
  */
 class Booking extends Model
 {
@@ -92,24 +95,15 @@ class Booking extends Model
         $this->fireModelEvent('instalment_complete');
     }
 
-    /**
-     * @param Builder $query
-     * @return Builder
-     */
     public function scopeActive(Builder $query): Builder
     {
         return $query->whereNotIn('status', self::getInactiveStatuses());
     }
 
-    /**
-     * @param Builder $query
-     * @return Builder
-     */
     public function scopeUncanceled(Builder $query): Builder
     {
         return $query->where('status', '!=', self::CANCELED_STATUS);
     }
-
 
     public function isActive(): bool
     {
