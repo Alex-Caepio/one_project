@@ -41,6 +41,10 @@ class BookingDeposit
             ;
         }
 
+        if ($this->service->service_type_id === 'retreat') {
+            return 'Booking Confirmation - Date Physical With Deposit';
+        }
+
         if ($this->schedule->appointment === 'virtual' || !$this->schedule->appointment) {
             return $this->service->isDateLess()
                 ? 'Booking Confirmation - DateLess Virtual With Deposit'
