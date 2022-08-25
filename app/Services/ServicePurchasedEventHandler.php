@@ -11,17 +11,25 @@ use Swift_SwiftException;
 
 class ServicePurchasedEventHandler
 {
+    const WITHOUT_PROMO_CODE = 0;
+
     public function handle(ServicePurchased $event): void
     {
-        $user = $event->user;
+        $booking = $event->booking;
+
+        if ($booking->discount == self::WITHOUT_PROMO_CODE) {
+            return;
+        }
+
+        $practitioner = $event->practitioner;
         $emailVerification = CustomEmail::query()->find(96);
         $body = $emailVerification->text;
         $emailVariables = new EmailVariables($event);
         $bodyReplaced = $emailVariables->replace($body);
 
         try {
-            Mail::html($bodyReplaced, function (Message $message) use ($user, $emailVerification, $emailVariables) {
-                $message->to($user->email);
+            Mail::html($bodyReplaced, function (Message $message) use ($practitioner, $emailVerification, $emailVariables) {
+                $message->to($practitioner->email);
                 $message->subject($emailVariables->replace($emailVerification->subject));
                 $message->from($emailVerification->from_email, $emailVerification->from_title);
             });
