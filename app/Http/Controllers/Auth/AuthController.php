@@ -232,7 +232,7 @@ class AuthController extends Controller
 
     public function unpublish(UnpublishPractitionerRequest $request)
     {
-        run_action(UnpublishPractitioner::class, Auth::user(), $request);
+        run_action(UnpublishPractitioner::class, Auth::user(), $request->cancel_bookings);
         return response(null, 204);
     }
 }

@@ -2,16 +2,12 @@
 
 namespace App\Helpers;
 
-use App\Actions\Cancellation\CancelBooking;
-use App\Models\Article;
-use App\Models\Booking;
+use App\Actions\Article\UnpublishArticles;
+use App\Actions\Service\UnpublishServices;
 use App\Models\Plan;
 use App\Models\Schedule;
-use App\Models\ScheduleFreeze;
 use App\Models\Service;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Builder;
-use Exception;
 use Illuminate\Support\Facades\Log;
 
 class UserRightsHelper
@@ -152,49 +148,6 @@ class UserRightsHelper
         return !count($serviceTypes) || in_array($service->service_type_id, $serviceTypes, true);
     }
 
-    public static function unpublishPractitioner(User $user, bool $unpublishOnDelete = false): void
-    {
-        self::unpublishArticles($user);
-        self::unpublishService($user);
-
-        $requestFlag = request('cancel_bookings', false);
-        if ($requestFlag === true || $unpublishOnDelete === true) {
-            $bookings = Booking::query()
-                ->where('practitioner_id', $user->id)
-                ->where('status', 'upcoming')
-                ->whereHas('schedule', function (Builder $query) {
-                    $query->whereHas('service', function (Builder $query) {
-                        $query->whereIn('services.service_type_id', [
-                            Service::TYPE_EVENT,
-                            Service::TYPE_WORKSHOP,
-                            Service::TYPE_RETREAT,
-                            Service::TYPE_BESPOKE,
-                        ]);
-                        $query->orWhere(function (Builder $query) {
-                            $query->where([
-                                ['services.service_type_id', '=', Service::TYPE_APPOINTMENT],
-                                ['bookings.datetime_from', '>', date('Y-m-d H:i:s')],
-                            ]);
-                        });
-                    });
-                })->active()
-                ->get();
-
-            foreach ($bookings as $booking) {
-                try {
-                    run_action(CancelBooking::class, $booking, false, User::ACCOUNT_PRACTITIONER);
-                } catch (Exception $e) {
-                    Log::channel('practitioner_cancel_error')->error('[[Cancellation on unpublish failed]]: ', [
-                        'user_id' => $booking->user_id ?? null,
-                        'practitioner_id' => $booking->practitioner_id ?? null,
-                        'booking_id' => $booking->id ?? null,
-                        'message' => $e->getMessage(),
-                    ]);
-                }
-            }
-        }
-    }
-
     public static function downgradePractitioner(User $user, Plan $plan, ?Plan $previousPlan = null): void
     {
         Log::channel('stripe_plans_info')
@@ -217,7 +170,7 @@ class UserRightsHelper
             );
 
         if (count($allowedServiceTypes)) {
-            self::unpublishService($user, $allowedServiceTypes);
+            run_action(UnpublishServices::class, $user, $allowedServiceTypes);
         }
 
         // limited articles
@@ -229,19 +182,20 @@ class UserRightsHelper
                     'new_plan_id' => $plan->id,
                     'plan_name' => $plan->name,
                     'practitioner_articles_cnt' => $existingArticles,
-                    'plan_articles_cnt' => (int)$plan->article_publishing,
+                    'plan_articles_cnt' => (int) $plan->article_publishing,
                 ]);
 
-            if ($existingArticles > (int)$plan->article_publishing) {
-                $limit = $existingArticles - (int)$plan->article_publishing;
-                $articlesId = $user
+            if ($existingArticles > (int) $plan->article_publishing) {
+                $limit = $existingArticles - (int) $plan->article_publishing;
+                $articlesIds = $user
                     ->articles()
                     ->published()
                     ->orderBy('created_at', 'asc')
                     ->limit($limit)
                     ->pluck('id')
-                    ->toArray();
-                self::unpublishArticles($user, $articlesId);
+                    ->toArray()
+                ;
+                run_action(UnpublishArticles::class, $user, $articlesIds);
             }
         }
 
@@ -275,11 +229,12 @@ class UserRightsHelper
                     $limit = $publishedSchedules - $plan->schedules_per_service;
                     $schedulesToUnpublish =
                         $service->schedules()
-                            ->published()
-                            ->orderBy('start_date', 'desc')
-                            ->limit($limit)
-                            ->pluck('schedules.id')
-                            ->toArray();
+                        ->published()
+                        ->orderBy('start_date', 'desc')
+                        ->limit($limit)
+                        ->pluck('schedules.id')
+                        ->toArray()
+                    ;
                     Schedule::whereIn('id', $schedulesToUnpublish)->update(['is_published' => false]);
                 }
             }
@@ -297,31 +252,10 @@ class UserRightsHelper
                     !$user->plan->pricing_options_per_service_unlimited
                     && $pricesCnt > (int) $user->plan->pricing_options_per_service
                 ) {
-                    $limit = $pricesCnt - (int)$user->plan->pricing_options_per_service;
+                    $limit = $pricesCnt - (int) $user->plan->pricing_options_per_service;
                     $schedule->prices()->orderBy('cost', 'asc')->limit($limit)->delete();
                 }
             }
         }
-    }
-
-    public static function unpublishArticles(User $user, array $articlesId = []): void
-    {
-        $articleQuery = Article::where('user_id', $user->id);
-        if (count($articlesId)) {
-            $articleQuery->whereIn('id', $articlesId);
-        }
-        $articleQuery->update(['is_published' => false]);
-    }
-
-    public static function unpublishService(User $user, array $allowedServiceTypes = []): void
-    {
-        $serviceQuery = Service::where('user_id', $user->id);
-        if (count($allowedServiceTypes)) {
-            $serviceQuery->whereNotIn('services.service_type_id', $allowedServiceTypes);
-        }
-        $ids = $serviceQuery->pluck('services.id')->toArray();
-        Schedule::whereIn('service_id', $ids)->update(['is_published' => false]);
-        ScheduleFreeze::whereIn('schedule_id', $ids)->delete();
-        $serviceQuery->update(['is_published' => false]);
     }
 }
