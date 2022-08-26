@@ -222,3 +222,17 @@ GOOGLE_SCOPE=https://www.googleapis.com/auth/calendar https://www.googleapis.com
     - `chmod -R 777 back/bootstrap`
     - `chmod -R 777 back/vendor`
     - `chmod -R 777 back/storage`
+
+### Registration and Stripe
+
+If you cannot verify your email for some reasons, just update two columns for your account in DB in `users` table.
+
+```sql
+update users set status = 'active', email_verified_at = NOW() where email = 'YOUR_EMAIL@MAIL.COM';
+```
+
+If you create or have your Stripe business profile for the application and cannot connect to your account, you can do it manually through SQL. You must your Stripe ID, it starts from *sub_*.
+
+```sql
+update users set stripe_plan_id = 'YOUR_STRIPE_SUBSCRIPTION', connected_at = NOW() where email = 'YOUR_EMAIL@MAIL.COM';
+```
