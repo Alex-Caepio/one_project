@@ -13,13 +13,11 @@ use App\Transformers\ScheduleTransformer;
 use App\Http\Requests\Request;
 use Illuminate\Database\Eloquent\Builder;
 
-class ScheduleController extends Controller {
-
-    public function index(Request $request) {
+class ScheduleController extends Controller
+{
+    public function index(Request $request)
+    {
         $scheduleQuery = Schedule::query()->whereHas('service');
-        $scheduleQuery->where(function($q) {
-            $q->where('schedules.start_date', '>=', now())->orWhereNull('schedules.start_date');
-        });
 
         $search = $request->get('search');
         $scheduleQuery->when($search, function (Builder $query, $search) {
@@ -44,35 +42,40 @@ class ScheduleController extends Controller {
         return response($fractal)->withPaginationHeaders($paginator);
     }
 
-    public function show(Schedule $schedule, Request $request) {
+    public function show(Schedule $schedule, Request $request)
+    {
         return fractal($schedule, new ScheduleTransformer())->parseIncludes($request->getIncludes())->toArray();
     }
 
-    public function destroy(Schedule $schedule) {
+    public function destroy(Schedule $schedule)
+    {
         $schedule->delete();
         return response(null, 204);
     }
 
-    public function update(GenericUpdateSchedule $request, Schedule $schedule) {
+    public function update(GenericUpdateSchedule $request, Schedule $schedule)
+    {
         $schedule = run_action(ScheduleUpdate::class, $request, $schedule);
         return fractal($schedule, new ScheduleTransformer())->parseIncludes($request->getIncludes())->toArray();
     }
 
-    public function store(CreateScheduleInterface $request, Service $service) {
+    public function store(CreateScheduleInterface $request, Service $service)
+    {
         $schedule = run_action(ScheduleStore::class, $request, $service);
         return fractal($schedule, new ScheduleTransformer())->parseIncludes($request->getIncludes())->toArray();
     }
 
-    public function publish(Request $request, Schedule $schedule) {
+    public function publish(Request $request, Schedule $schedule)
+    {
         $schedule->is_published = true;
         $schedule->save();
         return response(null, 204);
     }
 
-    public function unpublish(Request $request, Schedule $schedule) {
+    public function unpublish(Request $request, Schedule $schedule)
+    {
         $schedule->is_published = false;
         $schedule->save();
         return response(null, 204);
     }
-
 }
