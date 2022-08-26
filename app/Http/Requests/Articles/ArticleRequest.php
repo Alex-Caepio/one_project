@@ -47,10 +47,10 @@ class ArticleRequest extends Request
             if ($isPublished) {
                 if (!Auth::user()->is_admin && !Auth::user()->is_published) {
                     $validator->errors()
-                        ->add('is_published', "Please publish your profile before you can publish an article.");
-                } elseif (!UserRightsHelper::userAllowToPublishArticle(Auth::user())) {
+                        ->add('is_published', 'Please publish your profile before you can publish an article.');
+                } elseif (!Auth::user()->canPublishArticle()) {
                     $validator->errors()
-                        ->add('is_published', "Please upgrade subscription to be able to publish articles");
+                        ->add('is_published', 'Please upgrade subscription to be able to publish articles');
                 }
             }
         });

@@ -428,4 +428,17 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->first_name.' '.$this->last_name;
     }
+
+    public function canPublishArticle(): bool
+    {
+        if ($this->is_admin) {
+            return true;
+        }
+
+        if ($this->isFullyRestricted()) {
+            return false;
+        }
+
+        return $this->plan->isAllowedToPublishForNumberOfArticles($this->articles()->published()->count());
+    }
 }
