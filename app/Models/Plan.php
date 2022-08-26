@@ -9,9 +9,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * @property integer amount
- * @property string name
- * @property float commission_on_sale
+ * @property int $amount
+ * @property string $name
+ * @property float $commission_on_sale
+ * @property bool $article_publishing_unlimited
+ * @property int $article_publishing
  */
 class Plan extends Model
 {
@@ -108,4 +110,12 @@ class Plan extends Model
             && $this->free_period_length > 0;
     }
 
+    public function isAllowedToPublishForNumberOfArticles(int $numberOfArticles): bool
+    {
+        if ($this->article_publishing_unlimited) {
+            return true;
+        }
+
+        return $this->article_publishing > 0 && $numberOfArticles < $this->article_publishing;
+    }
 }

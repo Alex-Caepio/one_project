@@ -9,7 +9,6 @@ use Stripe\StripeClient;
 
 class UpdateSubscription
 {
-
     public function execute(
         User $user,
         StripeClient $stripeClient,
@@ -62,5 +61,4 @@ class UpdateSubscription
             'status' => $finalize !== false ? 'succeeded' : 'error'
         ];
     }
-
 }

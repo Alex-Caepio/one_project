@@ -16,24 +16,6 @@ class UserRightsHelper
      * @param User $user
      * @return bool
      */
-    public static function userAllowToPublishArticle(User $user): bool
-    {
-        if ($user->is_admin) {
-            return true;
-        }
-
-        if ($user->isFullyRestricted()) {
-            return false;
-        }
-
-        return $user->plan->article_publishing_unlimited ||
-            $user->articles()->published()->count() <= (int)$user->plan->article_publishing;
-    }
-
-    /**
-     * @param User $user
-     * @return bool
-     */
     public static function userAllowFreeSchedule(User $user): bool
     {
         if ($user->is_admin) {
