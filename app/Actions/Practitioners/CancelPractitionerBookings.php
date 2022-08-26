@@ -2,6 +2,7 @@
 
 namespace App\Actions\Practitioners;
 
+use App\Actions\Cancellation\CancelBooking;
 use App\Models\Service;
 use App\Models\User;
 use Carbon\Carbon;
