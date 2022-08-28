@@ -24,10 +24,13 @@ class ChangeSubscriptionPaymentMethod
 
             // Do delay to wait for adding the payment method to the user in Stripe.
             // Otherwise, it throws the exception that the user doesn't have the payment method.
+            // TODO Refactor this
             sleep(2);
 
             $this->updateUserPaymentMethod($user, $paymentMethod);
-            $this->updateStripePaymentMethod($user->stripe_plan_id, $paymentMethod);
+            if (!empty($user->stripe_plan_id)) {
+                $this->updateStripePaymentMethod($user->stripe_plan_id, $paymentMethod);
+            }
 
             DB::commit();
         } catch (Exception $e) {
