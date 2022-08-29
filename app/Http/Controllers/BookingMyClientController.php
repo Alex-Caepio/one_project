@@ -18,7 +18,6 @@ use Illuminate\Support\Facades\DB;
 
 class BookingMyClientController extends Controller
 {
-
     public function index(Request $request)
     {
         $query = BookingView::query()->with(['user'])
@@ -42,8 +41,15 @@ class BookingMyClientController extends Controller
                             ->where('datetime_from', '>', DB::raw('now()'));
                     });
             })
-            ->groupBy('id');
-
+            ->join(
+                DB::raw('(select id as idk, count(*) total from view_booking where practitioner_id = '.Auth::id().' group by id) all_bookings'),
+                'all_bookings.idk',
+                '=',
+                'view_booking.id'
+            )
+            // It's a user ID
+            ->groupBy('view_booking.id')
+        ;
 
         if ($request->hasOrderBy()) {
             $order = $request->getOrderBy();
