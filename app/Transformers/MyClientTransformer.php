@@ -20,6 +20,7 @@ class MyClientTransformer extends Transformer
             'country'           => $myClient->user->country,
             'city'              => $myClient->user->city,
             'live_bookings'     => (int) $myClient->live_bookings,
+            'total'             => (int) $myClient->total,
             'last_purchase'     => new Carbon($myClient->last_purchase),
             'last_service'      => new Carbon($myClient->last_service),
         ];
