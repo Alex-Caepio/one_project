@@ -80,7 +80,8 @@ class RefundInstalments
                             ])
                         ;
                     }
-                } else {
+                } elseif (!empty($invoice['amount_paid'])) {
+                    // Skips 0.0 payments, because the first payment of a subscription has an zero payment.
                     Log::channel('stripe_refund_fail')
                         ->warning('Invoice has no payment intent: ', [
                             'invoice' => $invoice,
