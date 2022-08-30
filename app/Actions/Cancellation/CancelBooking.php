@@ -77,7 +77,7 @@ class CancelBooking
                 $stripeRefundData['amount'] = $refundData['refundSmallestUnit'];
 
                 $stripeRefund = $this->stripe->refunds->create($stripeRefundData);
-                Log::channel('stripe_refund_success')
+                Log::channel('stripe_refund')
                     ->info('Stripe refund success: ', [
                         'user_id' => $booking->user_id ?? null,
                         'practitioner_id' => $booking->practitioner_id ?? null,
@@ -89,7 +89,7 @@ class CancelBooking
                         'statement_descriptor_suffix' => $booking->reference
                     ]);
             } catch (ApiErrorException $e) {
-                Log::channel('stripe_refund_fail')
+                Log::channel('stripe_refund')
                     ->error('Stripe refund error: ', [
                         'user_id' => $booking->user_id ?? null,
                         'practitioner_id' => $booking->practitioner_id ?? null,
@@ -190,7 +190,7 @@ class CancelBooking
 
         if ($cancelledByPractitioner || $declineRescheduleRequest) {
             $result = $this->cancelledByPractitioner($result, $booking);
-        } else { // cancelled by client
+        } else {
             $result = $this->cancelledByClient($result, $booking);
         }
 
@@ -228,18 +228,7 @@ class CancelBooking
     {
         $result['isFullRefund'] = false;
 
-        $isDateless = $booking->schedule->service->isDateless();
-        $bookingDate = $isDateless
-            ? Carbon::parse($booking->created_at)
-            : Carbon::parse($booking->datetime_from);
-        $now = Carbon::now();
-        $diffValue = $booking->schedule->service->service_type_id === Service::TYPE_APPOINTMENT
-            ? $now->diffInHours($bookingDate)
-            : $now->diffInDays($bookingDate);
-        $isRefundAllowed = ($isDateless && $now >= $bookingDate && $diffValue < $booking->refund_terms)
-            || (!$isDateless && $bookingDate > $now && ($booking->refund_terms == 0 || $diffValue > $booking->refund_terms));
-
-        if ($isRefundAllowed) {
+        if ($this->isRefundAllowed($booking)) {
             $result['refundTotal'] = $result['bookingCost'] - $result['stripeFeeAmount'];
             $result['practitionerCharge'] = $result['bookingCost'] - $result['planRateAmount'];
         } else {
@@ -249,5 +238,30 @@ class CancelBooking
         }
 
         return $result;
+    }
+
+    private function isRefundAllowed(Booking $booking): bool
+    {
+        $isDateless = $booking->schedule->service->isDateless();
+        $bookingDate = $isDateless ? $booking->created_at : $booking->datetime_from;
+        $now = Carbon::now();
+        $diffValue = $booking->schedule->service->service_type_id === Service::TYPE_APPOINTMENT
+            ? $now->diffInHours($bookingDate)
+            : $now->diffInDays($bookingDate)
+        ;
+
+        // Bespoke.
+        // Terms = 0 is without refund.
+        // Terms > 0 is refund can be done during <trms> days after begin of booking.
+        if ($isDateless) {
+            return $booking->refund_terms !== 0
+                && $now->greaterThanOrEqualTo($bookingDate)
+                && $diffValue <= $booking->refund_terms
+            ;
+        }
+
+        return $bookingDate->greaterThan($now)
+            && ($booking->refund_terms == 0 || $diffValue >= $booking->refund_terms)
+        ;
     }
 }

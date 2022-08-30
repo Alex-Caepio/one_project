@@ -25,6 +25,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int $schedule_id
  * @property Carbon $datetime_from
  * @property Carbon $datetime_to
+ * @property Carbon $created_at
  *
  * @property-read Price $price
  * @property-read Purchase $purchase
