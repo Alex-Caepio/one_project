@@ -250,7 +250,18 @@ class CancelBooking
             : $now->diffInDays($bookingDate)
         ;
 
-        return ($isDateless && $now->greaterThanOrEqualTo($bookingDate) && $diffValue <= $booking->refund_terms)
-            || (!$isDateless && $bookingDate->greaterThan($now) && ($booking->refund_terms == 0 || $diffValue >= $booking->refund_terms));
+        // Bespoke.
+        // Terms = 0 is without refund.
+        // Terms > 0 is refund can be done during <trms> days after begin of booking.
+        if ($isDateless) {
+            return $booking->refund_terms !== 0
+                && $now->greaterThanOrEqualTo($bookingDate)
+                && $diffValue <= $booking->refund_terms
+            ;
+        }
+
+        return $bookingDate->greaterThan($now)
+            && ($booking->refund_terms == 0 || $diffValue >= $booking->refund_terms)
+        ;
     }
 }
