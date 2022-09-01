@@ -33,6 +33,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property-read User $user
  * @property-read User $practitioner Alias for `$user`.
  * @property-read Collection|MediaFile[] $media_files
+ * @property-read Collection|Schedule[] $schedules
+ * @property-read Collection|Schedule[] $active_schedules
  */
 class Service extends Model
 {
