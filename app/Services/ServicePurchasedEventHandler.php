@@ -11,13 +11,13 @@ use Swift_SwiftException;
 
 class ServicePurchasedEventHandler
 {
-    const WITHOUT_PROMO_CODE = 0;
+    const HOST_PROMO_CODE = 'host';
 
     public function handle(ServicePurchased $event): void
     {
-        $booking = $event->booking;
+        $purchase = $event->purchase;
 
-        if ($booking->discount == self::WITHOUT_PROMO_CODE) {
+        if ($purchase->discount_applied != self::HOST_PROMO_CODE) {
             return;
         }
 

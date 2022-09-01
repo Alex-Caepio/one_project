@@ -4,6 +4,7 @@ namespace App\Events;
 
 use App\Models\Booking;
 use App\Models\Price;
+use App\Models\Purchase;
 use App\Models\Schedule;
 use App\Models\Service;
 use App\Models\User;
@@ -27,6 +28,8 @@ trait EventFillableFromBooking
 
     public ?Price $price;
 
+    public ?Purchase $purchase;
+
     /**
      * Sets the given booking and prepares data for sending email by the booking.
      */
@@ -48,6 +51,7 @@ trait EventFillableFromBooking
         $this->schedule = $this->booking->schedule;
         $this->service = $this->booking->schedule->service;
         $this->price = $this->booking->price;
+        $this->purchase = $this->booking->purchase;
     }
 
     public function getBookingDependencies(): array
