@@ -612,7 +612,7 @@ class EmailVariables
         return config('app.frontend_url') . config('app.frontend_decline_amend') . '/' . $this->event->reschedule->id . '?token=' .
             $this->generatePersonalAccessToken($this->event->client, 'decline');
     }
-    
+
     /**
      * @return string
      */
@@ -770,6 +770,15 @@ class EmailVariables
      * @return string
      */
     public function getClient_reschedule_message(): ?string
+    {
+        $comment = $this->event->reschedule->comment ?? '';
+        return str_replace("\n", '<br>', $comment);
+    }
+
+    /**
+     * @return string
+     */
+    public function getReschedule_comments(): ?string
     {
         $comment = $this->event->reschedule->comment ?? '';
         return str_replace("\n", '<br>', $comment);
