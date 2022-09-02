@@ -26,10 +26,10 @@ class CancelSubscription
             ];
             try {
                 $this->stripe->subscriptions->cancel($user->stripe_plan_id, []);
-                Log::channel('stripe_plans_success')->info('Plan successfully cancelled', $logData);
+                Log::channel('stripe_plan')->info('Plan successfully cancelled', $logData);
             } catch (\Exception $e) {
                 $logData['error'] = $e->getMessage();
-                Log::channel('stripe_plans_success')->error('Plan cancellation error purchased', $logData);
+                Log::channel('stripe_plan')->error('Plan cancellation error purchased', $logData);
             } finally {
                 $user->stripe_plan_id = null;
             }

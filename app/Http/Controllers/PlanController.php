@@ -14,7 +14,6 @@ use App\Models\ServiceType;
 use App\Transformers\PlanTransformer;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
-use Stripe\StripeClient;
 
 class PlanController extends Controller
 {
@@ -62,28 +61,23 @@ class PlanController extends Controller
     }
 
     /**
-     * Try to purchase plan if possible or return token for 3ds auth
-     *
-     * @param Plan $plan
-     * @param StripeClient $stripe
-     * @param PlanRequest $request
-     * @return mixed
+     * Try to purchase plan if possible or return token for 3ds auth.
      */
-    public function purchase(Plan $plan, StripeClient $stripe, PlanRequest $request)
+    public function purchase(Plan $plan, PlanRequest $request)
     {
         $user = Auth::user();
         $isNewPlan = empty($user->plan_id);
-        run_action(CancelSubscription::class, $user, $stripe);
+        run_action(CancelSubscription::class, $user);
 
-        return run_action(UpdateSubscription::class, $user, $stripe, $plan, $isNewPlan, $request);
+        return run_action(UpdateSubscription::class, $user, $plan, $isNewPlan, $request);
     }
 
-    public function finalize(Plan $plan, StripeClient $stripe, FinalizeRequest $request)
+    public function finalize(Plan $plan, FinalizeRequest $request)
     {
         $user = Auth::user();
         $isNewPlan = empty($user->plan_id);
 
-        $result = run_action(FinalizeSubscription::class, $user, $stripe, $plan, $isNewPlan, $request);
+        $result = run_action(FinalizeSubscription::class, $user, $plan, $isNewPlan, $request);
 
         if (!$result) {
             return response()->json([
@@ -96,13 +90,13 @@ class PlanController extends Controller
         return response('', 204);
     }
 
-    public function purchaseFree(Plan $plan, StripeClient $stripe, PlanTrialRequest $request)
+    public function purchaseFree(Plan $plan, PlanTrialRequest $request)
     {
         $user = Auth::user();
         $isNewPlan = empty($user->plan_id);
-        run_action(CancelSubscription::class, $user, $stripe);
+        run_action(CancelSubscription::class, $user);
 
-        $result = run_action(UpdateSubscription::class, $user, $stripe, $plan, $isNewPlan, $request);
+        $result = run_action(UpdateSubscription::class, $user, $plan, $isNewPlan, $request);
 
         if (!$result) {
             return response()->json([

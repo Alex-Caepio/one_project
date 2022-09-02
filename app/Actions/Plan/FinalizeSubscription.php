@@ -16,21 +16,22 @@ use Stripe\StripeClient;
 
 class FinalizeSubscription
 {
-    public function execute(
-        User $user,
-        StripeClient $stripeClient,
-        Plan $plan,
-        bool $isNewPlan,
-        $request,
-        SetupIntent $intent = null
-    ) {
+    private StripeClient $stripe;
+
+    public function __construct(StripeClient $stripe)
+    {
+        $this->stripe = $stripe;
+    }
+
+    public function execute(User $user, Plan $plan, bool $isNewPlan, $request, SetupIntent $intent = null)
+    {
         try {
             $user->plan_id = $plan->id;
             $user->plan_from = Carbon::now();
             $user->account_type = User::ACCOUNT_PRACTITIONER;
 
             if (empty($intent)) {
-                $intent = $stripeClient->setupIntents->retrieve($request->intent_id);
+                $intent = $this->stripe->setupIntents->retrieve($request->intent_id);
             }
 
             // return intent
@@ -45,10 +46,10 @@ class FinalizeSubscription
             if ($plan->isActiveTrial()) {
                 $subscriptionData['trial_end'] = Carbon::now()->addMonths($plan->free_period_length)->timestamp;
 
-                Log::channel('stripe_plans_info')
+                Log::channel('stripe_plan')
                     ->info('Plan is on trial', [
                         'plan_id' => $plan->id ?? null,
-                        'stripe_plan_id' => $subscription->id ?? null,
+                        // 'stripe_plan_id' => $subscription->id ?? null,
                         'subscription_trial_end' => $subscriptionData['trial_end'],
                         'plan_free_start_from' => $plan->free_start_from,
                         'plan_free_start_to' => $plan->free_start_to,
@@ -61,17 +62,17 @@ class FinalizeSubscription
             }
 
             if (!empty($request->subscription_id)) {
-                $subscription = $stripeClient->subscriptions->retrieve($request->subscription_id);
+                $subscription = $this->stripe->subscriptions->retrieve($request->subscription_id);
             } else {
-                $subscription = $stripeClient->subscriptions->create($subscriptionData);
+                $subscription = $this->stripe->subscriptions->create($subscriptionData);
             }
 
             $user->stripe_plan_id = $subscription->id;
             $user->plan_until = Carbon::createFromTimestamp($subscription->current_period_end);
 
             if (in_array($subscription->status, [Subscription::STATUS_INCOMPLETE])) {
-                $paymentIntentId = $stripeClient->invoices->retrieve($subscription->latest_invoice)->payment_intent;
-                $clientSecret = $stripeClient->paymentIntents->retrieve($paymentIntentId)->client_secret;
+                $paymentIntentId = $this->stripe->invoices->retrieve($subscription->latest_invoice)->payment_intent;
+                $clientSecret = $this->stripe->paymentIntents->retrieve($paymentIntentId)->client_secret;
 
                 return [
                     'subscription_id' => $subscription->id,
@@ -86,7 +87,7 @@ class FinalizeSubscription
                 SetupIntent::STATUS_REQUIRES_CONFIRMATION,
                 SetupIntent::STATUS_REQUIRES_PAYMENT_METHOD
             ])) {
-                $stripeClient->setupIntents->cancel($intent->id);
+                $this->stripe->setupIntents->cancel($intent->id);
             }
 
             $isUpgradedToPractitioner = $user->isDirty('account_type');
@@ -105,7 +106,7 @@ class FinalizeSubscription
                 event(new ChangeOfSubscription($user, $plan, null));
             }
         } catch (Exception $e) {
-            Log::channel('stripe_plans_errors')
+            Log::channel('stripe_plan')
                 ->error('Error purchasing a plan', [
                     'user_id' => $user->id ?? null,
                     'plan_id' => $plan->id ?? null,
@@ -121,7 +122,7 @@ class FinalizeSubscription
             return false;
         }
 
-        Log::channel('stripe_plans_success')
+        Log::channel('stripe_plan')
             ->info('Plan successfully purchased', [
                 'user_id' => $user->id,
                 'plan_id' => $plan->id,
