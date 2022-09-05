@@ -261,7 +261,7 @@ class CancelBooking
         }
 
         return $bookingDate->greaterThan($now)
-            && ($booking->refund_terms == 0 || $diffValue >= $booking->refund_terms)
+            && ($booking->refund_terms === 0 || $diffValue >= $booking->refund_terms)
         ;
     }
 }
