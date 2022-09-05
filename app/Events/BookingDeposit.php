@@ -17,8 +17,6 @@ class BookingDeposit
 
     public ?string $template;
 
-    public Purchase $purchase;
-
     /**
      * @param Booking $booking
      */
