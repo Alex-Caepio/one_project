@@ -199,7 +199,7 @@ class PurchaseController extends Controller
                     'service_id' => $schedule->service->id,
                     'practitioner_id' => $schedule->service->user_id,
                     'schedule_id' => $schedule->id,
-                    'payment_intent' => $paymentIntent->id ?? null,
+                    // 'payment_intent' => $paymentIntent->id ?? null,
                     'message' => $e->getMessage(),
                 ]);
             $this->connection->rollBack();

@@ -62,6 +62,7 @@ class BookingTransformer extends Transformer
                 'purchase_id' => $booking->booking->purchase->id,
                 'cancelled_at' => $booking->booking->cancelled_at,
                 'status' => $booking->booking->status,
+                'refund_terms' => $booking->refund_terms ?? $booking->booking->refund_terms,
             ]);
         }
 
