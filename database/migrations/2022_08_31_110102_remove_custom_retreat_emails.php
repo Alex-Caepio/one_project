@@ -14,8 +14,8 @@ class RemoveCustomRetreatEmails extends Migration
      */
     public function up()
     {
-        CustomEmail::where('id', 130)->first()->delete();
-        CustomEmail::where('id', 131)->first()->delete();
+        CustomEmail::where('id', 130)->delete();
+        CustomEmail::where('id', 131)->delete();
     }
 
     /**
@@ -25,7 +25,7 @@ class RemoveCustomRetreatEmails extends Migration
      */
     public function down()
     {
-        CustomEmail::where('id', 130)->first()->delete();
-        CustomEmail::where('id', 131)->first()->delete();
+        CustomEmail::where('id', 130)->delete();
+        CustomEmail::where('id', 131)->delete();
     }
 }
