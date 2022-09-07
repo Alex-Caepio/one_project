@@ -19,6 +19,13 @@ use Stripe\Subscription;
 
 class PurchaseInstallment
 {
+    private StripeClient $stripe;
+
+    public function __construct(StripeClient $stripe)
+    {
+        $this->stripe = $stripe;
+    }
+
     public function execute(
         Schedule $schedule,
         PurchaseScheduleRequest $request,
@@ -30,8 +37,23 @@ class PurchaseInstallment
         $metadata = MetadataService::retrieveMetadataPurchase($purchase, MetadataService::TYPE_DEPOSIT);
         /** @var User $customer */
         $customer = $request->user();
-        $stripe = app()->make(StripeClient::class);
-        $deposit = $this->chargeDeposit($paymentMethodId, $stripe, $schedule, $customer->id, $purchase, $metadata);
+
+        if ($request->input('payment_intent')) {
+            $deposit = $this->stripe->paymentIntents->retrieve($request->input('payment_intent'));
+        } else {
+            $deposit = $this->chargeDeposit($paymentMethodId, $schedule, $customer->id, $purchase, $metadata);
+        }
+
+        if (in_array($deposit->status, [PaymentIntent::STATUS_REQUIRES_ACTION, 'requires_source_action'])) {
+            return new PaymentIntentDto(
+                PaymentIntent::STATUS_REQUIRES_ACTION,
+                $deposit->client_secret,
+                $deposit->confirmation_method,
+                $deposit->next_action,
+                null
+            );
+        }
+
         $subscription = $this->chargeInstallment(
             $paymentMethodId,
             $cost,
@@ -39,7 +61,6 @@ class PurchaseInstallment
             $schedule,
             $purchase,
             $customer,
-            $stripe,
             $metadata
         );
 
@@ -76,7 +97,6 @@ class PurchaseInstallment
 
     private function chargeDeposit(
         $paymentMethodId,
-        StripeClient $stripe,
         Schedule $schedule,
         int $customerId,
         Purchase $purchase,
@@ -85,7 +105,7 @@ class PurchaseInstallment
         $depositAmount = $schedule->deposit_amount * $purchase->amount;
         $reference = implode(', ', $purchase->bookings->pluck('reference')->toArray());
 
-        $paymentIntent = $stripe->paymentIntents->create(
+        $paymentIntent = $this->stripe->paymentIntents->create(
             [
                 'amount' => intval(round(($depositAmount * 100))),
                 'currency' => config('app.platform_currency'),
@@ -96,7 +116,7 @@ class PurchaseInstallment
             ]
         );
 
-        $paymentIntent = $stripe->paymentIntents->confirm(
+        $paymentIntent = $this->stripe->paymentIntents->confirm(
             $paymentIntent->id,
             [
                 'payment_method' => $paymentMethodId
@@ -134,7 +154,6 @@ class PurchaseInstallment
         Schedule $schedule,
         Purchase $purchase,
         User $customer,
-        StripeClient $stripe,
         array $metadata
     ): ?Subscription {
         $calendarInstallments = $schedule->calculateInstallmentsCalendar($cost, $purchase->amount, $installments);
@@ -145,7 +164,7 @@ class PurchaseInstallment
             return null;
         }
 
-        $stripePrice = $stripe->prices->create(
+        $stripePrice = $this->stripe->prices->create(
             [
                 'currency' => config('app.platform_currency'),
                 'product' => $schedule->service->stripe_id,
@@ -160,7 +179,7 @@ class PurchaseInstallment
         $toTransferPercent = 100 - $practitionerCommissions;
 
         // create subscription
-        $subscription = $stripe->subscriptions->create(
+        $subscription = $this->stripe->subscriptions->create(
             [
                 'default_payment_method' => $paymentMethodId,
                 'customer' => $customer->stripe_customer_id,

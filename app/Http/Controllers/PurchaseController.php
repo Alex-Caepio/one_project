@@ -261,6 +261,7 @@ class PurchaseController extends Controller
         $depositCost = $schedule->deposit_amount * $request->amount;
 
         try {
+            /** @var PaymentIntentDto $responseData */
             $responseData = run_action(
                 PurchaseInstallment::class,
                 $schedule,
@@ -270,6 +271,12 @@ class PurchaseController extends Controller
                 $purchase,
                 $booking
             );
+
+            // Needed to config through 3ds
+            if ($responseData->getChargeId() === null) {
+                return $responseData;
+            }
+
         } catch (ApiErrorException $e) {
             Log::channel('stripe_installment_fail')
                 ->error('The client could not purchase installment', [
