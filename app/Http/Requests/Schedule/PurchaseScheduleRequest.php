@@ -53,7 +53,7 @@ class PurchaseScheduleRequest extends Request implements CreateScheduleInterface
                 return $this->route()->getName() === 'purchase-process' && isset($this->installments) &&
                        (int)$this->installments > 1;
             }),
-            'comment' => 'nullable|string|max:255'
+            'comment' => 'nullable|string|max:500'
         ];
 
         if ($this->schedule->service->service_type_id === Service::TYPE_APPOINTMENT) {
