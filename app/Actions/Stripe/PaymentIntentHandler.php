@@ -44,6 +44,7 @@ class PaymentIntentHandler
         $this->_requestStatus       = $dataObject['status'] ?? '';
         $this->_requestCurrency     = $dataObject['currency'] ?? '';
         $this->_requestMetadata     = $dataObject['metadata'];
+        $this->_requestAccount      = $dataObject['account'] ?? '';
 
         if (!empty($dataObject['transfer_data'])) {
             $this->_requestPractitionerId = $dataObject['transfer_data']['destination'];
@@ -66,11 +67,25 @@ class PaymentIntentHandler
         }
 
         // Get subscription id for getting user purchase
-        $this->stripeClient = app()->make(StripeClient::class);
-        $invoice = $this->stripeClient->invoices->retrieve($this->_requestInvoiceId);
+        if (!empty($this->_requestAccount)) {
+            $invoice = $this->stripeClient->invoices->retrieve(
+                $this->_requestInvoiceId,
+                [],
+                ['stripe_account' => $this->_requestAccount]
+            );
+        } else {
+            $invoice = $this->stripeClient->invoices->retrieve($this->_requestInvoiceId);
+        }
+
         $this->_requestSubscriptionId = $invoice->subscription;
-        $this->retrievePractitioner();
-        $this->retrievePurchase();
+
+        if (!empty($this->_requestPractitionerId)) {
+            $this->retrievePractitioner();
+        }
+
+        if (!empty($this->_requestSubscriptionId)) {
+            $this->retrievePurchase();
+        }
 
         // Filter payment intents. We need only subscription updates. They dont has transfer amount
         if (
