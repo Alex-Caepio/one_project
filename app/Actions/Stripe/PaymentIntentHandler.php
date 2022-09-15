@@ -67,15 +67,21 @@ class PaymentIntentHandler
         }
 
         // Get subscription id for getting user purchase
-        if (!empty($this->_requestAccount)) {
-            $invoice = $this->stripeClient->invoices->retrieve(
-                $this->_requestInvoiceId,
-                [],
-                ['stripe_account' => $this->_requestAccount]
-            );
-        } else {
-            $invoice = $this->stripeClient->invoices->retrieve($this->_requestInvoiceId);
-        }
+//        if (!empty($this->_requestAccount)) {
+//            $invoice = $this->stripeClient->invoices->retrieve(
+//                $this->_requestInvoiceId,
+//                [],
+//                ['stripe_account' => $this->_requestAccount]
+//            );
+//        } else {
+//            $invoice = $this->stripeClient->invoices->retrieve($this->_requestInvoiceId);
+//        }
+
+        $invoice = $this->stripeClient->invoices->retrieve(
+            $this->_requestInvoiceId,
+            [],
+            ['stripe_account' => $this->_requestAccount]
+        );
 
         $this->_requestSubscriptionId = $invoice->subscription;
 
