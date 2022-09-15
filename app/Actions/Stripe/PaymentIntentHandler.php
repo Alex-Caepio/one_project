@@ -15,11 +15,11 @@ class PaymentIntentHandler
 
     private string $_requestInvoiceId;
     private string $_requestPaymentIntentId;
-    private string $_requestPractitionerId;
+    private ?string $_requestPractitionerId;
     private string $_requestAmountPaid;
     private string $_requestTransferId;
     private string $_requestTransferAmount;
-    private string $_requestSubscriptionId;
+    private ?string $_requestSubscriptionId;
     private string $_requestCurrency;
     private array  $_requestMetadata;
     private array  $metadata;
