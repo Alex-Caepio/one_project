@@ -27,15 +27,11 @@ class PaymentIntentHandler
 
     private ?User $practitioner;
 
-    public function __constructor(StripeClient $stripeClient)
-    {
-        $this->stripeClient = $stripeClient;
-    }
-
     public function execute(StripeRequest $request): void
     {
         Log::info('[[' . __METHOD__ . ']]: start handle payment intent  Event: ' . $request->getEventName());
 
+        $this->stripeClient = app()->make(StripeClient::class);
         $dataObject = $request->getObject();
 
         $this->_requestPaymentIntentId = $dataObject['id'];
@@ -67,21 +63,15 @@ class PaymentIntentHandler
         }
 
         // Get subscription id for getting user purchase
-//        if (!empty($this->_requestAccount)) {
-//            $invoice = $this->stripeClient->invoices->retrieve(
-//                $this->_requestInvoiceId,
-//                [],
-//                ['stripe_account' => $this->_requestAccount]
-//            );
-//        } else {
-//            $invoice = $this->stripeClient->invoices->retrieve($this->_requestInvoiceId);
-//        }
-
-        $invoice = $this->stripeClient->invoices->retrieve(
-            $this->_requestInvoiceId,
-            [],
-            ['stripe_account' => $this->_requestAccount]
-        );
+        if (!empty($this->_requestAccount)) {
+            $invoice = $this->stripeClient->invoices->retrieve(
+                $this->_requestInvoiceId,
+                [],
+                ['stripe_account' => $this->_requestAccount]
+            );
+        } else {
+            $invoice = $this->stripeClient->invoices->retrieve($this->_requestInvoiceId);
+        }
 
         $this->_requestSubscriptionId = $invoice->subscription;
 
