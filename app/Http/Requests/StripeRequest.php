@@ -19,6 +19,7 @@ class StripeRequest {
     ];
 
     private string $_type;
+    private string $_account;
     private array $_data;
 
 
@@ -31,6 +32,7 @@ class StripeRequest {
 
     public function __construct(Request $request) {
         $this->_type = $request->get('type', '');
+        $this->_account = $request->get('account', '');
         $data = $request->get('data', []);
         if (isset($data['object'])) {
             $this->_data = $data['object'];
@@ -56,6 +58,13 @@ class StripeRequest {
      */
     public function getObject() {
         return $this->_data;
+    }
+
+    /**
+     * @return object
+     */
+    public function getAccount() {
+        return $this->_account;
     }
 
     /**

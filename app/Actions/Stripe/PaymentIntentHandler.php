@@ -34,13 +34,13 @@ class PaymentIntentHandler
         $this->stripeClient = app()->make(StripeClient::class);
         $dataObject = $request->getObject();
 
+        $this->_requestAccount      = $request->getAccount();
         $this->_requestPaymentIntentId = $dataObject['id'];
         $this->_requestAmountPaid   = round($dataObject['amount'] / 100, 2);
         $this->_requestInvoiceId    = $dataObject['invoice'] ?? '';
         $this->_requestStatus       = $dataObject['status'] ?? '';
         $this->_requestCurrency     = $dataObject['currency'] ?? '';
         $this->_requestMetadata     = $dataObject['metadata'];
-        $this->_requestAccount      = $dataObject['account'] ?? '';
 
         if (!empty($dataObject['transfer_data'])) {
             $this->_requestPractitionerId = $dataObject['transfer_data']['destination'];
