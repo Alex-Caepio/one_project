@@ -362,7 +362,7 @@ class PurchaseController extends Controller
             } else {
                 $paymentIntent = $stripe->paymentIntents->create(
                     [
-                        'amount' => $purchase->price * 100,
+                        'amount' => intval($purchase->price * 100),
                         'currency' => config('app.platform_currency'),
                         'payment_method_types' => ['card'],
                         'customer' => Auth::user()->stripe_customer_id,
@@ -381,7 +381,7 @@ class PurchaseController extends Controller
                             'Client stripe id' => $client->stripe_customer_id,
                             'Booking reference' => $reference,
                             'Promoted by' => $applied_to,
-                        ]
+                        ],
                     ]
                 );
 
