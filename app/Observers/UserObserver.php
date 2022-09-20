@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Actions\Practitioners\DeletePractitioner;
 use App\Events\AccountDeleted;
 use App\Events\AccountTerminatedByAdmin;
 use App\Events\BusinessProfileLive;
@@ -47,6 +48,10 @@ class UserObserver
     {
         RescheduleRequest::where('user_id', $user->id)->delete();
         ScheduleFreeze::where('user_id', $user->id)->delete();
+
+        if ($user->account_type === User::ACCOUNT_PRACTITIONER) {
+            run_action(DeletePractitioner::class, $user, '', false);
+        }
 
         if (!Auth::user()->is_admin) {
             event(new AccountDeleted($user));

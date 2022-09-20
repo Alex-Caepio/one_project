@@ -3,6 +3,7 @@
 namespace App\Actions\Practitioners;
 
 use App\Actions\Article\DeleteArticles;
+use App\Actions\Client\CancelClientBookings;
 use App\Actions\Plan\CancelSubscription;
 use App\Actions\Service\DeleteServices;
 use App\Actions\User\DeleteUser;
@@ -13,9 +14,12 @@ use App\Models\User;
  */
 class DeletePractitioner
 {
-    public function execute(User $user, string $reason): void
+    public function execute(User $user, string $reason, bool $deleteByAdmin): void
     {
-        run_action(DeleteUser::class, $user, $reason);
+        if ($deleteByAdmin) {
+            run_action(DeleteUser::class, $user, $reason);
+        }
+        run_action(CancelClientBookings::class, $user);
         run_action(CancelPractitionerBookings::class, $user);
         run_action(DeleteArticles::class, $user);
         run_action(DeleteServices::class, $user);
