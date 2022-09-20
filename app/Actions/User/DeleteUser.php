@@ -13,7 +13,5 @@ class DeleteUser
     {
         $user->update(['termination_message' => $reason]);
         $user->delete();
-
-        run_action(CancelClientBookings::class, $user);
     }
 }
