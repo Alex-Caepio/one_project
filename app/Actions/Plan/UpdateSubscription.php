@@ -4,6 +4,7 @@ namespace App\Actions\Plan;
 
 use App\Models\Plan;
 use App\Models\User;
+use App\Services\MetadataService;
 use Stripe\SetupIntent;
 use Stripe\StripeClient;
 
@@ -26,6 +27,7 @@ class UpdateSubscription
                     'customer' => $user->stripe_customer_id,
                     'payment_method' => $request->payment_method_id,
                     'payment_method_types' => ['card'],
+                    'metadata' => MetadataService::retrieveMetadataSubscriptionInit($user, $plan),
                 ]
             );
 

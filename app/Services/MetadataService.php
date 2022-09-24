@@ -4,10 +4,12 @@ namespace App\Services;
 
 use App\Models\Purchase;
 use App\Models\User;
+use App\Models\Plan;
 
 class MetadataService
 {
     const TYPE_SUBSCRIPTION_UPDATE = 'Subscription update';
+    const TYPE_SUBSCRIPTION_INIT = 'Subscription init';
     const TYPE_PURCHASE = 'Purchase';
     const TYPE_INSTALLMENT = 'Installment Purchase';
     const TYPE_DEPOSIT = 'Purchase deposit';
@@ -48,6 +50,22 @@ class MetadataService
     {
         return [
             'Type' => self::TYPE_SUBSCRIPTION_UPDATE,
+            'Practitioner business email' => $user->business_email,
+            'Practitioner business name' => $user->business_name,
+            'Practitioner stripe id' => $user->stripe_customer_id,
+            'Practitioner connected account id' => $user->stripe_account_id,
+        ];
+    }
+
+    public static function retrieveMetadataSubscriptionInit(User $user, Plan $plan = null): array
+    {
+        $newPlan = !empty($user->plan) ? $user->plan : (!empty($plan) ? $plan : '');
+
+        return [
+            'Type' => self::TYPE_SUBSCRIPTION_INIT,
+            'Practitioner plan' => $newPlan->name,
+            'Plan cost' => round($newPlan->price, 2, PHP_ROUND_HALF_DOWN)
+                . '(' . config('app.platform_currency') . ')',
             'Practitioner business email' => $user->business_email,
             'Practitioner business name' => $user->business_name,
             'Practitioner stripe id' => $user->stripe_customer_id,

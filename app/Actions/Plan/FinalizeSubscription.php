@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Log;
 use Stripe\SetupIntent;
 use Stripe\Subscription;
 use Stripe\StripeClient;
+use App\Services\MetadataService;
 
 class FinalizeSubscription
 {
@@ -41,6 +42,7 @@ class FinalizeSubscription
                 'items' => [
                     ['price' => $plan->stripe_id],
                 ],
+                'metadata' => MetadataService::retrieveMetadataSubscriptionInit($user, $plan),
             ];
 
             if ($plan->isActiveTrial()) {
@@ -49,7 +51,6 @@ class FinalizeSubscription
                 Log::channel('stripe_plan')
                     ->info('Plan is on trial', [
                         'plan_id' => $plan->id ?? null,
-                        // 'stripe_plan_id' => $subscription->id ?? null,
                         'subscription_trial_end' => $subscriptionData['trial_end'],
                         'plan_free_start_from' => $plan->free_start_from,
                         'plan_free_start_to' => $plan->free_start_to,
