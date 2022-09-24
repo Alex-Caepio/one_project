@@ -12,10 +12,12 @@ use Stripe\StripeClient;
 
 class PaymentIntentHandler
 {
+    const ACTION_SUBSCRIPTION_CREATED = 'Subscription creation';
 
     private string $_requestInvoiceId;
     private string $_requestPaymentIntentId;
     private ?string $_requestPractitionerId;
+    private ?string $_requestCustomerId;
     private string $_requestAmountPaid;
     private string $_requestTransferId;
     private string $_requestTransferAmount;
@@ -26,6 +28,8 @@ class PaymentIntentHandler
     private StripeClient $stripeClient;
 
     private ?User $practitioner;
+    private ?User $customer;
+    private ?Purchase $purchase;
 
     public function execute(StripeRequest $request): void
     {
@@ -41,6 +45,8 @@ class PaymentIntentHandler
         $this->_requestStatus       = $dataObject['status'] ?? '';
         $this->_requestCurrency     = $dataObject['currency'] ?? '';
         $this->_requestMetadata     = $dataObject['metadata'];
+        $this->_requestAction       = $dataObject['description'] ?? '';
+        $this->_requestCustomerId     = $dataObject['customer'] ?? '';
 
         if (!empty($dataObject['transfer_data'])) {
             $this->_requestPractitionerId = $dataObject['transfer_data']['destination'];
@@ -172,6 +178,16 @@ class PaymentIntentHandler
                 'customer_id' => $this->_requestPractitionerId,
             ]);
         }
+
+        if ($this->_requestAction === self::ACTION_SUBSCRIPTION_CREATED) {
+            $this->retrieveCustomer();
+            $this->metadata = MetadataService::retrieveMetadataSubscription($this->customer);
+
+            $this->stripeClient->paymentIntents->update(
+                $this->_requestPaymentIntentId,
+                ['metadata' => $this->metadata]
+            );
+        }
     }
 
     private function retrievePractitioner(): void
@@ -179,6 +195,11 @@ class PaymentIntentHandler
         $this->practitioner = User::where('stripe_account_id', $this->_requestPractitionerId)
             ->where('account_type', User::ACCOUNT_PRACTITIONER)
             ->first();
+    }
+
+    private function retrieveCustomer(): void
+    {
+        $this->customer = User::where('stripe_customer_id', $this->_requestCustomerId)->first();
     }
 
     private function retrievePurchase(): void

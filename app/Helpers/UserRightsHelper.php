@@ -231,10 +231,10 @@ class UserRightsHelper
                 }
                 $pricesCnt = $schedule->prices()->count();
                 if (
-                    !$user->plan->pricing_options_per_service_unlimited
-                    && $pricesCnt > (int) $user->plan->pricing_options_per_service
+                    !$plan->pricing_options_per_service_unlimited
+                    && $pricesCnt > (int) $plan->pricing_options_per_service
                 ) {
-                    $limit = $pricesCnt - (int) $user->plan->pricing_options_per_service;
+                    $limit = $pricesCnt - (int) $plan->pricing_options_per_service;
                     $schedule->prices()->orderBy('cost', 'asc')->limit($limit)->delete();
                 }
             }
