@@ -50,7 +50,7 @@ class UserObserver
         ScheduleFreeze::where('user_id', $user->id)->delete();
 
         if ($user->account_type === User::ACCOUNT_PRACTITIONER) {
-            run_action(DeletePractitioner::class, $user, '', false);
+            run_action(DeletePractitioner::class, $user, '');
         }
 
         if (!Auth::user()->is_admin) {

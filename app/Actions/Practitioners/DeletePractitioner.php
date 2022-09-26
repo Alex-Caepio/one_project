@@ -14,11 +14,9 @@ use App\Models\User;
  */
 class DeletePractitioner
 {
-    public function execute(User $user, string $reason, bool $deleteByAdmin): void
+    public function execute(User $user, string $reason): void
     {
-        if ($deleteByAdmin) {
-            run_action(DeleteUser::class, $user, $reason);
-        }
+        run_action(DeleteUser::class, $user, $reason);
         run_action(CancelClientBookings::class, $user);
         run_action(CancelPractitionerBookings::class, $user);
         run_action(DeleteArticles::class, $user);
