@@ -14,9 +14,13 @@ class ScheduleObserver
 {
     public function saved(Schedule $schedule): void
     {
-        if ($schedule->isDirty('is_published')) {
+        $requestCancelFlag = request('cancel_bookings', false);
+
+        if (
+            $schedule->isDirty('is_published') ||
+            (!$schedule->isDirty('is_published') && (bool)$requestCancelFlag === true)
+        ) {
             if (!$schedule->is_published && !$schedule->wasRecentlyCreated) {
-                $requestCancelFlag = request('cancel_bookings', false);
                 if ((bool)$requestCancelFlag === true) {
                     run_action(ScheduleAftermath::class, $schedule);
                 }
