@@ -65,7 +65,7 @@ class PractitionerController extends Controller
 
     public function destroy(User $practitioner, PractitionerDestroyRequest $request)
     {
-        run_action(DeletePractitioner::class, $practitioner, $request->message, true);
+        run_action(DeletePractitioner::class, $practitioner, $request->message);
         return response(null, 204);
     }
 

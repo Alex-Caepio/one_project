@@ -12,6 +12,5 @@ class DeleteUser
     public function execute(User $user, string $reason): void
     {
         $user->update(['termination_message' => $reason]);
-        $user->delete();
     }
 }
