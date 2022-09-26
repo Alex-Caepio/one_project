@@ -66,7 +66,6 @@ class ServiceObserver
     {
         $service
             ->schedules()
-            ->published()
             ->get()
             ->each(static function ($schedule, $key) {
                 $schedule->is_published = false;
