@@ -84,7 +84,7 @@ class UserRightsHelper
             return true;
         }
 
-        return $service->schedules()->where('is_published', 1)->count() <= (int)$user->plan->schedules_per_service;
+        return $service->schedules()->where('is_published', 1)->count() < (int)$user->plan->schedules_per_service;
     }
 
     public static function userAllowDeposit(User $user): bool
