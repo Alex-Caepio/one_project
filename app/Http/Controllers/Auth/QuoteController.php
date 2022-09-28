@@ -81,7 +81,7 @@ class QuoteController extends Controller {
                     'allowed' => false,
                     'current' => $schedulesCount,
                     'max'     => $schedulesPerService,
-                    'message' => "You\'ve already reached your limit of {$schedulesPerService} schedules"
+                    'message' => "Sorry, you've reached the maximum schedules for your subscription plan"
                 ];
             }
 
