@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Actions\Client\CancelClientBookings;
 use App\Actions\Practitioners\DeletePractitioner;
 use App\Events\AccountDeleted;
 use App\Events\AccountTerminatedByAdmin;
@@ -51,6 +52,8 @@ class UserObserver
 
         if ($user->account_type === User::ACCOUNT_PRACTITIONER) {
             run_action(DeletePractitioner::class, $user, '');
+        } else if ($user->account_type === User::ACCOUNT_CLIENT) {
+            run_action(CancelClientBookings::class, $user);
         }
 
         if (!Auth::user()->is_admin) {
