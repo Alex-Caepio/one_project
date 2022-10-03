@@ -800,7 +800,7 @@ class EmailVariables
     /**
      * @return string
      */
-    public function getСheckout_comments(): ?string
+    public function getCheckout_comments(): ?string
     {
         $comment = $this->event->purchase->comment ?? '';
         return str_replace("\n", '<br>', $comment);
