@@ -7,6 +7,7 @@ use App\Actions\Practitioners\UnpublishPractitioner;
 use App\Actions\Practitioners\UpdateMediaPractitioner;
 use App\Actions\Stripe\CreateStripeUserByEmail;
 use App\Actions\User\CreateUserFromRequest;
+use App\Events\PasswordChanged;
 use App\Events\UserRegistered;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
@@ -99,6 +100,7 @@ class AuthController extends Controller
         if ($request->filled('password')) {
             $user->password = Hash::make($request->get('password'));
             $user->save();
+            event(new PasswordChanged($user));
         }
 
         return fractal($user, new UserTransformer())->respond();
