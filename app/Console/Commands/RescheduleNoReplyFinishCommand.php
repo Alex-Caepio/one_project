@@ -21,6 +21,7 @@ class RescheduleNoReplyFinishCommand extends Command
     public function handle(): void
     {
         $rescheduleRequests = RescheduleRequest::query()
+            ->has('old_schedule')
             ->whereRaw(
                 "DATE_FORMAT(`created_at`, '%Y-%m-%d') = ?",
                 Carbon::now()->subDays(2)->format('Y-m-d')
