@@ -40,7 +40,10 @@ class RescheduleNoReplyFinishCommand extends Command
         foreach ($rescheduleRequests as $rr) {
             $rr->automatic = true;
 
-            if (Carbon::parse($rr->old_end_date)->format('Y-m-d') < Carbon::now()->subDays()->format('Y-m-d')) {
+            if (
+                !isset($rr->old_end_date) ||
+                Carbon::parse($rr->old_end_date)->format('Y-m-d') < Carbon::now()->subDays()->format('Y-m-d')
+            ) {
                 run_action(RescheduleRequestDelete::class, $rr);
             } else if (
                 $rr->requested_by === RescheduleRequest::REQUESTED_BY_PRACTITIONER_IN_SCHEDULE &&
