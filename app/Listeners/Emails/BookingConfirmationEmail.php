@@ -28,7 +28,7 @@ class BookingConfirmationEmail extends SendEmailHandler
 
 
         //practitioner
-        $this->toEmail = $event->practitioner->email;
+        $this->toEmail = $event->practitioner->business_email ?? $event->practitioner->email;
         $this->type = User::ACCOUNT_PRACTITIONER;
         $this->event->recipient = $event->practitioner;
         $this->sendCustomEmail();
