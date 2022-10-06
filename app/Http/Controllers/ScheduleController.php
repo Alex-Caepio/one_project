@@ -83,13 +83,21 @@ class ScheduleController extends Controller
             }
         );
 
+        /** @var Booking $booking */
+        $booking = Booking::query()
+            ->with('price')
+            ->where('schedule_id', $schedule->id)
+            ->find((int) $request->get('booking_id'));
+
         // price option for client
-        if (Auth::user()->account_type === User::ACCOUNT_CLIENT && $request->has('booking_id')) {
-            /** @var Booking $booking */
-            $booking = Booking::query()
-                ->with('price')
-                ->where('schedule_id', $schedule->id)
-                ->find((int) $request->get('booking_id'));
+        if (
+            $request->has('booking_id') &&
+            Auth::user()->account_type === User::ACCOUNT_CLIENT ||
+            (
+                Auth::user()->account_type === User::ACCOUNT_PRACTITIONER &&
+                Auth::user()->id !== $booking->practitioner_id
+            )
+        ) {
 
             if (!$booking) {
                 return response('Booking not found', 500);
