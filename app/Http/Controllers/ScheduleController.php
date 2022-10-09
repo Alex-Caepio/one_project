@@ -91,12 +91,9 @@ class ScheduleController extends Controller
 
         // price option for client
         if (
-            $request->has('booking_id') &&
-            Auth::user()->account_type === User::ACCOUNT_CLIENT ||
-            (
-                Auth::user()->account_type === User::ACCOUNT_PRACTITIONER &&
-                Auth::user()->id !== $booking->practitioner_id
-            )
+            $request->has('booking_id')
+            && !Auth::user()->is_admin
+            && Auth::user()->id !== $booking->practitioner_id
         ) {
 
             if (!$booking) {
