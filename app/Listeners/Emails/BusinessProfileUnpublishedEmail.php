@@ -7,7 +7,7 @@ use App\Events\BusinessProfileUnpublished;
 class BusinessProfileUnpublishedEmail extends SendEmailHandler {
 
     public function handle(BusinessProfileUnpublished $event): void {
-        $this->toEmail = $event->user->email;
+        $this->toEmail = $event->user->business_email ?? $event->user->email;
         $this->templateName = 'Business Profile Unpublished';
         $this->event = $event;
         $this->sendCustomEmail();

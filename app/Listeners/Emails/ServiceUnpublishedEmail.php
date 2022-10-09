@@ -7,7 +7,7 @@ use App\Events\ServiceUnpublished;
 class ServiceUnpublishedEmail extends SendEmailHandler {
 
     public function handle(ServiceUnpublished $event): void {
-        $this->toEmail = $event->user->email;
+        $this->toEmail = $event->user->business_email ?? $event->user->email;
         $this->templateName = 'Service Unpublished';
         $this->event = $event;
         $this->sendCustomEmail();

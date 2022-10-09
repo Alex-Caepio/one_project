@@ -15,7 +15,7 @@ class ChangeOfSubscriptionEmail extends SendEmailHandler {
 
 
     private function sendNotification(ChangeOfSubscription $event): void {
-        $this->toEmail = $event->user->email;
+        $this->toEmail = $event->user->business_email ?? $event->user->email;
         $this->templateName = 'Change of Subscription';
         $this->event = $event;
         $this->sendCustomEmail();

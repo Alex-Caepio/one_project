@@ -7,7 +7,7 @@ use App\Events\ServiceScheduleLive;
 class ServiceScheduleLiveEmail extends SendEmailHandler {
 
     public function handle(ServiceScheduleLive $event): void {
-        $this->toEmail = $event->user->email;
+        $this->toEmail = $event->user->business_email ?? $event->user->email;
         $this->templateName = $event->template;
         if ($this->templateName === null) {
             return;
