@@ -29,7 +29,7 @@ class ServicePurchasedEventHandler
 
         try {
             Mail::html($bodyReplaced, function (Message $message) use ($practitioner, $emailVerification, $emailVariables) {
-                $message->to($practitioner->email);
+                $message->to($practitioner->business_email);
                 $message->subject($emailVariables->replace($emailVerification->subject));
                 $message->from($emailVerification->from_email, $emailVerification->from_title);
             });

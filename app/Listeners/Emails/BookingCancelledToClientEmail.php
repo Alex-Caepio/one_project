@@ -13,7 +13,7 @@ class BookingCancelledToClientEmail extends SendEmailHandler
         $this->event = $event;
 
         // practitioner
-        $this->toEmail = $event->practitioner->email;
+        $this->toEmail = $event->practitioner->business_email ?? $event->practitioner->email;
         $this->type = User::ACCOUNT_PRACTITIONER;
         $this->event->recipient = $event->practitioner;
         $this->sendCustomEmail();

@@ -8,7 +8,7 @@ use App\Helpers\UserRightsHelper;
 class SubscriptionConfirmationEmail extends SendEmailHandler {
 
     public function handle(SubscriptionConfirmation $event): void {
-        $this->toEmail = $event->user->email;
+        $this->toEmail = $event->user->business_email ?? $event->user->email;
         $this->templateName = $event->template;
         $this->event = $event;
         $this->sendCustomEmail();
