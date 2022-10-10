@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Mail;
 class ClientRescheduledFyiEmail extends SendEmailHandler {
 
     public function handle(ClientRescheduledFyi $event): void {
-        $this->toEmail = $event->recipient->email;
+        $this->toEmail = $event->user->business_email ?? $event->user->email;
         $this->templateName = 'Client Rescheduled FYI';
         $this->event = $event;
         $this->sendCustomEmail();
