@@ -17,12 +17,10 @@ class RescheduleNoReplyDeleteAfterPass extends Command
     public function handle(): void
     {
         $rescheduleRequests = RescheduleRequest::query()
-            ->orWhereHas('old_schedule', static function ($query) {
-                $query->whereRaw(
-                    "DATE_FORMAT(`start_date`, '%Y-%m-%d %H:%i') < ?",
-                    Carbon::now()->format('Y-m-d H:i')
-                );
-            })
+            ->whereRaw(
+                "DATE_FORMAT(`old_end_date`, '%Y-%m-%d %H:%i') < ?",
+                Carbon::now()->format('Y-m-d H:i')
+            )
             ->get();
 
         foreach ($rescheduleRequests as $rr) {
