@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Actions\Auth\GetUsersPermissions;
+use App\Actions\Client\DeleteClient;
+use App\Actions\Practitioners\DeletePractitioner;
 use App\Actions\Practitioners\UnpublishPractitioner;
 use App\Actions\Practitioners\UpdateMediaPractitioner;
 use App\Actions\Stripe\CreateStripeUserByEmail;
@@ -213,7 +215,11 @@ class AuthController extends Controller
 
     public function delete(Request $request)
     {
-        $request->user()->delete();
+        if ($request->user()->account_type === User::ACCOUNT_PRACTITIONER) {
+            run_action(DeletePractitioner::class, $request->user(), '');
+        } else if ($request->user()->account_type === User::ACCOUNT_CLIENT) {
+            run_action(DeleteClient::class, $request->user(), '');
+        }
 
         return response(null, 204);
     }

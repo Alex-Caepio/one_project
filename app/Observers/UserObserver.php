@@ -50,12 +50,6 @@ class UserObserver
         RescheduleRequest::where('user_id', $user->id)->delete();
         ScheduleFreeze::where('user_id', $user->id)->delete();
 
-        if ($user->account_type === User::ACCOUNT_PRACTITIONER) {
-            run_action(DeletePractitioner::class, $user, '');
-        } else if ($user->account_type === User::ACCOUNT_CLIENT) {
-            run_action(CancelClientBookings::class, $user);
-        }
-
         if (!Auth::user()->is_admin) {
             event(new AccountDeleted($user));
         } else {
