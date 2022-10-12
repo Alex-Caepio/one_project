@@ -254,10 +254,9 @@ class CancelBooking
         // Terms = 0 is without refund.
         // Terms > 0 is refund can be done during <trms> days after begin of booking.
         if ($isDateless) {
-            return $booking->refund_terms !== 0
-                && $now->greaterThanOrEqualTo($bookingDate)
-                && $diffValue <= $booking->refund_terms
-            ;
+            $bookingDatePlusRefundTerms = Carbon::parse($bookingDate)->addDays($booking->refund_terms);
+
+            return $booking->refund_terms !== 0 && $bookingDatePlusRefundTerms->greaterThanOrEqualTo($now);
         }
 
         return $bookingDate->greaterThan($now)
