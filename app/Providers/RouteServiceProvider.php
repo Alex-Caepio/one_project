@@ -11,6 +11,7 @@ use App\Models\RescheduleRequest;
 use App\Models\Service;
 use App\Models\User;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -52,7 +53,9 @@ class RouteServiceProvider extends ServiceProvider
         });
 
         Route::bind('publicService', function ($value) {
-            $service = Service::where('slug', (string)$value)
+            $service = Service::published();
+
+            $service->where('slug', (string)$value)
                 ->whereHas('user', function ($query) {
                     $query->published();
                 });
