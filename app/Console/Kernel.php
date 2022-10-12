@@ -56,7 +56,7 @@ class Kernel extends ConsoleKernel {
         $schedule->command('bookings:notifier-tomorrow')->daily();
 
         $schedule->command('reschedule:noreply-finish')->daily();
-        $schedule->command('reschedule:noreply-delete')->hourly();
+        $schedule->command('reschedule:noreply-delete')->everyFifteenMinutes();
 
         $schedule->command('plan-freeperiod')->daily();
         $schedule->command('instalments:notify')->daily();
