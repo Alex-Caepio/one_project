@@ -52,9 +52,7 @@ class RouteServiceProvider extends ServiceProvider
         });
 
         Route::bind('publicService', function ($value) {
-            $service = Service::published();
-
-            $service->where('slug', (string)$value)
+            $service = Service::where('slug', (string)$value)
                 ->whereHas('user', function ($query) {
                     $query->published();
                 });
