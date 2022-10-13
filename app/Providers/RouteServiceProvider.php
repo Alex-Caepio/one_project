@@ -53,7 +53,16 @@ class RouteServiceProvider extends ServiceProvider
         });
 
         Route::bind('publicService', function ($value) {
-            $service = Service::published();
+            $service = Service::query();
+
+            $service->where(function ($query) {
+                $query->where('is_published', true);
+
+                $user = auth('sanctum')->user();
+                if ($user) {
+                    $query->orWhere('user_id', $user->id);
+                }
+            });
 
             $service->where('slug', (string)$value)
                 ->whereHas('user', function ($query) {
