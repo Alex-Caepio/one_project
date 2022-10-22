@@ -37,7 +37,6 @@ class PractitionerSubscriptionDiscountRequest extends Request
                 'required',
                 Rule::exists('users', 'id')
                     ->where('account_type', User::ACCOUNT_PRACTITIONER)
-                    ->where('is_published', true)
             ],
             'rate' => 'required|min:1|max:1000000',
             'duration_type' => [
