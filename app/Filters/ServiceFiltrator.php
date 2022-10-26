@@ -116,7 +116,7 @@ class ServiceFiltrator
             if ($request->filled('search')) {
                 $searchTerms = $request->get('search');
             } elseif ($request->filled('q')) {
-                    $searchTerms = $request->get('q');
+                $searchTerms = $request->get('q');
             }
 
             // default sorting
@@ -126,18 +126,23 @@ class ServiceFiltrator
                     'plans.id',
                     '=',
                     'users.plan_id'
-                )->orderBy('plans.price', 'DESC')->orderBy('plans.is_free', 'DESC');
+                );
 
                 $queryBuilder->leftJoin(
                     'schedules',
                     static function ($leftJoin) {
                         $leftJoin->on('services.id', '=', 'schedules.service_id')->where('schedules.is_published', '=', 1);
                     }
-                )->orderByRaw('ABS(schedule_date_dif)');
+                );
 
                 $selectFields[] = 'plans.price as price';
                 $selectFields[] = 'plans.is_free as free_price';
-                $selectFields[] = 'DATEDIFF(schedules.start_date, now()) as schedule_date_dif';
+
+                $queryBuilder->orderByRaw("FIELD(schedules.is_published , '1', '0') DESC")
+                    ->orderByRaw('CASE WHEN schedules.start_date = CURDATE() THEN 0 WHEN schedules.start_date > CURDATE() THEN 1 ELSE 2 END, schedules.start_date')
+                    ->orderByRaw("FIELD(plans.name , 'Practitioner', 'With trial', 'Free title') DESC")
+                    ->orderBy('plans.price', 'DESC')
+                    ->orderBy('plans.is_free', 'DESC');
             } else {
                 // search terms
                 $searchString = '%' . $searchTerms . '%';
