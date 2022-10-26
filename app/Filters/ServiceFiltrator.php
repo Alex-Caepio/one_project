@@ -139,7 +139,7 @@ class ServiceFiltrator
                 $selectFields[] = 'plans.is_free as free_price';
 
                 $queryBuilder->orderByRaw("FIELD(schedules.is_published , '1', '0') DESC")
-                    ->orderByRaw('CASE WHEN schedules.start_date = CURDATE() THEN 0 WHEN schedules.start_date > CURDATE() THEN 1 ELSE 2 END, schedules.start_date')
+                    ->orderByRaw('CASE WHEN schedules.start_date > NOW() THEN 0 ELSE 1 END, schedules.start_date')
                     ->orderByRaw("FIELD(plans.name , 'Practitioner', 'With trial', 'Free title') DESC")
                     ->orderBy('plans.price', 'DESC')
                     ->orderBy('plans.is_free', 'DESC');
