@@ -14,19 +14,14 @@ class PractitionerController extends Controller
     public function index(Request $request)
     {
         $practitioners = User::query()
+            ->join('plans', 'plans.id', '=', 'users.plan_id')
             ->where('account_type', User::ACCOUNT_PRACTITIONER)
+            ->select('users.*', 'plans.price')
+            ->orderBy('plans.price', 'DESC')
             ->orderBy('business_name');
 
         $userFiltrator = new UserFiltrator();
         $userFiltrator->apply($practitioners, $request, true);
-
-
-        $loggedInUser = $request->user('sanctum');
-        if ($request->getBoolFromRequest('upcoming') && $loggedInUser) {
-//            $practitioners->whereHas('practitioner_bookings', static function($subQuery) use($loggedInUser) {
-//                $subQuery->where('bookings.user_id', $loggedInUser->id);
-//            });
-        }
 
         $includes = $request->getIncludes();
         $practitioners->with($includes);
