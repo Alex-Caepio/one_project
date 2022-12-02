@@ -400,7 +400,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function unavailabilities(): HasMany
     {
-        return $this->hasMany(UserUnavailabilities::class, 'id', 'practitioner_id');
+        return $this->hasMany(UserUnavailabilities::class, 'practitioner_id', 'id');
     }
 
 

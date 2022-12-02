@@ -36,6 +36,10 @@ class UserTransformer extends Transformer
         'business_country',
     ];
 
+    protected $defaultIncludes = [
+        'unavailabilities',
+    ];
+
     public function transform(User $user)
     {
         return [
