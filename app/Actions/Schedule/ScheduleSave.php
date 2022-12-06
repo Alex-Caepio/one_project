@@ -5,6 +5,7 @@ namespace App\Actions\Schedule;
 use App\Events\ServiceUpdatedByPractitionerNonContractual;
 use App\Models\Schedule;
 use App\Models\Service;
+use App\Models\UserUnavailabilities;
 
 abstract class ScheduleSave
 {
@@ -55,5 +56,25 @@ abstract class ScheduleSave
             }
         }
         return $data;
+    }
+
+    /**
+     * @param \App\Models\Service $service
+     * @param array $data
+     *
+     * @return never|void
+     */
+    public function validateUserAvailability(Service $service, array $data)
+    {
+        $unavailabilities = UserUnavailabilities::where('practitioner_id', $service->user->id)
+            ->whereBetween('start_date', [$data['start_date'],$data['end_date']])
+            ->orwhereBetween('end_date', [$data['start_date'], $data['end_date']])
+            ->get()
+            ->count();
+
+        if($unavailabilities){
+            return abort(422, 'User unavailable');
+        }
+
     }
 }

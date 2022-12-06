@@ -9,6 +9,7 @@ class ScheduleUpdate extends ScheduleSave
     public function execute($request, Schedule $schedule): Schedule
     {
         $data = $this->collectRequest($request, $schedule->service);
+        $this->validateUserAvailability($schedule->service, $data);
 
         $schedule->update($data);
         $this->updatePrices($request, $schedule);
