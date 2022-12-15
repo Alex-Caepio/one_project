@@ -18,11 +18,13 @@ use App\Models\Schedule;
 use App\Models\ScheduleFreeze;
 use App\Http\Requests\Request;
 use App\Models\User;
+use App\Models\UserUnavailabilities;
 use App\Transformers\BookingTransformer;
 use App\Transformers\UserTransformer;
 use App\Transformers\ScheduleTransformer;
 use App\Http\Requests\Schedule\CreateScheduleInterface;
 use Carbon\Carbon;
+use Closure;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
@@ -31,17 +33,17 @@ class ScheduleController extends Controller
 {
     public function index(Service $service, Request $request)
     {
+        $practitionerUnavailibilities = UserUnavailabilities::where('practitioner_id','=',$service->user_id)
+            ->whereDate('end_date','>=', now())->get();
+
         $scheduleQuery = Schedule::where('service_id', $service->id)->with('service');
 
         $scheduleQuery->where('schedules.is_published', true)->where(
-            function ($q) {
-                $q->where('schedules.start_date', '>=', now())->orWhereNull('schedules.start_date');
-            }
+            $this->getTimeFrameSubQuery($practitionerUnavailibilities)
         );
 
         $scheduleQuery->with($request->getIncludes())->selectRaw('*, DATEDIFF(start_date, NOW()) as date_diff')
             ->orderByRaw('ABS(date_diff)');
-
         $schedule = $scheduleQuery->get();
 
         return fractal($schedule, new ScheduleTransformer())->parseIncludes($request->getIncludes())->toArray();
@@ -332,5 +334,20 @@ class ScheduleController extends Controller
             ]
         );
         $freeze->save();
+    }
+
+    /**
+     * @param $practitionerUnavailibilities
+     *
+     * @return \Closure
+     */
+    private function getTimeFrameSubQuery($practitionerUnavailibilities): Closure
+    {
+        return function ($q) use ($practitionerUnavailibilities) {
+            foreach ($practitionerUnavailibilities as $unavailibility) {
+                $q->whereNotBetween('schedules.start_date', [$unavailibility->start_date, $unavailibility->end_date]);
+            }
+            $q->where('schedules.start_date', '>=', now())->orWhereNull('schedules.start_date');
+        };
     }
 }
