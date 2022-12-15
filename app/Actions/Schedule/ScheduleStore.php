@@ -12,7 +12,6 @@ class ScheduleStore extends ScheduleSave
     public function execute(CreateScheduleInterface $request, Service $service): Schedule
     {
         $data = $this->collectRequest($request, $service);
-        $this->validateUserAvailability($service, $data);
 
         $schedule = Schedule::create($data);
         $this->savePrices($schedule, $service, $request);
