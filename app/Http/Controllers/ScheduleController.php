@@ -33,6 +33,8 @@ class ScheduleController extends Controller
 {
     public function index(Service $service, Request $request)
     {
+        $timeZone = $request->get('tz') ?? Carbon::now()->getTimezone()->getName();
+
         $practitionerUnavailibilities = UserUnavailabilities::where('practitioner_id','=',$service->user_id)
             ->whereDate('end_date','>=', now())->get();
 
@@ -44,9 +46,9 @@ class ScheduleController extends Controller
 
         $scheduleQuery->with($request->getIncludes())->selectRaw('*, DATEDIFF(start_date, NOW()) as date_diff')
             ->orderByRaw('ABS(date_diff)');
-        $schedule = $scheduleQuery->get();
-
-        return fractal($schedule, new ScheduleTransformer())->parseIncludes($request->getIncludes())->toArray();
+        /** @var Schedule $schedule */
+        $schedulesCollection = $scheduleQuery->get();
+        return fractal($schedulesCollection, new ScheduleTransformer( $timeZone ) )->parseIncludes($request->getIncludes())->toArray();
     }
 
 

@@ -38,7 +38,10 @@ class GetAvailableAppointmentTimeOnDate
         $periods = $this->availabilitiesToCarbonPeriod($availabilities);
         $busyPeriods = $this->getBusyPeriods();
 
-        $this->addBusyPeriodByEndOfWorkingDay($busyPeriods, $availabilities);
+        if( count( $availabilities ) )
+        {
+            $this->addBusyPeriodByEndOfWorkingDay($busyPeriods, $availabilities);
+        }
 
         return $periods
             ->excludeBusyPeriods($busyPeriods)

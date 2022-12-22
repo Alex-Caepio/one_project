@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Actions\Schedule\GetAvailableAppointmentTimeOnDate;
 use App\Scopes\PublishedScope;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
@@ -162,6 +163,16 @@ class Schedule extends Model
     public function freezes(): HasMany
     {
         return $this->hasMany(ScheduleFreeze::class);
+    }
+
+    public function getUserUnavailabilities()
+    {
+        $userUnavailabilities = UserUnavailabilities::query()
+            ->where('practitioner_id', $this->service->user_id )
+            ->where('end_date', '>', now() )
+            ->get();
+
+        return $userUnavailabilities;
     }
 
     public function rescheduleRequests()
@@ -627,5 +638,42 @@ class Schedule extends Model
         }
 
         return $this;
+    }
+
+    // method for checking available time in the days where we have customers unavailability.
+    public function getUnavailableDays( string $timeZone ){
+        $userUnavailabilities = $this->getUserUnavailabilities();
+        if( empty( $userUnavailabilities ) ) return null;
+
+        $datesForCheck = [];
+        /* @var UserUnavailabilities  $userUnavailability*/
+        foreach ( $userUnavailabilities as $userUnavailability ){
+            $start_date = Carbon::parse( $userUnavailability->start_date )->format('Y-m-d');
+            $end_date = Carbon::parse( $userUnavailability->end_date )->format('Y-m-d');
+
+            $datesForCheck[ $start_date ] = $start_date;
+            $datesForCheck[ $end_date ] = $end_date;
+        }
+
+        $resultCollectionDates = new \Illuminate\Support\Collection();
+
+        if( !empty( $this->prices ) ){
+            $isAvailableDay = false;
+            foreach ( $datesForCheck as $date ){
+                foreach ( $this->prices as $price ) {
+                    $times = run_action(GetAvailableAppointmentTimeOnDate::class, $price, $date, $timeZone);
+                    if (!empty($times)) {
+                        $isAvailableDay = true;
+                        break;
+                    }
+                }
+                if( $isAvailableDay === true ){
+                    break;
+                }
+                $resultCollectionDates->add( Carbon::parse( $date ) );
+            }
+        }
+
+        return $resultCollectionDates;
     }
 }

@@ -15,11 +15,13 @@ class ScheduleTransformer extends Transformer
 {
     private ?User $authUser;
     private ?Collection $bookings;
+    private string $timezone;
 
-    public function __construct()
+    public function __construct( string $timezone = 'utc' )
     {
         $this->authUser = Auth::user() === null ? Auth::guard('sanctum')->user() : null;
         $this->bookings = null;
+        $this->timezone = $timezone;
     }
 
     public function setBooking(Booking $booking) {
@@ -27,7 +29,7 @@ class ScheduleTransformer extends Transformer
         return $this;
     }
 
-    protected $availableIncludes = [
+    protected array $availableIncludes = [
         'location',
         'prices',
         'service',
@@ -142,7 +144,17 @@ class ScheduleTransformer extends Transformer
 
     public function includeScheduleUnavailabilities(Schedule $schedule)
     {
-        return $this->collectionOrNull($schedule->schedule_unavailabilities, new ScheduleUnavailabilityTransformer());
+        $result_collect = new Collection();
+
+        foreach ( $schedule->schedule_unavailabilities as $schedule_unavailability ){
+            $result_collect->add( $schedule_unavailability );
+        }
+
+        foreach ( $schedule->getUnavailableDays( $this->timezone ) as $user_unavailability ){
+            $result_collect->add( $user_unavailability );
+        }
+
+        return $this->collectionOrNull( $result_collect, new UnavailabilityTransformer( $schedule->id ) );
     }
 
     public function includeScheduleFiles(Schedule $schedule)
