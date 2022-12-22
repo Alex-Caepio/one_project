@@ -29,7 +29,7 @@ class ScheduleTransformer extends Transformer
         return $this;
     }
 
-    protected array $availableIncludes = [
+    protected $availableIncludes = [
         'location',
         'prices',
         'service',
