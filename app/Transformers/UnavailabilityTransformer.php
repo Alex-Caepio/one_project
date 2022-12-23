@@ -34,10 +34,5 @@ class UnavailabilityTransformer extends Transformer
         }
 
         return [];
-        if( !is_a( $objUnavailability, Carbon::class )
-            && !is_a( $objUnavailability, ScheduleUnavailability::class  ) ){
-                return [];
-            }
-
     }
 }

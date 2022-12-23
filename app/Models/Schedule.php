@@ -642,20 +642,26 @@ class Schedule extends Model
 
     // method for checking available time in the days where we have customers unavailability.
     public function getUnavailableDays( string $timeZone ){
+        $resultCollectionDates = new \Illuminate\Support\Collection();
+
         $userUnavailabilities = $this->getUserUnavailabilities();
-        if( empty( $userUnavailabilities ) ) return null;
+        if( empty( $userUnavailabilities ) ) return $resultCollectionDates;
 
         $datesForCheck = [];
         /* @var UserUnavailabilities  $userUnavailability*/
         foreach ( $userUnavailabilities as $userUnavailability ){
-            $start_date = Carbon::parse( $userUnavailability->start_date )->format('Y-m-d');
-            $end_date = Carbon::parse( $userUnavailability->end_date )->format('Y-m-d');
+            $startDate = Carbon::parse( $userUnavailability->start_date );
+            $endDate = Carbon::parse( $userUnavailability->end_date );
 
-            $datesForCheck[ $start_date ] = $start_date;
-            $datesForCheck[ $end_date ] = $end_date;
+            $datesForCheck[ $startDate->format('Y-m-d') ] = $startDate->format('Y-m-d');
+
+            $diff = $endDate->diffInDays( $startDate );
+            for( $i = 0; $i <= $diff; $i++ ){
+
+                $nextDate = $startDate->addDay();
+                $datesForCheck[ $nextDate->format('Y-m-d') ] = $nextDate->format('Y-m-d');
+            }
         }
-
-        $resultCollectionDates = new \Illuminate\Support\Collection();
 
         if( !empty( $this->prices ) ){
             $isAvailableDay = false;
