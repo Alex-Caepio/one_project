@@ -56,7 +56,7 @@ class GetAvailableAppointmentTimeOnDate
 
     private function getDuration(): int
     {
-        return $this->price->duration;
+        return $this->price->duration?$this->price->duration:0;
     }
 
     private function getDate(): Carbon
@@ -143,6 +143,10 @@ class GetAvailableAppointmentTimeOnDate
     private function availabilitiesToCarbonPeriod(Collection $availabilities): AvailablePeriodCollection
     {
         $periods = new AvailablePeriodCollection();
+
+        // if we dn`t have availabilities - we don`t do any operations
+        if( $availabilities->count() == 0 ) return $periods;
+
         $reqPeriodStart = $this->getStartOfDay();
         $reqPeriodEnd = $this->getEndOfDay();
         $nowDatetime = $this->getNearestTime();
