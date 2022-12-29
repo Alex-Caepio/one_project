@@ -35,24 +35,18 @@ class ScheduleController extends Controller
     {
         $timeZone = $request->get('tz') ?? Carbon::now()->getTimezone()->getName();
 
-
-
         $scheduleQuery = Schedule::where('service_id', $service->id)->with('service');
 
-        $scheduleQuery->where('schedules.is_published', true);
-
-        //just for services with type Appointment we unset schedules in user unavailibilities
         if( $service->service_type_id == Service::TYPE_APPOINTMENT ){
             $practitionerUnavailibilities = UserUnavailabilities::where('practitioner_id','=',$service->user_id)
                 ->whereDate('end_date','>=', now())->get();
 
-            $scheduleQuery->where(
+            $scheduleQuery->where('schedules.is_published', true)->where(
                 $this->getTimeFrameSubQuery($practitionerUnavailibilities)
             );
         }else{
             $scheduleQuery->where('schedules.start_date', '>=', now());
         }
-
 
         $scheduleQuery->with($request->getIncludes())->selectRaw('*, DATEDIFF(start_date, NOW()) as date_diff')
             ->orderByRaw('ABS(date_diff)');
@@ -359,6 +353,7 @@ class ScheduleController extends Controller
             foreach ($practitionerUnavailibilities as $unavailibility) {
                 $q->whereNotBetween('schedules.start_date', [$unavailibility->start_date, $unavailibility->end_date]);
             }
+            $q->where('schedules.start_date', '>=', now())->orWhereNull('schedules.start_date');
         };
     }
 }
