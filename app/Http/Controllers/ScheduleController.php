@@ -39,9 +39,7 @@ class ScheduleController extends Controller
 
         $scheduleQuery = Schedule::where('service_id', $service->id)->with('service');
 
-        $scheduleQuery->where('schedules.is_published', true)
-                    ->where('schedules.start_date', '>=', now())
-                    ->whereNotNull('schedules.start_date');
+        $scheduleQuery->where('schedules.is_published', true);
 
         //just for services with type Appointment we unset schedules in user unavailibilities
         if( $service->service_type_id == Service::TYPE_APPOINTMENT ){
@@ -51,6 +49,8 @@ class ScheduleController extends Controller
             $scheduleQuery->where(
                 $this->getTimeFrameSubQuery($practitionerUnavailibilities)
             );
+        }else{
+            $scheduleQuery->where('schedules.start_date', '>=', now());
         }
 
 
