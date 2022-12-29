@@ -45,7 +45,7 @@ class ScheduleController extends Controller
                 $this->getTimeFrameSubQuery($practitionerUnavailibilities)
             );
         }else{
-            $scheduleQuery->where('schedules.start_date', '>=', now());
+            $scheduleQuery->where('schedules.is_published', true)->where('schedules.start_date', '>=', now());
         }
 
         $scheduleQuery->with($request->getIncludes())->selectRaw('*, DATEDIFF(start_date, NOW()) as date_diff')
