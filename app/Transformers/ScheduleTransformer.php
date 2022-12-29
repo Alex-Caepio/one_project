@@ -146,9 +146,9 @@ class ScheduleTransformer extends Transformer
     {
         $result_collect = new Collection();
 
-        foreach ( $schedule->schedule_unavailabilities as $schedule_unavailability ){
-            $result_collect->add( $schedule_unavailability );
-        }
+//        foreach ( $schedule->schedule_unavailabilities as $schedule_unavailability ){
+//            $result_collect->add( $schedule_unavailability );
+//        }
 
         foreach ( $schedule->getUnavailableDays( $this->timezone ) as $user_unavailability ){
             $result_collect->add( $user_unavailability );
