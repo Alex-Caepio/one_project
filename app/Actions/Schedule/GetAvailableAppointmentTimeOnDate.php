@@ -160,7 +160,7 @@ class GetAvailableAppointmentTimeOnDate
 
             // Parse availabilities
             $availabilityStart = $this->createRoundedTime($baseDate, $availability->start_time);
-            $availabilityEnd = $this->createRoundedTime($baseDate, $availability->end_time);
+            $availabilityEnd = $this->createRoundedTime($baseDate, $availability->end_time, 'round');
 
             if ($availabilityStart->greaterThanOrEqualTo($availabilityEnd)) {
                 $availabilityEnd->addDay();
@@ -202,9 +202,9 @@ class GetAvailableAppointmentTimeOnDate
         return Carbon::createFromFormat('Y-m-d H:i:s' , "{$date->format('Y-m-d')} $time", 'UTC');
     }
 
-    private function createRoundedTime(Carbon $date, string $time): Carbon
+    private function createRoundedTime(Carbon $date, string $time, string $function = 'ceil'): Carbon
     {
-        return $this->createTime($date, $time)->roundMinutes(self::STEP_VALUE, 'ceil');
+        return $this->createTime($date, $time)->roundMinutes(self::STEP_VALUE, $function);
     }
 
     private function getBusyPeriods(): BusyPeriodCollection
